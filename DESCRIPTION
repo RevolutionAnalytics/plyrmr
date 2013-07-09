@@ -1,0 +1,11 @@
+Package: plyrmr
+Type: Package
+Title: What the package does (short line)
+Version: 0.1
+Date: 2013-07-09
+Author: Revolution Analytics
+Maintainer: Revolution Analytics <rhadoop@revolutionanalytics.com>
+Description: More about what it does (maybe more than one line)
+License: Apache 2.0
+Depends: Rcpp (>= 0.10.4), rmr2, plyr
+LinkingTo: Rcpp

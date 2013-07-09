@@ -57,3 +57,80 @@ save.mr =
 	}
 
 from.dfs = function(...) values(rmr2::from.dfs(...))
+
+merge.mr = 
+	function(
+		x, 
+		y, 
+		by, 
+		by.x = by, 
+		by.y = by, 
+		all = FALSE, 
+		all.x = all, 
+		all.y = all) {
+		mk.map = 
+			function(by)
+				function(k,v) keyval(v[, by], v)
+		equijoin(
+			left.input = x, 
+			right.input = y, 
+			map.left = mk.map(by.x), 
+			map.right = mk.map(by.y), 
+			outer = 
+				switch(
+					all.x + all.y, 
+					"", 
+					if(all.x) "left" else "right", 
+					"full"))}
+
+quantile.mr = 
+	function(x, ..., probs = 1000, na.rm = FALSE, names = TRUE) {
+		midprobs =
+			function(N) {
+				probs = seq(0,1,1/N)
+				(probs[-1] + probs[-length(probs)])/2}
+		mr.fun = 
+			function(reduce = T)
+				function(k, v) {
+					keyval(
+						1, 
+						quantile(
+							v, 
+							..., 
+							probs = {
+								if(!reduce)
+									midprobs(ceiling(probs*length(v)/rmr.options("keyval.length")))
+								else
+									midprobs(probs)},
+							na.rm = na.rm, 
+							names = names,
+							type = 8))}
+		from.dfs(
+			mapreduce(
+				x, 
+				map = mr.fun(F),
+				reduce = mr.fun(T), 
+	  		combine = mr.fun(F)))}
+
+top.k.mr = 
+	function(x, k, by, decreasing) {
+		mr.fun = 
+			function(k,v)
+				keyval(
+					1, 
+					head(
+						v[
+							do.call(
+								Curry(
+									order, 
+									decreasing = decreasing),
+								v[,c("cyl", "carb")]),],
+						k))
+		from.dfs(
+			mapreduce(
+				x, 
+				map = mr.fun, 
+				reduce = mr.fun, 
+				combine = T))}
+		
+	

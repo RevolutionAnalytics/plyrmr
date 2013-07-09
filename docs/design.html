@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Alternatives to <code>arrange</code> (sorting)</title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
+
+
+
+
+
+</head>
+
+<body>
+<h2>Alternatives to <code>arrange</code> (sorting)</h2>
+
+<p>It&#39;hard to sort with Hadoop. It&#39;s harder to sort with rmr2. The output of a scalable, distributed program is always subdivided into multiple partitions, because there are are always multiple reducers running (same story if it is map-only). So each partition can be sorted and partitions can be range-disjoint, and named in a way that&#39;s suggestive of the content (10-quantile, 20-quantile or some such). This is recognized as a form of sorting (see the Terasort benchmark), but it is no replacement for old fashioned sorting (without partitions). One application is eliminating duplicates. If duplicates span partitions, hadoop sorting is of no or modest help. Another is moving window algorithms of some sort, where a function needs to be applied to every group of N data points that are consecutive in some order. Again when the window spans partitions, hadoop sorting doesn&#39;t help. So it seems hadoop sorting is no immediate or complete replacement for sorting the old fashioned way. It&#39;s great for searching  for instance, since with appropriate partition naming we can do binary search, and indexing is also a possibility, but not for other purposes of statistical and algorithmic interest. <code>rmr2</code> has the additional challenge of not allowing custom partitioners, which are used in hadoop sorting (range partitioners). Here we are on a triple quest: </p>
+
+<ol>
+<li>list as many application of sorting as possible, </li>
+<li>provide implementations for them based on <code>rmr2</code> and </li>
+<li>see if any subset of these is <em>fundamental</em>, meaning that any application of sorting can be expressed as an application of one of these fundamental sorting-related algorithms</li>
+</ol>
+
+<h3>List of sorting related algorithms</h3>
+
+<ol>
+<li>Duplicate elimination.</li>
+<li>Intersections</li>
+<li>Unions</li>
+<li>Grouping</li>
+<li>Joins</li>
+<li>Quantiles.</li>
+<li>Moving window algorithms</li>
+<li>Top-k and bottom k</li>
+<li>Rank statistics</li>
+<li>Binning and counting</li>
+</ol>
+
+<h4>Duplicate elimination</h4>
+
+<p>This is easly achived by grouping by value and then returning a single representative element in the reduce phase. Combiner-friendly</p>
+
+<h4>Intersections</h4>
+
+<p>Special case of joins</p>
+
+<h4>Unions</h4>
+
+<p>Can be achieved with multiple inputs and duplicate elimination</p>
+
+<h4>Grouping</h4>
+
+<p>This is built into <code>rmr2</code> and actually Hadoop</p>
+
+<h4>Joins</h4>
+
+<p>These are built into <code>rmr2</code> but considered not very easy to use. A merge-like interface is in order.</p>
+
+<h4>Quantiles</h4>
+
+<p>Each quantile doesn&#39;t need sorting, but to compute many of them in one pass sorting is a possibility. Could provide approximate algorithm based on recursive weighted merger of quantiles.</p>
+
+<h4>Top-k and bottom-k</h4>
+
+<p>These are special cases of quantiles but can easily be addressed without sorting</p>
+
+<h4>Moving window</h4>
+
+<p>There could be implemented on top of grouping, by sending all the data related to the same window (and, for efficiency, to multiple overlapping windows) to each reducer.</p>
+
+<h4>Rank statistics</h4>
+
+<p>This is a tough one</p>
+
+<h4>Binning and counting</h4>
+
+<p>Given pre-defined boundaries, group by those boundaries and compute a function of each bin, which could be as simple as a count. Easily built on top of grouping.</p>
+
+</body>
+
+</html>
+

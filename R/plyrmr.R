@@ -12,125 +12,83 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+constant = 
+	function(x)
+		function(...) x
+
+comp = 
+	function(...) {
+		funs = list(...)
+		funs = funs[!sapply(funs, is.null)]
+		do.call(Compose, funs)}
+
+make.mr.fun = 
+	function(keyf, valf) {
+		if(is.null(keyf)) 
+			keyf = constant(NULL)
+		function(k, v) {
+			v = cbind.kv(k, v)
+			keyval(keyf(v), valf(v))}}
 
 cbind.kv = 
-	function(k, v) {
-		if(is.null(k)) v
-		else cbind(k,v)}
+	function(key, val) {
+		if(is.null(key)) val
+		else as.data.frame(cbind(key, val))}
 
-mk.mr.fun = 
-	function(f)
-		function(.data, ...) 
-			mapreduce(
-				.data,
-				map = 
-					function(k,v) {
-						v = cbind.kv(k, v)
-						f(v, ...)})
+input =
+	function(input, input.format = "native")
+		list(input = input, input.format = input.format)
 
-transform.mr = mk.mr.fun(transform)
+do = 
+	function(pipe, f, ...){
+		f1 = to.fun1(f, ...)
+		if(is.null(pipe$group.by))
+			pipe$do = comp(f1, pipe$do)
+		else
+			pipe$reduce = comp(constant(NULL), pipe$reduce)
+		pipe}
 
-subset.mr = mk.mr.fun(subset.mr)
-filter.mr = subset.mr
+group.by = 
+	function(pipe, f, ...) {
+		if(is.null(pipe$group.by))
+			pipe$group.by = f
+		else
+			list(input = run(pipe), group.by = f)}
 
-mutate.mr = mk.mr.fun(mutate)
-summarize.mr = mk.mr.fun(summarize)
-select.mr = summarize.mr
-
-
-ddply.mr = 
-	function(.data,.variables, .fun, .null)
+run = 
+	function(pipe) 
 		mapreduce(
-			.data, 
+			input = pipe$input,
+			input.format = pipe$input.format,
 			map = 
-				function(k,v) {
-					v = cbind.kv(k, v)
-					keyval(summarize(v, .variables), v)},
-			reduce = 
-				function(k, vv)
-					ddply(vv, .variables, .fun))
+				make.mr.fun(
+					keyf = {
+						if(is.null(pipe$group.by))
+							constant(NULL)
+						else
+							pipe$group.by}, 
+					valf = pipe$do),
+			reduce =
+				if(!is.null(pipe$reduce))
+					make.mr.fun( keyf = NULL, valf = pipe$reduce))
 
-save.mr =
-	function(big.data, path)
-	{ 
-		#backend indepenendent mv here
-	}
+output = 
+	function(pipe, output, output.format) {
+		pipe$output.format = output.format
+		pipe$output = output
+		run(pipe)}
 
-from.dfs = function(...) values(rmr2::from.dfs(...))
+from.dfs = 
+	function(pipe)
+		values(rmr2::from.dfs(run(pipe)))
 
-merge.mr = 
-	function(
-		x, 
-		y, 
-		by, 
-		by.x = by, 
-		by.y = by, 
-		all = FALSE, 
-		all.x = all, 
-		all.y = all) {
-		mk.map = 
-			function(by)
-				function(k,v) keyval(v[, by], v)
-		equijoin(
-			left.input = x, 
-			right.input = y, 
-			map.left = mk.map(by.x), 
-			map.right = mk.map(by.y), 
-			outer = 
-				switch(
-					all.x + all.y, 
-					"", 
-					if(all.x) "left" else "right", 
-					"full"))}
+to.dfs = rmr2::to.dfs
 
-quantile.mr = 
-	function(x, ..., probs = 1000, na.rm = FALSE, names = TRUE) {
-		midprobs =
-			function(N) {
-				probs = seq(0,1,1/N)
-				(probs[-1] + probs[-length(probs)])/2}
-		mr.fun = 
-			function(reduce = T)
-				function(k, v) {
-					keyval(
-						1, 
-						quantile(
-							v, 
-							..., 
-							probs = {
-								if(!reduce)
-									midprobs(ceiling(probs*length(v)/rmr.options("keyval.length")))
-								else
-									midprobs(probs)},
-							na.rm = na.rm, 
-							names = names,
-							type = 8))}
-		from.dfs(
-			mapreduce(
-				x, 
-				map = mr.fun(F),
-				reduce = mr.fun(T), 
-	  		combine = mr.fun(F)))}
+to.fun1  = function(f, ...) function(data) f(data, ...)
 
-top.k.mr = 
-	function(x, k, by, decreasing) {
-		mr.fun = 
-			function(k,v)
-				keyval(
-					1, 
-					head(
-						v[
-							do.call(
-								Curry(
-									order, 
-									decreasing = decreasing),
-								v[,c("cyl", "carb")]),],
-						k))
-		from.dfs(
-			mapreduce(
-				x, 
-				map = mr.fun, 
-				reduce = mr.fun, 
-				combine = T))}
-		
-	
+subset.mr = function(pipe, ...) do(pipe, subset, ...)
+filter.mr = subset.mr
+transform.mr = function(pipe, ...) do(pipe, transform)
+mutate.mr = function(pipe, ...) do(pipe, mutate)
+summarize.mr = function(pipe, ...) do(pipe, summarize)
+select.mr = summarize.mr

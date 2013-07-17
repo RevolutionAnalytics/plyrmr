@@ -22,15 +22,18 @@ comp =
 		funs = funs[!sapply(funs, is.null)]
 		do.call(Compose, funs)}
 
-to.fun1 = 
-	function(f, ...)
-		function(x)
-			f(x, ...)
+cbind.kv = 
+	function(key, val, key.names = F) {
+		if(is.null(key)) val
+		else {
+			if(key.names)
+				names(key) = paste(names(key), "plyrmr.keys", sep = ".")
+			as.data.frame(cbind(key,val))}}
 
 make.map.fun = 
 	function(keyf, valf) {
 		if(is.null(keyf)) 
-			keyf1 = constant(NULL)
+			keyf = keyf1 = constant(NULL)
 		else
 			keyf1 = 	{
 				function(k)
@@ -39,18 +42,15 @@ make.map.fun =
 		function(k, v) {
 			v = valf(cbind.kv(k, v))
 			k = keyf(v)
-			keyval(keyf1(k), cbind.kv(k, v))}}
+			keyval(keyf1(k), cbind.kv(k, v, T))}}
 
 make.reduce.fun = 
 	function(valf)
-		function(k, v)
-			keyval(NULL, valf(v))
+		function(k, v) {
+	    key.names = grep(names(v), pattern =  "plyrmr.keys", value = T)
+			v = ddply(v, key.names, valf)
+			keyval(NULL, v)}
 						 
-cbind.kv = 
-	function(key, val) {
-		if(is.null(key)) val
-		else as.data.frame(cbind(key, val))}
-
 pipe.attr = "plyrmr.pipe"
 
 is.pipe = 
@@ -76,6 +76,11 @@ input  =
 			input.format = input.format)
 		attr(p, pipe.attr) = TRUE
 		p}
+
+to.fun1 = 
+	function(f, ...)
+		function(x)
+			f(x, ...)
 
 do = 
 	function(x, f, ...){
@@ -112,11 +117,7 @@ run =
 			input.format = pipe$input.format,
 			map = 
 				make.map.fun(
-					keyf = {
-						if(is.null(pipe$group.by))
-							constant(NULL)
-						else
-							pipe$group.by}, 
+					keyf = pipe$group.by, 
 					valf = pipe$map),
 			reduce  = 
 				if(!is.null(pipe$reduce))
@@ -130,8 +131,12 @@ output =
 
 from.dfs = 
 	function(x)
-		values(rmr2::from.dfs(run(x)))
-
+		values(
+			rmr2::from.dfs(
+				if(is.pipe(x))
+					run(x)
+				else(x)))
+	
 to.dfs = rmr2::to.dfs
 
 subset.mr = function(x, ...) do(x, subset, ...)

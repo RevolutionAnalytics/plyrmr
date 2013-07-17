@@ -1,2 +1,14 @@
 useDynLib(plyrmr)
-exportPattern("^[[:alpha:]]+")
+export(
+	transform.mr,
+	subset.mr,
+ 	filter.mr,
+	mutate.mr,
+	summarize.mr,
+	select.mr,
+	do,
+	group.by,
+	group.by.f,
+	output,
+	from.dfs,
+	to.dfs)

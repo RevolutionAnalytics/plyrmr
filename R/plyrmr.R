@@ -13,13 +13,14 @@
 # limitations under the License.
 
 
-			
-setMethodS3("subset", "pipe", function(x, ...) do(x, subset, ...))
-filter = subset
+subsetfun = function(x, ...) do(x, subset, ...)
+setMethodS3("subset", "pipe", subsetfun)
+setMethodS3("filter", "pipe", subsetfun)
 setMethodS3("transform", "pipe", function(x, ...) do(x, transform, ...))
 setMethodS3("mutate", "pipe", function(x, ...) do(x, mutate, ...))
-setMethodS3("summarize", "pipe", function(x, ...) do(x, summarize, ...))
-select = summarize
+summarizefun = function(x, ...) do(x, summarize, ...)
+setMethodS3("summarize", "pipe", summarizefun)
+setMethodS3("select", "pipe", summarizefun)
 
 ## below are ordinary jobs, not pipes, need to integrate from a pre-existing design.
 

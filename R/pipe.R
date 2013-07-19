@@ -80,12 +80,16 @@ setMethodS3(
 setMethodS3(
 	"as.pipe", 
 	"data.frame", 
-	Compose(as.big.data, as.pipe),
-	private = FALSE)
+	Compose(as.big.data, as.pipe))
 
 setMethodS3(
 	"as.pipe", 
 	"character", 
+	Compose(as.big.data, as.pipe))
+
+setMethodS3(
+	"as.pipe", 
+	"function", 
 	Compose(as.big.data, as.pipe))
 
 setMethodS3(

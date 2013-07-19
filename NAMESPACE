@@ -14,7 +14,7 @@
 
 
 useDynLib(plyrmr)
-exportPattern(".*") #to make generic funcs work, will fix
+#exportPattern(".*") #to make generic funcs work, will fix
 export(
 	as.data.frame,
 	transform,
@@ -28,3 +28,22 @@ export(
 	group.by.f,
 	output,
 	input)
+
+S3method(as.pipe, data.frame)
+S3method(as.pipe, big.data)
+S3method(as.pipe, character)
+S3method(as.pipe, "function")
+S3method(as.big.data, data.frame)
+S3method(as.big.data, character)
+S3method(as.big.data, "function")
+S3method(as.big.data, pipe)
+S3method(as.data.frame, pipe)
+S3method(as.data.frame, big.data)
+S3method(transform, pipe)
+S3method(subset, pipe)
+S3method(filter, pipe)
+S3method(mutate, pipe)
+S3method(summarize, pipe)
+S3method(select, pipe)
+
+

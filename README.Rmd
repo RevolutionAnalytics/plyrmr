@@ -2,84 +2,52 @@ plyrmr
 =====
 
 Turn off Hadoop for quick demo
-
-```r
+```{r}
 suppressMessages(library(plyrmr))
 rmr.options(backend = "local")
 ```
 
-```
-## NULL
-```
-
-
 Create a dataset with to.dfs
 
-
-```r
+```{r}
 mtcars.in = input(mtcars)
 ```
 
-
 or simply start from a hdfs path then select some larger engines
 
-
-```r
+```{r}
 mtcars.5cyl.up = subset(mtcars.in, cyl > 4)
 ```
 
-
 then group them by cyl
 
-
-```r
+```{r}
 grouped = group.by(mtcars.5cyl.up, "cyl")
 ```
 
-
 then look at the average carbs
 
-
-```r
+```{r}
 avg.carbs = summarize(grouped, mean(carb), mean(hp))
 ```
 
-
 nothing happened yet, is it real?
 
-
-```r
+```{r}
 as.data.frame(avg.carbs)
 ```
 
-```
-##   cyl.plyrmr.keys   ..1   ..2
-## 1               6 3.429 122.3
-## 2               8 3.500 209.2
-```
-
-
 This triggers a mapred job and brings the result into mem as a df. Names are still messed up, working on it. If it's too big, you can write it to a specific location.
 
-
-```r
+```{r}
 avg.carbs.out = output(avg.carbs, "/tmp/avg.carbs")
 ```
 
-
 You can still read it, if small enough
 
-
-```r
+```{r}
 as.data.frame(avg.carbs.out)
 ```
-
-```
-##   cyl.plyrmr.keys   ..1   ..2
-## 1               6 3.429 122.3
-## 2               8 3.500 209.2
-```
-
 
 Most functions are modeled after familiar ones
 

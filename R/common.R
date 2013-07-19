@@ -12,19 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+strip.nulls = 
+	function(x) 
+		x[!sapply(x, is.null)]
 
-useDynLib(plyrmr)
-exportPattern(".*") #to make generic funcs work, will fix
-export(
-	as.data.frame,
-	transform,
-	subset,
- 	filter,
-	mutate,
-	summarize,
-	select,
-	do,
-	group.by,
-	group.by.f,
-	output,
-	input)
+strip.nulls.list = 
+	function(...)
+		strip.nulls(list(...))
+
+forward.args = 
+	function(f, args,  ...) {
+		args =
+			rename(args, c(...))
+		do.call(f, args)}
+
+eval.args = 
+	function(acall = match.call())
+		lapply(as.list(acall)[-1], eval)

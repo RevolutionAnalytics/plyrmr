@@ -12,141 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-constant = 
-	function(x)
-		function(...) x
 
-comp = 
-	function(...) {
-		funs = list(...)
-		funs = funs[!sapply(funs, is.null)]
-		do.call(Compose, funs)}
+			
+setMethodS3("subset", "pipe", function(x, ...) do(x, subset, ...))
+filter = subset
+setMethodS3("transform", "pipe", function(x, ...) do(x, transform, ...))
+setMethodS3("mutate", "pipe", function(x, ...) do(x, mutate, ...))
+setMethodS3("summarize", "pipe", function(x, ...) do(x, summarize, ...))
+select = summarize
 
-cbind.kv = 
-	function(key, val, key.names = F) {
-		if(is.null(key)) val
-		else {
-			if(key.names)
-				names(key) = paste(names(key), "plyrmr.keys", sep = ".")
-			as.data.frame(cbind(key,val))}}
+## below are ordinary jobs, not pipes, need to integrate from a pre-existing design.
 
-make.map.fun = 
-	function(keyf, valf) {
-		if(is.null(keyf)) 
-			keyf = keyf1 = constant(NULL)
-		else
-			keyf1 = 	{
-				function(k)
-					rowSums(
-						apply(k,2,cksum))%%100} 
-		function(k, v) {
-			v = valf(cbind.kv(k, v))
-			k = keyf(v)
-			keyval(keyf1(k), cbind.kv(k, v, T))}}
-
-make.reduce.fun = 
-	function(valf)
-		function(k, v) {
-	    key.names = grep(names(v), pattern =  "plyrmr.keys", value = T)
-			v = ddply(v, key.names, valf)
-			keyval(NULL, v)}
-						 
-pipe.attr = "plyrmr.pipe"
-
-is.pipe = 
-	function(x)
-		!is.null(
-			attr(
-				x = x, 
-				which = pipe.attr, 
-				exact = TRUE))
-
-to.pipe = 
-	function(x) {
-		if(is.pipe(x)) x
-		else {
-			p = input(x)
-			attr(p, pipe.attr) = TRUE
-			p}}
-
-input  = 
-	function(input, input.format = "native") {
-		p = list(
-			input = input, 
-			input.format = input.format)
-		attr(p, pipe.attr) = TRUE
-		p}
-
-to.fun1 = 
-	function(f, ...)
-		function(x)
-			f(x, ...)
-
-do = 
-	function(x, f, ...){
-		x = to.pipe(x)
-		f1 = to.fun1(f, ...)
-		if(is.null(x$group.by))
-			x$map = comp(f1, x$map)
-		else
-			x$reduce = comp(f1, x$reduce)
-		x}
-
-group.by = 
-	function(x, ...){
-		x = to.pipe(x)
-		group.by.f(
-			x, 
-			function(y) 
-				y[, as.character(c(...)), drop = FALSE])}
-
-group.by.f = 
-	function(x, f, ...) {
-		x = to.pipe(x)
-		f1 = to.fun1(f, ...)
-		if(is.null(x$group.by)){
-			x$group.by = f1
-			x}
-		else
-			group.by.f(to.pipe(run(x)), f1)}
-
-run = 
-	function(pipe) 
-		mapreduce(
-			input = pipe$input,
-			input.format = pipe$input.format,
-			map = 
-				make.map.fun(
-					keyf = pipe$group.by, 
-					valf = pipe$map),
-			reduce  = 
-				if(!is.null(pipe$reduce))
-					make.reduce.fun(valf = pipe$reduce))
-
-output = 
-	function(x, output, output.format) {
-		x$output.format = output.format
-		x$output = output
-		run(x)}
-
-from.dfs = 
-	function(x)
-		values(
-			rmr2::from.dfs(
-				if(is.pipe(x))
-					run(x)
-				else(x)))
-	
-to.dfs = rmr2::to.dfs
-
-subset.mr = function(x, ...) do(x, subset, ...)
-filter.mr = subset.mr
-transform.mr = function(x, ...) do(x, transform, ...)
-mutate.mr = function(x, ...) do(x, mutate, ...)
-summarize.mr = function(x, ...) do(x, summarize, ...)
-select.mr = summarize.mr
-
-merge.mr = 
+merge.pipe = 
 	function(
 		x, 
 		y, 
@@ -173,7 +50,7 @@ merge.mr =
 					if(all.x) "left" else "right", 
 					"full"))}
 
-quantile.mr = 
+quantile.pipe = 
 	function(x, ..., probs = 1000, na.rm = FALSE, names = TRUE) {
 		midprobs  = 
 			function(N) {
@@ -203,7 +80,7 @@ quantile.mr =
 				reduce = mr.fun(T), 
 				combine = mr.fun(F)))}
 
-top.k.mr = 
+top.k.pipe = 
 	function(x, k, by, decreasing) {
 		mr.fun = 
 			function(k, v) {
@@ -225,7 +102,7 @@ top.k.mr =
 				reduce = mr.fun, 
 				combine = T))}
 
-moving.window.mr  = 
+moving.window.pipe  = 
 	function(x, index, window, fun, R = rmr.options("keyval.length"))
 		mapreduce(
 			input = x, 

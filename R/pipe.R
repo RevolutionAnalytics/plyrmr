@@ -99,7 +99,13 @@ setMethodS3(
 		as.data.frame(as.big.data(x)))
 
 input  = as.pipe
-	
+
+options = 
+	function(x, ...) {
+		args = list(...)
+		x 
+	}
+
 do = 
 	function(x, f, ...){
 		f1 = to.fun1(f, ...)

@@ -67,45 +67,6 @@ is.pipe =
 	function(x)
 		class(x) == "pipe"
 
-setMethodS3(
-	"as.pipe",
-	"big.data",
-	function(x, format = NULL) 
-		structure(
-		  strip.nulls.list(
-				input = x,
-				input.format = format),
-			class = "pipe"))
-
-setMethodS3(
-	"as.pipe", 
-	"data.frame", 
-	Compose(as.big.data, as.pipe))
-
-setMethodS3(
-	"as.pipe", 
-	"character", 
-	Compose(as.big.data, as.pipe))
-
-setMethodS3(
-	"as.pipe", 
-	"function", 
-	Compose(as.big.data, as.pipe))
-
-setMethodS3(
-	"as.data.frame",
-	"pipe",
-	function(x)
-		as.data.frame(as.big.data(x)))
-
-input  = as.pipe
-
-options = 
-	function(x, ...) {
-		args = list(...)
-		x 
-	}
-
 do = 
 	function(x, f, ...){
 		f1 = to.fun1(f, ...)
@@ -129,7 +90,18 @@ group.by.f =
 			x$group.by = f1
 			x}
 		else
-			group.by.f(to.pipe(run(x)), f1)}
+			rmr.str(group.by.f(input(x), f1))}
+
+mr.options = 
+	function(x, ...) {
+		args = list(...)
+		x[names(args)] = args
+		x }
+
+mrexec =
+	function(mr.args)
+		as.big.data(
+			do.call(mapreduce, mr.args))
 
 run = 
 	function(pipe) {
@@ -151,21 +123,47 @@ run =
 			if(!is.null(pipe$reduce))
 				mr.args$reduce =
 				make.reduce.fun(valf = pipe$reduce)
-			as.big.data(
-				do.call(mapreduce, mr.args))}}
+			mrexec(mr.args)}}
+
+output = 
+	function(x, path, format = NULL) {
+		x$output.format = format
+		x$output = path
+		as.big.data(x)}
 
 setMethodS3(
 	"as.big.data",
 	"pipe",
 	run)
 
-output = 
-	function(x, path, format = NULL) {
-		x$output.format = format
-		x$output = path
-		run(x)}
+setMethodS3(
+	"as.pipe",
+	"big.data",
+	function(x, format = NULL) 
+		structure(
+			strip.null.args(
+				input = x,
+				input.format = format),
+			class = "pipe"))
 
-as.data.frame.pipe = 
-	function(x)
-		as.data.frame(
-			run(x))
+setMethodS3(
+	"as.pipe", 
+	"data.frame", 
+	Compose(as.big.data, as.pipe))
+
+setMethodS3(
+	"as.pipe", 
+	"character", 
+	Compose(as.big.data, as.pipe))
+
+setMethodS3(
+	"as.pipe", 
+	"function", 
+	Compose(as.big.data, as.pipe))
+
+setMethodS3(
+	"as.data.frame",
+	"pipe",
+	Compose(as.big.data,as.data.frame))
+
+input  = as.pipe

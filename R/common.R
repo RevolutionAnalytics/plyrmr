@@ -16,16 +16,22 @@ strip.nulls =
 	function(x) 
 		x[!sapply(x, is.null)]
 
-strip.nulls.list = 
+strip.null.args = 
 	function(...)
 		strip.nulls(list(...))
 
-forward.args = 
-	function(f, args,  ...) {
-		args =
-			rename(args, c(...))
-		do.call(f, args)}
+exclude = 
+	function(x, exclude)
+		x[-which(is.element(names(x), exclude))]
 
-eval.args = 
-	function(acall = match.call())
-		lapply(as.list(acall)[-1], eval)
+fwd.args = 
+	function(f, arg.map = c(), exclude = c()) {
+		par.call = sys.call(sys.parent())  
+		par.call[[1]] = f 
+		eval(
+			as.call(
+				rename(
+					as.list(par.call),
+					arg.map,
+					warn_missing = FALSE)),
+			envir=parent.frame())}

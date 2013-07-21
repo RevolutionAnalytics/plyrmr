@@ -32,24 +32,26 @@ setMethodS3(
 	as.big.data_cf)
 
 setMethodS3(
-	"as.big.data", 
-	"data.frame",
-	function(x, path = NULL, format = NULL){
-		args = 
-			strip.nulls.list(
-				kv = x,
-				output = path,
-				format = format)
+	"as.big.data",
+	"data.frame", 
+	function(x, format = NULL)
 		as.big.data(
 			suppressWarnings(
-				do.call(to.dfs, args)))})
+				fwd.args(
+					to.dfs,
+					c(
+						x = "kv",
+						path = "output")))))
 
 setMethodS3(
 	"as.data.frame",
 	"big.data", 
-	function(x, format = NULL) {
-		args = 
-			strip.nulls.list(
-				input = x,
-				format = format)
-		values(do.call(from.dfs, args))})
+	function(x, format = NULL)
+		values(
+				fwd.args(
+					from.dfs,
+					c(
+						x = "input",
+						path = "output"))))
+
+			

@@ -12,6 +12,14 @@ rmr.options(backend = "local")
 ## NULL
 ```
 
+```r
+rmr.options(dfs.tempdir = tempdir())
+```
+
+```
+## NULL
+```
+
 
 Create a dataset with to.dfs
 

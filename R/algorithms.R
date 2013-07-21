@@ -42,35 +42,41 @@ merge.pipe =
 					if(all.x) "left" else "right", 
 					"full"))}
 
-quantile.pipe = 
-	function(x, ..., probs = 1000, na.rm = FALSE, names = TRUE) {
-		midprobs  = 
-			function(N) {
-				probs = seq(0, 1, 1/N)
-				(probs[-1] + probs[-length(probs)])/2}
+quantilefun = 
+	function(x, ...) {
 		mr.fun = 
-			function(reduce = T)
-				function(k, v) {
-					v = cbind.kv(k, v)
-					keyval(
-						1, 
-						quantile(
-							v, 
-							..., 
-							probs = {
-								if(!reduce)
-									midprobs(ceiling(probs*length(v)/rmr.options("keyval.length")))
-								else
-									midprobs(probs)}, 
-							na.rm = na.rm, 
-							names = names, 
-							type = 8))}
-		from.dfs(
-			mapreduce(
-				x, 
-				map = mr.fun(F), 
-				reduce = mr.fun(T), 
-				combine = mr.fun(F)))}
+			function(is.map)
+				function(x) {
+					midprobs  = 
+						function(N) {
+							probs = seq(0, 1, 1/N)
+							(probs[-1] + probs[-length(probs)])/2}
+					probs = {
+						if(is.map)
+							midprobs(ceiling(probs*length(vec)/rmr.options("keyval.length")))
+						else
+							midprobs(probs)}
+					quantile(
+						x,
+						probs = probs)}
+		do(
+			group.by(
+				do(x, mr.fun(T)), 
+				constant(1)), 
+			mr.fun(F))}
+
+setMethodS3(
+	"quantile",
+	"data.frame",
+	function(x, ...)
+		data.frame(
+			strip.nulls(
+				lapply(
+					x,
+					function(y)
+						if(is.numeric(y))
+							quantile(y),
+					...))))
 
 top.k.pipe = 
 	function(x, k, by, decreasing) {

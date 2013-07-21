@@ -45,5 +45,6 @@ S3method(filter, pipe)
 S3method(mutate, pipe)
 S3method(summarize, pipe)
 S3method(select, pipe)
+S3method(quantile, data.frame)
 
 

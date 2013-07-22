@@ -29,7 +29,8 @@ export(
 	output,
 	input,
 	top.k,
-	bottom.k)
+	bottom.k,
+	moving.window)
 
 S3method(as.pipe, data.frame)
 S3method(as.pipe, big.data)

@@ -29,7 +29,7 @@ merge.pipe =
 			function(by)
 				function(k, v) {
 					v = cbind.kv(k, v)
-					keyval(v[, by], v)}
+					keyval(v[, by, drop = FALSE], v)}
 		equijoin(
 			left.input = x, 
 			right.input = y, 
@@ -83,7 +83,7 @@ extreme.k=
 							Curry(
 								order, 
 								decreasing = decreasing), 
-							x[, by]), ], 
+							x[, by, drop = FALSE]), ], 
 					k)
 		do(
 			group.by.f(
@@ -94,23 +94,31 @@ extreme.k=
 top.k = function(x, k, by) fwd.args(Curry(extreme.k, decreasing = TRUE))
 bottom.k = function(x, k, by) fwd.args(Curry(extreme.k, decreasing = FALSE))
 
-moving.window.pipe  = 
-	function(x, index, window, fun, R = rmr.options("keyval.length"))
-		mapreduce(
-			input = x, 
-			map = 
-				function(k, v) {
-					v = cbind.kv(k, v)
-					partition  = 
-						function(index, shift)
-							ceiling((index + shift * window)/R)
-					index = v[, index]
-					parT = partition(index, T)
-					parF = partition(index, F)
-					mask = parT !=  parF
-					c.keyval(
-						keyval(parT, v), 
-						keyval(parF[mask], v[mask,]))}, 
-			reduce = 
-				function(k, v)
-					cbind(k, fun(v)))
+moving.window = 
+	function(x, index, window, fun, R = rmr.options("keyval.length")) {
+		partition = 
+			function(x) {
+				part = 
+					function(index, shift)
+						ceiling((index + shift*window)/R)
+				index = unlist(x[, index])
+				stopifnot(length(index) == nrow(x))
+				partT = part(index, T)
+				partF = part(index, F)
+				mask = partT != partF
+				cbind(x, partT, partF, mask)}
+		map =
+			function(x)
+				rbind(x, x[x$mask, ])
+		group = function(x)
+			rbind(x$partT, x$partF[x$mask])		
+		reduce = fun
+		do(
+			group.by.f(
+				do(
+					do(
+						x, 
+						partition), 
+					map), 
+				group), 
+			reduce)}

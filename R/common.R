@@ -15,6 +15,10 @@
 # of perl fame
 qw = function(...) as.character(match.call())[-1]
 
+constant = 
+	function(x)
+		function(...) x
+
 strip.nulls = 
 	function(x) 
 		x[!sapply(x, is.null)]

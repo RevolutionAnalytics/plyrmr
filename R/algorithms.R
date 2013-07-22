@@ -43,27 +43,23 @@ merge.pipe =
 					"full"))}
 
 quantilefun = 
-	function(x, ...) {
+	function(x) {
 		mr.fun = 
-			function(is.map)
-				function(x) {
-					midprobs  = 
-						function(N) {
-							probs = seq(0, 1, 1/N)
-							(probs[-1] + probs[-length(probs)])/2}
-					probs = {
-						if(is.map)
-							midprobs(ceiling(probs*length(vec)/rmr.options("keyval.length")))
-						else
-							midprobs(probs)}
-					quantile(
-						x,
-						probs = probs)}
+			function(x) {
+				midprobs  = 
+					function(N) {
+						probs = seq(0, 1, 1/N)
+						(probs[-1] + probs[-length(probs)])/2}
+				quantile(
+					x,
+					probs = midprobs(10^4))}
 		do(
-			group.by(
-				do(x, mr.fun(T)), 
+			group.by.f(
+				do(x, mr.fun), 
 				constant(1)), 
-			mr.fun(F))}
+			mr.fun)}
+
+setMethodS3("quantile",	"pipe", quantilefun)
 
 setMethodS3(
 	"quantile",
@@ -75,8 +71,7 @@ setMethodS3(
 					x,
 					function(y)
 						if(is.numeric(y))
-							quantile(y),
-					...))))
+							quantile(y, ...)))))
 
 top.k.pipe = 
 	function(x, k, by, decreasing) {

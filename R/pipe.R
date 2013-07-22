@@ -12,17 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# of perl fame
-qw = function(...) as.character(match.call())[-1]
-
 # data manip
 cbind.kv = 
-	function(key, val, key.names = F) {
+	function(key, val) {
 		if(is.null(key)) val
-		else {
-			if(key.names)
-				names(key) = paste(names(key), "plyrmr.keys", sep = ".")
-			as.data.frame(cbind(key,val))}}
+		else cbind(key,val)}
 
 # function manip
 comp = 
@@ -31,30 +25,19 @@ comp =
 		funs = funs[!sapply(funs, is.null)]
 		do.call(Compose, funs)}
 
-constant = 
-	function(x)
-		function(...) x
-
 make.map.fun = 
 	function(keyf, valf) {
 		if(is.null(keyf)) 
-			keyf = keyf1 = constant(NULL)
-		else
-			keyf1 = 	{
-				function(k)
-					rowSums(
-						apply(k,2,cksum))%%100} 
+			keyf = constant(NULL)
 		function(k, v) {
 			v = valf(cbind.kv(k, v))
 			k = keyf(v)
-			keyval(keyf1(k), cbind.kv(k, v, T))}}
+			keyval(k, v)}}
 
 make.reduce.fun = 
 	function(valf)
 		function(k, v) {
-			key.names = grep(names(v), pattern =  "plyrmr.keys", value = T)
-			v = ddply(v, key.names, valf)
-			keyval(NULL, v)}
+			keyval(NULL, valf(cbind.kv(k, v)))}
 
 to.fun1 = 
 	function(f, ...)
@@ -90,7 +73,7 @@ group.by.f =
 			x$group.by = f1
 			x}
 		else
-			rmr.str(group.by.f(input(x), f1))}
+			group.by.f(input(run(x)), f1)}
 
 mr.options = 
 	function(x, ...) {

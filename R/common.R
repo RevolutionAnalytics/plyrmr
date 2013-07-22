@@ -12,6 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# of perl fame
+qw = function(...) as.character(match.call())[-1]
+
 strip.nulls = 
 	function(x) 
 		x[!sapply(x, is.null)]
@@ -21,17 +24,22 @@ strip.null.args =
 		strip.nulls(list(...))
 
 exclude = 
-	function(x, exclude)
-		x[-which(is.element(names(x), exclude))]
+	function(x, what) {
+		what = which(is.element(names(x), what))
+		if(length(what) == 0) x
+		else x[-what]}
 
 fwd.args = 
-	function(f, arg.map = c(), exclude = c()) {
+	function(f, arg.map = c(), exclude.args = c()) {
 		par.call = sys.call(sys.parent())  
+		par.call = match.call(f, par.call)
 		par.call[[1]] = f 
 		eval(
 			as.call(
 				rename(
-					as.list(par.call),
+					exclude(
+						as.list(par.call),
+						exclude.args),
 					arg.map,
 					warn_missing = FALSE)),
 			envir=parent.frame())}

@@ -73,27 +73,26 @@ setMethodS3(
 						if(is.numeric(y))
 							quantile(y, ...)))))
 
-top.k.pipe = 
+extreme.k= 
 	function(x, k, by, decreasing) {
 		mr.fun = 
-			function(k, v) {
-				v = cbind.kv(k, v)
-				keyval(
-					1, 
-					head(
-						v[
-							do.call(
-								Curry(
-									order, 
-									decreasing = decreasing), 
-								v[, c("cyl", "carb")]), ], 
-						k))}
-		from.dfs(
-			mapreduce(
-				x, 
-				map = mr.fun, 
-				reduce = mr.fun, 
-				combine = T))}
+			function(x)
+				head(
+					x[
+						do.call(
+							Curry(
+								order, 
+								decreasing = decreasing), 
+							x[, by]), ], 
+					k)
+		do(
+			group.by.f(
+				do(x, mr.fun),
+				constant(1)),
+			mr.fun)}
+
+top.k = function(x, k, by) fwd.args(Curry(extreme.k, decreasing = TRUE))
+bottom.k = function(x, k, by) fwd.args(Curry(extreme.k, decreasing = FALSE))
 
 moving.window.pipe  = 
 	function(x, index, window, fun, R = rmr.options("keyval.length"))

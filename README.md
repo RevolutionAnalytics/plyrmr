@@ -1,19 +1,11 @@
 plyrmr
 =====
 
-Turn off Hadoop for quick demo
+Load package and turn off Hadoop for quick demo
 
 ```r
 suppressMessages(library(plyrmr))
 rmr.options(backend = "local")
-```
-
-```
-## NULL
-```
-
-```r
-rmr.options(dfs.tempdir = tempdir())
 ```
 
 ```
@@ -61,9 +53,19 @@ as.data.frame(avg.carbs)
 ```
 
 ```
-##   cyl.plyrmr.keys   ..1   ..2
-## 1               6 3.429 122.3
-## 2               8 3.500 209.2
+## Warning: row names were found from a short variable and have been
+## discarded
+```
+
+```
+## Warning: row names were found from a short variable and have been
+## discarded
+```
+
+```
+##     ..1   ..2
+## 1 3.429 122.3
+## 2 3.500 209.2
 ```
 
 
@@ -72,6 +74,16 @@ This triggers a mapred job and brings the result into mem as a df. Names are sti
 
 ```r
 avg.carbs.out = output(avg.carbs, "/tmp/avg.carbs")
+```
+
+```
+## Warning: row names were found from a short variable and have been
+## discarded
+```
+
+```
+## Warning: row names were found from a short variable and have been
+## discarded
 ```
 
 
@@ -83,9 +95,9 @@ as.data.frame(avg.carbs.out)
 ```
 
 ```
-##   cyl.plyrmr.keys   ..1   ..2
-## 1               6 3.429 122.3
-## 2               8 3.500 209.2
+##     ..1   ..2
+## 1 3.429 122.3
+## 2 3.500 209.2
 ```
 
 

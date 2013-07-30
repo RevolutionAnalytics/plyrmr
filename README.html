@@ -180,16 +180,10 @@ hljs.initHighlightingOnLoad();
 <body>
 <h1>plyrmr</h1>
 
-<p>Turn off Hadoop for quick demo</p>
+<p>Load package and turn off Hadoop for quick demo</p>
 
 <pre><code class="r">suppressMessages(library(plyrmr))
 rmr.options(backend = &quot;local&quot;)
-</code></pre>
-
-<pre><code>## NULL
-</code></pre>
-
-<pre><code class="r">rmr.options(dfs.tempdir = tempdir())
 </code></pre>
 
 <pre><code>## NULL
@@ -220,9 +214,17 @@ rmr.options(backend = &quot;local&quot;)
 <pre><code class="r">as.data.frame(avg.carbs)
 </code></pre>
 
-<pre><code>##   cyl.plyrmr.keys   ..1   ..2
-## 1               6 3.429 122.3
-## 2               8 3.500 209.2
+<pre><code>## Warning: row names were found from a short variable and have been
+## discarded
+</code></pre>
+
+<pre><code>## Warning: row names were found from a short variable and have been
+## discarded
+</code></pre>
+
+<pre><code>##     ..1   ..2
+## 1 3.429 122.3
+## 2 3.500 209.2
 </code></pre>
 
 <p>This triggers a mapred job and brings the result into mem as a df. Names are still messed up, working on it. If it&#39;s too big, you can write it to a specific location.</p>
@@ -230,14 +232,22 @@ rmr.options(backend = &quot;local&quot;)
 <pre><code class="r">avg.carbs.out = output(avg.carbs, &quot;/tmp/avg.carbs&quot;)
 </code></pre>
 
+<pre><code>## Warning: row names were found from a short variable and have been
+## discarded
+</code></pre>
+
+<pre><code>## Warning: row names were found from a short variable and have been
+## discarded
+</code></pre>
+
 <p>You can still read it, if small enough</p>
 
 <pre><code class="r">as.data.frame(avg.carbs.out)
 </code></pre>
 
-<pre><code>##   cyl.plyrmr.keys   ..1   ..2
-## 1               6 3.429 122.3
-## 2               8 3.500 209.2
+<pre><code>##     ..1   ..2
+## 1 3.429 122.3
+## 2 3.500 209.2
 </code></pre>
 
 <p>Most functions are modeled after familiar ones</p>

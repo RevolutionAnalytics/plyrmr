@@ -1,11 +1,10 @@
 plyrmr
 =====
 
-Turn off Hadoop for quick demo
+Load package and turn off Hadoop for quick demo
 ```{r}
 suppressMessages(library(plyrmr))
 rmr.options(backend = "local")
-rmr.options(dfs.tempdir = tempdir())
 ```
 
 Create a dataset with to.dfs

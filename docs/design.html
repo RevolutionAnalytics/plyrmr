@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-<title>Alternatives to <code>arrange</code> (sorting)</title>
+<title>Plyrmr</title>
 
 <style type="text/css">
 body, td {
@@ -141,6 +141,38 @@ hr {
 </head>
 
 <body>
+<h1>Plyrmr</h1>
+
+<h3>Overarching goal</h3>
+
+<p><strong>Capture important subsets of rmr2 use cases while making it easier to use</strong>.</p>
+
+<h3>Specific goals</h3>
+
+<ul>
+<li>make the key value concept go away</li>
+<li>as a consequence, the equivalent of map and reduce functions have only one argument</li>
+<li>the <code>keyval</code> function or equivalen is not in the API </li>
+</ul>
+
+<h2>How</h2>
+
+<ul>
+<li>focus on data frames for now (matrix support should be automatic). Same choice as <code>dplyr</code>, motiveated by patterns of usage.</li>
+<li>map and reduce can be single argument functions. If key is present it is cbinded. Return value is also data frame. Hence there is no difference between map and reduce, and they are called simply <code>do</code>. The concept of <em>shuffling</em> or <em>grouping</em> is made available through a separate function call.</li>
+<li>there is an additional call <code>group.by</code> to specify the key or grouping. The model is the <code>index</code> argument in <code>tapply</code> and, more closely, the <code>group_by</code> call in <code>dplyr</code>.</li>
+<li>Above the abstraction level of <code>do</code> and <code>group.by</code> there is a layer, insprired by <code>plyr</code> in its selection of features, hence the name of this packages, that should allow to express most data manipulation  tasks without defining new functions</li>
+<li>To use familiar function names, widely used generic functions are enriched with additional methods to work on big data: <code>as.data.frame</code>, <code>subset</code>, <code>transform</code>, <code>mutate</code> etc. It is a selection from the <code>base</code> and <code>plyr</code> packages identified by Hadley Wickham as capable of expressing most data manipulation tasks, loosely defined as transformation applied to the data up to but not including modeling. </li>
+<li>To make these functions more reusable without a severe performance penalty, delayed evaluation is used. This means jobs are not executed in a 1:1 relation with each of these calls. Rather, different manipulations are combined into a sequence and that sequence is mapped to one or more jobs. The evaluation is triggered when:
+
+<ul>
+<li>data is brought into main memory with <code>as.data.frame</code></li>
+<li>data is written to a user-set location with <code>output</code></li>
+<li>multiple group.by statements are combined, as multiple jobs become necessary in this case</li>
+<li>other scenarios still to be defined (e.g. a size check on a data set)</li>
+</ul></li>
+</ul>
+
 <h2>Alternatives to <code>arrange</code> (sorting)</h2>
 
 <p>It&#39;hard to sort with Hadoop. It&#39;s harder to sort with rmr2. The output of a scalable, distributed program is always subdivided into multiple partitions, because there are are always multiple reducers running (same story if it is map-only). So each partition can be sorted and partitions can be range-disjoint, and named in a way that&#39;s suggestive of the content (10-quantile, 20-quantile or some such). This is recognized as a form of sorting (see the Terasort benchmark), but it is no replacement for old fashioned sorting (without partitions). One application is eliminating duplicates. If duplicates span partitions, hadoop sorting is of no or modest help. Another is moving window algorithms of some sort, where a function needs to be applied to every group of N data points that are consecutive in some order. Again when the window spans partitions, hadoop sorting doesn&#39;t help. So it seems hadoop sorting is no immediate or complete replacement for sorting the old fashioned way. It&#39;s great for searching  for instance, since with appropriate partition naming we can do binary search, and indexing is also a possibility, but not for other purposes of statistical and algorithmic interest. <code>rmr2</code> has the additional challenge of not allowing custom partitioners, which are used in hadoop sorting (range partitioners). Here we are on a triple quest: </p>
@@ -196,7 +228,7 @@ hr {
 
 <h4>Moving window</h4>
 
-<p>There could be implemented on top of grouping, by sending all the data related to the same window (and, for efficiency, to multiple overlapping windows) to each reducer.</p>
+<p>This could be implemented on top of grouping, by sending all the data related to the same window (and, for efficiency, to multiple overlapping windows) to each reducer.</p>
 
 <h4>Rank statistics</h4>
 

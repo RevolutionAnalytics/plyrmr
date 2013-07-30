@@ -15,7 +15,7 @@
 
 is.big.data = 
 	function(x)
-		class(x) == "big.data"
+		inherits(x, "big.data")
 
 as.big.data_cf =
 	function(x)
@@ -53,5 +53,3 @@ setMethodS3(
 					c(
 						x = "input",
 						path = "output"))))
-
-			

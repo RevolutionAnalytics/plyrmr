@@ -7,7 +7,7 @@ suppressMessages(library(plyrmr))
 rmr.options(backend = "local")
 ```
 
-Create a dataset with to.dfs
+Create a dataset with `input`
 
 ```{r}
 mtcars.in = input(mtcars)

@@ -46,7 +46,7 @@ to.fun1 =
 
 #pipes
 
-is.pipe = 
+is.data = 
 	function(x)
 		inherits(x, "pipe")
 
@@ -69,35 +69,35 @@ setMethodS3(
 		invisible(x)})
 
 do = 
-	function(x, f, ...){
+	function(.data, f, ...){
 		f1 = to.fun1(f, ...)
-		if(is.null(x$group.by))
-			x$map = comp(x$map, f1)
+		if(is.null(.data$group.by))
+			.data$map = comp(.data$map, f1)
 		else
-			x$reduce = comp(x$reduce, f1)
-		x}
+			.data$reduce = comp(.data$reduce, f1)
+		.data}
 
 group.by = 
-	function(x, ...){
+	function(.data, ...){
 		group.by.f(
-			x, 
+			.data, 
 			function(y) 
 				y[, as.character(c(...)), drop = FALSE])}
 
 group.by.f = 
-	function(x, f, ...) {
+	function(.data, f, ...) {
 		f1 = to.fun1(f, ...)
-		if(is.null(x$group.by)){
-			x$group.by = f1
-			x}
+		if(is.null(.data$group.by)){
+			.data$group.by = f1
+			.data}
 		else
-			group.by.f(input(run(x)), f1)}
+			group.by.f(input(run(.data)), f1)}
 
 mr.options = 
-	function(x, ...) {
+	function(.data, ...) {
 		args = list(...)
-		x[names(args)] = args
-		x }
+		.data[names(args)] = args
+		.data }
 
 mrexec =
 	function(mr.args)
@@ -127,10 +127,10 @@ run =
 			mrexec(mr.args)}}
 
 output = 
-	function(x, path, format = NULL) {
-		x$output.format = format
-		x$output = path
-		as.big.data(x)}
+	function(.data, path, format = NULL) {
+		.data$output.format = format
+		.data$output = path
+		as.big.data(.data)}
 
 setMethodS3(
 	"as.big.data",

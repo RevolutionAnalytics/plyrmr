@@ -14,12 +14,10 @@
 
 
 useDynLib(plyrmr)
-#exportPattern(".*") #to make generic funcs work, will fix
 export(
 	as.data.frame,
 	transform,
 	subset,
- 	filter,
 	mutate,
 	summarize,
 	select,
@@ -50,14 +48,9 @@ S3method(as.data.frame, big.data)
 S3method(subset, pipe)
 S3method(transform, pipe)
 
-S3method(filter, pipe)
-S3method(filter, default)
 S3method(mutate, pipe)
-S3method(mutate, default)
 S3method(summarize, pipe)
-S3method(summarize, default)
 S3method(select, pipe)
-S3method(select, default)
 
 S3method(quantile, pipe)
 S3method(quantile, data.frame)

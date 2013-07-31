@@ -7,5 +7,5 @@ Author: Revolution Analytics
 Maintainer: Revolution Analytics <rhadoop@revolutionanalytics.com>
 Description: Implement basic data manipulation functions inspired by plyr; map them to Hadoop jobs through delayed evaluation and rmr2
 License: Apache 2.0
-Depends: Rcpp (>= 0.10.4), rmr2, plyr, R.methodsS3
+Depends: Rcpp (>= 0.10.4), rmr2, plyr, pryr, R.methodsS3
 LinkingTo: Rcpp

@@ -13,7 +13,7 @@ rmr.options(backend = "local")
 ```
 
 
-Create a dataset with to.dfs
+Create a dataset with `input`
 
 
 ```r
@@ -63,9 +63,9 @@ as.data.frame(avg.carbs)
 ```
 
 ```
-##     ..1   ..2
-## 1 3.429 122.3
-## 2 3.500 209.2
+##   mean(carb) mean(hp)
+## 1      3.429    122.3
+## 2      3.500    209.2
 ```
 
 
@@ -95,9 +95,9 @@ as.data.frame(avg.carbs.out)
 ```
 
 ```
-##     ..1   ..2
-## 1 3.429 122.3
-## 2 3.500 209.2
+##   mean(carb) mean(hp)
+## 1      3.429    122.3
+## 2      3.500    209.2
 ```
 
 

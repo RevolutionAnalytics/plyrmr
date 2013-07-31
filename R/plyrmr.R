@@ -15,16 +15,11 @@
 
 subsetfun = function(x, ...) do(x, subset, ...)
 setMethodS3("subset", "pipe", subsetfun)
-setMethodS3("filter", "pipe", subsetfun)
 
-setMethodS3("transform", "pipe", function(x, ...) do(x, transform, ...))
-setMethodS3("transform", "pipe", function(x, ...) do(x, transform, ...))
+setMethodS3("transform", "pipe", function(`_data`, ...) do(`_data`, transform, ...))
+setMethodS3("mutate", "pipe", function(.data, ...) do(.data, mutate, ...))
 
-setMethodS3("mutate", "pipe", function(x, ...) do(x, mutate, ...))
-setMethodS3("mutate", "default", plyr::mutate)
+summarizefun = function(.data, ...) do.call(do, c(list(.data, summarize), named_dots(...)))
 
-summarizefun = function(x, ...) do(x, summarize, ...)
 setMethodS3("summarize", "pipe", summarizefun)
-setMethodS3("summarize", "default", plyr::summarize)
 setMethodS3("select", "pipe", summarizefun)
-setMethodS3("select", "default", plyr::summarize)

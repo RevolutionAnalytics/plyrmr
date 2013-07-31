@@ -113,9 +113,9 @@ run =
 			pipe$input
 		else {
 			mr.args = list()
-			same.names = qw(input, input.format, output, output.format)
-			mr.args[same.names] = pipe[same.names]
-			mr.args = mr.args[!sapply(mr.args, is.null)]
+			simple.args = qw(input, input.format, output, output.format)
+			mr.args[simple.args] = pipe[simple.args]
+			mr.args = strip.nulls(mr.args)
 			mr.args$map = 
 				make.map.fun(
 					keyf = pipe$group.by, 

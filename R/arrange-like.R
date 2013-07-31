@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-## below are ordinary jobs, not pipes, need to integrate from a pre-existing design.
+## this is still a mr call, not a pipe, need to integrate from a pre-existing design.
 
 merge.pipe = 
 	function(

@@ -17,6 +17,20 @@ is.big.data =
 	function(x)
 		inherits(x, "big.data")
 
+setMethodS3(
+	"as.character",
+	"big.data",
+	function(x) {
+		if(is.character(x)) x
+		else paste("Temporary file:", x())})
+
+setMethodS3(
+	"print",
+	"big.data",
+	function(x) {
+		cat(as.character(x))
+		invisible(x)})
+
 as.big.data_cf =
 	function(x)
 		structure(x, class = "big.data")

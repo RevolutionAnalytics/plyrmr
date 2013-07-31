@@ -49,6 +49,23 @@ to.fun1 =
 is.pipe = 
 	function(x)
 		class(x) == "pipe"
+setMethodS3(
+	"as.character",
+	"pipe",
+	function(x) 
+		paste(
+			"Slots set:", 
+			paste(names(x), collapse = ", "), "\n",
+			"Input:",
+			as.character(x$input),
+			"\n"))
+
+setMethodS3(
+	"print",
+	"pipe",
+	function(x) {
+		cat(as.character(x))
+		invisible(x)})
 
 do = 
 	function(x, f, ...){

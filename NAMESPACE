@@ -32,6 +32,10 @@ export(
 	bottom.k,
 	moving.window)
 
+S3method(print, big.data)
+S3method(print, pipe)
+S3method(as.character, big.data)
+S3method(as.character, pipe)
 S3method(as.pipe, data.frame)
 S3method(as.pipe, big.data)
 S3method(as.pipe, character)

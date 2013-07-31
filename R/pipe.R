@@ -49,6 +49,7 @@ to.fun1 =
 is.pipe = 
 	function(x)
 		inherits(x, "pipe")
+
 setMethodS3(
 	"as.character",
 	"pipe",
@@ -71,9 +72,9 @@ do =
 	function(x, f, ...){
 		f1 = to.fun1(f, ...)
 		if(is.null(x$group.by))
-			x$map = comp(f1, x$map)
+			x$map = comp(x$map, f1)
 		else
-			x$reduce = comp(f1, x$reduce)
+			x$reduce = comp(x$reduce, f1)
 		x}
 
 group.by = 

@@ -48,7 +48,7 @@ to.fun1 =
 
 is.pipe = 
 	function(x)
-		class(x) == "pipe"
+		inherits(x, "pipe")
 setMethodS3(
 	"as.character",
 	"pipe",

@@ -41,7 +41,7 @@ then look at the average carbs
 
 
 ```r
-avg.carbs = summarize(grouped, mean(carb), mean(hp))
+avg.carbs = summarize(grouped, mean(carb), meanHP = mean(hp))
 ```
 
 
@@ -63,14 +63,22 @@ as.data.frame(avg.carbs)
 ```
 
 ```
-##   mean(carb) mean(hp)
-## 1      3.429    122.3
-## 2      3.500    209.2
+##   mean(carb) meanHP
+## 1      3.429  122.3
+## 2      3.500  209.2
 ```
 
 
 This triggers a mapred job and brings the result into mem as a df. Names are still messed up, working on it. If it's too big, you can write it to a specific location.
 
+
+```r
+file.remove("/tmp/avg.carbs")
+```
+
+```
+## [1] TRUE
+```
 
 ```r
 avg.carbs.out = output(avg.carbs, "/tmp/avg.carbs")
@@ -95,9 +103,9 @@ as.data.frame(avg.carbs.out)
 ```
 
 ```
-##   mean(carb) mean(hp)
-## 1      3.429    122.3
-## 2      3.500    209.2
+##   mean(carb) meanHP
+## 1      3.429  122.3
+## 2      3.500  209.2
 ```
 
 

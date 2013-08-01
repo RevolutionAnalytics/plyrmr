@@ -28,7 +28,7 @@ grouped = group.by(mtcars.5cyl.up, "cyl")
 then look at the average carbs
 
 ```{r}
-avg.carbs = summarize(grouped, mean(carb), mean(hp))
+avg.carbs = summarize(grouped, mean(carb), meanHP = mean(hp))
 ```
 
 nothing happened yet, is it real?
@@ -40,6 +40,7 @@ as.data.frame(avg.carbs)
 This triggers a mapred job and brings the result into mem as a df. Names are still messed up, working on it. If it's too big, you can write it to a specific location.
 
 ```{r}
+file.remove("/tmp/avg.carbs")
 avg.carbs.out = output(avg.carbs, "/tmp/avg.carbs")
 ```
 

@@ -92,7 +92,7 @@ group.by =
 		group.by.f(
 			.data, 
 			function(y) 
-				y[, as.character(c(...)), drop = FALSE])}
+				summarize(y, ...))}
 
 group.by.f = 
 	function(.data, f, ...) {

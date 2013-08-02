@@ -24,6 +24,7 @@ export(
 	do,
 	group.by,
 	group.by.f,
+	group.together,
 	output,
 	input,
 	top.k,

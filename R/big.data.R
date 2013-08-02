@@ -22,7 +22,7 @@ setMethodS3(
 	"big.data",
 	function(x) {
 		if(is.character(x)) x
-		else paste("Temporary file:", x())})
+		else "Temporary file"})
 
 setMethodS3(
 	"print",

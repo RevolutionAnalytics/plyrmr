@@ -50,7 +50,9 @@ S3method(subset, pipe)
 S3method(transform, pipe)
 
 S3method(mutate, pipe)
+S3method(mutate, default)
 S3method(summarize, pipe)
+S3method(summarize, default)
 S3method(select, pipe)
 
 S3method(quantile, pipe)

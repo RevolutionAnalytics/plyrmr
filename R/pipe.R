@@ -103,7 +103,7 @@ group.by.f =
 		else
 			group.by.f(input(run(.data)), f1)}
 
-group.together = Curry(group.by.f, f = constant(1))
+group.together = function(x) group.by(x, 1)
 
 mr.options = 
 	function(.data, ...) {

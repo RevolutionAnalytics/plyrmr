@@ -141,7 +141,7 @@ run =
 			mrexec(mr.args)}}
 
 output = 
-	function(.data, path, format = NULL) {
+	function(.data, path = NULL, format = NULL) {
 		.data$output.format = format
 		.data$output = path
 		as.big.data(.data)}

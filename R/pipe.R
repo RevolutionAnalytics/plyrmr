@@ -133,9 +133,11 @@ run =
 				make.map.fun(
 					keyf = pipe$group.by, 
 					valf = pipe$map)
-			if(!is.null(pipe$reduce))
-				mr.args$reduce =
-				make.reduce.fun(valf = pipe$reduce)
+			if(!is.null(pipe$reduce) &&
+				 	!is.null(pipe$group.by)) {
+				mr.args$reduce = 
+					make.reduce.fun(
+						valf = pipe$reduce)}
 			mrexec(mr.args)}}
 
 output = 

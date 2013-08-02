@@ -41,7 +41,7 @@ then look at the average carbs
 
 
 ```r
-avg.carbs = summarize(grouped, mean(carb), meanHP = mean(hp))
+avg.carbs = summarize(grouped, mean(carb), mean.HP = mean(hp))
 ```
 
 
@@ -63,9 +63,9 @@ as.data.frame(avg.carbs)
 ```
 
 ```
-##   mean(carb) meanHP
-## 1      3.429  122.3
-## 2      3.500  209.2
+##   mean(carb) mean.HP
+## 1      3.429   122.3
+## 2      3.500   209.2
 ```
 
 
@@ -103,9 +103,9 @@ as.data.frame(avg.carbs.out)
 ```
 
 ```
-##   mean(carb) meanHP
-## 1      3.429  122.3
-## 2      3.500  209.2
+##   mean(carb) mean.HP
+## 1      3.429   122.3
+## 2      3.500   209.2
 ```
 
 

@@ -28,7 +28,7 @@ grouped = group.by(mtcars.5cyl.up, "cyl")
 then look at the average carbs
 
 ```{r}
-avg.carbs = summarize(grouped, mean(carb), meanHP = mean(hp))
+avg.carbs = summarize(grouped, mean(carb), mean.HP = mean(hp))
 ```
 
 nothing happened yet, is it real?

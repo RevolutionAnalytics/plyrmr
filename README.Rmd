@@ -1,6 +1,23 @@
 `r read_chunk('tests/tutorial.R')`
 `r opts_chunk$set(echo=TRUE, tidy=FALSE, comment="")`
 
+```{r setup}
+# the default output hook
+hook_output = knit_hooks$get('output')
+knit_hooks$set(output = function(x, options) {
+  if (!is.null(n <- options$out.lines)) {
+    x = unlist(stringr::str_split(x, '\n'))
+    if (length(x) > n) {
+      # truncate the output
+      x = c(head(x, n), '....\n')
+    }
+    x = paste(x, collapse = '\n') # paste first n lines together
+  }
+  hook_output(x, options)
+})
+opts_chunk$set(out.lines = 8)
+```
+
 plyrmr
 =====
 

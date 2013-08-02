@@ -35,15 +35,19 @@ make.map.fun =
 	function(keyf, valf) {
 		if(is.null(keyf)) 
 			keyf = constant(NULL)
+		if(is.null(valf)) 
+			valf = identity 
 		function(k, v) {
 			v = valf(cbind.kv(k, v))
 			k = keyf(v)
 			keyval(k, v)}}
 
 make.reduce.fun = 
-	function(valf)
-		function(k, v) {
-			keyval(NULL, valf(cbind.kv(k, v)))}
+	function(valf) {
+		if(is.null(valf)) 
+			valf = identity
+		function(k, v) {	
+			keyval(NULL, valf(cbind.kv(k, v)))}}
 
 to.fun1 = 
 	function(f, ...)

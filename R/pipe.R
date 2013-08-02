@@ -22,7 +22,7 @@ cbind.kv =
 				make.names(
 					paste("key", colnames(key), sep = "."),
 					unique = TRUE)			
-			data.frame(key = key, val)}}
+			data.frame(key = key, val, row.names = rownames(val))}}
 
 # function manip
 comp = 

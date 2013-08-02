@@ -27,7 +27,7 @@ ddply(data, "x", summarize, val = unique(x), count = length(x))
 ## @knitr input-binomial-sample
 data = input(data)
 ## @knitr count-plyrmr
-counts = summarize(group.by(data, "x"), val = unique(x), count = length(x))
+counts = summarize(group.by(data, x), val = unique(x), count = length(x))
 ## @knitr count-results
 as.data.frame(counts)
 ## @knitr identity-data-frame
@@ -51,13 +51,13 @@ as.data.frame(big.mtcars.cyl.carb)
 ## @knitr big-sum-data-frame
 summarize(mtcars, cyl = sum(cyl), carb = sum(carb))
 ## @knitr big-sum-plyrmr
-big.mtcars.grouped = group.together(big.mtcars)
-big.mtcars.sum = summarize(big.mtcars.grouped, cyl = sum(cyl), carb = sum(carb))
+big.mtcars.partial.sums = summarize(big.mtcars, cyl = sum(cyl), carb = sum(carb))
+big.mtcars.sum = summarize(group.by(big.mtcars.partial.sums, 1), cyl = sum(cyl), carb = sum(carb))
 as.data.frame(big.mtcars.sum)
 ## @knitr group-sum-data-frame
 ddply(mtcars, "cyl", summarize, cyl = sum(cyl), carb = sum(carb))
 ## @knitr group-sum-plyrmr
-big.mtcars.by.cyl = group.by(big.mtcars, "cyl")
+big.mtcars.by.cyl = group.by(big.mtcars, cyl)
 big.mtcars.sum.by.cyl	= summarize(big.mtcars.by.cyl, cyl = sum(cyl), carb = sum(carb))
 as.data.frame(big.mtcars.sum.by.cyl)
 ## @knitr textual-data 
@@ -77,7 +77,7 @@ words = summarize(data, words = unlist(strsplit(lines, " ")))
 ddply(words, "words", summarize, count = length(words))
 ## @knitr wordcount-plyrmr
 words = summarize(input(data), words = unlist(strsplit(lines, " ")))
-wordcount = summarize(group.by(words, "words"), word = unique(words), count = length(words))
+wordcount = summarize(group.by(words, words), word = unique(words), count = length(words))
 as.data.frame(wordcount)
 ## @knitr
 

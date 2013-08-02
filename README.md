@@ -2,22 +2,6 @@
 
 
 
-```r
-# the default output hook
-hook_output = knit_hooks$get('output')
-knit_hooks$set(output = function(x, options) {
-  if (!is.null(n <- options$out.lines)) {
-    x = unlist(stringr::str_split(x, '\n'))
-    if (length(x) > n) {
-      # truncate the output
-      x = c(head(x, n), '....\n')
-    }
-    x = paste(x, collapse = '\n') # paste first n lines together
-  }
-  hook_output(x, options)
-})
-opts_chunk$set(out.lines = 8)
-```
 
 
 # plyrmr
@@ -43,7 +27,7 @@ mtcars.in = input(mtcars)
 ```
 
 
-or simply start from a hdfs path then select some larger engines
+or simply start from a HDFS path then select some larger engines
 
 
 ```r
@@ -75,13 +59,12 @@ as.data.frame(avg.carbs)
 ```
 
 ```
-   mean(carb) mean.HP
-1       3.429   122.3
-11      3.500   209.2
+  mean(carb) mean.HP
+1      3.476   180.2
 ```
 
 
-This triggers a mapred job and brings the result into mem as a df. If it's too big, you can write it to a specific location.
+This triggers a mapreduce job and brings the result into memory as a data frame. If it's too big, you can write it to a specific location.
 
 
 ```r
@@ -105,9 +88,8 @@ as.data.frame(avg.carbs.out)
 ```
 
 ```
-   mean(carb) mean.HP
-1       3.429   122.3
-11      3.500   209.2
+  mean(carb) mean.HP
+1      3.476   180.2
 ```
 
 
@@ -122,7 +104,7 @@ Most functions are modeled after familiar ones
 ```
 
 `group.by` takes some dataset and column specs. `group.by.f` takes a function that generates the grouping columns on the fly.
-`do` takes a data set and a function and appliess it to chunks of data. It's neither a map or a reduce, this is decided based on 
+`do` takes a data set and a function and applies it to chunks of data. It's neither a map or a reduce, this is decided based on 
 how it combines with `group.by`. All the functions listed above are implemented with `do` in one line of code. An actual MR job 
 is triggered by `from.dfs`, `output` or combining two of `group.by` or `group.by.f` together, since we can't easily optimize
 away two groupings into one reduce phase. Comments and suggestions to rhadoop@revolutionanalytics.com.
@@ -136,7 +118,7 @@ To identify input data we need the function `input`. If we want to process file 
 big.mtcars = input(mtcars) # or input(path)
 ```
 
-Also for compatibility with `rmr2` we can  the output of a `mapreduce` call to `input`.
+Also for compatibility with `rmr2` we can pass the output of a `mapreduce` call to `input`.
 The reverse step is to take some data and turn it into a data frame (do this only on small data sets such as in this example):
 
 
@@ -202,7 +184,7 @@ small.squares
 
 ```
 Slots set: input, map 
- Input: Temporary file: /var/folders/_p/1gx4vy311_x4syn2xq6f2xtc0000gr/T//RtmpH5hz61/file14ef711bce36a 
+ Input: Temporary file 
 ```
 
 
@@ -264,7 +246,7 @@ as.data.frame(input("/tmp/small.squares"))
 ....
 ```
 
-With `output` and refraining from using `as.data.frame` we can process hadoop sized data sets. Of course we can use `as.data.frame` after a number of data reduction steps.
+With `output` and refraining from using `as.data.frame` we can process hadoop sized data sets. Of course we can use `as.data.frame` after a number of data reduction steps. Another role of output is as a bridge with `rmr2`. You can just write `mapreduce(ouput(...))` and combine the best of the two packages.
 
 Let's move to some counting task. We create a data frame with a single column containing a sample from the binomial distribution, just for illustration purposes.
 
@@ -284,12 +266,12 @@ ddply(data, "x", summarize, val = unique(x), count = length(x))
 ```
     x val count
 1   6   6     1
-2  10  10     3
-3  11  11     7
-4  12  12    12
-5  13  13    10
-6  14  14     7
-7  15  15     5
+2   7   7     1
+3   9   9     3
+4  10  10     1
+5  11  11     9
+6  12  12     6
+7  13  13     7
 ....
 ```
 
@@ -302,15 +284,15 @@ data = input(data)
 ```
 
 
-The equivalent in `plyrmr` is not as close in syntax as before, because we followed more closely the syntax of an experimental package by the same author as `plyr` called `dplyr`, which is focused on data frames and adds multiple backends and can be considered a specialization and evolution of `plyr`. `dplyr` is temporarily incompatible with `rmr2` and not as well known as `plyr` yet and so it is not used here, but was a reference point in the design of `plyrmr`. `plyrmr`, like `dplyr` has a separate `group.by` primitive, named after its SQL equivalent, that defines a grouping of a data set based on a column (expressions are not supported yet).
+The equivalent in `plyrmr` is not as close in syntax as before, because we followed more closely the syntax of an experimental package by the same author as `plyr` called `dplyr`, which is focused on data frames and adds multiple backends and can be considered a specialization and evolution of `plyr`. `dplyr` is temporarily incompatible with `rmr2` and not as well known as `plyr` yet and so it is not used here, but was a reference point in the design of `plyrmr`. `plyrmr`, like `dplyr` has a separate `group.by` primitive (`group_by` in `dplyr`), named after its SQL equivalent, that defines a grouping of a data set based on a column (expressions are not supported yet).
 
 
 ```r
-counts = summarize(group.by(data, "x"), val = unique(x), count = length(x))
+counts = summarize(group.by(data, x), val = unique(x), count = length(x))
 ```
 
 
-What we can see here is that we can combine two `pipes` the same way we compose two functions. We can check the results with
+What we can see here is that we can combine two `pipes` by composing two functions. We can check the results with
 
 
 ```r
@@ -318,18 +300,20 @@ as.data.frame(counts)
 ```
 
 ```
-   val count
-1   20     1
-11  12    12
-12  14     7
-13  13    10
-14  10     3
-15  16     3
-16  15     5
+    val count
+1     9     3
+11   17     1
+12   16     6
+13   19     2
+14   13     7
+15   18     2
+16   10     1
 ....
 ```
 
-Please not that the results are not in the same order. This is always true with Hadoop and if other examples in this tutorial seem to show the opposite it's only becuase of the tiny size of the data sets involved. Not incidentally, theoreticians have  formalized this computational model as MUD (Massive Unordered Distributed, see [this paper](http://arxiv.org/abs/cs/0611108)).
+Please note that the results are not in the same order. This is always true with Hadoop and if other examples in this tutorial seem to show the opposite it's only because of the tiny size of the data sets involved. Not incidentally, theoreticians have formalized this computational model as MUD (Massive Unordered Distributed, see [this paper](http://arxiv.org/abs/cs/0611108)). 
+
+Writing an identity function is not particularly interesting and won't make you rich, but it's a boilerplate test. Here is one way of expressing the identity in R:
 
 
 ```r
@@ -348,6 +332,8 @@ Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
 ....
 ```
 
+
+And here is the equivalent in plyrmr.
 
 
 ```r
@@ -368,8 +354,7 @@ Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
 ```
 
 
-
-
+Now let's take a baby step: select certain rows. The function `subset` in `base` comes in handy.
 
 
 ```r
@@ -388,6 +373,8 @@ Merc 280            19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
 ....
 ```
 
+
+We now can do exactly the same on a Hadoop data set:
 
 
 ```r
@@ -408,6 +395,7 @@ Merc 280            19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
 ```
 
 
+Next baby step up from selecting rows is selecting columns:
 
 ```r
 summarize(mtcars, mpg = mpg, cyl = cyl)
@@ -426,6 +414,7 @@ summarize(mtcars, mpg = mpg, cyl = cyl)
 ```
 
 
+And in `plyrmr`
 
 ```r
 big.mtcars.cyl.carb = summarize(big.mtcars, mpg = mpg, cyl = cyl)
@@ -444,6 +433,8 @@ as.data.frame(big.mtcars.cyl.carb)
 ....
 ```
 
+
+Deceptively similar, but works on petabytes. In fact `summarize` doesn't seem the right name for this function, which can do a lot more. So we aliased to `select`, following dplyr, to allow the programmer to express intent.
 
 
 ```r
@@ -464,6 +455,8 @@ as.data.frame(big.mtcars.cyl.carb)
 ```
 
 
+We are now going to tackle the extreme data reduction task, whereby we go from a data set to a single number (per column), in this case taking the sum. This is very simple in 	`plyr`
+
 
 ```r
 summarize(mtcars, cyl = sum(cyl), carb = sum(carb))
@@ -475,10 +468,12 @@ summarize(mtcars, cyl = sum(cyl), carb = sum(carb))
 ```
 
 
+but a little more complex in `plyrmr`, and why that's the case merits a little explanation. `plyr::summarize` works on data frames and has all the data available simultaneously. This is not true for "plyrmr" because large data sets are processed piecemeal. So we need to perform the sum on each chunk of data, group the results together, sum again. `group.by(data, 1)` just means group everything together, in fact there is handy alias for that, `group.together` 
+
 
 ```r
-big.mtcars.grouped = group.together(big.mtcars)
-big.mtcars.sum = summarize(big.mtcars.grouped, cyl = sum(cyl), carb = sum(carb))
+big.mtcars.partial.sums = summarize(big.mtcars, cyl = sum(cyl), carb = sum(carb))
+big.mtcars.sum = summarize(group.by(big.mtcars.partial.sums, 1), cyl = sum(cyl), carb = sum(carb))
 as.data.frame(big.mtcars.sum)
 ```
 
@@ -488,6 +483,7 @@ as.data.frame(big.mtcars.sum)
 ```
 
 
+In many other use cases, instead of a single summary, we are interested in summaries by group. In `plyr` this calls for the `ddply` function (`group_by` in `dplyr`)
 
 ```r
 ddply(mtcars, "cyl", summarize, cyl = sum(cyl), carb = sum(carb))
@@ -501,9 +497,11 @@ ddply(mtcars, "cyl", summarize, cyl = sum(cyl), carb = sum(carb))
 ```
 
 
+The equivalent in `plyrmr` is `group.by`
+
 
 ```r
-big.mtcars.by.cyl = group.by(big.mtcars, "cyl")
+big.mtcars.by.cyl = group.by(big.mtcars, cyl)
 big.mtcars.sum.by.cyl	= summarize(big.mtcars.by.cyl, cyl = sum(cyl), carb = sum(carb))
 as.data.frame(big.mtcars.sum.by.cyl)
 ```
@@ -516,6 +514,7 @@ as.data.frame(big.mtcars.sum.by.cyl)
 ```
 
 
+We are ready to write the wordcount function, the "hello world" equivalent of the Hadoop world. The task is to read in a data frame with lines of text, split the lines into words and count how many times each word occurs. First let's make up some fake text data to keep things self-contained.
 
 ```r
 data = 
@@ -531,6 +530,7 @@ data =
 		stringsAsFactors = FALSE)
 ```
 
+This is how the task can be accomplised working on a data frame. 
  
 
 ```r
@@ -540,36 +540,40 @@ ddply(words, "words", summarize, count = length(words))
 
 ```
    words count
-1      A    39
-2      B    36
-3      C    33
-4      D    30
-5      E    32
-6      F    41
-7      G    41
+1      A    40
+2      B    42
+3      C    42
+4      D    37
+5      E    45
+6      F    36
+7      G    38
 ....
 ```
 
 
+In fact the name `summarize` seems again unsatisfactory for self-documenting code here. We are looking for at least an alias that could capture this kind of usage. Maybe `explode`? 
+
 
 ```r
 words = summarize(input(data), words = unlist(strsplit(lines, " ")))
-wordcount = summarize(group.by(words, "words"), word = unique(words), count = length(words))
+wordcount = summarize(group.by(words, words), word = unique(words), count = length(words))
 as.data.frame(wordcount)
 ```
 
 ```
     word count
-1      Q    36
-11     L    42
-12     Y    36
-13     V    54
-14     G    41
-15     M    40
-16     F    41
+1      J    46
+11     E    45
+12     I    42
+13     V    40
+14     Y    37
+15     D    37
+16     Q    37
 ....
 ```
 
+
+## The fundamental primitives: `do`  and `group.by.f`
 
 
 

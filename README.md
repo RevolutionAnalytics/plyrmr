@@ -20,8 +20,8 @@ opts_chunk$set(out.lines = 8)
 ```
 
 
-plyrmr
-=====
+# plyrmr
+
 
 Load package and turn off Hadoop for quick demo
 
@@ -130,12 +130,14 @@ away two groupings into one reduce phase. Comments and suggestions to rhadoop@re
 
 ## Tutorial
 
-
+To identify input data we need the function `input`. If we want to process file `"some/path"`, we need to call `input("some/path")`. If we want to create a small data set on the fly, we can pass a data frame as argument. This is most useful for learning and testing purposes. This is an example of the latter: 
 
 ```r
-big.mtcars = input(mtcars) # or input(path) or any pipe
+big.mtcars = input(mtcars) # or input(path)
 ```
 
+Also for compatibility with `rmr2` we can  the output of a `mapreduce` call to `input`.
+The reverse step is to take some data and turn it into a data frame (do this only on small data sets such as in this example):
 
 
 ```r
@@ -155,11 +157,14 @@ Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
 ```
 
 
+Let's start now with some simple processing, like taking the square of some numbers. In R and particularly using the `plyr` package and its approach to data manipulation, you could proceed as follows. First create a data frame with some numbers:
 
 ```r
 data = data.frame(x = 1:10)
 ```
 
+
+Then add a column of squares with `mutate` (which is very similar to `transform` in the `base` package).
 
 
 ```r
@@ -179,17 +184,29 @@ mutate(data, x2 = x^2)
 ```
 
 
+Let's make this an input data set according to the `plyrmr`.
+
 
 ```r
 data = input(data)
 ```
 
 
+We can call `mutate` on this data set and store the result in a variable. It doesn't look like that variable has data at all in it, in fact it doesn't. It's a `pipe`, a description of a sequence of processing steps. Nothing gets actually computed until necessary. 
+
 
 ```r
 small.squares = mutate(data, x2 = x^2)
+small.squares
 ```
 
+```
+Slots set: input, map 
+ Input: Temporary file: /var/folders/_p/1gx4vy311_x4syn2xq6f2xtc0000gr/T//RtmpH5hz61/file14ef711bce36a 
+```
+
+
+But if we turn a `pipe` into a data frame, we see the data as expected. 
 
 
 ```r
@@ -209,11 +226,55 @@ as.data.frame(small.squares)
 ```
 
 
+Turning a `pipe` into a data frame is one of a few triggering events that will start the actual computation. This is powered by `rmr2`, hence it can be hadoop backed, hence it can operate on very large data sets. An almost identical syntax can be used to perform the same operation on a data frame and a Hadoop data set. When operating on very large data sets, we can't use `as.data.frame`, because there isn't enough RAM available. The alternative is the `output` primitive, which will trigger the actual computation described by a `pipe` and store the results to a user-specified path:
+
+
+```r
+file.remove("/tmp/small.squares")
+```
+
+```
+[1] TRUE
+```
+
+```r
+output(small.squares, "/tmp/small.squares")
+```
+
+```
+/tmp/small.squares
+```
+
+
+And let's check that it actually worked:
+
+```r
+as.data.frame(input("/tmp/small.squares"))
+```
+
+```
+    x  x2
+1   1   1
+2   2   4
+3   3   9
+4   4  16
+5   5  25
+6   6  36
+7   7  49
+....
+```
+
+With `output` and refraining from using `as.data.frame` we can process hadoop sized data sets. Of course we can use `as.data.frame` after a number of data reduction steps.
+
+Let's move to some counting task. We create a data frame with a single column containing a sample from the binomial distribution, just for illustration purposes.
+
 
 ```r
 data = data.frame(x = rbinom(32, n = 50, prob = 0.4))
 ```
 
+
+Counting the number of occurrences of each outcome is a single line task in `plyr`. `ddply` splits a data frame according to a variable and summarize creates a new data frame with the columns specified in its additional arguments.
 
 
 ```r
@@ -222,16 +283,18 @@ ddply(data, "x", summarize, val = unique(x), count = length(x))
 
 ```
     x val count
-1   7   7     1
-2   8   8     3
-3   9   9     4
-4  10  10     5
-5  11  11     6
-6  12  12     6
-7  13  13     8
+1   6   6     1
+2  10  10     3
+3  11  11     7
+4  12  12    12
+5  13  13    10
+6  14  14     7
+7  15  15     5
 ....
 ```
 
+
+Let's create a `plyrmr` data set with `input`
 
 
 ```r
@@ -239,11 +302,15 @@ data = input(data)
 ```
 
 
+The equivalent in `plyrmr` is not as close in syntax as before, because we followed more closely the syntax of an experimental package by the same author as `plyr` called `dplyr`, which is focused on data frames and adds multiple backends and can be considered a specialization and evolution of `plyr`. `dplyr` is temporarily incompatible with `rmr2` and not as well known as `plyr` yet and so it is not used here, but was a reference point in the design of `plyrmr`. `plyrmr`, like `dplyr` has a separate `group.by` primitive, named after its SQL equivalent, that defines a grouping of a data set based on a column (expressions are not supported yet).
+
 
 ```r
 counts = summarize(group.by(data, "x"), val = unique(x), count = length(x))
 ```
 
+
+What we can see here is that we can combine two `pipes` the same way we compose two functions. We can check the results with
 
 
 ```r
@@ -251,17 +318,18 @@ as.data.frame(counts)
 ```
 
 ```
-    val count
-1     8     3
-11   11     6
-12   13     8
-13   12     6
-14    9     4
-15    7     1
-16   16     4
+   val count
+1   20     1
+11  12    12
+12  14     7
+13  13    10
+14  10     3
+15  16     3
+16  15     5
 ....
 ```
 
+Please not that the results are not in the same order. This is always true with Hadoop and if other examples in this tutorial seem to show the opposite it's only becuase of the tiny size of the data sets involved. Not incidentally, theoreticians have  formalized this computational model as MUD (Massive Unordered Distributed, see [this paper](http://arxiv.org/abs/cs/0611108)).
 
 
 ```r
@@ -472,13 +540,13 @@ ddply(words, "words", summarize, count = length(words))
 
 ```
    words count
-1      A    36
-2      B    39
-3      C    41
-4      D    45
-5      E    46
-6      F    34
-7      G    31
+1      A    39
+2      B    36
+3      C    33
+4      D    30
+5      E    32
+6      F    41
+7      G    41
 ....
 ```
 
@@ -492,13 +560,13 @@ as.data.frame(wordcount)
 
 ```
     word count
-1      U    34
-11     N    34
-12     I    37
-13     F    34
-14     E    46
-15     R    44
-16     S    35
+1      Q    36
+11     L    42
+12     Y    36
+13     V    54
+14     G    41
+15     M    40
+16     F    41
 ....
 ```
 

@@ -1,7 +1,7 @@
 ## @knitr local-backend
 rmr.options(backend = "local")
 ## @knitr input
-big.mtcars = input(mtcars) # or input(path) or any pipe
+big.mtcars = input(mtcars) # or input(path)
 ## @knitr as.data.frame
 as.data.frame(big.mtcars)
 ## @knitr small-integers
@@ -12,8 +12,14 @@ mutate(data, x2 = x^2)
 data = input(data)
 ## @knitr squares-plyrmr
 small.squares = mutate(data, x2 = x^2)
+small.squares
 ## @knitr squares-results
 as.data.frame(small.squares)
+## @knitr output
+file.remove("/tmp/small.squares")
+output(small.squares, "/tmp/small.squares")
+## @knitr as.data.frame-output
+as.data.frame(input("/tmp/small.squares"))
 ## @knitr binomial-sample
 data = data.frame(x = rbinom(32, n = 50, prob = 0.4))
 ## @knitr count-data-frame

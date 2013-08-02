@@ -16,7 +16,13 @@
 cbind.kv = 
 	function(key, val) {
 		if(is.null(key)) val
-		else cbind(key,val)}
+		else {
+			key = as.data.frame(key)
+			colnames(key) = 
+				make.names(
+					paste("key", colnames(key), sep = "."),
+					unique = TRUE)			
+			data.frame(key = key, val)}}
 
 # function manip
 comp = 

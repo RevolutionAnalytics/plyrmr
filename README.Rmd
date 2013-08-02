@@ -1,3 +1,6 @@
+`r read_chunk('tests/tutorial.R')`
+`r opts_chunk$set(echo=TRUE, tidy=FALSE, comment="")`
+
 plyrmr
 =====
 
@@ -37,7 +40,7 @@ nothing happened yet, is it real?
 as.data.frame(avg.carbs)
 ```
 
-This triggers a mapred job and brings the result into mem as a df. Names are still messed up, working on it. If it's too big, you can write it to a specific location.
+This triggers a mapred job and brings the result into mem as a df. If it's too big, you can write it to a specific location.
 
 ```{r}
 file.remove("/tmp/avg.carbs")
@@ -55,7 +58,6 @@ Most functions are modeled after familiar ones
 ```
   transform #from base
   subset #from base
-  filter #synonim for subset
   mutate #from plyr
   summarize #from plyr
   select # synonym for summarize
@@ -66,3 +68,91 @@ Most functions are modeled after familiar ones
 how it combines with `group.by`. All the functions listed above are implemented with `do` in one line of code. An actual MR job 
 is triggered by `from.dfs`, `output` or combining two of `group.by` or `group.by.f` together, since we can't easily optimize
 away two groupings into one reduce phase. Comments and suggestions to rhadoop@revolutionanalytics.com.
+
+
+## Tutorial
+
+
+```{r input}
+```
+
+```{r as.data.frame}
+```
+
+```{r small-integers}
+```
+
+```{r squares-data-frame}
+```
+
+```{r input-small-integers}
+```
+
+```{r squares-plyrmr}
+```
+
+```{r squares-results}
+```
+
+```{r binomial-sample}
+```
+
+```{r count-data-frame}
+```
+
+```{r input-binomial-sample}
+```
+
+```{r count-plyrmr}
+```
+
+```{r count-results}
+```
+
+```{r identity-data-frame}
+```
+
+```{r identity-plyrmr}
+```
+
+```{r identity-do}
+```
+
+```{r subset-data-frame}
+```
+
+```{r subset-plyrmr}
+```
+
+```{r select-data-frame}
+```
+
+```{r select-plyrmr}
+```
+
+```{r select-plyrmr-alternative}
+```
+
+```{r big-sum-data-frame}
+```
+
+```{r big-sum-plyrmr}
+```
+
+```{r group-sum-data-frame}
+```
+
+```{r group-sum-plyrmr}
+```
+
+```{r textual-data}
+```
+ 
+```{r wordcount-data-frame}
+```
+
+```{r wordcount-plyrmr}
+```
+
+
+

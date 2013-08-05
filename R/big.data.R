@@ -28,7 +28,7 @@ setMethodS3(
 	"print",
 	"big.data",
 	function(x) {
-		cat(as.character(x))
+		print(paste("Data location:", as.character(x)))
 		invisible(x)})
 
 as.big.data_cf =

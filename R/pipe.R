@@ -75,7 +75,7 @@ setMethodS3(
 	"print",
 	"pipe",
 	function(x) {
-		cat(as.character(x))
+		print(as.character(x))
 		invisible(x)})
 
 do = 

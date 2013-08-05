@@ -104,7 +104,7 @@ group.by.f =
 		else
 			group.by.f(input(run(.data)), f1)}
 
-group.together = function(x) group.by(x, 1)
+group.together = function(.data) group.by(.data, 1)
 
 mr.options = 
 	function(.data, ...) {
@@ -118,7 +118,8 @@ mrexec =
 			do.call(mapreduce, mr.args))
 
 run = 
-	function(pipe) {
+	function(.data) {
+		pipe = .data
 		if(
 			all(
 				sapply(

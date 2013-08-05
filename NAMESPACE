@@ -30,7 +30,8 @@ export(
 	input,
 	top.k,
 	bottom.k,
-	moving.window)
+	moving.window,
+	quantile)
 
 S3method(print, big.data)
 S3method(print, pipe)

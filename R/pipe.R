@@ -60,6 +60,7 @@ is.data =
 	function(x)
 		inherits(x, "pipe")
 
+
 setMethodS3(
 	"as.character",
 	"pipe",
@@ -121,9 +122,10 @@ run =
 		if(
 			all(
 				sapply(
-					pipe[qw(map, reduce, group.by)], 
-					is.null)))
-			pipe$input
+					pipe[qw(map, reduce, group.by, combine)], 
+					is.null))) {
+			dfs.mv(pipe$input, pipe$output)
+			as.big.data(pipe$output)}
 		else {
 			mr.args = list()
 			simple.args = qw(input, input.format, output, output.format)

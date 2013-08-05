@@ -151,6 +151,8 @@ setMethodS3(
 	"pipe",
 	run)
 
+ungroup = as.big.data.pipe
+
 setMethodS3(
 	"as.pipe",
 	"big.data",

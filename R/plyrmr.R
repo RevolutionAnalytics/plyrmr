@@ -13,15 +13,15 @@
 # limitations under the License.
 
 
-subsetfun = function(x, ...) do(x, subset, ...)
-setMethodS3("subset", "pipe", subsetfun)
+subset.fun = function(x, ...) do(x, subset, ...)
+setMethodS3("subset", "pipe", subset.fun)
 
 setMethodS3("transform", "pipe", function(`_data`, ...) do(`_data`, transform, ...))
-setMethodS3("mutate", "pipe", function(.data, ...) do(.data, mutate, ...))
+setMethodS3("mutate", "pipe", function(.data, ...) do(.data, mutate, ...), ellipsesOnly = FALSE)
 setMethodS3("mutate", "default", plyr::mutate)
 
-summarizefun = function(.data, ...) do.call(do, c(list(.data, summarize), named_dots(...)))
+summarize.fun = function(.data, ...) do.call(do, c(list(.data, summarize), named_dots(...)))
 
-setMethodS3("summarize", "pipe", summarizefun)
+setMethodS3("summarize", "pipe", summarize.fun, ellipsesOnly = FALSE)
 setMethodS3("summarize", "default", plyr::summarize)
-setMethodS3("select", "pipe", summarizefun)
+setMethodS3("select", "pipe", summarize.fun, ellipsesOnly = FALSE)

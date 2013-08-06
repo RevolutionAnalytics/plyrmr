@@ -89,22 +89,29 @@ do =
 		.data}
 
 group.by = 
-	function(.data, ...){
+	function(.data, ..., recursive = FALSE){
 		group.by.f(
 			.data, 
 			function(y) 
 				summarize(y, ...))}
 
 group.by.f = 
-	function(.data, f, ...) {
+	function(.data, f, ..., recursive = FALSE) {
 		f1 = to.fun1(f, ...)
 		if(is.null(.data$group.by)){
 			.data$group.by = f1
+			if(recursive) 
+				.data$combine = TRUE
 			.data}
 		else
-			group.by.f(input(run(.data)), f1)}
+			group.by.f(
+				input(run(.data)), 
+				f1, 
+				recursive = recursive)}
 
-group.together = function(.data) group.by(.data, 1)
+group.together = 
+	function(.data) 
+		group.by(.data, 1, recursive = TRUE)
 
 mr.options = 
 	function(.data, ...) {
@@ -123,7 +130,7 @@ run =
 		if(
 			all(
 				sapply(
-					pipe[qw(map, reduce, group.by, combine)], 
+					pipe[qw(map, reduce, group.by)], 
 					is.null))) {
 			dfs.mv(pipe$input, pipe$output)
 			as.big.data(pipe$output)}
@@ -138,6 +145,7 @@ run =
 					valf = pipe$map)
 			if(!is.null(pipe$reduce) &&
 				 	!is.null(pipe$group.by)) {
+				if(!is.null)
 				mr.args$reduce = 
 					make.reduce.fun(
 						valf = pipe$reduce)}
@@ -152,7 +160,8 @@ output =
 setMethodS3(
 	"as.big.data",
 	"pipe",
-	run)
+	run, 
+	ellipsesOnly = FALSE)
 
 ungroup = as.big.data.pipe
 
@@ -164,7 +173,8 @@ setMethodS3(
 			strip.null.args(
 				input = x,
 				input.format = format),
-			class = "pipe"))
+			class = "pipe"),
+	ellipsesOnly = FALSE)
 
 setMethodS3(
 	"as.pipe", 

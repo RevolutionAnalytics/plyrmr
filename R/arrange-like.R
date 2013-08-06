@@ -42,7 +42,7 @@ merge.pipe =
 					if(all.x) "left" else "right", 
 					"full"))}
 
-quantilefun = 
+quantile.fun = 
 	function(x) {
 		mr.fun = 
 			function(x) {
@@ -59,7 +59,7 @@ quantilefun =
 				constant(1)), 
 			mr.fun)}
 
-setMethodS3("quantile",	"pipe", quantilefun)
+setMethodS3("quantile",	"pipe", quantile.fun)
 
 setMethodS3(
 	"quantile",
@@ -94,7 +94,7 @@ top.k = function(x, k, ...) fwd.args(Curry(extreme.k, decreasing = TRUE))
 bottom.k = function(x, k, ...) fwd.args(Curry(extreme.k, decreasing = FALSE))
 
 moving.window = 
-	function(x, index, window, fun, R = rmr.options("keyval.length")) {
+	function(x, index, window, f, R = rmr.options("keyval.length")) {
 		partition = 
 			function(x) {
 				part = 
@@ -111,7 +111,6 @@ moving.window =
 				rbind(x, x[x$mask, ])
 		group = function(x)
 			rbind(x$partT, x$partF[x$mask])		
-		reduce = fun
 		do(
 			group.by.f(
 				do(
@@ -120,4 +119,4 @@ moving.window =
 						partition), 
 					map), 
 				group), 
-			reduce)}
+			f)}

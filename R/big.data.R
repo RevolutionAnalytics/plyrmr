@@ -38,7 +38,8 @@ as.big.data_cf =
 setMethodS3(
 	"as.big.data", 
 	"function",	
-	as.big.data_cf)
+	as.big.data_cf,
+	ellipsesOnly = FALSE)
 
 setMethodS3(
 	"as.big.data", 

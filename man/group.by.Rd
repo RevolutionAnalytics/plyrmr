@@ -16,20 +16,17 @@ group.together(.data)
 ungroup(.data, ...)
 
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{.data}{
-%%     ~~Describe \code{.data} here~~
+A pipe
 }
   \item{f}{
-%%     ~~Describe \code{.data} here~~
-}
+Function with data frame argument and value to define grouping}
   \item{\dots}{
-%%     ~~Describe \code{\dots} here~~
-}
+Additional arguments to f }
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
+
 }
 \value{
 %%  ~Describe the value returned

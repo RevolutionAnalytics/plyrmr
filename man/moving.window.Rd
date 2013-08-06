@@ -3,6 +3,8 @@
 \title{
 Compute a function on a moving window of the data.
 }
+\description{
+}
 \usage{
 moving.window(x, index, window, f, R = rmr.options("keyval.length"))
 }

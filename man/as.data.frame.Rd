@@ -16,6 +16,7 @@ output(.data, path = NULL, format = NULL)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{a pipe for as.data.frame or a data frame, file path or rmr2 big data object for input}
+  \item{.data}{a pipe}
   \item{path}{The path to write to}
   \item{format}{Format to use when writing out to disk.}
 }

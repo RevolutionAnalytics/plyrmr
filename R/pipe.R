@@ -192,6 +192,11 @@ setMethodS3(
 	Compose(as.big.data, as.pipe))
 
 setMethodS3(
+	"as.pipe",
+	"list",
+	Compose(as.big.data, as.pipe)) 
+
+setMethodS3(
 	"as.data.frame",
 	"pipe",
 	Compose(as.big.data,as.data.frame))

@@ -41,10 +41,13 @@ S3method(as.pipe, data.frame)
 S3method(as.pipe, big.data)
 S3method(as.pipe, character)
 S3method(as.pipe, "function")
+S3method(as.pipe, "list")
 S3method(as.big.data, data.frame)
 S3method(as.big.data, character)
 S3method(as.big.data, "function")
 S3method(as.big.data, pipe)
+S3method(as.big.data, "list")
+S3method(as.big.data, big.data)
 S3method(as.data.frame, pipe)
 S3method(as.data.frame, big.data)
 
@@ -59,5 +62,6 @@ S3method(select, pipe)
 
 S3method(quantile, pipe)
 S3method(quantile, data.frame)
+S3method(merge, pipe)
 
 

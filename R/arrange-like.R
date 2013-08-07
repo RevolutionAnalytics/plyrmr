@@ -15,32 +15,26 @@
 
 ## this is still a mr call, not a pipe, need to integrate from a pre-existing design.
 
-merge.pipe = 
-	function(
-		x, 
-		y, 
-		by, 
-		by.x = by, 
-		by.y = by, 
-		all = FALSE, 
-		all.x = all, 
-		all.y = all) {
-		mk.map = 
-			function(by)
-				function(k, v) {
-					v = cbind.kv(k, v)
-					keyval(v[, by, drop = FALSE], v)}
-		equijoin(
-			left.input = x, 
-			right.input = y, 
-			map.left = mk.map(by.x), 
-			map.right = mk.map(by.y), 
-			outer = 
-				switch(
-					all.x + all.y, 
-					"", 
-					if(all.x) "left" else "right", 
-					"full"))}
+setMethodS3(
+	"merge",
+	"pipe", 
+	function(x, y, ...) {
+		args = named_dots(...)
+		x = output(x)
+		y = output(y)
+		do(
+			group.by.f(
+				mutate(
+					input(
+						list(x, y)), 
+					side = ), 
+				function(x) x[,eval(args$by)]), 
+			function(x) 
+				do.call(
+					merge, 
+					c(
+						unname(split(x, x$side)), 
+						args)))})
 
 quantile.fun = 
 	function(x) {

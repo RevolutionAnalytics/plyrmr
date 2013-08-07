@@ -35,11 +35,12 @@ as.big.data_cf =
 	function(x)
 		structure(x, class = "big.data")
 
+as.big.data = function(x, ...) UseMethod("as.big.data")
+
 setMethodS3(
 	"as.big.data", 
 	"function",	
-	as.big.data_cf,
-	ellipsesOnly = FALSE)
+	as.big.data_cf)
 
 setMethodS3(
 	"as.big.data", 
@@ -60,3 +61,15 @@ setMethodS3(
 	function(x, format = "native")
 		values(
 			from.dfs(input = x, format = format)))
+
+setMethodS3(
+	"as.big.data",
+	"list",
+	function(x) 
+		as.big.data_cf(
+			lapply(x, as.big.data)))
+
+setMethodS3(
+	"as.big.data",
+	"big.data",
+	identity)

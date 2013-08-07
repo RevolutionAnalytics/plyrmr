@@ -49,22 +49,14 @@ setMethodS3(
 setMethodS3(
 	"as.big.data",
 	"data.frame", 
-	function(x, format = NULL)
+	function(x, format = "native")
 		as.big.data(
 			suppressWarnings(
-				fwd.args(
-					to.dfs,
-					c(
-						x = "kv",
-						path = "output")))))
-
+				to.dfs(kv = x, format = format))))
+			
 setMethodS3(
 	"as.data.frame",
 	"big.data", 
-	function(x, format = NULL)
+	function(x, format = "native")
 		values(
-				fwd.args(
-					from.dfs,
-					c(
-						x = "input",
-						path = "output"))))
+			from.dfs(input = x, format = format)))

@@ -26,24 +26,3 @@ strip.nulls =
 strip.null.args = 
 	function(...)
 		strip.nulls(list(...))
-
-exclude = 
-	function(x, what) {
-		what = which(is.element(names(x), what))
-		if(length(what) == 0) x
-		else x[-what]}
-
-fwd.args = 
-	function(f, arg.map = c(), exclude.args = c()) {
-		par.call = sys.call(sys.parent())  
-		par.call = match.call(match.fun(par.call[[1]]), par.call)
-		par.call[[1]] = f 
-		eval(
-			as.call(
-				rename(
-					exclude(
-						as.list(par.call),
-						exclude.args),
-					arg.map,
-					warn_missing = FALSE)),
-			envir = parent.frame())}

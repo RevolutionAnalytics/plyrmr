@@ -90,8 +90,8 @@ extreme.k=
 				constant(1)),
 			mr.fun)}
 
-top.k = function(x, k, ...) fwd.args(Curry(extreme.k, decreasing = TRUE))
-bottom.k = function(x, k, ...) fwd.args(Curry(extreme.k, decreasing = FALSE))
+top.k = function(x, k, ...) extreme.k(x, k, ..., decreasing = TRUE)
+bottom.k = function(x, k, ...) extreme.k(x, k, ..., decreasing = FALSE)
 
 moving.window = 
 	function(x, index, window, f, R = rmr.options("keyval.length")) {

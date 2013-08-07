@@ -5,7 +5,7 @@
 # the default output hook
 hook_output = knit_hooks$get('output')
 knit_hooks$set(output = function(x, options) {
-  if (!is.null(n = options$out.lines)) {
+  if (!is.null(n <- options$out.lines)) {
     x = unlist(stringr::str_split(x, '\n'))
     if (length(x) > n) {
       # truncate the output
@@ -19,7 +19,6 @@ opts_chunk$set(out.lines = 8)
 ```
 
 # plyrmr
-
 
 Load package and turn off Hadoop for quick demo
 ```{r}

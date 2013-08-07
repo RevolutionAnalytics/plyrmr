@@ -13,16 +13,16 @@
 # limitations under the License.
 
 # data manip
-cbind.kv = 
-	function(key, val) {
-		if(is.null(key)) val
-		else {
-			key = as.data.frame(key)
-			colnames(key) = 
-				make.names(
-					paste("key", colnames(key), sep = "."),
-					unique = TRUE)			
-			data.frame(key = key, val, row.names = rownames(val))}}
+# cbind.kv = 
+# 	function(key, val) {
+# 		if(is.null(key)) val
+# 		else {
+# 			key = as.data.frame(key)
+# 			colnames(key) = 
+# 				make.names(
+# 					paste("key", colnames(key), sep = "."),
+# 					unique = TRUE)			
+# 			data.frame(key, val, row.names = rownames(val))}}
 
 # function manip
 comp = 
@@ -38,16 +38,17 @@ make.map.fun =
 		if(is.null(valf)) 
 			valf = identity 
 		function(k, v) {
-			v = valf(cbind.kv(k, v))
+			v = valf(v)
 			k = keyf(v)
 			keyval(k, v)}}
 
+make.combine.fun = 
+	function(valf) 
+		make.map.fun(identity, valf)
+
 make.reduce.fun = 
-	function(valf) {
-		if(is.null(valf)) 
-			valf = identity
-		function(k, v) {	
-			keyval(NULL, valf(cbind.kv(k, v)))}}
+	function(valf) 
+		make.map.fun(NULL, valf)
 
 to.fun1 = 
 	function(f, ...)
@@ -59,7 +60,6 @@ to.fun1 =
 is.data = 
 	function(x)
 		inherits(x, "pipe")
-
 
 setMethodS3(
 	"as.character",
@@ -101,7 +101,7 @@ group.by.f =
 		if(is.null(.data$group.by)){
 			.data$group.by = f1
 			if(recursive) 
-				.data$combine = TRUE
+				.data$recursive.group = TRUE
 			.data}
 		else
 			group.by.f(
@@ -131,9 +131,12 @@ run =
 			all(
 				sapply(
 					pipe[qw(map, reduce, group.by)], 
-					is.null))) {
-			dfs.mv(pipe$input, pipe$output)
-			as.big.data(pipe$output)}
+					is.null))) { 
+			if(!is.null(pipe$output)) {
+				dfs.mv(pipe$input, pipe$output)
+				as.big.data(pipe$output)}
+			else {
+				pipe$input}}
 		else {
 			mr.args = list()
 			simple.args = qw(input, input.format, output, output.format)
@@ -145,10 +148,13 @@ run =
 					valf = pipe$map)
 			if(!is.null(pipe$reduce) &&
 				 	!is.null(pipe$group.by)) {
-				if(!is.null)
 				mr.args$reduce = 
 					make.reduce.fun(
 						valf = pipe$reduce)}
+			if(!is.null(pipe$recursive.group) &&
+				 	pipe$recursive.group) {
+				mr.args.combine =
+					make.combine.fun(pipe$reduce)}
 			mrexec(mr.args)}}
 
 output = 
@@ -160,10 +166,11 @@ output =
 setMethodS3(
 	"as.big.data",
 	"pipe",
-	run, 
-	ellipsesOnly = FALSE)
+	run)
 
 ungroup = as.big.data.pipe
+
+as.pipe = function(x, ...) UseMethod("as.pipe")
 
 setMethodS3(
 	"as.pipe",
@@ -173,8 +180,7 @@ setMethodS3(
 			strip.null.args(
 				input = x,
 				input.format = format),
-			class = "pipe"),
-	ellipsesOnly = FALSE)
+			class = "pipe"))
 
 setMethodS3(
 	"as.pipe", 

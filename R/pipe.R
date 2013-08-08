@@ -79,9 +79,17 @@ setMethodS3(
 		print(as.character(x))
 		invisible(x)})
 
+protect = 
+	function(x) {
+		envx= environment(x)
+		nenv = as.environment(as.list(envx))
+		parent.env(nenv) = parent.env(envx)
+		environment(x) = nenv
+		x}
+
 do = 
 	function(.data, f, ...){
-		f1 = to.fun1(f, ...)
+		f1 = to.fun1(protect(f), ...)
 		if(is.null(.data$group.by))
 			.data$map = comp(.data$map, f1)
 		else
@@ -97,7 +105,7 @@ group.by =
 
 group.by.f = 
 	function(.data, f, ..., recursive = FALSE) {
-		f1 = to.fun1(f, ...)
+		f1 = to.fun1(protect(f), ...)
 		if(is.null(.data$group.by)){
 			.data$group.by = f1
 			if(recursive) 

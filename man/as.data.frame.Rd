@@ -10,8 +10,8 @@ Input is defined for data frames, file paths and rmr2 big data objects and alway
 }
 \usage{
 as.data.frame(x)
-input(x)
-output(.data, path = NULL, format = NULL)
+input(x, format = "native")
+output(.data, path = dfs.tempfile(), format = "native")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

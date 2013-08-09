@@ -12,16 +12,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+do.call.do =
+	function(.data, f, ...)
+		do.call(
+			do, 
+			c(list(.data, f), named_dots(...)))
 
-subset.fun = function(x, ...) do(x, subset, ...)
+subset.fun = function(x, ...) do.call.do(x, subset, ...)
 setMethodS3("subset", "pipe", subset.fun)
 
-setMethodS3("transform", "pipe", function(`_data`, ...) do(`_data`, transform, ...))
+setMethodS3(
+	"transform", 
+	"pipe", 
+	function(`_data`, ...) 
+		do.call.do(`_data`, transform, ...))
+
 mutate =  function(.data, ...) UseMethod("mutate")
-setMethodS3("mutate", "pipe", function(.data, ...) do(.data, mutate, ...))
+
+setMethodS3(
+	"mutate", 
+	"pipe", 
+	function(.data, ...) 
+		do.call.do(.data, mutate, ...))
+
 setMethodS3("mutate", "default", plyr::mutate)
 
-summarize.fun = function(.data, ...) do.call(do, c(list(.data, summarize), named_dots(...)))
 
 summarize = function(.data, ...) UseMethod("summarize")
 setMethodS3("summarize", "pipe", summarize.fun)

@@ -89,6 +89,7 @@ group.by =
 		group.by.f(
 			.data, 
 			function(.y) 
+				do.call.do(.y, summarize, ...))
 
 group.by.f = 
 	function(.data, f, ..., recursive = FALSE) {

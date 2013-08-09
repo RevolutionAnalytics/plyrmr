@@ -166,7 +166,7 @@ setMethodS3(
 
 ungroup = as.big.data.pipe
 
-as.pipe = function(x, ...) UseMethod("as.pipe")
+as.pipe = function(x, format = "native") UseMethod("as.pipe")
 
 setMethodS3(
 	"as.pipe",

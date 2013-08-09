@@ -11,15 +11,17 @@ Input is defined for data frames, file paths and rmr2 big data objects and alway
 \usage{
 as.data.frame(x)
 input(x, format = "native")
-output(.data, path = dfs.tempfile(), format = "native")
+output(.data, path = NULL, format = "native")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{a pipe for as.data.frame or a data frame, file path or rmr2 big data object for input}
   \item{.data}{a pipe}
-  \item{path}{The path to write to}
+  \item{path}{The path to write to, if NULL a temporary location is used}
   \item{format}{Format to use when writing out to disk.}
 }
+
+\value{}
 
 \examples{
 ##---- Should be DIRECTLY executable !! ----

@@ -10,9 +10,9 @@ Control grouping in plyrmr computations}
 Large data sets can not be processed by bringing all the data into memory at once. One alternative is to group records by a key or index and process one group at a time, provided they are not too big. The functions documented here allow to do that in plyrmr.
 }
 \usage{
-group.by(.data, ...)
-group.by.f(.data, f, ...)
-group.together(.data)
+group.by(.data, ..., recursive = FALSE)
+group.by.f(.data, f, ..., recursive = FALSE)
+group.together(.data, recursve = FALSE)
 ungroup(.data, ...)
 
 }

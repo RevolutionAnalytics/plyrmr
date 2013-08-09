@@ -38,6 +38,10 @@ setMethodS3(
 setMethodS3("mutate", "default", plyr::mutate)
 
 
+summarize.fun = 
+	function(.data, ...)
+		do.call.do(.data, summarize, ...)
+
 summarize = function(.data, ...) UseMethod("summarize")
 setMethodS3("summarize", "pipe", summarize.fun)
 setMethodS3("summarize", "default", plyr::summarize)

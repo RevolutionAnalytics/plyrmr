@@ -34,13 +34,13 @@ setMethodS3(
 quantile.fun = 
 	function(x) {
 		mr.fun = 
-			function(x) {
+			function(.x) {
 				midprobs  = 
 					function(N) {
 						probs = seq(0, 1, 1/N)
 						(probs[-1] + probs[-length(probs)])/2}
 				quantile(
-					x,
+					.x,
 					probs = midprobs(10^4))}
 		do(
 			group.by.f(
@@ -58,20 +58,20 @@ setMethodS3(
 			strip.nulls(
 				lapply(
 					x,
-					function(y)
-						if(is.numeric(y))
-							quantile(y, ...)))))
+					function(.y)
+						if(is.numeric(.y))
+							quantile(.y, ...)))))
 
 extreme.k= 
 	function(x, k, ..., decreasing) {
 		this.order = Curry(order, decreasing = decreasing)
 		mr.fun = 
-			function(x)
+			function(.x)
 				head(
-					x[
+					.x[
 						do.call(
 							this.order,
-							summarize(x, ...))], 
+							summarize(.x, ...))], 
 					k)
 		do(
 			group.by.f(

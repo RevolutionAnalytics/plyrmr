@@ -40,8 +40,8 @@ make.reduce.fun =
 
 to.fun1 = 
 	function(f, ...)
-		function(x)
-			f(x, ...)
+		function(.x)
+			f(.x, ...)
 
 #pipes
 
@@ -85,11 +85,10 @@ do =
 		.data}
 
 group.by = 
-	function(.data, ..., recursive = FALSE){
+	function(.data, ..., recursive = FALSE)
 		group.by.f(
 			.data, 
-			function(y) 
-				summarize(y, ...))}
+			function(.y) 
 
 group.by.f = 
 	function(.data, f, ..., recursive = FALSE) {

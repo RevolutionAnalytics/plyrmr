@@ -106,8 +106,8 @@ group.by.f =
 				recursive = recursive)}
 
 group.together = 
-	function(.data) 
-		group.by(.data, 1, recursive = TRUE)
+	function(.data, recursive = FALSE) 
+		group.by(.data, 1, recursive = recursive)
 
 mr.options = 
 	function(.data, ...) {

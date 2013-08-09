@@ -28,3 +28,16 @@ setMethodS3("summarize", "pipe", summarize.fun)
 setMethodS3("summarize", "default", plyr::summarize)
 select = function(.data, ...) UseMethod("select")
 setMethodS3("select", "pipe", summarize.fun)
+
+setMethodS3(
+	"names",
+	"pipe",
+	function(x)
+		as.data.frame(
+			group.by.f(
+				do(
+					x, 
+					function(.y) 
+						data.frame(names = names(.y))), 
+				function(.x) unique(.x$names), recursive=T)))
+

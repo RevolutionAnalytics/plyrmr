@@ -63,5 +63,6 @@ S3method(select, pipe)
 S3method(quantile, pipe)
 S3method(quantile, data.frame)
 S3method(merge, pipe)
+S3method(names, pipe)
 
 

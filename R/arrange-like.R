@@ -19,7 +19,7 @@ setMethodS3(
 	"merge",
 	"pipe", 
 	function(x, y, by) {
-		map =	function(k,v) keyval(v[,by], v)
+		map =	function(k,v) keyval(v[, by], v)
 		input(
 			equijoin(
 				output(x), 

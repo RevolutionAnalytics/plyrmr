@@ -57,7 +57,7 @@ setMethodS3(
 			"Slots set:", 
 			paste(names(x), collapse = ", "), "\n",
 			"Input:",
-			as.character(x$input),
+			as.character(x["input"]),
 			"\n"))
 
 setMethodS3(
@@ -129,11 +129,11 @@ run =
 				sapply(
 					pipe[qw(map, reduce, group.by)], 
 					is.null))) { 
-			if(!is.null(pipe$output)) {
-				dfs.mv(pipe$input, pipe$output)
-				as.big.data(pipe$output)}
+			if(!is.null(pipe["output"])) {
+				dfs.mv(pipe["input"], pipe["output"])
+				as.big.data(pipe["output"])}
 			else {
-				pipe$input}}
+				pipe["input"]}}
 		else {
 			mr.args = list()
 			simple.args = qw(input, input.format, output, output.format)
@@ -156,8 +156,8 @@ run =
 
 output = 
 	function(.data, path = NULL, format = NULL) {
-		.data$output.format = format
-		.data$output = path
+		.data["output.format"] = format
+		.data["output"] = path
 		as.big.data(.data)}
 
 setMethodS3(

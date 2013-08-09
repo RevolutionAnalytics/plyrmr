@@ -18,17 +18,40 @@
 setMethodS3(
 	"merge",
 	"pipe", 
-	function(x, y, by) {
-		map =	function(k,v) keyval(v[, by], v)
+	function(
+		x, 
+		y, 
+		by, 
+		by.x = by, 
+		by.y = by, 
+		all = FALSE, 
+		all.x = all, 
+		all.y = all, 
+		suffixes = c(".x", ".y"), 
+		...) {
+		stopifnot((all.x && all.y) == all)
+		map.x =	function(k,v) keyval(v[, by.x], v)
+		map.y =	function(k,v) keyval(v[, by.y], v)
 		input(
 			equijoin(
 				output(x), 
 				output(y),
-				map.left = map,
-				map.right = map,
+				outer = 
+					list(NULL, "full", "left", "right")[c((!all.x && !all.y), all, all.x, all.y)][[1]],
+				map.left = map.x,
+				map.right = map.y,
 				reduce = 
 					function(k, x, y) {
-						merge(x, y, by)
+						merge(
+							x, 
+							y, 
+							by = by, 
+							by.x = by.x, 
+							by.y = by.y, 
+							all = all, 
+							all.x = all.x, 
+							all.y = all.y,
+							suffixes = suffixes)
 					}))})
 
 quantile.fun = 

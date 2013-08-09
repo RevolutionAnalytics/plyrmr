@@ -41,7 +41,7 @@ make.reduce.fun =
 to.fun1 = 
 	function(f, ...)
 		function(.x)
-			f(.x, ...)
+			do.call(f, c(list(.x), dots(...)))
 
 #pipes
 
@@ -85,11 +85,12 @@ do =
 		.data}
 
 group.by = 
-	function(.data, ..., recursive = FALSE)
+	function(.data, ..., recursive = FALSE) {
+		dotargs = dots(...)
 		group.by.f(
 			.data, 
 			function(.y) 
-				do.call.do(.y, summarize, ...))
+				do.call(summarize, c(list(.y), dotargs)))}
 
 group.by.f = 
 	function(.data, f, ..., recursive = FALSE) {

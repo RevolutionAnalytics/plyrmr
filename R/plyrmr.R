@@ -16,7 +16,7 @@ do.call.do =
 	function(.data, f, ...)
 		do.call(
 			do, 
-			c(list(.data, f), named_dots(...)))
+			c(list(.data, f), dots(...)))
 
 subset.fun = function(x, ...) do.call.do(x, subset, ...)
 setMethodS3("subset", "pipe", subset.fun)

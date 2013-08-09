@@ -12,18 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# data manip
-# cbind.kv = 
-# 	function(key, val) {
-# 		if(is.null(key)) val
-# 		else {
-# 			key = as.data.frame(key)
-# 			colnames(key) = 
-# 				make.names(
-# 					paste("key", colnames(key), sep = "."),
-# 					unique = TRUE)			
-# 			data.frame(key, val, row.names = rownames(val))}}
-
 # function manip
 comp = 
 	function(...) {

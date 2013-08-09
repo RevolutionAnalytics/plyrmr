@@ -41,7 +41,7 @@ mtcars.5cyl.up = subset(mtcars.in, cyl > 4)
 then group them by cyl
 
 ```{r}
-grouped = group.by(mtcars.5cyl.up, "cyl")
+grouped = group.by(mtcars.5cyl.up, cyl)
 ```
 
 then look at the average carbs

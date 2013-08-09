@@ -38,7 +38,7 @@ then group them by cyl
 
 
 ```r
-grouped = group.by(mtcars.5cyl.up, "cyl")
+grouped = group.by(mtcars.5cyl.up, cyl)
 ```
 
 
@@ -58,8 +58,9 @@ as.data.frame(avg.carbs)
 ```
 
 ```
-   mean(carb) mean.HP
-X1      3.476   180.2
+     mean(carb) mean.HP
+X1        3.429   122.3
+X1.1      3.500   209.2
 ```
 
 
@@ -87,8 +88,9 @@ as.data.frame(avg.carbs.out)
 ```
 
 ```
-   mean(carb) mean.HP
-X1      3.476   180.2
+     mean(carb) mean.HP
+X1        3.429   122.3
+X1.1      3.500   209.2
 ```
 
 
@@ -182,7 +184,7 @@ small.squares
 ```
 
 ```
-[1] "Slots set: input, map \n Input: Temporary file \n"
+[1] "Slots set: 1:2 \n Input: Temporary file \n"
 ```
 
 
@@ -263,12 +265,12 @@ ddply(data, "x", summarize, val = unique(x), count = length(x))
 
 ```
     x val count
-1   7   7     2
+1   7   7     1
 2   8   8     2
-3   9   9     7
-4  10  10     1
+3   9   9     1
+4  10  10     9
 5  11  11     6
-6  12  12     8
+6  12  12     5
 7  13  13     5
 ....
 ```
@@ -299,13 +301,13 @@ as.data.frame(counts)
 
 ```
       val count
-X1     16     3
-X1.1   10     1
-X1.2   17     1
+X1     15     8
+X1.1    9     1
+X1.2   18     3
 X1.3   11     6
-X1.4    9     7
-X1.5   13     5
-X1.6   18     1
+X1.4   10     9
+X1.5   17     2
+X1.6   14     5
 ....
 ```
 
@@ -538,13 +540,13 @@ ddply(words, "words", summarize, count = length(words))
 
 ```
    words count
-1      A    28
-2      B    46
-3      C    44
-4      D    49
-5      E    36
-6      F    42
-7      G    47
+1      A    37
+2      B    38
+3      C    39
+4      D    44
+5      E    46
+6      F    47
+7      G    36
 ....
 ```
 
@@ -560,13 +562,13 @@ as.data.frame(wordcount)
 
 ```
       word count
-X1       S    44
-X1.1     V    32
-X1.2     Z    39
-X1.3     Y    33
-X1.4     M    50
-X1.5     H    41
-X1.6     R    48
+X1       D    44
+X1.1     W    40
+X1.2     V    45
+X1.3     C    39
+X1.4     X    39
+X1.5     P    27
+X1.6     R    39
 ....
 ```
 

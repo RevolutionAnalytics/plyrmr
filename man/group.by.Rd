@@ -12,7 +12,7 @@ Large data sets can not be processed by bringing all the data into memory at onc
 \usage{
 group.by(.data, ..., recursive = FALSE)
 group.by.f(.data, f, ..., recursive = FALSE)
-group.together(.data, recursve = FALSE)
+group.together(.data, recursive = FALSE)
 ungroup(.data, ...)
 
 }

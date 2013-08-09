@@ -18,23 +18,18 @@
 setMethodS3(
 	"merge",
 	"pipe", 
-	function(x, y, ...) {
-		args = named_dots(...)
-		x = output(x)
-		y = output(y)
-		do(
-			group.by.f(
-				mutate(
-					input(
-						list(x, y)), 
-					side = ), 
-				function(x) x[,eval(args$by)]), 
-			function(x) 
-				do.call(
-					merge, 
-					c(
-						unname(split(x, x$side)), 
-						args)))})
+	function(x, y, by) {
+		map =	function(k,v) keyval(v[,by], v)
+		input(
+			equijoin(
+				output(x), 
+				output(y),
+				map.left = map,
+				map.right = map,
+				reduce = 
+					function(k, x, y) {
+						merge(x, y, by)
+					}))})
 
 quantile.fun = 
 	function(x) {

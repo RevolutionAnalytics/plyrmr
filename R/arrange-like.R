@@ -28,6 +28,7 @@ setMethodS3(
 		all.x = all, 
 		all.y = all, 
 		suffixes = c(".x", ".y"), 
+		incomparables,
 		...) {
 		stopifnot((all.x && all.y) == all)
 		map.x =	function(k,v) keyval(v[, by.x], v)
@@ -51,7 +52,8 @@ setMethodS3(
 							all = all, 
 							all.x = all.x, 
 							all.y = all.y,
-							suffixes = suffixes)
+							suffixes = suffixes,
+							incomparables)
 					}))})
 
 quantile.fun = 

@@ -21,19 +21,23 @@ setMethodS3(
 	"as.character",
 	"big.data",
 	function(x) {
-		if(is.character(x)) x
+		if(is.character(x$data)) as.character(unclass(x))
 		else "Temporary file"})
 
 setMethodS3(
 	"print",
 	"big.data",
 	function(x) {
-		print(paste("Data location:", as.character(x)))
+		print(as.character(x))
 		invisible(x)})
 
 as.big.data_cf =
-	function(x)
-		structure(x, class = "big.data")
+	function(x, format = "native")
+		structure(
+			list(
+				data = x, 
+				format = format),
+			class = "big.data")
 
 as.big.data = function(x, ...) UseMethod("as.big.data")
 
@@ -53,14 +57,15 @@ setMethodS3(
 	function(x, format = "native")
 		as.big.data(
 			suppressWarnings(
-				to.dfs(kv = x, format = format))))
+				to.dfs(kv = x, format = format)),
+			format = format))
 			
 setMethodS3(
 	"as.data.frame",
 	"big.data", 
-	function(x, format = "native")
+	function(x)
 		values(
-			from.dfs(input = x, format = format)))
+			from.dfs(input = x$data, format = x$format)))
 
 setMethodS3(
 	"as.big.data",

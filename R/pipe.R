@@ -119,7 +119,8 @@ mr.options =
 mrexec =
 	function(mr.args)
 		as.big.data(
-			do.call(mapreduce, mr.args))
+			do.call(mapreduce, mr.args),
+			format = mr.args[['output.format']])
 
 run = 
 	function(.data) {
@@ -136,8 +137,10 @@ run =
 				pipe[["input"]]}}
 		else {
 			mr.args = list()
-			simple.args = qw(input, input.format, output, output.format)
-			mr.args[simple.args] = pipe[simple.args]
+			mr.args$input = pipe$input$data
+			mr.args$input.format = pipe$input$format
+			mr.args$output = pipe[['output']]
+			mr.args$output.format = pipe[['output.format']]
 			mr.args = strip.nulls(mr.args)
 			mr.args$map = 
 				make.map.fun(
@@ -155,10 +158,12 @@ run =
 			mrexec(mr.args)}}
 
 output = 
-	function(.data, path = NULL, format = "native") {
+	function(.data, path = NULL, format = "native", input.format = format) {
+		if(missing(input.format) && !is.character(format))
+			stop("need to specify a custom input format for a custom output")
 		.data[["output.format"]] = format
 		.data[["output"]] = path
-		as.big.data(.data)}
+		as.big.data(.data, input.format)}
 
 setMethodS3(
 	"as.big.data",
@@ -167,7 +172,7 @@ setMethodS3(
 
 ungroup = as.big.data.pipe
 
-as.pipe = function(x, format = "native") UseMethod("as.pipe")
+as.pipe = function(x, ...) UseMethod("as.pipe")
 
 setMethodS3(
 	"as.pipe",
@@ -175,24 +180,27 @@ setMethodS3(
 	function(x, format = NULL) 
 		structure(
 			strip.null.args(
-				input = x,
-				input.format = format),
+				input = x),
 			class = "pipe"))
+
+as.pipe_dfcf = 
+	function(x, format = "native") 
+		as.pipe(as.big.data(x, format))
 
 setMethodS3(
 	"as.pipe", 
 	"data.frame", 
-	Compose(as.big.data, as.pipe))
+	as.pipe_dfcf)
 
 setMethodS3(
 	"as.pipe", 
 	"character", 
-	Compose(as.big.data, as.pipe))
+	as.pipe_dfcf)
 
 setMethodS3(
 	"as.pipe", 
 	"function", 
-	Compose(as.big.data, as.pipe))
+	as.pipe_dfcf)
 
 setMethodS3(
 	"as.pipe",
@@ -202,6 +210,6 @@ setMethodS3(
 setMethodS3(
 	"as.data.frame",
 	"pipe",
-	Compose(as.big.data,as.data.frame))
+	Compose(as.big.data, as.data.frame))
 
 input  = as.pipe

@@ -17,6 +17,10 @@ rmr.options(backend = "local")
 NULL
 ```
 
+```r
+set.seed(0)
+```
+
 
 Create a dataset with `input`
 
@@ -235,15 +239,7 @@ as.data.frame(input("/tmp/small.squares"))
 ```
 
 ```
-     x  x2
-X1   1   1
-X2   2   4
-X3   3   9
-X4   4  16
-X5   5  25
-X6   6  36
-X7   7  49
-....
+Error: 'format' is missing
 ```
 
 With `output` and refraining from using `as.data.frame` we can process hadoop sized data sets. Of course we can use `as.data.frame` after a number of data reduction steps. Another role of output is as a bridge with `rmr2`. You can just write `mapreduce(ouput(...))` and combine the best of the two packages.
@@ -265,13 +261,13 @@ ddply(data, "x", summarize, val = unique(x), count = length(x))
 
 ```
     x val count
-1   6   6     1
-2   8   8     5
-3   9   9     2
-4  10  10     6
-5  11  11     3
-6  12  12     4
-7  13  13     7
+1   8   8     3
+2   9   9     4
+3  10  10     8
+4  11  11     6
+5  12  12     7
+6  13  13     4
+7  14  14     5
 ....
 ```
 
@@ -301,13 +297,13 @@ as.data.frame(counts)
 
 ```
       val count
-X1      9     2
-X1.1   14     8
-X1.2   11     3
-X1.3   12     4
-X1.4   10     6
-X1.5   21     1
-X1.6   19     1
+X1     11     6
+X1.1   14     5
+X1.2   10     8
+X1.3    8     3
+X1.4    9     4
+X1.5   17     2
+X1.6   12     7
 ....
 ```
 
@@ -540,13 +536,13 @@ ddply(words, "words", summarize, count = length(words))
 
 ```
    words count
-1      A    42
-2      B    37
-3      C    39
-4      D    36
-5      E    50
-6      F    34
-7      G    36
+1      A    46
+2      B    41
+3      C    41
+4      D    48
+5      E    49
+6      F    31
+7      G    37
 ....
 ```
 
@@ -562,13 +558,13 @@ as.data.frame(wordcount)
 
 ```
       word count
-X1       D    36
-X1.1     J    44
-X1.2     S    36
-X1.3     M    37
-X1.4     C    39
-X1.5     Z    35
-X1.6     P    47
+X1       M    35
+X1.1     S    29
+X1.2     E    49
+X1.3     D    48
+X1.4     W    45
+X1.5     O    35
+X1.6     J    42
 ....
 ```
 

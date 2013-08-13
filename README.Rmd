@@ -24,6 +24,7 @@ Load package and turn off Hadoop for quick demo
 ```{r}
 suppressMessages(library(plyrmr))
 rmr.options(backend = "local")
+set.seed(0)
 ```
 
 Create a dataset with `input`

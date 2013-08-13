@@ -117,13 +117,13 @@ mr.options =
 		.data }
 
 mrexec =
-	function(mr.args)
+	function(mr.args, input.format)
 		as.big.data(
 			do.call(mapreduce, mr.args),
-			format = mr.args[['output.format']])
+			format = input.format)
 
 run = 
-	function(.data) {
+	function(.data, input.format) {
 		pipe = .data
 		if(
 			all(
@@ -131,8 +131,8 @@ run =
 					pipe[qw(map, reduce, group.by)], 
 					is.null))) { 
 			if(!is.null(pipe[["output"]])) {
-				dfs.mv(pipe[["input"]], pipe[["output"]])
-				as.big.data(pipe[["output"]])}
+				dfs.mv(pipe[["input"]]$data, pipe[["output"]])
+				as.big.data(pipe[["output"]], pipe[["input"]]$format)}
 			else {
 				pipe[["input"]]}}
 		else {
@@ -155,7 +155,7 @@ run =
 				 	pipe$recursive.group) {
 				mr.args.combine =
 					make.combine.fun(pipe$reduce)}
-			mrexec(mr.args)}}
+			mrexec(mr.args, input.format)}}
 
 output = 
 	function(.data, path = NULL, format = "native", input.format = format) {

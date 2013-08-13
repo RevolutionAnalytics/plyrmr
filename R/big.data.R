@@ -32,7 +32,7 @@ setMethodS3(
 		invisible(x)})
 
 as.big.data_cf =
-	function(x, format = "native")
+	function(x, format)
 		structure(
 			list(
 				data = x, 
@@ -54,7 +54,7 @@ setMethodS3(
 setMethodS3(
 	"as.big.data",
 	"data.frame", 
-	function(x, format = "native")
+	function(x, format)
 		as.big.data(
 			suppressWarnings(
 				to.dfs(kv = x, format = format)),

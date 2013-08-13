@@ -177,30 +177,34 @@ as.pipe = function(x, ...) UseMethod("as.pipe")
 setMethodS3(
 	"as.pipe",
 	"big.data",
-	function(x, format = NULL) 
+	function(x) 
 		structure(
 			strip.null.args(
 				input = x),
 			class = "pipe"))
 
-as.pipe_dfcf = 
-	function(x, format = "native") 
+as.pipe.1 = 
+	function(x) 
+		as.pipe(as.big.data(x, "native"))
+
+as.pipe.2 = 
+	function(x, format) 
 		as.pipe(as.big.data(x, format))
 
 setMethodS3(
 	"as.pipe", 
 	"data.frame", 
-	as.pipe_dfcf)
+	as.pipe.1)
 
 setMethodS3(
 	"as.pipe", 
 	"character", 
-	as.pipe_dfcf)
+	as.pipe.2)
 
 setMethodS3(
 	"as.pipe", 
 	"function", 
-	as.pipe_dfcf)
+	as.pipe.2)
 
 setMethodS3(
 	"as.pipe",
@@ -210,6 +214,8 @@ setMethodS3(
 setMethodS3(
 	"as.data.frame",
 	"pipe",
-	Compose(as.big.data, as.data.frame))
+	function(x)
+		as.data.frame(
+			as.big.data(x, "native")))
 
 input  = as.pipe

@@ -54,25 +54,34 @@ setMethodS3(
 setMethodS3(
 	"as.big.data",
 	"data.frame", 
-	function(x, format)
+	function(x)
 		as.big.data(
 			suppressWarnings(
-				to.dfs(kv = x, format = format)),
-			format = format))
+				to.dfs(kv = x)),
+			format = "native"))
 			
 setMethodS3(
 	"as.data.frame",
 	"big.data", 
 	function(x)
 		values(
-			from.dfs(input = x$data, format = x$format)))
+			from.dfs(
+				input = x$data, 
+				format = x$format)))
 
 setMethodS3(
 	"as.big.data",
 	"list",
-	function(x) 
+	function(x) {
+		data.list =	lapply(x, as.big.data)
+		formats = lapply(data.list, function(x) x$format)
+		format = unique(formats)
+		stopifnot(length(format) == 1)
 		as.big.data_cf(
-			lapply(x, as.big.data)))
+			lapply(
+				data.list, 
+				function(x) x$data), 
+			format[[1]])})
 
 setMethodS3(
 	"as.big.data",

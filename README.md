@@ -184,7 +184,7 @@ small.squares
 ```
 
 ```
-[1] "Slots set: 1:2 \n Input: Temporary file \n"
+[1] "Slots set: input, map \n Input: Temporary file \n"
 ```
 
 
@@ -224,7 +224,7 @@ output(small.squares, "/tmp/small.squares")
 ```
 
 ```
-[1] "Data location: /tmp/small.squares"
+[1] "/tmp/small.squares" "native"            
 ```
 
 
@@ -265,13 +265,13 @@ ddply(data, "x", summarize, val = unique(x), count = length(x))
 
 ```
     x val count
-1   7   7     1
-2   8   8     2
-3   9   9     1
-4  10  10     9
-5  11  11     6
-6  12  12     5
-7  13  13     5
+1   6   6     1
+2   8   8     5
+3   9   9     2
+4  10  10     6
+5  11  11     3
+6  12  12     4
+7  13  13     7
 ....
 ```
 
@@ -301,13 +301,13 @@ as.data.frame(counts)
 
 ```
       val count
-X1     15     8
-X1.1    9     1
-X1.2   18     3
-X1.3   11     6
-X1.4   10     9
-X1.5   17     2
-X1.6   14     5
+X1      9     2
+X1.1   14     8
+X1.2   11     3
+X1.3   12     4
+X1.4   10     6
+X1.5   21     1
+X1.6   19     1
 ....
 ```
 
@@ -540,12 +540,12 @@ ddply(words, "words", summarize, count = length(words))
 
 ```
    words count
-1      A    37
-2      B    38
+1      A    42
+2      B    37
 3      C    39
-4      D    44
-5      E    46
-6      F    47
+4      D    36
+5      E    50
+6      F    34
 7      G    36
 ....
 ```
@@ -562,13 +562,13 @@ as.data.frame(wordcount)
 
 ```
       word count
-X1       D    44
-X1.1     W    40
-X1.2     V    45
-X1.3     C    39
-X1.4     X    39
-X1.5     P    27
-X1.6     R    39
+X1       D    36
+X1.1     J    44
+X1.2     S    36
+X1.3     M    37
+X1.4     C    39
+X1.5     Z    35
+X1.6     P    47
 ....
 ```
 

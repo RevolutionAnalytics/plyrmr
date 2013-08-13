@@ -60,3 +60,14 @@ setMethodS3(
 						data.frame(names = names(.y))), 
 				function(.x) unique(.x$names), recursive=T)))
 
+setMethodS3(
+	"head",
+	"pipe",
+	function(x, n) {
+    head.n = function(x) head(x, n)
+		as.data.frame(
+			do(
+				group.together(
+					do(x, head.n),
+					recursive = TRUE),
+				head.n))})

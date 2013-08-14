@@ -61,13 +61,27 @@ setMethodS3(
 				function(.x) unique(.x$names), recursive=T)))
 
 setMethodS3(
-	"head",
+	"sample",
 	"pipe",
-	function(x, n) {
-    head.n = function(x) head(x, n)
-		as.data.frame(
-			do(
-				group.together(
-					do(x, head.n),
-					recursive = TRUE),
-				head.n))})
+	function(x, method = c("any", "Bernoulli"), ...) {
+		switch(
+			match.arg(method),
+			any = {
+				n = list(...)[['n']]
+				head.n = function(x) head(x, n)
+				do(
+					group.together(
+						do(x, head.n),
+						recursive = TRUE),
+					head.n)},
+			Bernoulli = {
+				p = list(...)[["p"]]
+				do(x, function(x) x[runif(length(x)) < p,])})})
+
+setMethodS3(
+	"sample",
+	"default",
+	base::sample)
+
+
+		

@@ -70,9 +70,10 @@ setMethodS3(
 protect = 
 	function(x) {
 		envx= environment(x)
-		nenv = as.environment(as.list(envx))
-		parent.env(nenv) = parent.env(envx)
-		environment(x) = nenv
+		if(!is.null(envx)) {
+			nenv = as.environment(as.list(envx))
+			parent.env(nenv) = parent.env(envx)
+			environment(x) = nenv}
 		x}
 
 do = 

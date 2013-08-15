@@ -26,17 +26,17 @@ make.map.fun =
 		if(is.null(valf)) 
 			valf = identity 
 		function(k, v) {
-			v = valf(v)
+			v = as.data.frame(valf(v))
 			k = keyf(v)
 			keyval(k, v)}}
 
 make.combine.fun = 
 	function(valf) 
-		make.map.fun(identity, valf)
+		make.map.fun(identity, as.data.frame(valf))
 
 make.reduce.fun = 
 	function(valf) 
-		make.map.fun(NULL, valf)
+		make.map.fun(NULL, as.data.frame(valf))
 
 to.fun1 = 
 	function(f, ...)

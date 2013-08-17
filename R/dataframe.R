@@ -43,7 +43,7 @@ select.data.frame =
 		do.data.frame(
 			.data, 
 			function(x, ...) data.frame(...), 
-			..)
+			...)
 
 #(function(){select.data.frame(mtcars, cyl, carb)})()
 

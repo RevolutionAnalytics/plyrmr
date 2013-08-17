@@ -32,7 +32,7 @@ subset3.data.frame =
 	function(.data, ...)
 		do.data.frame(
 			.data, 
-			function(x, cond) x[cond, ], 
+			function(.x, cond) .x[cond, ], 
 			...,
 			named = FALSE)
 
@@ -42,19 +42,19 @@ select.data.frame =
 	function(.data, ...)
 		do.data.frame(
 			.data, 
-			function(x, ...) data.frame(...), 
+			function(.x, ...) data.frame(...), 
 			...)
 
 #(function(){select.data.frame(mtcars, cyl, carb)})()
 
 add.cols.data.frame  = 
 	function(.data, ...)
-		do.data.frame(.data, function(x, ...) cbind(x, data.frame(...)), ...)
+		do.data.frame(.data, function(.x, ...) cbind(.x, data.frame(...)), ...)
 
 #(function(){v = 4; add.cols.data.frame(mtcars, x = v)})()
 
 map.data.frame = 
 	function(.data, ...)
-		do.data.frame(.data, function(x, ...) data.frame(...), ...)
+		do.data.frame(.data, function(.x, ...) data.frame(...), ...)
 
 # (function(){v = 5; map.data.frame(mtcars,  v + cyl)})()

@@ -62,10 +62,10 @@ as.data.frame(avg.carbs)
 ```
 
 ```
-   value.mean.carb. value.mean.HP
-X1            3.429        122.29
-X2            1.545         82.64
-X3            3.500        209.21
+   mean.carb. mean.HP
+X1      3.429  122.29
+X2      1.545   82.64
+X3      3.500  209.21
 ```
 
 
@@ -77,12 +77,7 @@ file.remove("/tmp/avg.carbs")
 ```
 
 ```
-Warning: cannot remove file '/tmp/avg.carbs', reason 'No such file or
-directory'
-```
-
-```
-[1] FALSE
+[1] TRUE
 ```
 
 ```r
@@ -98,10 +93,10 @@ as.data.frame(avg.carbs.out)
 ```
 
 ```
-   value.mean.carb. value.mean.HP
-X1            3.429        122.29
-X2            1.545         82.64
-X3            3.500        209.21
+   mean.carb. mean.HP
+X1      3.429  122.29
+X2      1.545   82.64
+X3      3.500  209.21
 ```
 
 
@@ -227,12 +222,7 @@ file.remove("/tmp/small.squares")
 ```
 
 ```
-Warning: cannot remove file '/tmp/small.squares', reason 'No such file or
-directory'
-```
-
-```
-[1] FALSE
+[1] TRUE
 ```
 
 ```r
@@ -316,14 +306,14 @@ as.data.frame(counts)
 ```
 
 ```
-    value.val value.count
-X1         10           3
-X2         11           6
-X3         19           3
-X4         15           5
-X5         16           5
-X6         14           6
-X7         18           1
+    val count
+X1   10     3
+X2   11     6
+X3   19     3
+X4   15     5
+X5   16     5
+X6   14     6
+X7   18     1
 ....
 ```
 
@@ -459,7 +449,15 @@ as.data.frame(big.mtcars.cyl.carb)
 ```
 
 ```
-Error: argument is not interpretable as logical
+     mpg cyl
+X1  21.0   6
+X2  21.0   6
+X3  22.8   4
+X4  21.4   6
+X5  18.7   8
+X6  18.1   6
+X7  14.3   8
+....
 ```
 
 
@@ -486,8 +484,8 @@ as.data.frame(big.mtcars.sum)
 ```
 
 ```
-   value.cyl value.carb
-X1       198         90
+   cyl carb
+X1 198   90
 ```
 
 
@@ -515,10 +513,10 @@ as.data.frame(big.mtcars.sum.by.cyl)
 ```
 
 ```
-   value.cyl value.carb
-X1        42         24
-X2        44         17
-X3       112         49
+   cyl carb
+X1  42   24
+X2  44   17
+X3 112   49
 ```
 
 
@@ -548,10 +546,10 @@ ddply(words, "words", summarize, count = length(words))
 
 ```
    words count
-1      A    43
-2      B    43
-3      C    39
-4      D    46
+1      A    48
+2      B    40
+3      C    42
+4      D    48
 5      E    50
 6      F    30
 7      G    38
@@ -569,7 +567,15 @@ as.data.frame(wordcount)
 ```
 
 ```
-Error: non-character argument
+    word count
+X1     Z    46
+X2     V    44
+X3     I    36
+X4     M    36
+X5     Y    33
+X6     X    32
+X7     H    31
+....
 ```
 
 

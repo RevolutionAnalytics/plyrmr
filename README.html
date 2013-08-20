@@ -217,10 +217,10 @@ rmr.options(backend = &quot;local&quot;)
 <pre><code class="r">as.data.frame(avg.carbs)
 </code></pre>
 
-<pre><code>   value.mean.carb. value.mean.HP
-X1            3.429        122.29
-X2            1.545         82.64
-X3            3.500        209.21
+<pre><code>   mean.carb. mean.HP
+X1      3.429  122.29
+X2      1.545   82.64
+X3      3.500  209.21
 </code></pre>
 
 <p>This triggers a mapreduce job and brings the result into memory as a data frame. If it&#39;s too big, you can write it to a specific location.</p>
@@ -228,11 +228,7 @@ X3            3.500        209.21
 <pre><code class="r">file.remove(&quot;/tmp/avg.carbs&quot;)
 </code></pre>
 
-<pre><code>Warning: cannot remove file &#39;/tmp/avg.carbs&#39;, reason &#39;No such file or
-directory&#39;
-</code></pre>
-
-<pre><code>[1] FALSE
+<pre><code>[1] TRUE
 </code></pre>
 
 <pre><code class="r">avg.carbs.out = output(avg.carbs, &quot;/tmp/avg.carbs&quot;)
@@ -243,10 +239,10 @@ directory&#39;
 <pre><code class="r">as.data.frame(avg.carbs.out)
 </code></pre>
 
-<pre><code>   value.mean.carb. value.mean.HP
-X1            3.429        122.29
-X2            1.545         82.64
-X3            3.500        209.21
+<pre><code>   mean.carb. mean.HP
+X1      3.429  122.29
+X2      1.545   82.64
+X3      3.500  209.21
 </code></pre>
 
 <p>Most functions are modeled after familiar ones</p>
@@ -344,11 +340,7 @@ X7   7  49
 <pre><code class="r">file.remove(&quot;/tmp/small.squares&quot;)
 </code></pre>
 
-<pre><code>Warning: cannot remove file &#39;/tmp/small.squares&#39;, reason &#39;No such file or
-directory&#39;
-</code></pre>
-
-<pre><code>[1] FALSE
+<pre><code>[1] TRUE
 </code></pre>
 
 <pre><code class="r">output(small.squares, &quot;/tmp/small.squares&quot;)
@@ -411,14 +403,14 @@ X7   7  49
 <pre><code class="r">as.data.frame(counts)
 </code></pre>
 
-<pre><code>    value.val value.count
-X1         10           3
-X2         11           6
-X3         19           3
-X4         15           5
-X5         16           5
-X6         14           6
-X7         18           1
+<pre><code>    val count
+X1   10     3
+X2   11     6
+X3   19     3
+X4   15     5
+X5   16     5
+X6   14     6
+X7   18     1
 ....
 </code></pre>
 
@@ -529,7 +521,15 @@ X7  14.3   8
 as.data.frame(big.mtcars.cyl.carb)
 </code></pre>
 
-<pre><code>Error: argument is not interpretable as logical
+<pre><code>     mpg cyl
+X1  21.0   6
+X2  21.0   6
+X3  22.8   4
+X4  21.4   6
+X5  18.7   8
+X6  18.1   6
+X7  14.3   8
+....
 </code></pre>
 
 <p>We are now going to tackle the extreme data reduction task, whereby we go from a data set to a single number (per column), in this case taking the sum. This is very simple in  <code>plyr</code></p>
@@ -548,8 +548,8 @@ big.mtcars.sum = summarize(group.by(big.mtcars.partial.sums, 1), cyl = sum(cyl),
 as.data.frame(big.mtcars.sum)
 </code></pre>
 
-<pre><code>   value.cyl value.carb
-X1       198         90
+<pre><code>   cyl carb
+X1 198   90
 </code></pre>
 
 <p>In many other use cases, instead of a single summary, we are interested in summaries by group. In <code>plyr</code> this calls for the <code>ddply</code> function (<code>group_by</code> in <code>dplyr</code>)</p>
@@ -570,10 +570,10 @@ big.mtcars.sum.by.cyl   = summarize(big.mtcars.by.cyl, cyl = sum(cyl), carb = su
 as.data.frame(big.mtcars.sum.by.cyl)
 </code></pre>
 
-<pre><code>   value.cyl value.carb
-X1        42         24
-X2        44         17
-X3       112         49
+<pre><code>   cyl carb
+X1  42   24
+X2  44   17
+X3 112   49
 </code></pre>
 
 <p>We are ready to write the wordcount function, the &ldquo;hello world&rdquo; equivalent of the Hadoop world. The task is to read in a data frame with lines of text, split the lines into words and count how many times each word occurs. First let&#39;s make up some fake text data to keep things self-contained.</p>
@@ -598,10 +598,10 @@ ddply(words, &quot;words&quot;, summarize, count = length(words))
 </code></pre>
 
 <pre><code>   words count
-1      A    43
-2      B    43
-3      C    39
-4      D    46
+1      A    48
+2      B    40
+3      C    42
+4      D    48
 5      E    50
 6      F    30
 7      G    38
@@ -615,7 +615,15 @@ wordcount = summarize(group.by(words, words), word = unique(words), count = leng
 as.data.frame(wordcount)
 </code></pre>
 
-<pre><code>Error: non-character argument
+<pre><code>    word count
+X1     Z    46
+X2     V    44
+X3     I    36
+X4     M    36
+X5     Y    33
+X6     X    32
+X7     H    31
+....
 </code></pre>
 
 <h2>The fundamental primitives: <code>do</code>  and <code>group.by.f</code></h2>

@@ -32,11 +32,11 @@ make.map.fun =
 
 make.combine.fun = 
 	function(valf) 
-		make.map.fun(identity, as.data.frame(valf))
+		make.map.fun(identity, function(.x) as.data.frame(valf(.x)))
 
 make.reduce.fun = 
 	function(valf) 
-		make.map.fun(NULL, as.data.frame(valf))
+		make.map.fun(NULL, function(.x) as.data.frame(valf(.x)))
 
 to.fun1 = 
 	function(f, ...)

@@ -26,3 +26,28 @@ strip.nulls =
 strip.null.args = 
 	function(...)
 		strip.nulls(list(...))
+
+#do.call specialized for do
+do.call.do =
+	function(.data, f, ..., envir = parent.frame())
+		do.call(
+			do, 
+			.data, 
+			f, 
+			..., 
+			envir = envir)
+
+# a do.call varant which takes a mix of ... args and a list of args
+do.call.dots = 
+	function(what, ..., args, quote = FALSE, envir = parent.frame())
+		do.call(what, c(list(...), args), quote = quote, envir = envir)
+
+# retun a function whose env is a copy of the original env (one level only)
+freeze.env = 
+	function(x) {
+		envx = environment(x)
+		if(!is.null(envx)) {
+			nenv = as.environment(as.list(envx))
+			parent.env(nenv) = parent.env(envx)
+			environment(x) = nenv}
+		x}

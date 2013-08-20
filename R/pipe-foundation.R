@@ -67,35 +67,36 @@ setMethodS3(
 		print(as.character(x))
 		invisible(x)})
 
-protect = 
-	function(x) {
-		envx= environment(x)
-		if(!is.null(envx)) {
-			nenv = as.environment(as.list(envx))
-			parent.env(nenv) = parent.env(envx)
-			environment(x) = nenv}
-		x}
-
-do = 
-	function(.data, f, ...){
-		f1 = to.fun1(protect(f), ...)
+setMethodS3(
+	"do",
+	"pipe", 
+	function(.data, f, ..., envir = parent.frame()){
+		dot.args = dots(...)
+		f1 = 
+			freeze.env(
+				function(.x) 
+					do.call.dots(do, .x, f, args = dot.args, envir = envir)) #review
 		if(is.null(.data$group.by))
 			.data$map = comp(.data$map, f1)
 		else
 			.data$reduce = comp(.data$reduce, f1)
-		.data}
+		.data})
 
 group.by = 
-	function(.data, ..., recursive = FALSE) {
-		dotargs = dots(...)
+	function(.data, ..., recursive = FALSE, envir = parent.frame()) {
+		dot.args = dots(...)
 		group.by.f(
 			.data, 
 			function(.y) 
-				do.call(summarize, c(list(.y), dotargs)))}
+				do.call.dots(summarize, .y, args = dot.args, envir = envir))}
 
 group.by.f = 
-	function(.data, f, ..., recursive = FALSE) {
-		f1 = to.fun1(protect(f), ...)
+	function(.data, f, ..., recursive = FALSE, envir = parent.frame()) {
+		dot.args = dots(...)
+		f1 = 
+			freeze.env(
+				function(.x) 
+					do.call.dots(do, .x, f, args = dot.args , envir = envir)) #review
 		if(is.null(.data$group.by)){
 			.data$group.by = f1
 			if(recursive) 
@@ -105,7 +106,8 @@ group.by.f =
 			group.by.f(
 				input(run(.data)), 
 				f1, 
-				recursive = recursive)}
+				recursive = recursive,
+				envir = envir)}
 
 group.together = 
 	function(.data, recursive = FALSE) 
@@ -189,7 +191,7 @@ as.pipe.1 =
 		as.pipe(as.big.data(x, "native"))
 
 as.pipe.2 = 
-	function(x, format) 
+	function(x, format = "native") 
 		as.pipe(as.big.data(x, format))
 
 setMethodS3(

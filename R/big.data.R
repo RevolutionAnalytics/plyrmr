@@ -32,7 +32,7 @@ setMethodS3(
 		invisible(x)})
 
 as.big.data_cf =
-	function(x, format)
+	function(x, format = "native")
 		structure(
 			list(
 				data = x, 

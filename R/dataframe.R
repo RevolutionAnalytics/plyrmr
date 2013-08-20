@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-do.call.dots = 
-	function(what, ..., args, quote = FALSE, envir = parent.frame())
-		do.call(what, c(list(...), args), quote = quote, envir = envir)
+do = function(.data, ...) UseMethod("do")
 
-do.data.frame = 
-	function(.data, f,  ..., named = TRUE,  envir = sys.frame(1)) {
+setMethodS3(
+	"do",
+	"data.frame", 
+	function(.data, f,  ..., named = TRUE,  envir = parent.frame(1)) {
 		dotlist = {
 			if(named)
 				named_dots(...)
@@ -25,36 +25,32 @@ do.data.frame =
 				dots(...) }
 		env = list2env(.data, parent = envir)
 		dotvals = lapply(dotlist, function(x) eval(x, env))
-		do.call.dots(f, .data, args = dotvals)}
+		do.call.dots(f, .data, args = dotvals)})
 
+where = function(.data, ...) UseMethod("where")
 
-subset3.data.frame = 
+setMethodS3(
+	"where",
+	"data.frame",
 	function(.data, ...)
 		do.data.frame(
 			.data, 
 			function(.x, cond) .x[cond, ], 
 			...,
-			named = FALSE)
+			named = FALSE))
 
-#(function(){x = 5; subset3.data.frame(mtcars, cyl>x)})()
+#(function(){x = 5; where.data.frame(mtcars, cyl>x)})()
 
-select.data.frame =
+select = function(.data, ..., replace = TRUE) UseMethod("select")
+setMethodS3(
+	"select",
+	"data.frame",
 	function(.data, ...)
 		do.data.frame(
 			.data, 
-			function(.x, ...) data.frame(...), 
-			...)
+			function(.x, ...) {
+				if(replace) data.frame(...) 
+				else cbind(.x, data.frame(...))}, 
+			...))
 
-#(function(){select.data.frame(mtcars, cyl, carb)})()
-
-add.cols.data.frame  = 
-	function(.data, ...)
-		do.data.frame(.data, function(.x, ...) cbind(.x, data.frame(...)), ...)
-
-#(function(){v = 4; add.cols.data.frame(mtcars, x = v)})()
-
-map.data.frame = 
-	function(.data, ...)
-		do.data.frame(.data, function(.x, ...) data.frame(...), ...)
-
-# (function(){v = 5; map.data.frame(mtcars,  v + cyl)})()
+#(function(){v = 5+ select.data.frame(mtcars, cy32 = cyl^2, carb + 5)})()

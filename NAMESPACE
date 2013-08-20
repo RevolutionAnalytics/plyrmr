@@ -31,7 +31,8 @@ export(
 	top.k,
 	bottom.k,
 	moving.window, 
-	sample)
+	sample,
+	where)
 
 S3method(print, big.data)
 S3method(print, pipe)
@@ -67,6 +68,10 @@ S3method(names, pipe)
 S3method(sample, pipe)
 S3method(sample, default)
 
+S3method(select, pipe)
+S3method(select, data.frame)
+S3method(where, pipe)
+S3method(where, data.frame)
 
-
-
+S3method(do, data.frame)
+S3method(do, pipe)

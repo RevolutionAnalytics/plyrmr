@@ -77,7 +77,7 @@ setMethodS3("quantile",	"pipe", quantile.fun)
 
 setMethodS3(
 	"quantile",
-	"data.frame",
+	 "data.frame",
 	function(x, ...)
 		data.frame(
 			strip.nulls(

@@ -16,8 +16,11 @@
 comp = 
 	function(...) {
 		funs = list(...)
-		funs = funs[!sapply(funs, is.null)]
-		do.call(Compose, funs)}
+		funs = strip.nulls(funs)
+		if(length(funs) == 1)
+			funs[[1]]
+		else		
+			do.call(Compose, funs)}
 
 make.map.fun = 
 	function(keyf, valf) {

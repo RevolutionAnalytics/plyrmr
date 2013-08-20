@@ -74,6 +74,7 @@ setMethodS3(
 	"do",
 	"pipe", 
 	function(.data, f, ..., envir = parent.frame()){
+		force(envir)
 		dot.args = dots(...)
 		f1 = 
 			freeze.env(
@@ -87,6 +88,7 @@ setMethodS3(
 
 group.by = 
 	function(.data, ..., recursive = FALSE, envir = parent.frame()) {
+		force(envir)
 		dot.args = dots(...)
 		group.by.f(
 			.data, 

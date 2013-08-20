@@ -29,18 +29,20 @@ strip.null.args =
 
 #do.call specialized for do
 do.call.do =
-	function(.data, f, ..., envir = parent.frame())
+	function(.data, f, ..., envir = parent.frame()) {
+		force(envir)
 		do.call(
 			do, 
 			.data, 
 			f, 
 			..., 
-			envir = envir)
+			envir = envir)}
 
 # a do.call varant which takes a mix of ... args and a list of args
 do.call.dots = 
-	function(what, ..., args, quote = FALSE, envir = parent.frame())
-		do.call(what, c(list(...), args), quote = quote, envir = envir)
+	function(what, ..., args, quote = FALSE, envir = parent.frame()) {
+		force(envir)
+		do.call(what, c(list(...), args), quote = quote, envir = envir)}
 
 # retun a function whose env is a copy of the original env (one level only)
 freeze.env = 

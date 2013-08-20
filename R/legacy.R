@@ -18,14 +18,14 @@ do.call.do =
 			do, 
 			c(list(.data, f), dots(...)))
 
-subset.fun = function(x, ...) do.call.do(x, subset, ...)
+subset.fun = function(x, ...) do.call.do(x, subset, ..., envir = NULL)
 setMethodS3("subset", "pipe", subset.fun)
 
 setMethodS3(
 	"transform", 
 	"pipe", 
 	function(`_data`, ...) 
-		do.call.do(`_data`, transform, ...))
+		do.call.do(`_data`, transform, ..., envir = NULL))
 
 mutate =  function(.data, ...) UseMethod("mutate")
 
@@ -33,14 +33,14 @@ setMethodS3(
 	"mutate", 
 	"pipe", 
 	function(.data, ...) 
-		do.call.do(.data, mutate, ...))
+		do.call.do(.data, mutate, ..., envir = NULL))
 
 setMethodS3("mutate", "default", plyr::mutate)
 
 
 summarize.fun = 
 	function(.data, ...)
-		do.call.do(.data, summarize, ...)
+		do.call.do(.data, summarize, ..., envir = NULL)
 
 summarize = function(.data, ...) UseMethod("summarize")
 setMethodS3("summarize", "pipe", summarize.fun)

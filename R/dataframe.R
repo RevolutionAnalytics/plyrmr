@@ -17,7 +17,8 @@ do = function(.data, ...) UseMethod("do")
 setMethodS3(
 	"do",
 	"data.frame", 
-	function(.data, f,  ..., named = TRUE,  envir = parent.frame(1)) {
+	function(.data, f,  ..., named = TRUE,  envir = stop("Why wasn't envir specified? Why?")) {
+		force(envir)
 		dotlist = {
 			if(named)
 				named_dots(...)
@@ -32,12 +33,13 @@ where = function(.data, ...) UseMethod("where")
 setMethodS3(
 	"where",
 	"data.frame",
-	function(.data, ...)
-		do.data.frame(
+	function(.data, ..., envir = parent.frame())
+		do(
 			.data, 
 			function(.x, cond) .x[cond, ], 
 			...,
-			named = FALSE))
+			named = FALSE,
+			envir = envir))
 
 #(function(){x = 5; where.data.frame(mtcars, cyl>x)})()
 
@@ -45,12 +47,14 @@ select = function(.data, ..., replace = TRUE) UseMethod("select")
 setMethodS3(
 	"select",
 	"data.frame",
-	function(.data, ..., replace = TRUE)
-		do.data.frame(
+	function(.data, ..., replace = TRUE, envir = parent.frame()) {
+		force(envir)
+		do(
 			.data, 
 			function(.x, ...) {
 				if(replace) data.frame(...) 
 				else cbind(.x, data.frame(...))}, 
-			...))
+			...,
+			envir = envir)})
 
 #(function(){v = 5+ select.data.frame(mtcars, cy32 = cyl^2, carb + 5)})()

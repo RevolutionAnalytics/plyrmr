@@ -88,7 +88,8 @@ setMethodS3(
 							quantile(.y, ...)))))
 
 extreme.k= 
-	function(x, k, ..., decreasing) {
+	function(x, k, ..., decreasing, envir = parent.frame()) {
+		force(envir)
 		this.order = Curry(order, decreasing = decreasing)
 		mr.fun = 
 			function(.x)
@@ -96,7 +97,7 @@ extreme.k=
 					.x[
 						do.call(
 							this.order,
-							summarize(.x, ...))], 
+							summarize(.x, ..., envir = envir))], 
 					k)
 		do(
 			group.by.f(
@@ -104,8 +105,15 @@ extreme.k=
 				constant(1)),
 			mr.fun)}
 
-top.k = function(x, k, ...) extreme.k(x, k, ..., decreasing = TRUE)
-bottom.k = function(x, k, ...) extreme.k(x, k, ..., decreasing = FALSE)
+top.k = 
+	function(x, k, ..., envir = parent.frame()) {
+		force(envir)
+		extreme.k(x, k, ..., decreasing = TRUE, envir = envir)}
+
+bottom.k = 
+	function(x, k, ..., envir = parent.frame()) {
+		force(envir)
+		extreme.k(x, k, ..., decreasing = FALSE, envir = envir)}
 
 moving.window = 
 	function(x, index, window, f, R = rmr.options("keyval.length")) {

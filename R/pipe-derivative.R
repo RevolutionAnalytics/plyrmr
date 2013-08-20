@@ -15,14 +15,16 @@
 setMethodS3(
 	"where",
 	"pipe",
-	function(.data, ...)
-		do.call.do(.data, where, ...))
+	function(.data, ..., envir = parent.frame()) {
+		force(envir)
+		do.call.do(.data, where, ..., envir = envir)})
 
 setMethodS3(
 	"select",
 	"pipe",
-	function(.data, ...)
-		do.call.do(.data, select, ...))
+	function(.data, ..., envir = parent.frame()) {
+		force(envir)
+		do.call.do(.data, select, ..., envir = envir)})
 
 setMethodS3(
 	"names",

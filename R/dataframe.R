@@ -45,7 +45,7 @@ select = function(.data, ..., replace = TRUE) UseMethod("select")
 setMethodS3(
 	"select",
 	"data.frame",
-	function(.data, ...)
+	function(.data, ..., replace = TRUE)
 		do.data.frame(
 			.data, 
 			function(.x, ...) {

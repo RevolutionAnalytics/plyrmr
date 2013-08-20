@@ -34,7 +34,7 @@ setMethodS3(
 					x, 
 					function(.y) 
 						data.frame(names = names(.y))), 
-				function(.x) unique(.x$names), recursive=T)))
+				function(.x) unique(.x$names), recursive = TRUE)))
 
 setMethodS3(
 	"sample",

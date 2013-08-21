@@ -17,14 +17,14 @@ setMethodS3(
 	"pipe",
 	function(.data, ..., envir = parent.frame()) {
 		force(envir)
-		do.call.do(.data, where, ..., envir = envir)})
+		do(.data, CurryHalfLazy(where, envir = envir), ...)})
 
 setMethodS3(
 	"select",
 	"pipe",
 	function(.data, ..., envir = parent.frame()) {
 		force(envir)
-		do.call.do(.data, select, ..., envir = envir)})
+		do(.data, CurryHalfLazy(select, envir = envir), ...)})
 
 setMethodS3(
 	"names",

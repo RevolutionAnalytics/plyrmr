@@ -70,38 +70,34 @@ setMethodS3(
 		print(as.character(x))
 		invisible(x)})
 
-setMethodS3(
-	"do",
-	"pipe", 
-	function(.data, f, ..., envir = parent.frame()){
-		force(envir)
+do =  
+	function(.data, f, ...){
 		dot.args = dots(...)
 		f1 = 
 			freeze.env(
 				function(.x) 
-					do.call.dots(do, .x, f, args = dot.args, envir = envir)) #review
+					do.call(f, c(list(.x), dot.args)))
 		if(is.null(.data$group.by))
 			.data$map = comp(.data$map, f1)
 		else
 			.data$reduce = comp(.data$reduce, f1)
-		.data})
+		.data}
 
 group.by = 
-	function(.data, ..., recursive = FALSE, envir = parent.frame()) {
-		force(envir)
+	function(.data, ..., recursive = FALSE) {
 		dot.args = dots(...)
 		group.by.f(
 			.data, 
 			function(.y) 
-				do.call.dots(summarize, .y, args = dot.args, envir = envir))}
+				do.call(select, c(list(.y), dot.args)))}
 
 group.by.f = 
-	function(.data, f, ..., recursive = FALSE, envir = parent.frame()) {
+	function(.data, f, ..., recursive = FALSE) {
 		dot.args = dots(...)
 		f1 = 
 			freeze.env(
 				function(.x) 
-					do.call.dots(do, .x, f, args = dot.args , envir = envir)) #review
+					do.call(f, c(list(.x), dot.args)))
 		if(is.null(.data$group.by)){
 			.data$group.by = f1
 			if(recursive) 
@@ -111,8 +107,7 @@ group.by.f =
 			group.by.f(
 				input(run(.data)), 
 				f1, 
-				recursive = recursive,
-				envir = envir)}
+				recursive = recursive)}
 
 group.together = 
 	function(.data, recursive = FALSE) 

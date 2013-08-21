@@ -27,9 +27,10 @@ strip.null.args =
 	function(...)
 		strip.nulls(list(...))
 
-# a do.call varant which takes a mix of ... args and a list of args
+# a do.call variant which takes a mix of ... args and a list of args
 do.call.dots = 
-	function(what, ..., args, quote = FALSE, envir = parent.frame()) {
+ 	function(what, ..., args) {		do.call(what, c(list(...), args))} #not used yet, refactor later
+
 		force(envir)
 		do.call(what, c(list(...), args), quote = quote, envir = envir)}
 

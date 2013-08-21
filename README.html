@@ -227,11 +227,7 @@ X2      3.500   209.2
 <pre><code class="r">file.remove(&quot;/tmp/avg.carbs&quot;)
 </code></pre>
 
-<pre><code>Warning: cannot remove file &#39;/tmp/avg.carbs&#39;, reason &#39;No such file or
-directory&#39;
-</code></pre>
-
-<pre><code>[1] FALSE
+<pre><code>[1] TRUE
 </code></pre>
 
 <pre><code class="r">avg.carbs.out = output(avg.carbs, &quot;/tmp/avg.carbs&quot;)
@@ -342,11 +338,7 @@ X7   7  49
 <pre><code class="r">file.remove(&quot;/tmp/small.squares&quot;)
 </code></pre>
 
-<pre><code>Warning: cannot remove file &#39;/tmp/small.squares&#39;, reason &#39;No such file or
-directory&#39;
-</code></pre>
-
-<pre><code>[1] FALSE
+<pre><code>[1] TRUE
 </code></pre>
 
 <pre><code class="r">output(small.squares, &quot;/tmp/small.squares&quot;)
@@ -527,7 +519,15 @@ X7  14.3   8
 as.data.frame(big.mtcars.cyl.carb)
 </code></pre>
 
-<pre><code>Error: object &#39;envir&#39; not found
+<pre><code>     mpg cyl
+X1  21.0   6
+X2  21.0   6
+X3  22.8   4
+X4  21.4   6
+X5  18.7   8
+X6  18.1   6
+X7  14.3   8
+....
 </code></pre>
 
 <p>We are now going to tackle the extreme data reduction task, whereby we go from a data set to a single number (per column), in this case taking the sum. This is very simple in  <code>plyr</code></p>
@@ -596,12 +596,12 @@ ddply(words, &quot;words&quot;, summarize, count = length(words))
 </code></pre>
 
 <pre><code>   words count
-1      A    46
-2      B    46
+1      A    45
+2      B    41
 3      C    40
-4      D    46
-5      E    53
-6      F    30
+4      D    47
+5      E    49
+6      F    31
 7      G    38
 ....
 </code></pre>
@@ -614,13 +614,13 @@ as.data.frame(wordcount)
 </code></pre>
 
 <pre><code>    word count
-X1     B    46
-X2     N    38
-X3     X    33
-X4     Z    44
-X5     V    43
-X6     I    37
-X7     M    35
+X1     X    33
+X2     Z    45
+X3     V    42
+X4     I    37
+X5     M    36
+X6     Y    34
+X7     H    32
 ....
 </code></pre>
 

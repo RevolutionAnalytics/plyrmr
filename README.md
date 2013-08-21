@@ -76,12 +76,7 @@ file.remove("/tmp/avg.carbs")
 ```
 
 ```
-Warning: cannot remove file '/tmp/avg.carbs', reason 'No such file or
-directory'
-```
-
-```
-[1] FALSE
+[1] TRUE
 ```
 
 ```r
@@ -225,12 +220,7 @@ file.remove("/tmp/small.squares")
 ```
 
 ```
-Warning: cannot remove file '/tmp/small.squares', reason 'No such file or
-directory'
-```
-
-```
-[1] FALSE
+[1] TRUE
 ```
 
 ```r
@@ -457,7 +447,15 @@ as.data.frame(big.mtcars.cyl.carb)
 ```
 
 ```
-Error: object 'envir' not found
+     mpg cyl
+X1  21.0   6
+X2  21.0   6
+X3  22.8   4
+X4  21.4   6
+X5  18.7   8
+X6  18.1   6
+X7  14.3   8
+....
 ```
 
 
@@ -546,12 +544,12 @@ ddply(words, "words", summarize, count = length(words))
 
 ```
    words count
-1      A    46
-2      B    46
+1      A    45
+2      B    41
 3      C    40
-4      D    46
-5      E    53
-6      F    30
+4      D    47
+5      E    49
+6      F    31
 7      G    38
 ....
 ```
@@ -568,13 +566,13 @@ as.data.frame(wordcount)
 
 ```
     word count
-X1     B    46
-X2     N    38
-X3     X    33
-X4     Z    44
-X5     V    43
-X6     I    37
-X7     M    35
+X1     X    33
+X2     Z    45
+X3     V    42
+X4     I    37
+X5     M    36
+X6     Y    34
+X7     H    32
 ....
 ```
 

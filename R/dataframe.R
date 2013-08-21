@@ -17,28 +17,32 @@ where = function(.data, ...) UseMethod("where")
 setMethodS3(
 	"where",
 	"data.frame",
-	function(.data, ..., envir = parent.frame())
-		do(
-			.data, 
-			function(.x, cond) .x[cond, ], 
-			...,
-			named = FALSE,
-			envir = envir))
+	function(.data, ..., envir = parent.frame()) {
+		force(envir)
+		cond = 
+			non.standard.eval(
+				.data, 
+				..., 
+				named = FALSE, 
+				envir = envir)
+		.data[Reduce(`&`, cond), , drop = FALSE]})
 
-#(function(){x = 5; where.data.frame(mtcars, cyl>x)})()
+#(function(){x = 5; where(mtcars, cyl>x)})()
 
-select = function(.data, ..., replace = TRUE) UseMethod("select")
+select = function(.data, ..., .replace = TRUE) UseMethod("select")
 setMethodS3(
 	"select",
 	"data.frame",
-	function(.data, ..., replace = TRUE, envir = parent.frame()) {
+	function(.data, ..., .replace = TRUE, envir = parent.frame()) {
 		force(envir)
-		do(
+		args = 
+			non.standard.eval(
 			.data, 
-			function(.x, ...) {
-				if(replace) data.frame(...) 
-				else cbind(.x, data.frame(...))}, 
 			...,
-			envir = envir)})
+			named = TRUE,
+			envir = envir)
+		newcols = splat(data.frame)(c(args, list(stringsAsFactors = FALSE)))
+		if(.replace)  newcols
+		else cbind(.data, newcols)})
 
-#(function(){v = 5+ select.data.frame(mtcars, cy32 = cyl^2, carb + 5)})()
+#(function(){v = 5;  select(mtcars, cy32 = cyl^2, carb + 5)})()

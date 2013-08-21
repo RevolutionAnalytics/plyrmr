@@ -217,7 +217,9 @@ rmr.options(backend = &quot;local&quot;)
 <pre><code class="r">as.data.frame(avg.carbs)
 </code></pre>
 
-<pre><code>Error: &#39;envir&#39; must be an environment
+<pre><code>   mean.carb. mean.HP
+X1      3.429   122.3
+X2      3.500   209.2
 </code></pre>
 
 <p>This triggers a mapreduce job and brings the result into memory as a data frame. If it&#39;s too big, you can write it to a specific location.</p>
@@ -235,15 +237,14 @@ directory&#39;
 <pre><code class="r">avg.carbs.out = output(avg.carbs, &quot;/tmp/avg.carbs&quot;)
 </code></pre>
 
-<pre><code>Error: &#39;envir&#39; must be an environment
-</code></pre>
-
 <p>You can still read it, if small enough</p>
 
 <pre><code class="r">as.data.frame(avg.carbs.out)
 </code></pre>
 
-<pre><code>Error: object &#39;avg.carbs.out&#39; not found
+<pre><code>   mean.carb. mean.HP
+X1      3.429   122.3
+X2      3.500   209.2
 </code></pre>
 
 <p>Most functions are modeled after familiar ones</p>
@@ -325,7 +326,15 @@ small.squares
 <pre><code class="r">as.data.frame(small.squares)
 </code></pre>
 
-<pre><code>Error: &#39;envir&#39; must be an environment
+<pre><code>     x  x2
+X1   1   1
+X2   2   4
+X3   3   9
+X4   4  16
+X5   5  25
+X6   6  36
+X7   7  49
+....
 </code></pre>
 
 <p>Turning a <code>pipe</code> into a data frame is one of a few triggering events that will start the actual computation. This is powered by <code>rmr2</code>, hence it can be hadoop backed, hence it can operate on very large data sets. An almost identical syntax can be used to perform the same operation on a data frame and a Hadoop data set. When operating on very large data sets, we can&#39;t use <code>as.data.frame</code>, because there isn&#39;t enough RAM available. The alternative is the <code>output</code> primitive, which will trigger the actual computation described by a <code>pipe</code> and store the results to a user-specified path:</p>
@@ -343,7 +352,7 @@ directory&#39;
 <pre><code class="r">output(small.squares, &quot;/tmp/small.squares&quot;)
 </code></pre>
 
-<pre><code>Error: &#39;envir&#39; must be an environment
+<pre><code>[1] &quot;/tmp/small.squares&quot; &quot;native&quot;            
 </code></pre>
 
 <p>And let&#39;s check that it actually worked:</p>
@@ -351,10 +360,15 @@ directory&#39;
 <pre><code class="r">as.data.frame(input(&quot;/tmp/small.squares&quot;))
 </code></pre>
 
-<pre><code>Warning: cannot open file &#39;/tmp/small.squares&#39;: No such file or directory
-</code></pre>
-
-<pre><code>Error: cannot open the connection
+<pre><code>     x  x2
+X1   1   1
+X2   2   4
+X3   3   9
+X4   4  16
+X5   5  25
+X6   6  36
+X7   7  49
+....
 </code></pre>
 
 <p>With <code>output</code> and refraining from using <code>as.data.frame</code> we can process hadoop sized data sets. Of course we can use <code>as.data.frame</code> after a number of data reduction steps. Another role of output is as a bridge with <code>rmr2</code>. You can just write <code>mapreduce(ouput(...))</code> and combine the best of the two packages.</p>
@@ -370,13 +384,13 @@ directory&#39;
 </code></pre>
 
 <pre><code>    x val count
-1   7   7     1
-2   8   8     1
-3   9   9     3
-4  10  10     4
-5  11  11     6
-6  12  12     6
-7  13  13    12
+1   9   9     4
+2  10  10     6
+3  11  11     5
+4  12  12    10
+5  13  13     5
+6  14  14     5
+7  15  15     5
 ....
 </code></pre>
 
@@ -395,7 +409,15 @@ directory&#39;
 <pre><code class="r">as.data.frame(counts)
 </code></pre>
 
-<pre><code>Error: Why wasn&#39;t envir specified? Why?
+<pre><code>    val count
+X1   13     5
+X2   20     1
+X3   12    10
+X4   11     5
+X5   18     2
+X6    9     4
+X7   14     5
+....
 </code></pre>
 
 <p>Please note that the results are not in the same order. This is always true with Hadoop and if other examples in this tutorial seem to show the opposite it&#39;s only because of the tiny size of the data sets involved. Not incidentally, theoreticians have formalized this computational model as MUD (Massive Unordered Distributed, see <a href="http://arxiv.org/abs/cs/0611108">this paper</a>). </p>
@@ -422,7 +444,15 @@ Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
 as.data.frame(big.mtcars.again)
 </code></pre>
 
-<pre><code>Error: &#39;envir&#39; must be an environment
+<pre><code>     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+X1  21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+X2  21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+X3  22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+X4  21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+X5  18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+X6  18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+X7  14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+....
 </code></pre>
 
 <p>Now let&#39;s take a baby step: select certain rows. The function <code>subset</code> in <code>base</code> comes in handy.</p>
@@ -447,7 +477,15 @@ Merc 280            19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
 as.data.frame(big.mtcars.cyl.gt.4)
 </code></pre>
 
-<pre><code>Error: &#39;envir&#39; must be an environment
+<pre><code>     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+X1  21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+X2  21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+X3  21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+X4  18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+X5  18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+X6  14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+X7  19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
+....
 </code></pre>
 
 <p>Next baby step up from selecting rows is selecting columns:</p>
@@ -472,21 +510,24 @@ as.data.frame(big.mtcars.cyl.gt.4)
 as.data.frame(big.mtcars.cyl.carb)
 </code></pre>
 
-<pre><code>Error: &#39;envir&#39; must be an environment
+<pre><code>     mpg cyl
+X1  21.0   6
+X2  21.0   6
+X3  22.8   4
+X4  21.4   6
+X5  18.7   8
+X6  18.1   6
+X7  14.3   8
+....
 </code></pre>
 
 <p>Deceptively similar, but works on petabytes. In fact <code>summarize</code> doesn&#39;t seem the right name for this function, which can do a lot more. So we aliased to <code>select</code>, following dplyr, to allow the programmer to express intent.</p>
 
 <pre><code class="r">big.mtcars.cyl.carb =select(big.mtcars, mpg = mpg, cyl = cyl)
+as.data.frame(big.mtcars.cyl.carb)
 </code></pre>
 
 <pre><code>Error: object &#39;envir&#39; not found
-</code></pre>
-
-<pre><code class="r">as.data.frame(big.mtcars.cyl.carb)
-</code></pre>
-
-<pre><code>Error: &#39;envir&#39; must be an environment
 </code></pre>
 
 <p>We are now going to tackle the extreme data reduction task, whereby we go from a data set to a single number (per column), in this case taking the sum. This is very simple in  <code>plyr</code></p>
@@ -505,7 +546,8 @@ big.mtcars.sum = summarize(group.by(big.mtcars.partial.sums, 1), cyl = sum(cyl),
 as.data.frame(big.mtcars.sum)
 </code></pre>
 
-<pre><code>Error: &#39;envir&#39; must be an environment
+<pre><code>   cyl carb
+X1 198   90
 </code></pre>
 
 <p>In many other use cases, instead of a single summary, we are interested in summaries by group. In <code>plyr</code> this calls for the <code>ddply</code> function (<code>group_by</code> in <code>dplyr</code>)</p>
@@ -526,7 +568,10 @@ big.mtcars.sum.by.cyl   = summarize(big.mtcars.by.cyl, cyl = sum(cyl), carb = su
 as.data.frame(big.mtcars.sum.by.cyl)
 </code></pre>
 
-<pre><code>Error: Why wasn&#39;t envir specified? Why?
+<pre><code>   cyl carb
+X1  42   24
+X2  44   17
+X3 112   49
 </code></pre>
 
 <p>We are ready to write the wordcount function, the &ldquo;hello world&rdquo; equivalent of the Hadoop world. The task is to read in a data frame with lines of text, split the lines into words and count how many times each word occurs. First let&#39;s make up some fake text data to keep things self-contained.</p>
@@ -551,13 +596,13 @@ ddply(words, &quot;words&quot;, summarize, count = length(words))
 </code></pre>
 
 <pre><code>   words count
-1      A    41
-2      B    48
-3      C    30
-4      D    43
-5      E    44
-6      F    29
-7      G    33
+1      A    46
+2      B    46
+3      C    40
+4      D    46
+5      E    53
+6      F    30
+7      G    38
 ....
 </code></pre>
 
@@ -568,7 +613,15 @@ wordcount = summarize(group.by(words, words), word = unique(words), count = leng
 as.data.frame(wordcount)
 </code></pre>
 
-<pre><code>Error: &#39;envir&#39; must be an environment
+<pre><code>    word count
+X1     B    46
+X2     N    38
+X3     X    33
+X4     Z    44
+X5     V    43
+X6     I    37
+X7     M    35
+....
 </code></pre>
 
 <h2>The fundamental primitives: <code>do</code>  and <code>group.by.f</code></h2>

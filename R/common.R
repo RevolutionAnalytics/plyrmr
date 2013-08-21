@@ -42,6 +42,11 @@ non.standard.eval =
 		env = list2env(.data, parent = envir)
 		lapply(dotlist, function(x) eval(x, env))}
 
+CurryHalfLazy = 
+	function(FUN, ...) {
+		.orig = list(...)
+		function(...) do.call(FUN, c(.orig, dots(...)))}
+
 # retun a function whose env is a copy of the original env (one level only)
 freeze.env = 
 	function(x) {

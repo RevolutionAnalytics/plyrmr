@@ -31,8 +31,16 @@ strip.null.args =
 do.call.dots = 
  	function(what, ..., args) {		do.call(what, c(list(...), args))} #not used yet, refactor later
 
+non.standard.eval = 
+	function(.data,  ..., named = TRUE,  envir = stop("Why wasn't envir specified? Why?")) {
 		force(envir)
-		do.call(what, c(list(...), args), quote = quote, envir = envir)}
+		dotlist = {
+			if(named)
+				named_dots(...)
+			else
+				dots(...) }
+		env = list2env(.data, parent = envir)
+		lapply(dotlist, function(x) eval(x, env))}
 
 # retun a function whose env is a copy of the original env (one level only)
 freeze.env = 

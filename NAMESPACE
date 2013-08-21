@@ -73,5 +73,3 @@ S3method(select, data.frame)
 S3method(where, pipe)
 S3method(where, data.frame)
 
-S3method(do, data.frame)
-S3method(do, pipe)

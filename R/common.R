@@ -27,17 +27,6 @@ strip.null.args =
 	function(...)
 		strip.nulls(list(...))
 
-#do.call specialized for do
-do.call.do =
-	function(.data, f, ..., envir = parent.frame()) {
-		force(envir)
-		do.call(
-			do, 
-			.data, 
-			f, 
-			..., 
-			envir = envir)}
-
 # a do.call varant which takes a mix of ... args and a list of args
 do.call.dots = 
 	function(what, ..., args, quote = FALSE, envir = parent.frame()) {

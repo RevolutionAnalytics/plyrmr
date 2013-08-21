@@ -12,22 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-do = function(.data, ...) UseMethod("do")
-
-setMethodS3(
-	"do",
-	"data.frame", 
-	function(.data, f,  ..., named = TRUE,  envir = stop("Why wasn't envir specified? Why?")) {
-		force(envir)
-		dotlist = {
-			if(named)
-				named_dots(...)
-			else
-				dots(...) }
-		env = list2env(.data, parent = envir)
-		dotvals = lapply(dotlist, function(x) eval(x, env))
-		do.call.dots(f, .data, args = dotvals)})
-
 where = function(.data, ...) UseMethod("where")
 
 setMethodS3(

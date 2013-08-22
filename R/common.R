@@ -12,35 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+#strings
 # of perl fame
 qw = function(...) as.character(match.call())[-1]
 
+#functional
 constant = 
 	function(x)
 		function(...) x
-
-strip.nulls = 
-	function(x) 
-		x[!sapply(x, is.null)]
-
-strip.null.args = 
-	function(...)
-		strip.nulls(list(...))
-
-# a do.call variant which takes a mix of ... args and a list of args
-do.call.dots = 
- 	function(what, ..., args) {		do.call(what, c(list(...), args))} #not used yet, refactor later
-
-non.standard.eval = 
-	function(.data,  ..., named = TRUE,  envir = stop("Why wasn't envir specified? Why?")) {
-		force(envir)
-		dotlist = {
-			if(named)
-				named_dots(...)
-			else
-				dots(...) }
-		env = list2env(.data, parent = envir)
-		lapply(dotlist, function(x) eval(x, env))}
 
 CurryHalfLazy = 
 	function(FUN, ...) {
@@ -56,3 +35,31 @@ freeze.env =
 			parent.env(nenv) = parent.env(envx)
 			environment(x) = nenv}
 		x}
+
+
+# a do.call variant which takes a mix of ... args and a list of args
+do.call.dots = 
+ 	function(what, ..., args) {		do.call(what, c(list(...), args))} #not used yet, refactor later
+
+#lists
+
+strip.nulls = 
+	function(x) 
+		x[!sapply(x, is.null)]
+
+strip.null.args = 
+	function(...)
+		strip.nulls(list(...))
+
+#dynamic scoping
+
+non.standard.eval = 
+	function(.data,  ..., named = TRUE,  envir = stop("Why wasn't envir specified? Why?")) {
+		force(envir)
+		dotlist = {
+			if(named)
+				named_dots(...)
+			else
+				dots(...) }
+		env = list2env(.data, parent = envir)
+		lapply(dotlist, function(x) eval(x, env))}

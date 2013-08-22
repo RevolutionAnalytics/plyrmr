@@ -222,3 +222,12 @@ setMethodS3(
 			as.big.data(x, "native")))
 
 input  = as.pipe
+
+magic.wand = 
+	function(f) 
+		setMethodS3(
+			as.character(substitute(f)), 
+			"pipe", 
+			function(.data, ...) 
+				do(.data, f, ...),
+			envir=parent.frame())

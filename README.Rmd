@@ -24,6 +24,7 @@ Load package and turn off Hadoop for quick demo
 ```{r}
 suppressMessages(library(plyrmr))
 rmr.options(backend = "local")
+rmr.options(keyval.length = 5)
 set.seed(0)
 ```
 

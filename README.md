@@ -18,6 +18,14 @@ NULL
 ```
 
 ```r
+rmr.options(keyval.length = 5)
+```
+
+```
+NULL
+```
+
+```r
 set.seed(0)
 ```
 
@@ -63,8 +71,8 @@ as.data.frame(avg.carbs)
 
 ```
    mean.carb. mean.HP
-X1      3.429   122.3
-X2      3.500   209.2
+X1          3     110
+X2          2     175
 ```
 
 
@@ -93,8 +101,8 @@ as.data.frame(avg.carbs.out)
 
 ```
    mean.carb. mean.HP
-X1      3.429   122.3
-X2      3.500   209.2
+X1          3     110
+X2          2     175
 ```
 
 
@@ -132,15 +140,12 @@ as.data.frame(big.mtcars)
 ```
 
 ```
-     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-X1  21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-X2  21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-X3  22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
-X4  21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
-X5  18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
-X6  18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
-X7  14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
-....
+    mpg cyl disp  hp drat    wt  qsec vs am gear carb
+X1 21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
+X2 21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
+X3 22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
+X4 21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
+X5 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
 ```
 
 
@@ -200,15 +205,12 @@ as.data.frame(small.squares)
 ```
 
 ```
-     x  x2
-X1   1   1
-X2   2   4
-X3   3   9
-X4   4  16
-X5   5  25
-X6   6  36
-X7   7  49
-....
+   x x2
+X1 1  1
+X2 2  4
+X3 3  9
+X4 4 16
+X5 5 25
 ```
 
 
@@ -239,15 +241,12 @@ as.data.frame(input("/tmp/small.squares"))
 ```
 
 ```
-     x  x2
-X1   1   1
-X2   2   4
-X3   3   9
-X4   4  16
-X5   5  25
-X6   6  36
-X7   7  49
-....
+   x x2
+X1 1  1
+X2 2  4
+X3 3  9
+X4 4 16
+X5 5 25
 ```
 
 With `output` and refraining from using `as.data.frame` we can process hadoop sized data sets. Of course we can use `as.data.frame` after a number of data reduction steps. Another role of output is as a bridge with `rmr2`. You can just write `mapreduce(ouput(...))` and combine the best of the two packages.
@@ -269,13 +268,13 @@ ddply(data, "x", summarize, val = unique(x), count = length(x))
 
 ```
     x val count
-1   9   9     4
-2  10  10     6
-3  11  11     5
+1   9   9     5
+2  10  10     4
+3  11  11     6
 4  12  12    10
-5  13  13     5
-6  14  14     5
-7  15  15     5
+5  13  13     8
+6  14  14     4
+7  15  15     3
 ....
 ```
 
@@ -304,15 +303,11 @@ as.data.frame(counts)
 ```
 
 ```
-    val count
-X1   13     5
-X2   20     1
-X3   12    10
-X4   11     5
-X5   18     2
-X6    9     4
-X7   14     5
-....
+   val count
+X1  15     2
+X2  19     1
+X3  11     1
+X4  12     1
 ```
 
 Please note that the results are not in the same order. This is always true with Hadoop and if other examples in this tutorial seem to show the opposite it's only because of the tiny size of the data sets involved. Not incidentally, theoreticians have formalized this computational model as MUD (Massive Unordered Distributed, see [this paper](http://arxiv.org/abs/cs/0611108)). 
@@ -346,15 +341,12 @@ as.data.frame(big.mtcars.again)
 ```
 
 ```
-     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-X1  21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-X2  21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-X3  22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
-X4  21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
-X5  18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
-X6  18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
-X7  14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
-....
+    mpg cyl disp  hp drat    wt  qsec vs am gear carb
+X1 21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
+X2 21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
+X3 22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
+X4 21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
+X5 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
 ```
 
 
@@ -387,15 +379,11 @@ as.data.frame(big.mtcars.cyl.gt.4)
 ```
 
 ```
-     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-X1  21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-X2  21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-X3  21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
-X4  18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
-X5  18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
-X6  14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
-X7  19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
-....
+    mpg cyl disp  hp drat    wt  qsec vs am gear carb
+X1 21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
+X2 21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
+X3 21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
+X4 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
 ```
 
 
@@ -426,15 +414,12 @@ as.data.frame(big.mtcars.cyl.carb)
 ```
 
 ```
-     mpg cyl
-X1  21.0   6
-X2  21.0   6
-X3  22.8   4
-X4  21.4   6
-X5  18.7   8
-X6  18.1   6
-X7  14.3   8
-....
+    mpg cyl
+X1 21.0   6
+X2 21.0   6
+X3 22.8   4
+X4 21.4   6
+X5 18.7   8
 ```
 
 
@@ -447,15 +432,12 @@ as.data.frame(big.mtcars.cyl.carb)
 ```
 
 ```
-     mpg cyl
-X1  21.0   6
-X2  21.0   6
-X3  22.8   4
-X4  21.4   6
-X5  18.7   8
-X6  18.1   6
-X7  14.3   8
-....
+    mpg cyl
+X1 21.0   6
+X2 21.0   6
+X3 22.8   4
+X4 21.4   6
+X5 18.7   8
 ```
 
 
@@ -483,7 +465,7 @@ as.data.frame(big.mtcars.sum)
 
 ```
    cyl carb
-X1 198   90
+X1  30   12
 ```
 
 
@@ -512,9 +494,9 @@ as.data.frame(big.mtcars.sum.by.cyl)
 
 ```
    cyl carb
-X1  42   24
-X2  44   17
-X3 112   49
+X1  18    9
+X2   4    1
+X3   8    2
 ```
 
 
@@ -544,13 +526,13 @@ ddply(words, "words", summarize, count = length(words))
 
 ```
    words count
-1      A    45
-2      B    41
-3      C    40
+1      A    47
+2      B    39
+3      C    42
 4      D    47
-5      E    49
-6      F    31
-7      G    38
+5      E    50
+6      F    33
+7      G    37
 ....
 ```
 
@@ -565,15 +547,12 @@ as.data.frame(wordcount)
 ```
 
 ```
-    word count
-X1     X    33
-X2     Z    45
-X3     V    42
-X4     I    37
-X5     M    36
-X6     Y    34
-X7     H    32
-....
+   word count
+X1    E    13
+X2    D    10
+X3    W    13
+X4    O     6
+X5    J    12
 ```
 
 

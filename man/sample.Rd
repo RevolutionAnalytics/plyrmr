@@ -1,56 +1,24 @@
 \name{sample}
 \alias{sample}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{
-%%  ~~function to do ... ~~
+Function to sample from big data sets and data frames
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Albeit methods for a generic function whose default method is the well known base::sample, the methods for data frames and pipes have a different behavior, but they are still meant to perform sampling,
 }
 \usage{
 sample(...)
+\method{sample}{pipe}(x, method = c("any", "Bernoulli"))
+\method{sample}{data.frame}(x, method = c("any", "Bernoulli"))
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{\dots}{
-%%     ~~Describe \code{\dots} here~~
-}
+  \item{method}
+  \item{\dots}{}
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
-}
-\author{
-%%  ~~who you are~~
-}
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-structure(function (...) 
-UseMethod("sample"), export = TRUE)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

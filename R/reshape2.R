@@ -23,7 +23,7 @@ setMethodS3(
 		id.vars = reshape2:::parse_formula(formula)[[1]][[1]]
 		do(
 			group.by(
-				input(mmtcars), 
+				input(data), 
 				id.vars), 
 			Curry(dcast, formula = formula),
 			...)})

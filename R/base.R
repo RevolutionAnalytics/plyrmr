@@ -28,34 +28,31 @@ setMethodS3(
 setMethodS3(
 	"names",
 	"pipe",
-	function(x)
+	function(x, ...)
 		as.data.frame(
 			group.by.f(
 				do(
-					x, 
+					x,  
 					function(.y) 
 						data.frame(names = names(.y))), 
 				function(.x) unique(.x$names), recursive = TRUE)))
 
-setMethodS3(
-	"sample",
-	"pipe",
-	function(x, method = c("any", "Bernoulli"), ...) {
-		switch(
-			match.arg(method),
-			any = {
-				n = list(...)[['n']]
-				head.n = function(x) head(x, n)
-				do(
-					group.together(
-						do(x, head.n),
-						recursive = TRUE),
-					head.n)},
-			Bernoulli = {
-				p = list(...)[["p"]]
-				do(x, function(x) x[runif(length(x)) < p,])})})
 
-setMethodS3(
-	"sample",
-	"default",
-	base::sample)
+suppressWarnings(
+	setMethodS3(
+		"sample",
+		"pipe",
+		function(x, method = c("any", "Bernoulli"), ...) {
+			method = match.args(method)
+			sample.curried = Curry(sample, method = method, ...)
+			switch(
+				method,
+				any = 
+					do(
+						group.together(
+							do(x, sample.curried),
+							recursive = TRUE),
+						sample.curried),
+			Bernoulli = 
+					do(x, sample.curried))}))
+

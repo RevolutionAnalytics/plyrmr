@@ -46,3 +46,14 @@ setMethodS3(
 		else cbind(.data, newcols)})
 
 #(function(){v = 5;  select(mtcars, cy32 = cyl^2, carb + 5)})()
+
+suppressWarnings(
+	setMethodS3(
+		"sample",
+		"data.frame",
+		function(x, method = c("any", "Bernoulli"), ...) {
+			switch(
+				match.arg(method),
+				any = head(x, list(...)[['n']]),
+				Bernoulli = 
+					x[runif(length(x)) < list(...)[["p"]],, drop = FALSE])}))

@@ -62,4 +62,4 @@ non.standard.eval =
 			else
 				dots(...) }
 		env = list2env(.data, parent = envir)
-		lapply(dotlist, function(x) eval(x, env))}
+		lapply(dotlist, function(x) eval(eval(x, env), env))}

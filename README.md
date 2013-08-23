@@ -70,9 +70,9 @@ as.data.frame(avg.carbs)
 ```
 
 ```
-   mean.carb. mean.HP
-X1          3     110
-X2          2     175
+     mean.carb. mean.HP
+X1        3.429   122.3
+X1.1      3.500   209.2
 ```
 
 
@@ -100,9 +100,9 @@ as.data.frame(avg.carbs.out)
 ```
 
 ```
-   mean.carb. mean.HP
-X1          3     110
-X2          2     175
+     mean.carb. mean.HP
+X1        3.429   122.3
+X1.1      3.500   209.2
 ```
 
 
@@ -140,12 +140,15 @@ as.data.frame(big.mtcars)
 ```
 
 ```
-    mpg cyl disp  hp drat    wt  qsec vs am gear carb
-X1 21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
-X2 21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
-X3 22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
-X4 21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
-X5 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
+                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+Mazda.RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda.RX4.Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+Datsun.710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+Hornet.4.Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+Hornet.Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+Duster.360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+....
 ```
 
 
@@ -205,12 +208,15 @@ as.data.frame(small.squares)
 ```
 
 ```
-   x x2
-X1 1  1
-X2 2  4
-X3 3  9
-X4 4 16
-X5 5 25
+     x  x2
+X1   1   1
+X2   2   4
+X3   3   9
+X4   4  16
+X5   5  25
+X6   6  36
+X7   7  49
+....
 ```
 
 
@@ -241,12 +247,15 @@ as.data.frame(input("/tmp/small.squares"))
 ```
 
 ```
-   x x2
-X1 1  1
-X2 2  4
-X3 3  9
-X4 4 16
-X5 5 25
+     x  x2
+X1   1   1
+X2   2   4
+X3   3   9
+X4   4  16
+X5   5  25
+X6   6  36
+X7   7  49
+....
 ```
 
 With `output` and refraining from using `as.data.frame` we can process hadoop sized data sets. Of course we can use `as.data.frame` after a number of data reduction steps. Another role of output is as a bridge with `rmr2`. You can just write `mapreduce(ouput(...))` and combine the best of the two packages.
@@ -268,13 +277,13 @@ ddply(data, "x", summarize, val = unique(x), count = length(x))
 
 ```
     x val count
-1   9   9     5
-2  10  10     4
-3  11  11     6
-4  12  12    10
-5  13  13     8
-6  14  14     4
-7  15  15     3
+1   8   8     1
+2   9   9     2
+3  10  10     3
+4  11  11     4
+5  12  12     9
+6  13  13     6
+7  14  14     9
 ....
 ```
 
@@ -303,11 +312,15 @@ as.data.frame(counts)
 ```
 
 ```
-   val count
-X1  15     2
-X2  19     1
-X3  11     1
-X4  12     1
+      val count
+X1      8     1
+X1.1   10     3
+X1.2   16     2
+X1.3   15     7
+X1.4   14     9
+X1.5    9     2
+X1.6   18     4
+....
 ```
 
 Please note that the results are not in the same order. This is always true with Hadoop and if other examples in this tutorial seem to show the opposite it's only because of the tiny size of the data sets involved. Not incidentally, theoreticians have formalized this computational model as MUD (Massive Unordered Distributed, see [this paper](http://arxiv.org/abs/cs/0611108)). 
@@ -341,12 +354,15 @@ as.data.frame(big.mtcars.again)
 ```
 
 ```
-    mpg cyl disp  hp drat    wt  qsec vs am gear carb
-X1 21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
-X2 21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
-X3 22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
-X4 21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
-X5 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
+                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+Mazda.RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda.RX4.Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+Datsun.710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+Hornet.4.Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+Hornet.Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+Duster.360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+....
 ```
 
 
@@ -379,11 +395,15 @@ as.data.frame(big.mtcars.cyl.gt.4)
 ```
 
 ```
-    mpg cyl disp  hp drat    wt  qsec vs am gear carb
-X1 21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
-X2 21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
-X3 21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
-X4 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
+                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+Mazda.RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda.RX4.Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+Hornet.4.Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+Hornet.Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+Duster.360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+Merc.280            19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
+....
 ```
 
 
@@ -414,12 +434,15 @@ as.data.frame(big.mtcars.cyl.carb)
 ```
 
 ```
-    mpg cyl
-X1 21.0   6
-X2 21.0   6
-X3 22.8   4
-X4 21.4   6
-X5 18.7   8
+      mpg cyl
+X1   21.0   6
+X2   21.0   6
+X3   22.8   4
+X4   21.4   6
+X1.1 18.7   8
+X2.1 18.1   6
+X3.1 14.3   8
+....
 ```
 
 
@@ -432,12 +455,15 @@ as.data.frame(big.mtcars.cyl.carb)
 ```
 
 ```
-    mpg cyl
-X1 21.0   6
-X2 21.0   6
-X3 22.8   4
-X4 21.4   6
-X5 18.7   8
+      mpg cyl
+X1   21.0   6
+X2   21.0   6
+X3   22.8   4
+X4   21.4   6
+X1.1 18.7   8
+X2.1 18.1   6
+X3.1 14.3   8
+....
 ```
 
 
@@ -465,7 +491,7 @@ as.data.frame(big.mtcars.sum)
 
 ```
    cyl carb
-X1  30   12
+X1 198   90
 ```
 
 
@@ -493,10 +519,10 @@ as.data.frame(big.mtcars.sum.by.cyl)
 ```
 
 ```
-   cyl carb
-X1  18    9
-X2   4    1
-X3   8    2
+     cyl carb
+X1    42   24
+X1.1  44   17
+X1.2 112   49
 ```
 
 
@@ -526,13 +552,13 @@ ddply(words, "words", summarize, count = length(words))
 
 ```
    words count
-1      A    47
-2      B    39
-3      C    42
-4      D    47
-5      E    50
-6      F    33
-7      G    37
+1      A    44
+2      B    33
+3      C    45
+4      D    39
+5      E    29
+6      F    34
+7      G    34
 ....
 ```
 
@@ -547,12 +573,15 @@ as.data.frame(wordcount)
 ```
 
 ```
-   word count
-X1    E    13
-X2    D    10
-X3    W    13
-X4    O     6
-X5    J    12
+      word count
+X1       G    34
+X1.1     I    39
+X1.2     L    39
+X1.3     F    34
+X1.4     X    39
+X1.5     V    29
+X1.6     M    40
+....
 ```
 
 

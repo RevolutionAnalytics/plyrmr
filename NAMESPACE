@@ -78,6 +78,11 @@ S3method(quantile, pipe)
 S3method(quantile, data.frame)
 S3method(merge, pipe)
 
+#reshape2
+export(dcast)
+S3method(dcast, pipe)
+S3method(dcast, default)
+S3method(melt, pipe)
 
 
 

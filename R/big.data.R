@@ -20,19 +20,19 @@ is.big.data =
 setMethodS3(
 	"as.character",
 	"big.data",
-	function(x) {
+	function(x, ...) {
 		if(is.character(x$data)) as.character(unclass(x))
 		else "Temporary file"})
 
 setMethodS3(
 	"print",
 	"big.data",
-	function(x) {
+	function(x, ...) {
 		print(as.character(x))
 		invisible(x)})
 
 as.big.data_cf =
-	function(x, format = "native")
+	function(x, format = "native", ...)
 		structure(
 			list(
 				data = x, 
@@ -54,16 +54,16 @@ setMethodS3(
 setMethodS3(
 	"as.big.data",
 	"data.frame", 
-	function(x)
+	function(x, ...)
 		as.big.data(
 			suppressWarnings(
 				to.dfs(kv = x)),
 			format = "native"))
-			
+
 setMethodS3(
 	"as.data.frame",
 	"big.data", 
-	function(x)
+	function(x, ...)
 		values(
 			from.dfs(
 				input = x$data, 
@@ -72,7 +72,7 @@ setMethodS3(
 setMethodS3(
 	"as.big.data",
 	"list",
-	function(x) {
+	function(x, ...) {
 		data.list =	lapply(x, as.big.data)
 		formats = lapply(data.list, function(x) x$format)
 		format = unique(formats)
@@ -83,7 +83,8 @@ setMethodS3(
 				function(x) x$data), 
 			format[[1]])})
 
+suppressWarnings(
 setMethodS3(
 	"as.big.data",
 	"big.data",
-	identity)
+	identity))

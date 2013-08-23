@@ -55,7 +55,7 @@ is.data =
 setMethodS3(
 	"as.character",
 	"pipe",
-	function(x) 
+	function(x, ...) 
 		paste(
 			"Slots set:", 
 			paste(names(unclass(x)), collapse = ", "), "\n",
@@ -66,7 +66,7 @@ setMethodS3(
 setMethodS3(
 	"print",
 	"pipe",
-	function(x) {
+	function(x, ...) {
 		print(as.character(x))
 		invisible(x)})
 
@@ -128,7 +128,7 @@ mrexec =
 			format = input.format)
 
 run = 
-	function(.data, input.format) {
+	function(.data, input.format, ...) {
 		pipe = .data
 		if(
 			all(
@@ -182,18 +182,18 @@ as.pipe = function(x, ...) UseMethod("as.pipe")
 setMethodS3(
 	"as.pipe",
 	"big.data",
-	function(x) 
+	function(x, ...) 
 		structure(
 			strip.null.args(
 				input = x),
 			class = "pipe"))
 
 as.pipe.1 = 
-	function(x) 
+	function(x, ...) 
 		as.pipe(as.big.data(x, "native"))
 
 as.pipe.2 = 
-	function(x, format = "native") 
+	function(x, format = "native", ...) 
 		as.pipe(as.big.data(x, format))
 
 setMethodS3(
@@ -219,7 +219,7 @@ setMethodS3(
 setMethodS3(
 	"as.data.frame",
 	"pipe",
-	function(x)
+	function(x, ...)
 		as.data.frame(
 			as.big.data(x, "native")))
 

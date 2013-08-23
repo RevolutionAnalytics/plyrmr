@@ -57,7 +57,7 @@ setMethodS3(
 					}))})
 
 quantile.fun = 
-	function(x) {
+	function(x, ...) {
 		mr.fun = 
 			function(.x) {
 				midprobs  = 

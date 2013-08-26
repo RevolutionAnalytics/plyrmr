@@ -23,8 +23,8 @@ setMethodS3(
 			non.standard.eval(
 				.data, 
 				..., 
-				named = FALSE, 
-				envir = envir)
+				.named = FALSE, 
+				.envir = .envir)
 		.data[Reduce(`&`, cond), , drop = FALSE]})
 
 #(function(){x = 5; where(mtcars, cyl>x)})()
@@ -39,8 +39,8 @@ setMethodS3(
 			non.standard.eval(
 			.data, 
 			...,
-			named = TRUE,
-			envir = envir)
+			.named = TRUE,
+			.envir = .envir)
 		newcols = splat(data.frame)(c(args, list(stringsAsFactors = FALSE)))
 		if(.replace)  newcols
 		else cbind(.data, newcols)})

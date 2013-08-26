@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+## @knitr load-library
+suppressPackageStartupMessages(library(plyrmr))
 ## @knitr local-backend
 rmr.options(backend = "local")
 ## @knitr input

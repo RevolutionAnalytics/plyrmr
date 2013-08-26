@@ -82,7 +82,7 @@ as.data.frame(mtcars.w.ratio)
  * from `reshape2`:
    * `melt` and `dcast`: convert between *long* and *wide* data frames
  * new in `plyr`:
-   * `select`: does everything that `transform` and `summarize` in addition to selecting columns.
+   * `select`: does everything that `transform` and `summarize` do in addition to selecting columns.
    * `where`: select rows
    * these are more suitable for programming then the functions they replace, as will be explained later.
  
@@ -99,21 +99,8 @@ subset(transform(mtcars, carb.per.cyl = carb/cyl), carb.per.cyl >= 1)
 Wouldn't it be nice if we could do exactly the same on a Hadoop data set? In fact, we almost can
 
 ```{r}
-as.data.frame(
-	subset(
-		transform(
-			input("/tmp/mtcars"), 
-			carb.per.cyl = carb/cyl), 
-		carb.per.cyl >= 1))
-```
-
-Or if deeply nested expressions are not your style:
-
-```{r}
-input.mtcars = input("/tmp/mtcars")
-mtcars.w.ratio = transform(input.mtcars, carb.per.cyl = carb/cyl)
-mtcars.ratio.gt.1 = subset(mtcars.w.ratio, carb.per.cyl >= 1)
-as.data.frame(mtcars.ratio.gt.1)
+x = subset(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl), carb.per.cyl >= 1)
+as.data.frame(x)
 ```
 
 The main differences between the data frame version and the Hadoop data version are the input and the output. All there is in between, pretty much works the same. By the way, `subset` and `transform` work best interactively, at the prompt, but they have some problems when used in other functions or packages. These limitations are inherited from the `base` package functions, not peculiar to their `plyrmr` brethren. `plyrmr` makes an attempt to provide two primitives that match the convenience of `transform` and `subset` without their pitfalls. While we were at it, we also tried to make them more general and give them a cleaner but still familiar (SQL-inspired) interface. Let me introduce `select` and `where`. These are `plyrmr` functions with methods for data frames and Hadoop data sets and they are appropriate for interactive and programming use. The previous examples become, using these functions:
@@ -125,13 +112,8 @@ where(select(mtcars, carb.per.cyl = carb/cyl, .replace = FALSE), carb.per.cyl >=
 and:
 
 ```{r}
-as.data.frame(
-	where(
-		select(
-			input("/tmp/mtcars"), 
-			carb.per.cyl = carb/cyl,
-			.replace = FALSE), 
-		carb.per.cyl >= 1))
+x = where(select(input("/tmp/mtcars"), carb.per.cyl = carb/cyl, .replace = FALSE), carb.per.cyl >= 1)
+as.data.frame(x)
 ```
 
 Similar, but they work everywhere. For instance, if we wanted to define a function to reuse what we've just done, we could write:

@@ -60,7 +60,7 @@ setMethodS3(
 			"Slots set:", 
 			paste(names(unclass(x)), collapse = ", "), "\n",
 			"Input:",
-			as.character(x[["input"]]),
+			paste(as.character(x[["input"]]), collapse = ","),
 			"\n"))
 
 setMethodS3(

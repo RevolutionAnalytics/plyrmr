@@ -87,11 +87,12 @@ group.by =
 	function(.data, ..., recursive = FALSE, envir = parent.frame()) {
 		force(envir)
 		dot.args = dots(...)
-		group.by.f(
-			.data, 
-			function(.y) 
-				do.call(CurryHalfLazy(select, envir = envir), c(list(.y), dot.args)),
-			recursive = recursive)}
+		gbf = 
+			group.by.f(
+				.data, 
+				function(.y) 
+					do.call(CurryHalfLazy(select, .envir = envir), c(list(.y), dot.args)),
+				recursive = recursive)}
 
 group.by.f = 
 	function(.data, f, ..., recursive = FALSE) {

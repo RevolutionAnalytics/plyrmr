@@ -17,8 +17,8 @@ where = function(.data, ...) UseMethod("where")
 setMethodS3(
 	"where",
 	"data.frame",
-	function(.data, ..., envir = parent.frame()) {
-		force(envir)
+	function(.data, ..., .envir = parent.frame()) {
+		force(.envir)
 		cond = 
 			non.standard.eval(
 				.data, 
@@ -33,8 +33,8 @@ select = function(.data, ..., .replace = TRUE) UseMethod("select")
 setMethodS3(
 	"select",
 	"data.frame",
-	function(.data, ..., .replace = TRUE, envir = parent.frame()) {
-		force(envir)
+	function(.data, ..., .replace = TRUE, .envir = parent.frame()) {
+		force(.envir)
 		args = 
 			non.standard.eval(
 			.data, 

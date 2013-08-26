@@ -97,7 +97,7 @@ extreme.k=
 					.x[
 						do.call(
 							this.order,
-							select(.x, ..., envir = envir))], 
+							select(.x, ..., .envir = envir))], 
 					k)
 		do(
 			group.by.f(

@@ -27,7 +27,7 @@ stopifnot(
 				do(
 					input(mtcars), 
 					function(x , ...) {
-						vars = plyrmr:::non.standard.eval(x, ..., envir = envir)
+						vars = plyrmr:::non.standard.eval(x, ..., .envir = envir)
 						list(cyl2 =x$cyl^vars[['expo2']])},
 					expo2 = expo1))})()		
 		 == 

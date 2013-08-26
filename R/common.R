@@ -54,12 +54,12 @@ strip.null.args =
 #dynamic scoping
 
 non.standard.eval = 
-	function(.data,  ..., named = TRUE,  envir = stop("Why wasn't envir specified? Why?")) {
-		force(envir)
+	function(.data,  ..., .named = TRUE,  .envir = stop("Why wasn't envir specified? Why?")) {
+		force(.envir)
 		dotlist = {
-			if(named)
+			if(.named)
 				named_dots(...)
 			else
 				dots(...) }
-		env = list2env(.data, parent = envir)
+		env = list2env(.data, parent = .envir)
 		lapply(dotlist, function(x) eval(eval(x, env), env))}

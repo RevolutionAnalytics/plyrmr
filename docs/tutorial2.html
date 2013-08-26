@@ -220,7 +220,7 @@ Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.
 <pre><code>[1] &quot;Slots set: input, map \n Input: /tmp/mtcars,native \n&quot;
 </code></pre>
 
-<p>Well, that doesn&#39;t look even remotely what we wanted, does it? That&#39;s because, when dealing with very large data sets, one needs to be careful not to try and load them in memory unless they have been filtered or summarized to a much smaller size. Therefore in <code>plyrmr</code> the general rule is that loading into memory happens only when the user decides so. In this case, we know the data set is small so we can just go ahead with this operation  and enter:</p>
+<p>Well, that doesn&#39;t look even remotely what we wanted, does it? That&#39;s because, when dealing with very large data sets, one needs to be careful not to try and load them into memory unless they have been filtered or summarized to a much smaller size. Therefore in <code>plyrmr</code> the general rule is that loading into memory happens only when the user decides so. In this case, we know the data set is small so we can just go ahead with this operation  and enter:</p>
 
 <pre><code class="r">as.data.frame(transform(input(&quot;/tmp/mtcars&quot;), carb.per.cyl = carb/cyl))
 </code></pre>
@@ -236,7 +236,7 @@ Duster.360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.
 ....
 </code></pre>
 
-<p>In fact the <code>as.data.frame</code> call not only loads the data into memory, but triggers the computation as well. <code>plyrmr</code> uses a technique called <em>delayed evaluation</em> to create the opportunity for some optimizations. In general the user need not worry about the details of this, as long as it is clear that the actual computational work may be shifted w.r.t an equivalent computation in memory. If we want to trigger the computation without loading the data in memory but storing it into a file, we need the <code>output</code> call, as in:</p>
+<p>In fact the <code>as.data.frame</code> call not only loads the data into memory, but triggers the computation as well. <code>plyrmr</code> uses a technique called <em>delayed evaluation</em> to create the opportunity for some optimizations. In general the user need not worry about the details of this, as long as it is clear that the actual computational work may be shifted w.r.t. an equivalent computation in memory. If we want to trigger the computation without loading the data into memory but storing it into a file, we need the <code>output</code> call, as in:</p>
 
 <pre><code class="r">output(transform(input(&quot;/tmp/mtcars&quot;), carb.per.cyl = carb/cyl), &quot;/tmp/mtcars.out&quot;)
 </code></pre>
@@ -244,7 +244,7 @@ Duster.360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.
 <pre><code>[1] &quot;/tmp/mtcars.out&quot; &quot;native&quot;         
 </code></pre>
 
-<p>This is the real deal: we have performed a computation on the cluster, in parallel, and the data id never loaded in memory at once, but the syntax and semantics remain the familiar ones. The last run processed all of 32 rows, but on a large enough cluster it could run on 32 terabytes &mdash; don&#39;t even think of using <code>as.data.frame</code> in that case.
+<p>This is the real deal: we have performed a computation on the cluster, in parallel, and the data is never loaded into memory at once, but the syntax and semantics remain the familiar ones. The last run processed all of 32 rows, but on a large enough cluster it could run on 32 terabytes &mdash; don&#39;t even think of using <code>as.data.frame</code> in that case.
 The return value of <code>output</code> contains the path and some format information. In general an effort is made throughout <code>plyrmr</code> to make return values of functions as useful as possible so as to be able to combine simple expressions into larger ones. Of course you can also store intermediate results to a variable as in:</p>
 
 <pre><code class="r">mtcars.w.ratio = transform(input(&quot;/tmp/mtcars&quot;), carb.per.cyl = carb/cyl)
@@ -262,7 +262,7 @@ Duster.360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.
 ....
 </code></pre>
 
-<p><code>transform</code> is a basic operation on data frames and it is the prototype of a handful of other useful operations:</p>
+<p><code>transform</code> is one of several functions that <code>plyrmr</code> provides in a Hadoop-powered version:</p>
 
 <ul>
 <li>from <code>base</code>:
@@ -285,13 +285,13 @@ Duster.360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.
 <li>new in <code>plyr</code>:
 
 <ul>
-<li><code>select</code>: does everything that <code>transform</code> and <code>summarize</code> in addition to selecting columns.</li>
+<li><code>select</code>: does everything that <code>transform</code> and <code>summarize</code> do in addition to selecting columns.</li>
 <li><code>where</code>: select rows</li>
 <li>these are more suitable for programming then the functions they replace, as will be explained later.</li>
 </ul></li>
 </ul>
 
-<p><code>plyrmr</code> extends all these operations to Hadoop stored data sets trying to maintain semantic equivalence, with limitations that will be made clear later. These functions are not intended as a minimal set of operations: there is a lot of functionality overlap. We just wanted to support existing usage to help transitioning to Hadoop data sets.</p>
+<p><code>plyrmr</code> extends all these operations to Hadoop data sets, trying to maintain semantic equivalence, with limitations that will be made clear later. These functions are not intended as a minimal set of operations: there is a lot of functionality overlap. We just wanted to support existing usage to help users transitioning to Hadoop programming.</p>
 
 <h2>Combining Operations</h2>
 
@@ -305,14 +305,10 @@ Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 </code></pre>
 
-<p>Wouldn&#39;t it be nice if we could do exactly the same on a Hadoop data set? In fact, we almost can</p>
+<p>Wouldn&#39;t it be nice if we could do exactly the same on a Hadoop data set? In fact, we almost can:</p>
 
-<pre><code class="r">as.data.frame(
-    subset(
-        transform(
-            input(&quot;/tmp/mtcars&quot;), 
-            carb.per.cyl = carb/cyl), 
-        carb.per.cyl &gt;= 1))
+<pre><code class="r">x = subset(transform(input(&quot;/tmp/mtcars&quot;), carb.per.cyl = carb/cyl), carb.per.cyl &gt;= 1)
+as.data.frame(x)
 </code></pre>
 
 <pre><code>               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
@@ -320,20 +316,11 @@ Ferrari.Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
 Maserati.Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 </code></pre>
 
-<p>Or if deeply nested expressions are not your style:</p>
+<p>The main differences between the data frame version and the Hadoop data version are the input and the output. All there is in between, pretty much works the same. </p>
 
-<pre><code class="r">input.mtcars = input(&quot;/tmp/mtcars&quot;)
-mtcars.w.ratio = transform(input.mtcars, carb.per.cyl = carb/cyl)
-mtcars.ratio.gt.1 = subset(mtcars.w.ratio, carb.per.cyl &gt;= 1)
-as.data.frame(mtcars.ratio.gt.1)
-</code></pre>
+<h2>Why you should use <code>plyrmr</code>&#39;s <code>select</code> and <code>where</code></h2>
 
-<pre><code>               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-Ferrari.Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-Maserati.Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
-</code></pre>
-
-<p>The main differences between the data frame version and the Hadoop data version are the input and the output. All there is in between, pretty much works the same. By the way, <code>subset</code> and <code>transform</code> work best interactively, at the prompt, but they have some problems when used in other functions or packages. These limitations are inherited from the <code>base</code> package functions, not peculiar to their <code>plyrmr</code> brethren. <code>plyrmr</code> makes an attempt to provide two primitives that match the convenience of <code>transform</code> and <code>subset</code> without their pitfalls. While we were at it, we also tried to make them more general and give them a cleaner but still familiar (SQL-inspired) interface. Let me introduce <code>select</code> and <code>where</code>. These are <code>plyrmr</code> functions with methods for data frames and Hadoop data sets and they are appropriate for interactive and programming use. The previous examples become, using these functions:</p>
+<p><code>subset</code> and <code>transform</code> work best interactively, at the prompt, but they have some problems when used in other functions or packages. These limitations are inherited from the <code>base</code> package functions, not peculiar to their <code>plyrmr</code> brethren. <code>plyrmr</code> makes an attempt to provide two functions that match the convenience of <code>transform</code> and <code>subset</code> without their pitfalls. While we were at it, we also tried to make them more general and give them a cleaner but still familiar (SQL-inspired) interface. Let me introduce <code>select</code> and <code>where</code>. These are <code>plyrmr</code> functions with methods for data frames and Hadoop data sets and they are appropriate for interactive and programming use. The previous examples become, using these functions:</p>
 
 <pre><code class="r">where(select(mtcars, carb.per.cyl = carb/cyl, .replace = FALSE), carb.per.cyl &gt;= 1)
 </code></pre>
@@ -345,13 +332,8 @@ Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 
 <p>and:</p>
 
-<pre><code class="r">as.data.frame(
-    where(
-        select(
-            input(&quot;/tmp/mtcars&quot;), 
-            carb.per.cyl = carb/cyl,
-            .replace = FALSE), 
-        carb.per.cyl &gt;= 1))
+<pre><code class="r">x = where(select(input(&quot;/tmp/mtcars&quot;), carb.per.cyl = carb/cyl, .replace = FALSE), carb.per.cyl &gt;= 1)
+as.data.frame(x)
 </code></pre>
 
 <pre><code>               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
@@ -359,29 +341,33 @@ Ferrari.Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
 Maserati.Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 </code></pre>
 
-<p>Similar, but they work everywhere. For instance, if we wanted to define a function to reuse what we&#39;ve just done, we could write:</p>
+<p>Similar, but they work everywhere. For instance, if <code>subset</code> or <code>where</code> are called within some function, which is in its turn used in some other function, we can have the following situation:</p>
 
-<pre><code class="r">find.bad.ass.cars = function(data, threshold) subset(transform(data, carb.per.cyl = carb/cyl), carb.per.cyl &gt;= threshold)
-find.bad.ass.cars(1)
+<pre><code class="r">process.mtcars.1 = function(...) subset(mtcars, ...)
+process.mtcars.2 = function(...) where(mtcars, ..., .envir = parent.frame())
+
+high.carb.cyl.1 = function(x) {process.mtcars.1(data, carb/cyl &gt;= x) }
+high.carb.cyl.1(1)
 </code></pre>
 
-<pre><code>Error: object &#39;carb&#39; not found
+<pre><code>Error: &#39;subset&#39; must be logical
 </code></pre>
 
-<pre><code class="r">find.bad.ass.cars.plyrmr = function(data, threshold) where(select(data, carb.per.cyl = carb/cyl, .replace=F), carb.per.cyl &gt;= threshold)
-find.bad.ass.cars.plyrmr(mtcars, 1)
+<pre><code class="r">
+high.carb.cyl.2 = function(x) {process.mtcars.2(carb/cyl &gt;= x) }
+high.carb.cyl.2(1)
 </code></pre>
 
-<pre><code>               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+<pre><code>               mpg cyl disp  hp drat   wt qsec vs am gear carb
+Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6
+Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8
 </code></pre>
 
-<p>As you can see there is an argument for using <code>plyrmr</code> even when just dealing with data frames, if you want to transition nicely from interactive R use to development. The R documentation recommends to use <code>[]</code> only when programming, but having to rewrite code in a different context, to a computer scientist, is just an admission of defeat. Therefore <code>plyrmr</code> provides methods for <code>transform</code>, <code>subset</code>, <code>mutate</code> and <code>summarize</code> because of their widespread use, but we would like to see people transition to <code>where</code> and <code>select</code> eventually,</p>
+<p>The exact reason why <code>where</code> needs an additional argument in this scenario and what to provide are out of scope for this tutorial, but the message is that with <code>where</code> and <code>select</code> you can transition nicely from interactive R use to development. The R documentation recommends to use <code>[]</code> only when programming, but having to rewrite code in a different context, to a computer scientist, is just an admission of defeat. Therefore <code>plyrmr</code> provides methods for <code>transform</code>, <code>subset</code>, <code>mutate</code> and <code>summarize</code> because of their widespread use, but we recommend to use <code>where</code> and <code>select</code>.</p>
 
 <h2>Custom operations</h2>
 
-<p>Another way to extend the functionality of <code>plyrmr</code> built-in data manipulation functions is to take any function that accepts a data frame in input and returns a data frame and use the function <code>do</code> to give it Hadoop superpowers (<code>do</code> is named after the equivalent primitive in <code>dplyr</code>). For instance, you have a function that returns the rightmost column of a data frame. This is not simple to achieve with the functions explored so far, but it is a quick one liner:</p>
+<p>Another way to extend the functionality of <code>plyrmr</code> built-in data manipulation functions is to take any function that accepts a data frame in input and returns a data frame and use the function <code>do</code> to give it Hadoop superpowers (<code>do</code> is named after the equivalent function in <code>dplyr</code>, but of course the idea is not new). For instance, you have a function that returns the rightmost column of a data frame. This is not simple to achieve with the functions explored so far, but it is a quick one liner:</p>
 
 <pre><code class="r">last.col = function(x) x[, ncol(x), drop = FALSE]
 </code></pre>
@@ -465,7 +451,7 @@ X1.6        16
 ....
 </code></pre>
 
-<p>What does that mean? The data in Hadoop is always grouped, one way or another (this is also a key difference with the current <code>dplyr</code> design). It couldn&#39;t be otherwise: it is stored on multiple devices and, even if it weren&#39;t, we can only load it in memory in small chunks. So think of it as always grouped, initially in arbitrary fashion, that we can change with the functions <code>group.by</code>, <code>group.by.f</code> and <code>group.together</code>. These were inspired by the notion of key in mapreduce, the SQL statement and the <code>dplyr</code> function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:</p>
+<p>What does that mean? The data in Hadoop is always grouped, one way or another (this is also a key difference with the current <code>dplyr</code> design). It couldn&#39;t be otherwise: it is stored on multiple devices and, even if it weren&#39;t, we can only load it into memory in small chunks. So think of it as always grouped, initially in arbitrary fashion, that we can change with the functions <code>group.by</code>, <code>group.by.f</code> and <code>group.together</code>. These were inspired by the notion of key in mapreduce, the SQL statement and the <code>dplyr</code> function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:</p>
 
 <pre><code class="r">as.data.frame(summarize(group.together(input(&quot;/tmp/mtcars&quot;)), sum(carb) ))
 </code></pre>
@@ -476,7 +462,7 @@ X1        90
 
 <p>You may have noticed the contradiction between the above statement that data is always in chunks with the availability of a <code>group.together</code> function. First there may be cases when the data set is immediately summarized a filtered in an intial phase to the extent that grouping everything together is possible, albeit we could also complete the comuputation in memory in the master R instance in this case. Second, there is an advanced way of grouping recursively, in a tree like fashion, that works with associative and commutative operations such as the sum, which is the default for <code>group.together</code>. Anyway, it will all be more clear as we cover other grouping functions.</p>
 
-<p>The <code>group.by</code> function takes an input and a number of arguments that are evaluated in the context of the data, exactly like <code>transform</code> and <code>mutate</code>. The result is a Hadoop data set grouped by the columns defined in those arguments. After this step, all rows that are identical on the columns defined in the <code>group.by</code> will be loaded in memory at once and processed in the same call. Here is an example.</p>
+<p>The <code>group.by</code> function takes an input and a number of arguments that are evaluated in the context of the data, exactly like <code>transform</code> and <code>mutate</code>. The result is a Hadoop data set grouped by the columns defined in those arguments. After this step, all rows that are identical on the columns defined in the <code>group.by</code> will be loaded into memory at once and processed in the same call. Here is an example.</p>
 
 <p>Let&#39;s say we want to calculate the average milage for cars with the same number of cylinders:</p>
 

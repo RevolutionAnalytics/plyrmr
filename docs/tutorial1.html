@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Tutorial</title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: rgb(88, 72, 246)
+   }
+
+   pre .number {
+     color: rgb(0, 0, 205);
+   }
+
+   pre .comment {
+     color: rgb(76, 136, 107);
+   }
+
+   pre .keyword {
+     color: rgb(0, 0, 255);
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: rgb(3, 106, 7);
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+</head>
+
+<body>
+<h1>Tutorial</h1>
+
+<h2>Introduction</h2>
+
+<p><code>Plyrmr</code> is a package that allows to manipulate very large data sets (VLDSs). Because it&#39;s backed by Hadoop, large means up to petabytes in scale. It&#39;s based on another package, <code>rmr2</code>, which provides the foundation for writing programs according to the mapreduce paradigm. <code>Plyrmr</code> endeavors to add a layer of abstraction and, hopefully, conveninence and ease of use on top of <code>rmr2</code>. To achieve that, it takes inspiration from the data manipulation style promoted by Hadley Wickham in his very popular packages <code>plyr</code> and <code>reshape2</code> and the very new <code>dplyr</code> and adapts it to the VLDS setting.</p>
+
+<h2>Basic concepts</h2>
+
+<h3>Programming model</h3>
+
+<p>VLDSs reside on disk and on multiple machines and they need to be processed on groups of machines called clusters, by definition of <em>very large</em>. Therefore, you can&#39;t load them as a whole into R, that is into main memory at any given time. You can only process small chunks, regroup them, process the resulting chunks and repeat. This matches very nicely into Hadley&#39;s organization of basic data manipulations into a system called &ldquo;split-apply-combine&rdquo;, with one fundamental difference: the combine and split operation are combined into a single operation. This is necessary, because VLDSs are too big to exist in their &ldquo;combined&rdquo; form: they can exist only in one of many &ldquo;split&rdquo; states: fortunately we have control on how the split is defined. So instead of Hadley&#39;s three pronged approach to data manipulation, we have a two pronged one that maps naturally to the underlying map-reduce paradigm. The idea of <code>plyrmr</code> is to take the <code>plyr</code> style of data processing and map it to the underlying mapreduce paradigm trying to keep a similar syntax and semantics.   </p>
+
+<h3>Data model</h3>
+
+<p>The model is the data.frame. The data is always represented as data frames, each of which contains part of the data. People used to <code>rmr2</code> or <code>plyr</code> may find this a restriction, and indeed it was a simplifying assumption in the desing phase. </p>
+
+<h3>Initialization</h3>
+
+<pre><code class="r">suppressPackageStartupMessages(library(plyrmr))
+</code></pre>
+
+<pre><code class="r">rmr.options(backend = &quot;local&quot;)
+</code></pre>
+
+<pre><code>NULL
+</code></pre>
+
+<h3>Building blocks</h3>
+
+<p>In <code>plyrmr</code> there are <code>pipes</code>, which are R expressions describing a computation. The simplest pipe has an input. The input can be a data frame, a file or another pipe, the first two of which need to be wrapped in an <code>input</code> call. The computation can be triggered with either <code>output</code> or <code>as.data.frame</code>, the first resulting in the data being written to a file and the second creating a data frame. So a trivial pipe could be</p>
+
+<pre><code>as.data.frame(input(mtcars))
+</code></pre>
+
+<p>To do something useful we need to create more complex expressions combining essentially two sets of basic ingredients: processing steps and grouping steps. We can also combine pipes into more complex ones. As we said, the data is always chunked, due to its size. The initial state is arbitrary, meaning that the data is sorted and grouped arbitrarily, but grouping can be modified with the primitive <code>group.by.f</code>. The fundamental processing primitive is <code>do</code>, which applies a function to each chunk. The function should transform a data frame into another data frame. For instance, if we wanted to compute the number of carburators per cylinder for the cars in the <code>mtcars</code> data set (all of 32, of course this is only for illustrative purposes), one could simply do</p>
+
+<pre><code>transform(mtcars, ratio = carb/cyl)
+
+</code></pre>
+
+<p>This is a regular data frame processing function from the package <code>base</code>. Now what if we wanted to do this on a VLDS? This is a row-by-row operation, hence the order and grouping of data does not matter. This allows us to define a pipe as follows</p>
+
+<pre><code>do(input(mtcars), transform, ratio = carb/cyl)
+</code></pre>
+
+<p>To identify input data we need the function <code>input</code>. If we want to process file <code>&quot;some/path&quot;</code>, we need to call <code>input(&quot;some/path&quot;)</code>. If we want to create a small data set on the fly, we can pass a data frame as argument. This is most useful for learning and testing purposes. This is an example of the latter: </p>
+
+<pre><code class="r">big.mtcars = input(mtcars) # or input(path)
+</code></pre>
+
+<p>Also for compatibility with <code>rmr2</code> we can pass the output of a <code>mapreduce</code> call to <code>input</code>.
+The reverse step is to take some data and turn it into a data frame (do this only on small data sets such as in this example):</p>
+
+<pre><code class="r">as.data.frame(big.mtcars)
+</code></pre>
+
+<pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+Mazda.RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda.RX4.Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+Datsun.710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+Hornet.4.Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+Hornet.Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+Duster.360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+....
+</code></pre>
+
+<p>Let&#39;s start now with some simple processing, like taking the square of some numbers. In R and particularly using the <code>plyr</code> package and its approach to data manipulation, you could proceed as follows. First create a data frame with some numbers:</p>
+
+<pre><code class="r">data = data.frame(x = 1:10)
+</code></pre>
+
+<p>Then add a column of squares with <code>mutate</code> (which is very similar to <code>transform</code> in the <code>base</code> package).</p>
+
+<pre><code class="r">mutate(data, x2 = x^2)
+</code></pre>
+
+<pre><code>    x  x2
+1   1   1
+2   2   4
+3   3   9
+4   4  16
+5   5  25
+6   6  36
+7   7  49
+....
+</code></pre>
+
+<p>Let&#39;s make this an input data set according to the <code>plyrmr</code>.</p>
+
+<pre><code class="r">data = input(data)
+</code></pre>
+
+<p>We can call <code>mutate</code> on this data set and store the result in a variable. It doesn&#39;t look like that variable has data at all in it, in fact it doesn&#39;t. It&#39;s a <code>pipe</code>, a description of a sequence of processing steps. Nothing gets actually computed until necessary. </p>
+
+<pre><code class="r">small.squares = mutate(data, x2 = x^2)
+small.squares
+</code></pre>
+
+<pre><code>[1] &quot;Slots set: input, map \n Input: Temporary file \n&quot;
+</code></pre>
+
+<p>But if we turn a <code>pipe</code> into a data frame, we see the data as expected. </p>
+
+<pre><code class="r">as.data.frame(small.squares)
+</code></pre>
+
+<pre><code>     x  x2
+X1   1   1
+X2   2   4
+X3   3   9
+X4   4  16
+X5   5  25
+X6   6  36
+X7   7  49
+....
+</code></pre>
+
+<p>Turning a <code>pipe</code> into a data frame is one of a few triggering events that will start the actual computation. This is powered by <code>rmr2</code>, hence it can be hadoop backed, hence it can operate on VLDSs. An almost identical syntax can be used to perform the same operation on a data frame and a Hadoop data set. When operating on VLDSs, we can&#39;t use <code>as.data.frame</code>, because there isn&#39;t enough RAM available. The alternative is the <code>output</code> primitive, which will trigger the actual computation described by a <code>pipe</code> and store the results to a user-specified path:</p>
+
+<pre><code class="r">file.remove(&quot;/tmp/small.squares&quot;)
+</code></pre>
+
+<pre><code>[1] TRUE
+</code></pre>
+
+<pre><code class="r">output(small.squares, &quot;/tmp/small.squares&quot;)
+</code></pre>
+
+<pre><code>[1] &quot;/tmp/small.squares&quot; &quot;native&quot;            
+</code></pre>
+
+<p>And let&#39;s check that it actually worked:</p>
+
+<pre><code>```r
+as.data.frame(input(&quot;/tmp/small.squares&quot;))
+```
+
+```
+     x  x2
+X1   1   1
+X2   2   4
+X3   3   9
+X4   4  16
+X5   5  25
+X6   6  36
+X7   7  49
+....
+```
+</code></pre>
+
+<p>With <code>output</code> and refraining from using <code>as.data.frame</code> we can process hadoop sized data sets. Of course we can use <code>as.data.frame</code> after a number of data reduction steps. Another role of output is as a bridge with <code>rmr2</code>. You can just write <code>mapreduce(ouput(...))</code> and combine the best of the two packages.</p>
+
+<p>Let&#39;s move to some counting task. We create a data frame with a single column containing a sample from the binomial distribution, just for illustration purposes.</p>
+
+<pre><code class="r">data = data.frame(x = rbinom(32, n = 50, prob = 0.4))
+</code></pre>
+
+<p>Counting the number of occurrences of each outcome is a single line task in <code>plyr</code>. <code>ddply</code> splits a data frame according to a variable and summarize creates a new data frame with the columns specified in its additional arguments.</p>
+
+<pre><code class="r">ddply(data, &quot;x&quot;, summarize, val = unique(x), count = length(x))
+</code></pre>
+
+<pre><code>    x val count
+1   6   6     1
+2   7   7     1
+3   8   8     1
+4   9   9     2
+5  10  10     8
+6  11  11     4
+7  12  12     4
+....
+</code></pre>
+
+<p>Let&#39;s create a <code>plyrmr</code> data set with <code>input</code></p>
+
+<pre><code class="r">data = input(data)
+</code></pre>
+
+<p>The equivalent in <code>plyrmr</code> is not as close in syntax as before, because we followed more closely the syntax of an experimental package by the same author as <code>plyr</code> called <code>dplyr</code>, which is focused on data frames and adds multiple backends and can be considered a specialization and evolution of <code>plyr</code>. <code>dplyr</code> is temporarily incompatible with <code>rmr2</code> and not as well known as <code>plyr</code> yet and so it is not used here, but was a reference point in the design of <code>plyrmr</code>. <code>plyrmr</code>, like <code>dplyr</code> has a separate <code>group.by</code> primitive (<code>group_by</code> in <code>dplyr</code>), named after its SQL equivalent, that defines a grouping of a data set based on a column (expressions are not supported yet).</p>
+
+<pre><code class="r">counts = summarize(group.by(data, x), val = unique(x), count = length(x))
+</code></pre>
+
+<p>What we can see here is that we can combine two <code>pipes</code> by composing two functions. We can check the results with</p>
+
+<pre><code class="r">as.data.frame(counts)
+</code></pre>
+
+<pre><code>      val count
+X1      8     1
+X1.1   19     1
+X1.2    7     1
+X1.3   18     3
+X1.4   13     5
+X1.5   11     4
+X1.6    9     2
+....
+</code></pre>
+
+<p>Please note that the results are not in the same order. This is always true with Hadoop and if other examples in this tutorial seem to show the opposite it&#39;s only because of the tiny size of the data sets involved. Not incidentally, theoreticians have formalized this computational model as MUD (Massive Unordered Distributed, see <a href="http://arxiv.org/abs/cs/0611108">this paper</a>). </p>
+
+<p>Writing an identity function is not particularly interesting and won&#39;t make you rich, but it&#39;s a boilerplate test. Here is one way of expressing the identity in R:</p>
+
+<pre><code class="r">transform(mtcars)
+</code></pre>
+
+<pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+....
+</code></pre>
+
+<p>And here is the equivalent in plyrmr.</p>
+
+<pre><code class="r">big.mtcars.again = transform(big.mtcars)
+as.data.frame(big.mtcars.again)
+</code></pre>
+
+<pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+Mazda.RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda.RX4.Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+Datsun.710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+Hornet.4.Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+Hornet.Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+Duster.360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+....
+</code></pre>
+
+<p>Now let&#39;s take a baby step: select certain rows. The function <code>subset</code> in <code>base</code> comes in handy.</p>
+
+<pre><code class="r">subset(mtcars, cyl &gt; 4)
+</code></pre>
+
+<pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+Merc 280            19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
+....
+</code></pre>
+
+<p>We now can do exactly the same on a Hadoop data set:</p>
+
+<pre><code>```r
+big.mtcars.cyl.gt.4 = subset(big.mtcars, cyl &gt; 4)
+as.data.frame(big.mtcars.cyl.gt.4)
+```
+
+```
+                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+Mazda.RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda.RX4.Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+Hornet.4.Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+Hornet.Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+Duster.360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+Merc.280            19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
+....
+```
+</code></pre>
+
+<p>Next baby step up from selecting rows is selecting columns:</p>
+
+<pre><code>```r
+summarize(mtcars, mpg = mpg, cyl = cyl)
+```
+
+```
+    mpg cyl
+1  21.0   6
+2  21.0   6
+3  22.8   4
+4  21.4   6
+5  18.7   8
+6  18.1   6
+7  14.3   8
+....
+```
+</code></pre>
+
+<p>And in <code>plyrmr</code></p>
+
+<pre><code class="r">big.mtcars.cyl.carb = summarize(big.mtcars, mpg = mpg, cyl = cyl)
+as.data.frame(big.mtcars.cyl.carb)
+</code></pre>
+
+<pre><code>     mpg cyl
+X1  21.0   6
+X2  21.0   6
+X3  22.8   4
+X4  21.4   6
+X5  18.7   8
+X6  18.1   6
+X7  14.3   8
+....
+</code></pre>
+
+<p>Deceptively similar, but works on petabytes. In fact <code>summarize</code> doesn&#39;t seem the right name for this function, which can do a lot more. So we aliased to <code>select</code>, following dplyr, to allow the programmer to express intent.</p>
+
+<pre><code class="r">big.mtcars.cyl.carb =select(big.mtcars, mpg = mpg, cyl = cyl)
+as.data.frame(big.mtcars.cyl.carb)
+</code></pre>
+
+<pre><code>     mpg cyl
+X1  21.0   6
+X2  21.0   6
+X3  22.8   4
+X4  21.4   6
+X5  18.7   8
+X6  18.1   6
+X7  14.3   8
+....
+</code></pre>
+
+<p>We are now going to tackle the extreme data reduction task, whereby we go from a data set to a single number (per column), in this case taking the sum. This is very simple in  <code>plyr</code></p>
+
+<pre><code class="r">summarize(mtcars, cyl = sum(cyl), carb = sum(carb))
+</code></pre>
+
+<pre><code>  cyl carb
+1 198   90
+</code></pre>
+
+<p>but a little more complex in <code>plyrmr</code>, and why that&#39;s the case merits a little explanation. <code>plyr::summarize</code> works on data frames and has all the data available simultaneously. This is not true for &ldquo;plyrmr&rdquo; because large data sets are processed piecemeal. So we need to perform the sum on each chunk of data, group the results together, sum again. <code>group.by(data, 1)</code> just means group everything together, in fact there is handy alias for that, <code>group.together</code> </p>
+
+<pre><code class="r">big.mtcars.partial.sums = summarize(big.mtcars, cyl = sum(cyl), carb = sum(carb))
+big.mtcars.sum = summarize(group.by(big.mtcars.partial.sums, 1), cyl = sum(cyl), carb = sum(carb))
+as.data.frame(big.mtcars.sum)
+</code></pre>
+
+<pre><code>   cyl carb
+X1 198   90
+</code></pre>
+
+<p>In many other use cases, instead of a single summary, we are interested in summaries by group. In <code>plyr</code> this calls for the <code>ddply</code> function (<code>group_by</code> in <code>dplyr</code>)</p>
+
+<pre><code>```r
+ddply(mtcars, &quot;cyl&quot;, summarize, cyl = sum(cyl), carb = sum(carb))
+```
+
+```
+  cyl carb
+1  44   17
+2  42   24
+3 112   49
+```
+</code></pre>
+
+<p>The equivalent in <code>plyrmr</code> is <code>group.by</code></p>
+
+<pre><code class="r">big.mtcars.by.cyl = group.by(big.mtcars, cyl)
+big.mtcars.sum.by.cyl   = summarize(big.mtcars.by.cyl, cyl = sum(cyl), carb = sum(carb))
+as.data.frame(big.mtcars.sum.by.cyl)
+</code></pre>
+
+<pre><code>     cyl carb
+X1    42   24
+X1.1  44   17
+X1.2 112   49
+</code></pre>
+
+<p>We are ready to write the wordcount function, the &ldquo;hello world&rdquo; equivalent of the Hadoop world. The task is to read in a data frame with lines of text, split the lines into words and count how many times each word occurs. First let&#39;s make up some fake text data to keep things self-contained.</p>
+
+<pre><code class="r">data = 
+    data.frame(
+        lines = 
+            sapply(
+                split(
+                    as.character(
+                        sample(LETTERS, 1000, replace = TRUE)), 
+                    1:1000%%20), 
+                paste, 
+                collapse = &quot; &quot;), 
+        stringsAsFactors = FALSE)
+</code></pre>
+
+<p>This is how the task can be accomplised working on a data frame. </p>
+
+<pre><code class="r">words = summarize(data, words = unlist(strsplit(lines, &quot; &quot;)))
+ddply(words, &quot;words&quot;, summarize, count = length(words))
+</code></pre>
+
+<pre><code>   words count
+1      A    39
+2      B    32
+3      C    38
+4      D    31
+5      E    45
+6      F    44
+7      G    38
+....
+</code></pre>
+
+<p>In fact the name <code>summarize</code> seems again unsatisfactory for self-documenting code here. We are looking for at least an alias that could capture this kind of usage. Maybe <code>explode</code>? </p>
+
+<pre><code class="r">words = summarize(input(data), words = unlist(strsplit(lines, &quot; &quot;)))
+wordcount = summarize(group.by(words, words), word = unique(words), count = length(words))
+as.data.frame(wordcount)
+</code></pre>
+
+<pre><code>      word count
+X1       S    33
+X1.1     M    39
+X1.2     O    38
+X1.3     G    38
+X1.4     L    32
+X1.5     F    44
+X1.6     X    44
+....
+</code></pre>
+
+<h2>The fundamental primitives: <code>do</code>  and <code>group.by.f</code></h2>
+
+</body>
+
+</html>
+

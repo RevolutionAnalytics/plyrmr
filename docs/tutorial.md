@@ -4,540 +4,425 @@
 
 
 
+
+
+
 # Tutorial
 
-## Introduction
+## Predefined operations
 
-`Plyrmr` is a package that allows to manipulate very large data sets. Because it's backed by Hadoop, large means up to petabytes in scale. It's based on another package, `rmr2`, which provides the foundation for writing programs according to the mapreduce paradigm. `Plyrmr` endeavors to add a layer of abstraction and, hopefully, conveninence and easy of use on top of `rmr2`. To achieve that, it takes inspiration from the data manipulation style promoted by Hadley Wickham in his very popular packages `plyr` and `reshape2` and the very new `dplyr` and adapts it to the very large data setting.
-
-## Basic concepts
-
-
-### Programming model
-
-Very large data sets reside on disk and on multiple machines and they need to be processed on groupd of machines called clusters, otherwise they are not very large. Therefore, you can't load them as a whole into R, that is into main memory at any given time. You can only process small chunks, regroup them, process the resulting chunks and repeat. This matches very nicely into Hadley's organization of basic data manipulations into a system called "split-apply-combine", with one fundamental difference: the combine and split operation are combined into a single operation. This is necessary, because very large data sets are too big to exist in their "combined" form: they can exist only in one of many "split" states: fortunately we have control on how the split is defined. So instead of Hadley's three pronged approach to data manipulation, we have a two pronged one that maps naturally to the underlying map-reduce paradigm. The idea of `plyrmr` is to take the `plyr` style of data processing and map it to the underlying mapreduce paradigm trying to keep a similar syntax and semantics.   
-
-### Data model
-
-The model is the data.frame. The data is always represented as data frames, each of which contains part of the data. People used to `rmr2` or `plyr` may find this a restriction, and indeed it was a simplifying assumption in the desing phase.
-
-### Initialization
-
+Let's start with a simple operation such as adding a column to a data frame. The data set `mtcars` comes with R and describes the characteristics of a few car models:
 
 
 ```r
-suppressPackageStartupMessages(library(plyrmr))
+head(mtcars)
 ```
 
+```
+                   mpg cyl disp  hp drat    wt  qsec vs am gear carb
+Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
+Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
+Datsun 710        22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
+Hornet 4 Drive    21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
+Hornet Sportabout 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
+Valiant           18.1   6  225 105 2.76 3.460 20.22  1  0    3    1
+```
+
+
+One may be interested in how many carburetors per cylinder each model uses, and that's a simple `transform` call away:
 
 
 ```r
-rmr.options(backend = "local")
+transform(mtcars, carb.per.cyl = carb/cyl)
 ```
 
 ```
-NULL
-```
-
-
-
-### Building blocks
-
-In `plyrmr` there are `pipes`, which are R expressions describing a computation. The simplest pipe has an input. The input can be a data frame, a file or another pipe, the first two of which need to be wrapped in an `input` call. The computation can be triggered with either `output` or `as.data.frame`, the first resulting in the data being written to a file and the second creating a data frame. So a trivial pipe could be
-
-```
-as.data.frame(input(mtcars))
-```
-
-To do something useful we need to create more complex expressions combining essentially two sets of basic ingredients: processing steps and grouping steps. We can also combine pipes into more complex ones. As we said, the data is always chunked, due to its size. The initial state is an arbitrary grouping, in which records are processed in arbitrary groups, but can be modified with the primitive `group.by.f`. The fundamental processing primitive is `do`, which applies a function to each chunk. The function should transform a data frame into another data frame. For instance, if we wanted to compute the number of carburators per cylinder for the cars in the `mtcars` data set (all of 32, of course this is only for illustrative purposes), one could simply do
-
-```
-transform(mtcars, ratio = carb/cyl)
-
-```
-
-This is a regular data frame processing function from the package `base`.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-To identify input data we need the function `input`. If we want to process file `"some/path"`, we need to call `input("some/path")`. If we want to create a small data set on the fly, we can pass a data frame as argument. This is most useful for learning and testing purposes. This is an example of the latter: 
-
-
-```r
-big.mtcars = input(mtcars) # or input(path)
-```
-
-Also for compatibility with `rmr2` we can pass the output of a `mapreduce` call to `input`.
-The reverse step is to take some data and turn it into a data frame (do this only on small data sets such as in this example):
-	
-
-```r
-as.data.frame(big.mtcars)
-```
-
-```
-                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-Mazda.RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-Mazda.RX4.Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-Datsun.710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
-Hornet.4.Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
-Hornet.Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
-Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
-Duster.360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
 ....
 ```
 
 
-Let's start now with some simple processing, like taking the square of some numbers. In R and particularly using the `plyr` package and its approach to data manipulation, you could proceed as follows. First create a data frame with some numbers:
-
-```r
-data = data.frame(x = 1:10)
-```
-
-
-Then add a column of squares with `mutate` (which is very similar to `transform` in the `base` package).
+Now let's imagine that we have a huge data set with the same structure but instead of being stored in memory, it is stored in a HDFS file named "/tmp/mtcars". It's way too big to be loaded with `read.table` or equivalent. With `plyrmr` one just needs to  enter:
 
 
 ```r
-mutate(data, x2 = x^2)
+transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
 ```
 
 ```
-    x  x2
-1   1   1
-2   2   4
-3   3   9
-4   4  16
-5   5  25
-6   6  36
-7   7  49
+[1] "Slots set: input, map \n Input: /tmp/mtcars,native \n"
+```
+
+
+Well, that doesn't look like what we wanted, does it? That's because, when dealing with very large data sets, one needs to be careful not to try and load them into memory unless they have been filtered or summarized to a much smaller size. Therefore in `plyrmr` the general rule is that loading into memory happens only when the user decides so. In this case, we know the data set is small so we can just go ahead with this operation  and enter:
+
+
+```r
+as.data.frame(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl))
+```
+
+```
+                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+Mazda.RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+Mazda.RX4.Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+Datsun.710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+Hornet.4.Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+Hornet.Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+Duster.360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
 ....
 ```
 
 
-Let's make this an input data set according to the `plyrmr`.
+In fact the `as.data.frame` call not only loads the data into memory, but triggers the computation as well. `plyrmr` uses a technique called *delayed evaluation* to create the opportunity for some optimizations. In general the user need not worry about the details of this, as long as it is clear that the actual computational work may be shifted w.r.t. an equivalent computation in memory. If we want to trigger the computation without loading the data into memory but storing it into a file, we need the `output` call, as in:
 
 
-```r
-data = input(data)
-```
 
-
-We can call `mutate` on this data set and store the result in a variable. It doesn't look like that variable has data at all in it, in fact it doesn't. It's a `pipe`, a description of a sequence of processing steps. Nothing gets actually computed until necessary. 
 
 
 ```r
-small.squares = mutate(data, x2 = x^2)
-small.squares
+output(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl), "/tmp/mtcars.out")
 ```
 
 ```
-[1] "Slots set: input, map \n Input: Temporary file \n"
+[1] "/tmp/mtcars.out" "native"         
 ```
 
 
-But if we turn a `pipe` into a data frame, we see the data as expected. 
+This is the real deal: we have performed a computation on the cluster, in parallel, and the data is never loaded into memory at once, but the syntax and semantics remain the familiar ones. The last run processed all of 32 rows, but on a large enough cluster it could run on 32 terabytes &mdash; don't even think of using `as.data.frame` in that case.
+The return value of `output` contains the path and some format information. In general an effort is made throughout `plyrmr` to make return values of functions as useful as possible so as to be able to combine simple expressions into larger ones. You can also store intermediate results to a variable as in:
 
 
 ```r
-as.data.frame(small.squares)
+mtcars.w.ratio = transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
+as.data.frame(mtcars.w.ratio)
 ```
 
 ```
-     x  x2
-X1   1   1
-X2   2   4
-X3   3   9
-X4   4  16
-X5   5  25
-X6   6  36
-X7   7  49
+                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+Mazda.RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+Mazda.RX4.Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+Datsun.710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+Hornet.4.Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+Hornet.Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+Duster.360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
 ....
 ```
 
 
-Turning a `pipe` into a data frame is one of a few triggering events that will start the actual computation. This is powered by `rmr2`, hence it can be hadoop backed, hence it can operate on very large data sets. An almost identical syntax can be used to perform the same operation on a data frame and a Hadoop data set. When operating on very large data sets, we can't use `as.data.frame`, because there isn't enough RAM available. The alternative is the `output` primitive, which will trigger the actual computation described by a `pipe` and store the results to a user-specified path:
-
-
-```r
-file.remove("/tmp/small.squares")
-```
-
-```
-[1] TRUE
-```
-
-```r
-output(small.squares, "/tmp/small.squares")
-```
-
-```
-[1] "/tmp/small.squares" "native"            
-```
-
-
-And let's check that it actually worked:
-	
-	```r
-	as.data.frame(input("/tmp/small.squares"))
-	```
-	
-	```
-	     x  x2
-	X1   1   1
-	X2   2   4
-	X3   3   9
-	X4   4  16
-	X5   5  25
-	X6   6  36
-	X7   7  49
-	....
-	```
-
-With `output` and refraining from using `as.data.frame` we can process hadoop sized data sets. Of course we can use `as.data.frame` after a number of data reduction steps. Another role of output is as a bridge with `rmr2`. You can just write `mapreduce(ouput(...))` and combine the best of the two packages.
-
-Let's move to some counting task. We create a data frame with a single column containing a sample from the binomial distribution, just for illustration purposes.
-
-
-```r
-data = data.frame(x = rbinom(32, n = 50, prob = 0.4))
-```
-
-
-Counting the number of occurrences of each outcome is a single line task in `plyr`. `ddply` splits a data frame according to a variable and summarize creates a new data frame with the columns specified in its additional arguments.
-
-
-```r
-ddply(data, "x", summarize, val = unique(x), count = length(x))
-```
-
-```
-    x val count
-1   7   7     1
-2   8   8     1
-3   9   9     2
-4  10  10     4
-5  11  11     9
-6  12  12     2
-7  13  13    11
-....
-```
-
-
-Let's create a `plyrmr` data set with `input`
-
-
-```r
-data = input(data)
-```
-
-
-The equivalent in `plyrmr` is not as close in syntax as before, because we followed more closely the syntax of an experimental package by the same author as `plyr` called `dplyr`, which is focused on data frames and adds multiple backends and can be considered a specialization and evolution of `plyr`. `dplyr` is temporarily incompatible with `rmr2` and not as well known as `plyr` yet and so it is not used here, but was a reference point in the design of `plyrmr`. `plyrmr`, like `dplyr` has a separate `group.by` primitive (`group_by` in `dplyr`), named after its SQL equivalent, that defines a grouping of a data set based on a column (expressions are not supported yet).
-
-
-```r
-counts = summarize(group.by(data, x), val = unique(x), count = length(x))
-```
-
-
-What we can see here is that we can combine two `pipes` by composing two functions. We can check the results with
-
-
-```r
-as.data.frame(counts)
-```
-
-```
-      val count
-X1     11     9
-X1.1   13    11
-X1.2   12     2
-X1.3    9     2
-X1.4   15     7
-X1.5   18     1
-X1.6   17     2
-....
-```
-
-Please note that the results are not in the same order. This is always true with Hadoop and if other examples in this tutorial seem to show the opposite it's only because of the tiny size of the data sets involved. Not incidentally, theoreticians have formalized this computational model as MUD (Massive Unordered Distributed, see [this paper](http://arxiv.org/abs/cs/0611108)). 
-
-Writing an identity function is not particularly interesting and won't make you rich, but it's a boilerplate test. Here is one way of expressing the identity in R:
-
-
-```r
-transform(mtcars)
-```
-
-```
-                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
-Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
-Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
-Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
-Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
-....
-```
-
-
-And here is the equivalent in plyrmr.
-
-
-```r
-big.mtcars.again = transform(big.mtcars)
-as.data.frame(big.mtcars.again)
-```
-
-```
-                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-Mazda.RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-Mazda.RX4.Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-Datsun.710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
-Hornet.4.Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
-Hornet.Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
-Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
-Duster.360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
-....
-```
-
-
-Now let's take a baby step: select certain rows. The function `subset` in `base` comes in handy.
-
-
-```r
-subset(mtcars, cyl > 4)
-```
-
-```
-                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
-Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
-Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
-Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
-Merc 280            19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
-....
-```
-
-
-We now can do exactly the same on a Hadoop data set:
-	
-	
-	```r
-	big.mtcars.cyl.gt.4 = subset(big.mtcars, cyl > 4)
-	as.data.frame(big.mtcars.cyl.gt.4)
-	```
-	
-	```
-	                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-	Mazda.RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-	Mazda.RX4.Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-	Hornet.4.Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
-	Hornet.Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
-	Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
-	Duster.360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
-	Merc.280            19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
-	....
-	```
-
-
-Next baby step up from selecting rows is selecting columns:
-	
-	```r
-	summarize(mtcars, mpg = mpg, cyl = cyl)
-	```
-	
-	```
-	    mpg cyl
-	1  21.0   6
-	2  21.0   6
-	3  22.8   4
-	4  21.4   6
-	5  18.7   8
-	6  18.1   6
-	7  14.3   8
-	....
-	```
-
-
-And in `plyrmr`
-
-```r
-big.mtcars.cyl.carb = summarize(big.mtcars, mpg = mpg, cyl = cyl)
-as.data.frame(big.mtcars.cyl.carb)
-```
-
-```
-     mpg cyl
-X1  21.0   6
-X2  21.0   6
-X3  22.8   4
-X4  21.4   6
-X5  18.7   8
-X6  18.1   6
-X7  14.3   8
-....
-```
-
-
-Deceptively similar, but works on petabytes. In fact `summarize` doesn't seem the right name for this function, which can do a lot more. So we aliased to `select`, following dplyr, to allow the programmer to express intent.
-
-
-```r
-big.mtcars.cyl.carb =select(big.mtcars, mpg = mpg, cyl = cyl)
-as.data.frame(big.mtcars.cyl.carb)
-```
-
-```
-     mpg cyl
-X1  21.0   6
-X2  21.0   6
-X3  22.8   4
-X4  21.4   6
-X5  18.7   8
-X6  18.1   6
-X7  14.3   8
-....
-```
-
-
-We are now going to tackle the extreme data reduction task, whereby we go from a data set to a single number (per column), in this case taking the sum. This is very simple in 	`plyr`
-
-
-```r
-summarize(mtcars, cyl = sum(cyl), carb = sum(carb))
-```
-
-```
-  cyl carb
-1 198   90
-```
-
-
-but a little more complex in `plyrmr`, and why that's the case merits a little explanation. `plyr::summarize` works on data frames and has all the data available simultaneously. This is not true for "plyrmr" because large data sets are processed piecemeal. So we need to perform the sum on each chunk of data, group the results together, sum again. `group.by(data, 1)` just means group everything together, in fact there is handy alias for that, `group.together` 
-
-
-```r
-big.mtcars.partial.sums = summarize(big.mtcars, cyl = sum(cyl), carb = sum(carb))
-big.mtcars.sum = summarize(group.by(big.mtcars.partial.sums, 1), cyl = sum(cyl), carb = sum(carb))
-as.data.frame(big.mtcars.sum)
-```
-
-```
-   cyl carb
-X1 198   90
-```
-
-
-In many other use cases, instead of a single summary, we are interested in summaries by group. In `plyr` this calls for the `ddply` function (`group_by` in `dplyr`)
-	
-	```r
-	ddply(mtcars, "cyl", summarize, cyl = sum(cyl), carb = sum(carb))
-	```
-	
-	```
-	  cyl carb
-	1  44   17
-	2  42   24
-	3 112   49
-	```
-
-
-The equivalent in `plyrmr` is `group.by`
-
-
-```r
-big.mtcars.by.cyl = group.by(big.mtcars, cyl)
-big.mtcars.sum.by.cyl	= summarize(big.mtcars.by.cyl, cyl = sum(cyl), carb = sum(carb))
-as.data.frame(big.mtcars.sum.by.cyl)
-```
-
-```
-     cyl carb
-X1    42   24
-X1.1  44   17
-X1.2 112   49
-```
-
-
-We are ready to write the wordcount function, the "hello world" equivalent of the Hadoop world. The task is to read in a data frame with lines of text, split the lines into words and count how many times each word occurs. First let's make up some fake text data to keep things self-contained.
-
-
-```r
-data = 
-	data.frame(
-		lines = 
-			sapply(
-				split(
-					as.character(
-						sample(LETTERS, 1000, replace = TRUE)), 
-					1:1000%%20), 
-				paste, 
-				collapse = " "), 
-		stringsAsFactors = FALSE)
-```
-
-
-This is how the task can be accomplised working on a data frame. 
+`transform` is one of several functions that `plyrmr` provides in a Hadoop-powered version:
+
+ * from `base`:
+   * `transform`: add new columns
+   * `subset`: select columns and rows
+ * from `plyr`:
+   * `mutate`: similar to `transform`
+   * `summarize`: create summaries
+ * from `reshape2`:
+   * `melt` and `dcast`: convert between *long* and *wide* data frames
+ * new in `plyr`:
+   * `select`: does everything that `transform` and `summarize` do in addition to selecting columns.
+   * `where`: select rows
+   * these are more suitable for programming then the functions they replace, as will be explained later.
  
+`plyrmr` extends all these operations to Hadoop data sets, trying to maintain semantic equivalence, with limitations that will be made clear later. These functions are not intended as a minimal set of operations: there is a lot of functionality overlap. We just wanted to support existing usage to help users transitioning to Hadoop programming.
+ 
+## Combining Operations
+
+What if none of the basic operations is sufficient to perform a needed data processing step? The first available tool is to combine different operations. Going back to the previous example, let's say we want to select cars with a carburetor per cylinder ratio greater than 1. Do such things even exist? On a data frame, there is a quick way to compute the answer, which is
 
 
 ```r
-words = summarize(data, words = unlist(strsplit(lines, " ")))
-ddply(words, "words", summarize, count = length(words))
+subset(transform(mtcars, carb.per.cyl = carb/cyl), carb.per.cyl >= 1)
 ```
 
 ```
-   words count
-1      A    52
-2      B    40
-3      C    29
-4      D    50
-5      E    37
-6      F    40
-7      G    33
+               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+```
+
+
+Wouldn't it be nice if we could do exactly the same on a Hadoop data set? In fact, we almost can:
+
+
+```r
+x = subset(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl), carb.per.cyl >= 1)
+as.data.frame(x)
+```
+
+```
+               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+Ferrari.Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+Maserati.Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+```
+
+
+The main differences between the data frame version and the Hadoop data version are the input and the output. All there is in between, pretty much works the same. 
+
+## Why you should use `plyrmr`'s `select` and `where`
+`subset` and `transform` work best interactively, at the prompt, but they have some problems when used in other functions or packages. These limitations are inherited from the `base` package functions, not peculiar to their `plyrmr` brethren. `plyrmr` makes an attempt to provide two functions that match the convenience of `transform` and `subset` without their pitfalls. While we were at it, we also tried to make them more general and give them a cleaner but still familiar (SQL-inspired) interface. Let me introduce `select` and `where`. These are `plyrmr` functions with methods for data frames and Hadoop data sets and they are appropriate for interactive and programming use. The previous examples become, using these functions:
+
+
+```r
+where(select(mtcars, carb.per.cyl = carb/cyl, .replace = FALSE), carb.per.cyl >= 1)
+```
+
+```
+               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+```
+
+
+and:
+
+
+```r
+x = where(select(input("/tmp/mtcars"), carb.per.cyl = carb/cyl, .replace = FALSE), carb.per.cyl >= 1)
+as.data.frame(x)
+```
+
+```
+               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+Ferrari.Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+Maserati.Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+```
+
+
+Similar, but they work everywhere. For instance, if `subset` or `where` are called within some function, which is in its turn used in some other function, we can have the following situation:
+
+
+```r
+process.mtcars.1 = function(...) subset(mtcars, ...)
+high.carb.cyl.1 = function(x) {process.mtcars.1(data, carb/cyl >= x) }
+high.carb.cyl.1(1)
+```
+
+```
+Error: 'subset' must be logical
+```
+
+```r
+
+process.mtcars.2 = function(...) where(mtcars, ..., .envir = parent.frame())
+high.carb.cyl.2 = function(x) {process.mtcars.2(carb/cyl >= x) }
+high.carb.cyl.2(1)
+```
+
+```
+               mpg cyl disp  hp drat   wt qsec vs am gear carb
+Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6
+Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8
+```
+
+
+The exact reason why `where` needs an additional argument in this scenario and what to provide are out of scope for this tutorial, but the message is that with `where` and `select` you can transition nicely from interactive R use to development. The R documentation recommends to use `[]` only when programming, but having to rewrite code in a different context, to a computer scientist, is just an admission of defeat. Therefore `plyrmr` provides methods for `transform`, `subset`, `mutate` and `summarize` because of their widespread use, but we recommend to check out `where` and `select` (many thanks to Hadley Wickham for valuable discussions on this issue).
+
+## Custom operations
+Another way to extend the functionality of `plyrmr` built-in data manipulation functions is to take any function that accepts a data frame in input and returns a data frame and use the function `do` to give it Hadoop superpowers (`do` is named after the equivalent function in `dplyr`, but the idea is not new). For instance, you have a function that returns the rightmost column of a data frame. This is not simple to achieve with the functions explored so far, but it is a quick one liner:
+
+
+```r
+last.col = function(x) x[, ncol(x), drop = FALSE]
+```
+
+
+Wouldn't it be great if we could run this on a Hadoop data set? Well, we almost can:
+
+
+```r
+as.data.frame(do(input("/tmp/mtcars"), last.col))
+```
+
+```
+                    carb
+Mazda.RX4              4
+Mazda.RX4.Wag          4
+Datsun.710             1
+Hornet.4.Drive         1
+Hornet.Sportabout      2
+Valiant                1
+Duster.360             4
 ....
 ```
 
 
-In fact the name `summarize` seems again unsatisfactory for self-documenting code here. We are looking for at least an alias that could capture this kind of usage. Maybe `explode`? 
+What `do` does is take any function that reads and writes data frames, execute it on a Hadoop data set in parallel on relatively small chunks of the data and pass the results to `as.data.frame` or `output` which send them to their final destination. Wouldn't it absolutely perfect if the `lastcol` function itself knew whether it's working on a Hadoop data set or a data frame and do the right thing?
 
 
 ```r
-words = summarize(input(data), words = unlist(strsplit(lines, " ")))
-wordcount = summarize(group.by(words, words), word = unique(words), count = length(words))
-as.data.frame(wordcount)
+magic.wand(last.col)
 ```
 
 ```
-      word count
-X1       K    46
-X1.1     D    50
-X1.2     B    40
-X1.3     H    43
-X1.4     S    47
-X1.5     U    45
-X1.6     M    40
+Warning: Renamed the preexisting function last.col to last.col.default, which was defined in environment base.
+```
+
+```r
+last.col(mtcars)
+```
+
+```
+                    carb
+Mazda RX4              4
+Mazda RX4 Wag          4
+Datsun 710             1
+Hornet 4 Drive         1
+Hornet Sportabout      2
+Valiant                1
+Duster 360             4
+....
+```
+
+```r
+as.data.frame(last.col(input("/tmp/mtcars")))
+```
+
+```
+                    carb
+Mazda.RX4              4
+Mazda.RX4.Wag          4
+Datsun.710             1
+Hornet.4.Drive         1
+Hornet.Sportabout      2
+Valiant                1
+Duster.360             4
 ....
 ```
 
 
-## The fundamental primitives: `do`  and `group.by.f`
+
+## Grouping
+
+Until now we performed row by row operations, whereby each row in the results depends on a single row in the input. In this case we don't care if the data is grouped in one way or another. In most other cases, this distinction is important. For instance, if we wanted to compute the total number of carburetors, we could enter:
 
 
+```r
+ summarize(mtcars, sum(carb))
+```
+
+```
+  sum(carb)
+1        90
+```
+
+
+But if we did that on a Hadoop data set, we would get:
+
+
+```r
+as.data.frame(summarize(input("/tmp/mtcars"), sum(carb) ))
+```
+
+```
+     sum.carb.
+X1          10
+X1.1        11
+X1.2        17
+X1.3        15
+X1.4        10
+X1.5        11
+X1.6        16
+....
+```
+
+
+What does that mean? The data in Hadoop is always grouped, one way or another (this is also a key difference with the current `dplyr` design). It couldn't be otherwise: it is stored on multiple devices and, even if it weren't, we can only load it into memory in small chunks. So think of it as always grouped, initially in arbitrary fashion and later in the way we determine using the functions `group.by`, `group.by.f` and `group.together`. These were inspired by the notion of key in mapreduce, the SQL statement and the `dplyr` function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:
+
+
+```r
+as.data.frame(summarize(group.together(input("/tmp/mtcars")), sum(carb) ))
+```
+
+```
+   sum.carb.
+X1        90
+```
+
+
+You may have noticed the contradiction between the above statement that data is always in chunks with the availability of a `group.together` function. Luckily, there is an advanced way of grouping recursively, in a tree like fashion, that works with associative and commutative operations such as the sum, which is the default for `group.together`. Anyway, it will all be more clear as we cover other grouping functions.
+
+The `group.by` function takes an input and a number of arguments that are evaluated in the context of the data, exactly like `transform` and `mutate`. The result is a Hadoop data set grouped by the columns defined in those arguments. After this step, all rows that are identical on the columns defined in the `group.by` call will be loaded into memory at once and processed in the same call. Here is an example. Let's say we want to calculate the average milage for cars with the same number of cylinders:
+
+
+```r
+as.data.frame(
+	select(
+		group.by(
+			input("/tmp/mtcars"),
+			cyl),
+		cyl = unique(cyl),
+		mean.mpg = mean(mpg)))
+```
+
+```
+     cyl mean.mpg
+X1     6    19.74
+X1.1   4    26.66
+X1.2   8    15.10
+```
+
+
+This mostly a scalable programs, but there are some caveats: we need to be mindful of the size of the groups. If they are very big they will bust memory limits, so we need to reach for some advanced techniques to avoid this problem. If they are very small, like a handful of rows, we may run into some efficiency issues releated to the current R and `rmr2` implementations rather than fundamental (so there is hope they will go away one day). 
+
+When the definition of the grouping column is more complicated, we may need to reach for the uber-general `group.by.f`, the grouping relative of `do` (in fact, these two functions are the foundation for everything else in `plyrmr`). Let's go back to the `last.col` example. If we need to group by the last columns of a data frame, this is all we need to do:
+
+
+```r
+as.data.frame(
+	select(
+		group.by.f(
+			input("/tmp/mtcars"),
+			last.col),
+		unique(carb),
+		mean.mpg = mean(mpg)))
+```
+
+```
+     unique.carb. mean.mpg
+X1              4    15.79
+X1.1            1    25.34
+X1.2            2    22.40
+X1.3            3    16.30
+X1.4            6    19.70
+X1.5            8    15.00
+```
+
+
+This assumes that we know `carb` is the last column, which defeats the purpose of the exercise.  So let's take an additional and final step:
+
+
+
+```r
+as.data.frame(
+	do(
+		group.by.f(
+			input("/tmp/mtcars"),
+			last.col),
+		function(x)
+			data.frame(
+				last.col = unique(last.col(x)),
+				mean.mpg = mean(x$mpg),
+				row.names = NULL)))
+```
+
+```
+     carb mean.mpg
+X1      4    15.79
+X1.1    1    25.34
+X1.2    2    22.40
+X1.3    3    16.30
+X1.4    6    19.70
+X1.5    8    15.00
+```
 
 

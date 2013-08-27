@@ -212,7 +212,7 @@ Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.
 ....
 </code></pre>
 
-<p>Now let&#39;s imagine that we have a huge data set with the same structure but instead of being stored in memory, it is stored in a HDFS file named &ldquo;/tmp/mtcars&rdquo;. It&#39;s way too big to be loaded with <code>read.table</code> or equivalent. With <code>plyrmr</code>, no sweat, one just needs to  enter:</p>
+<p>Now let&#39;s imagine that we have a huge data set with the same structure but instead of being stored in memory, it is stored in a HDFS file named &ldquo;/tmp/mtcars&rdquo;. It&#39;s way too big to be loaded with <code>read.table</code> or equivalent. With <code>plyrmr</code> one just needs to  enter:</p>
 
 <pre><code class="r">transform(input(&quot;/tmp/mtcars&quot;), carb.per.cyl = carb/cyl)
 </code></pre>
@@ -363,7 +363,7 @@ Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6
 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8
 </code></pre>
 
-<p>The exact reason why <code>where</code> needs an additional argument in this scenario and what to provide are out of scope for this tutorial, but the message is that with <code>where</code> and <code>select</code> you can transition nicely from interactive R use to development. The R documentation recommends to use <code>[]</code> only when programming, but having to rewrite code in a different context, to a computer scientist, is just an admission of defeat. Therefore <code>plyrmr</code> provides methods for <code>transform</code>, <code>subset</code>, <code>mutate</code> and <code>summarize</code> because of their widespread use, but we recommend to use <code>where</code> and <code>select</code>.</p>
+<p>The exact reason why <code>where</code> needs an additional argument in this scenario and what to provide are out of scope for this tutorial, but the message is that with <code>where</code> and <code>select</code> you can transition nicely from interactive R use to development. The R documentation recommends to use <code>[]</code> only when programming, but having to rewrite code in a different context, to a computer scientist, is just an admission of defeat. Therefore <code>plyrmr</code> provides methods for <code>transform</code>, <code>subset</code>, <code>mutate</code> and <code>summarize</code> because of their widespread use, but we recommend to use <code>where</code> and <code>select</code> (many thanks to Hadley Wickham for valuable discussions on this issue).</p>
 
 <h2>Custom operations</h2>
 

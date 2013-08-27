@@ -29,7 +29,6 @@ S3method(print, big.data)
 S3method(as.data.frame, pipe)
 #pipes
 export(
-	as.data.frame,
 	do,
 	magic.wand,
 	group.by,

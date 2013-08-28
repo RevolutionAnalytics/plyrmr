@@ -10,10 +10,10 @@ Control grouping in plyrmr computations}
 Large data sets can not be processed by bringing all the data into memory at once. One alternative is to group records by a key or index and process one group at a time, provided they are not too big. The functions documented here allow to do that in plyrmr.
 }
 \usage{
-group.by(.data, ..., recursive = FALSE)
-group.by.f(.data, f, ..., recursive = FALSE)
+group.by(.data, \dots, recursive = FALSE)
+group.by.f(.data, f, \dots, recursive = FALSE)
 group.together(.data, recursive = FALSE)
-ungroup(.data, ...)
+ungroup(.data, \dots)
 
 }
 \arguments{
@@ -33,7 +33,7 @@ Additional arguments to f }
 %%  If it is a LIST, use
 %%  \item{comp1 }{Description of 'comp1'}
 %%  \item{comp2 }{Description of 'comp2'}
-%% ...
+%% \dots
 }
 \references{
 %% ~put references to the literature/web site here ~
@@ -45,7 +45,7 @@ Additional arguments to f }
 %%  ~~further notes~~
 }
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
+%% ~Make other sections like Warning with \section{Warning }{\dots.} ~
 
 \seealso{
 %% ~~objects to See Also as \code{\link{help}}, ~~~
@@ -56,9 +56,9 @@ Additional arguments to f }
 ##--	or do  help(data=index)  for the standard data sets.
 
 ## The function is currently defined as
-function (.data, ...) 
+function (.data, \dots) 
 {
-    group.by.f(.data, function(y) summarize(y, ...))
+    group.by.f(.data, function(y) summarize(y, \dots))
   }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

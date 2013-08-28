@@ -8,18 +8,18 @@ Retirm  the top or bottom rows but the specified criteria
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-top.k(x, k, ...)
+top.k(x, k, \dots)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{A plyrmr pipe}
   \item{k}{How many items}
-  \item{...}{Expressions to be used to define the order.}
+  \item{\dots}{Expressions to be used to define the order.}
 }
 \details{
-For details on how the ... are evaluated see summarize and for the order definition see order}
+For details on how the \dots are evaluated see summarize and for the order definition see order}
 \value{
-A pipe with the top or bottom k elements according to the order defined by ... arguments}
+A pipe with the top or bottom k elements according to the order defined by the \dots arguments}
 
 \examples{
 ##---- Should be DIRECTLY executable !! ----

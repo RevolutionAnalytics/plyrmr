@@ -8,10 +8,10 @@ Function to convert big data sets from tall to wide and back.
 Modeled after, and actually implemented on top of, equally named functions in the legendary packages \code{reshape2}, they implement the same functionality for large data sets.
 }
 \usage{
-dcast(data, \dots)
-\method{dcast}{pipe, formula, \dots}
-melt(data, \dots)
-\method{melt}{pipe, \dots}
+	dcast(data, \dots)
+	\method{dcast}{pipe}(data, formula, \dots)
+	melt(data, \dots)
+	\method{melt}{pipe}(data, \dots)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

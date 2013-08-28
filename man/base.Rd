@@ -11,11 +11,11 @@ Data manipulation functions to add, modify, select, or otherwise process data fr
 These functions are inspired by and actually use in their implementation equally named functions in packages plyr and base. The exception is select which is inspired by the SQL equivalent. In this plyrmr implementation they act on the data in chunks, either arbitrary or as defined by group.by. These functions are generic: you can call them on a data.frame or on plyrmr pipe.
 }
 \usage{
-transform(`_data`, ...)
-subset(x, ...)
-mutate(.data, ...)
-select(.data, ...)
-summarize(.data, ...)
+transform(`_data`, \dots)
+subset(x, \dots)
+mutate(.data, \dots)
+select(.data, \dots)
+summarize(.data, \dots)
 }
 
 \arguments{

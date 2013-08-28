@@ -8,12 +8,12 @@ Functions to perform sql-like operations on data frames and pipes.
 
 }
 \usage{
-where(.data, ...)
-\method{where}{data.frame}(.data, ...)
-\method{where}{pipe}(.data, ...)
-select(.data, ...)
-\method{select}{data.frame}(.data, ...)
-\method{select}{pipe}(.data, ...)
+where(.data, \dots)
+\method{where}{data.frame}(.data, \dots)
+\method{where}{pipe}(.data, \dots)
+select(.data, \dots)
+\method{select}{data.frame}(.data, \dots)
+\method{select}{pipe}(.data, \dots)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

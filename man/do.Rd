@@ -7,7 +7,7 @@ Execute a function on a pipe.
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-do(.data, f, ...)
+do(.data, f, \dots)
 }
 \arguments{
   \item{.data}{A pipe

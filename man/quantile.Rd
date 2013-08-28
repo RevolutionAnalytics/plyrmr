@@ -5,7 +5,7 @@ Compute the quantiles of a data set}
 \description{
 Find the quantiles of a data set}
 \usage{
-quantile(x, ...)
+quantile(x, \dots)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

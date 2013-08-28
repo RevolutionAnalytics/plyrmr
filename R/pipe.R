@@ -41,10 +41,6 @@ make.reduce.fun =
 	function(valf) 
 		make.map.fun(NULL, function(.x) as.data.frame(valf(.x)))
 
-to.fun1 = 
-	function(f, ...)
-		function(.x)
-			do.call(f, c(list(.x), dots(...)))
 
 #pipes
 

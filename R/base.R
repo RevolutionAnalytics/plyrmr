@@ -42,8 +42,8 @@ suppressWarnings(
 	setMethodS3(
 		"sample",
 		"pipe",
-		function(x, method = c("any", "Bernoulli"), ...) {
-			method = match.args(method)
+		function(x, method = c("any", "Bernoulli", "hypergeometric"), ...) {
+			method = match.arg(method)
 			sample.curried = Curry(sample, method = method, ...)
 			switch(
 				method,
@@ -53,6 +53,19 @@ suppressWarnings(
 							do(x, sample.curried),
 							recursive = TRUE),
 						sample.curried),
-			Bernoulli = 
-					do(x, sample.curried))}))
+				Bernoulli = 
+					do(x, sample.curried),
+				hypergeometric = 
+					do(
+						top.k(
+							do(
+								x, 
+								function(x) 
+									cbind(
+										x, 
+										.priority = runif(nrow(x)))), 
+							list(...)[["n"]], 
+							.priority), 
+						function(x)
+							x[,-ncol(x)]))}))
 

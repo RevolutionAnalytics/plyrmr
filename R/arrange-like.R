@@ -92,17 +92,18 @@ extreme.k=
 		force(envir)
 		this.order = Curry(order, decreasing = decreasing)
 		mr.fun = 
-			function(.x) {
+			function(.x) 
 				head(
 					.x[
 						do.call(
 							this.order,
-							select(.x, ..., .envir = envir)),], 
-					k)}
+							select(.x, ..., .envir = envir)),
+						,
+						 drop = FALSE], 
+					k)
 		do(
-			group.by.f(
-				do(x, mr.fun),
-				constant(1)),
+			group.together(
+				do(x, mr.fun)),
 			mr.fun)}
 
 top.k = 

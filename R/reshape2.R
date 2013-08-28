@@ -16,19 +16,14 @@ magic.wand(melt)
 
 dcast = function(data, ...) UseMethod("dcast")
 
-setMethodS3(
-	"dcast",
-	"pipe",
+dcast.pipe = 
 	function(data, formula, ...) {
 		id.vars = reshape2:::parse_formula(formula)[[1]][[1]]
 		do(
 			group.by(
-				input(data), 
+				data, 
 				id.vars), 
 			Curry(dcast, formula = formula),
-			...)})
+			...)}
 
-setMethodS3(
-	"dcast",
-	"default",
-	reshape2::dcast)
+dcast.default =	reshape2::dcast

@@ -47,23 +47,19 @@ is.data =
 	function(x)
 		inherits(x, "pipe")
 
-setMethodS3(
-	"as.character",
-	"pipe",
+as.character.pipe = 
 	function(x, ...) 
 		paste(
 			"Slots set:", 
 			paste(names(unclass(x)), collapse = ", "), "\n",
 			"Input:",
 			paste(as.character(x[["input"]]), collapse = ","),
-			"\n"))
+			"\n")
 
-setMethodS3(
-	"print",
-	"pipe",
+print.pipe =
 	function(x, ...) {
 		print(as.character(x))
-		invisible(x)})
+		invisible(x)}
 
 make.f1 = 
 	function(f, ...) {
@@ -170,60 +166,36 @@ output =
 		.data[["output"]] = path
 		as.big.data(.data, input.format)}
 
-setMethodS3(
-	"as.big.data",
-	"pipe",
-	run)
+as.big.data.pipe = run
 
 ungroup = as.big.data.pipe
 
 as.pipe = function(x, ...) UseMethod("as.pipe")
 
-setMethodS3(
-	"as.pipe",
-	"big.data",
+as.pipe.big.data = 
 	function(x, ...) 
 		structure(
 			strip.null.args(
 				input = x),
-			class = "pipe"))
+			class = "pipe")
 
-as.pipe.1 = 
+as.pipe.data.frame = 
 	function(x, ...) 
 		as.pipe(as.big.data(x, "native"))
 
-as.pipe.2 = 
+as.pipe.character = 
+as.pipe.function = 
 	function(x, format = "native", ...) 
 		as.pipe(as.big.data(x, format))
 
-setMethodS3(
-	"as.pipe", 
-	"data.frame", 
-	as.pipe.1)
+as.pipe.list = Compose(as.big.data, as.pipe)
 
-setMethodS3(
-	"as.pipe", 
-	"character", 
-	as.pipe.2)
-
-setMethodS3(
-	"as.pipe", 
-	"function", 
-	as.pipe.2)
-
-setMethodS3(
-	"as.pipe",
-	"list",
-	Compose(as.big.data, as.pipe)) 
-
-setMethodS3(
-	"as.data.frame",
-	"pipe",
+as.data.frame.pipe =
 	function(x, ...)
 		as.data.frame(
-			as.big.data(x, "native")))
+			as.big.data(x, "native"))
 
-input  = as.pipe
+input = as.pipe
 
 magic.wand = 
 	function(f) 

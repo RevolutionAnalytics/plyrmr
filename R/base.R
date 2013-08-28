@@ -12,22 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-setMethodS3(
-	"subset", 
-	"pipe", 
+subset.pipe =
 	function(x, ...) 
-		do(x, subset, ...))
+		do(x, subset, ...)
 
-setMethodS3(
-	"transform", 
-	"pipe", 
+transform.pipe =  
 	function(`_data`, ...)
-		do(`_data`, transform, ...))
+		do(`_data`, transform, ...)
 
-
-setMethodS3(
-	"names",
-	"pipe",
+names.pipe =
 	function(x, ...)
 		as.data.frame(
 			do(
@@ -37,13 +30,10 @@ setMethodS3(
 						names),
 					x,
 					recursive = TRUE),
-				unique))[['x']])
+				unique))[['x']]
 
-suppressWarnings(
-	setMethodS3(
-		"sample",
-		"pipe",
-		function(x, method = c("any", "Bernoulli", "hypergeometric"), ...) {
+sample.pipe = 
+	function(x, method = c("any", "Bernoulli", "hypergeometric"), ...) {
 			method = match.arg(method)
 			sample.curried = Curry(sample, method = method, ...)
 			switch(
@@ -68,5 +58,5 @@ suppressWarnings(
 							list(...)[["n"]], 
 							.priority), 
 						function(x)
-							x[,-ncol(x)]))}))
+							x[,-ncol(x)]))}
 

@@ -17,21 +17,20 @@ is.big.data =
 	function(x)
 		inherits(x, "big.data")
 
-setMethodS3(
-	"as.character",
-	"big.data",
+as.character.big.data = 
 	function(x, ...) {
 		if(is.character(x$data)) as.character(unclass(x))
-		else "Temporary file"})
+		else "Temporary file"}
 
-setMethodS3(
-	"print",
-	"big.data",
+print.big.data = 
 	function(x, ...) {
 		print(as.character(x))
-		invisible(x)})
+		invisible(x)}
 
-as.big.data_cf =
+as.big.data = function(x, ...) UseMethod("as.big.data")
+
+as.big.data.function = 
+as.big.data.character =
 	function(x, format = "native", ...)
 		structure(
 			list(
@@ -39,39 +38,21 @@ as.big.data_cf =
 				format = format),
 			class = "big.data")
 
-as.big.data = function(x, ...) UseMethod("as.big.data")
-
-setMethodS3(
-	"as.big.data", 
-	"function",	
-	as.big.data_cf)
-
-setMethodS3(
-	"as.big.data", 
-	"character",	
-	as.big.data_cf)
-
-setMethodS3(
-	"as.big.data",
-	"data.frame", 
+as.big.data.data.frame = 
 	function(x, ...)
 		as.big.data(
 			suppressWarnings(
 				to.dfs(kv = x)),
-			format = "native"))
+			format = "native")
 
-setMethodS3(
-	"as.data.frame",
-	"big.data", 
+as.data.frame.big.data = 
 	function(x, ...)
 		values(
 			from.dfs(
 				input = x$data, 
-				format = x$format)))
+				format = x$format))
 
-setMethodS3(
-	"as.big.data",
-	"list",
+as.big.data.list = 
 	function(x, ...) {
 		data.list =	lapply(x, as.big.data)
 		formats = lapply(data.list, function(x) x$format)
@@ -81,10 +62,6 @@ setMethodS3(
 			lapply(
 				data.list, 
 				function(x) x$data), 
-			format[[1]])})
+			format[[1]])}
 
-suppressWarnings(
-setMethodS3(
-	"as.big.data",
-	"big.data",
-	identity))
+as.big.data.big.data = identity

@@ -15,9 +15,7 @@
 
 ## this is still a mr call, not a pipe, need to integrate from a pre-existing design.
 
-setMethodS3(
-	"merge",
-	"pipe", 
+merge.pipe = 
 	function(
 		x, 
 		y, 
@@ -54,9 +52,9 @@ setMethodS3(
 							all.y = all.y,
 							suffixes = suffixes,
 							incomparables)
-					}))})
+					}))}
 
-quantile.fun = 
+quantile.pipe = 
 	function(x, ...) {
 		mr.fun = 
 			function(.x) {
@@ -73,11 +71,8 @@ quantile.fun =
 				constant(1)), 
 			mr.fun)}
 
-setMethodS3("quantile",	"pipe", quantile.fun)
 
-setMethodS3(
-	"quantile",
-	"data.frame",
+quantile.data.frame = 
 	function(x, ...)
 		data.frame(
 			strip.nulls(
@@ -85,7 +80,7 @@ setMethodS3(
 					x,
 					function(.y)
 						if(is.numeric(.y))
-							quantile(.y, ...)))))
+							quantile(.y, ...))))
 
 extreme.k= 
 	function(x, k, ..., decreasing, envir = parent.frame()) {

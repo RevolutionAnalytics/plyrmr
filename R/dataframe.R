@@ -14,9 +14,7 @@
 
 where = function(.data, ...) UseMethod("where")
 
-setMethodS3(
-	"where",
-	"data.frame",
+where.data.frame = 
 	function(.data, ..., .envir = parent.frame()) {
 		force(.envir)
 		cond = 
@@ -25,14 +23,12 @@ setMethodS3(
 				..., 
 				.named = FALSE, 
 				.envir = .envir)
-		.data[Reduce(`&`, cond), , drop = FALSE]})
+		.data[Reduce(`&`, cond), , drop = FALSE]}
 
 #(function(){x = 5; where(mtcars, cyl>x)})()
 
 select = function(.data, ..., .replace = TRUE) UseMethod("select")
-setMethodS3(
-	"select",
-	"data.frame",
+select.data.frame =
 	function(.data, ..., .replace = TRUE, .envir = parent.frame()) {
 		force(.envir)
 		args = 
@@ -43,17 +39,19 @@ setMethodS3(
 			.envir = .envir)
 		newcols = splat(data.frame)(c(args, list(stringsAsFactors = FALSE)))
 		if(.replace)  newcols
-		else cbind(.data, newcols)})
+		else cbind(.data, newcols)}
 
 #(function(){v = 5;  select(mtcars, cy32 = cyl^2, carb + 5)})()
 
-suppressWarnings(
-	setMethodS3(
-		"sample",
-		"data.frame",
-		function(x, method = c("any", "Bernoulli"), ...) {
-			switch(
-				match.arg(method),
-				any = head(x, list(...)[['n']]),
-				Bernoulli = 
-					x[runif(length(x)) < list(...)[["p"]],, drop = FALSE])}))
+sample = function(x, ...) UseMethod("sample")
+sample.default = base::sample
+sample.data.frame = 
+	function(x, method = c("any", "Bernoulli", "hypergeometric"), ...) {
+		args = list(...)
+		switch(
+			match.arg(method),
+			any = head(x, args[['n']]),
+			Bernoulli = 
+				x[runif(nrow(x)) < args[["p"]],, drop = FALSE],
+			hypergeometric = 
+				x[sample(1:nrow(x), args[["n"]], replace = FALSE),,drop = FALSE])}

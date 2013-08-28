@@ -226,13 +226,13 @@ Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.
 </code></pre>
 
 <pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-Mazda.RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-Mazda.RX4.Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-Datsun.710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-Hornet.4.Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-Hornet.Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
 Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-Duster.360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
 ....
 </code></pre>
 
@@ -252,13 +252,13 @@ as.data.frame(mtcars.w.ratio)
 </code></pre>
 
 <pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-Mazda.RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-Mazda.RX4.Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-Datsun.710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-Hornet.4.Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-Hornet.Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
 Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-Duster.360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
 ....
 </code></pre>
 
@@ -312,8 +312,8 @@ as.data.frame(x)
 </code></pre>
 
 <pre><code>               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-Ferrari.Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-Maserati.Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 </code></pre>
 
 <p>The main differences between the data frame version and the Hadoop data version are the input and the output. All there is in between, pretty much works the same. </p>
@@ -337,8 +337,8 @@ as.data.frame(x)
 </code></pre>
 
 <pre><code>               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-Ferrari.Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-Maserati.Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 </code></pre>
 
 <p>Similar, but they work everywhere. For instance, if <code>subset</code> or <code>where</code> are called within some function, which is in its turn used in some other function, we can have the following situation:</p>
@@ -377,13 +377,13 @@ Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8
 </code></pre>
 
 <pre><code>                    carb
-Mazda.RX4              4
-Mazda.RX4.Wag          4
-Datsun.710             1
-Hornet.4.Drive         1
-Hornet.Sportabout      2
+Mazda RX4              4
+Mazda RX4 Wag          4
+Datsun 710             1
+Hornet 4 Drive         1
+Hornet Sportabout      2
 Valiant                1
-Duster.360             4
+Duster 360             4
 ....
 </code></pre>
 
@@ -413,13 +413,13 @@ Duster 360             4
 </code></pre>
 
 <pre><code>                    carb
-Mazda.RX4              4
-Mazda.RX4.Wag          4
-Datsun.710             1
-Hornet.4.Drive         1
-Hornet.Sportabout      2
+Mazda RX4              4
+Mazda RX4 Wag          4
+Datsun 710             1
+Hornet 4 Drive         1
+Hornet Sportabout      2
 Valiant                1
-Duster.360             4
+Duster 360             4
 ....
 </code></pre>
 
@@ -439,14 +439,14 @@ Duster.360             4
 <pre><code class="r">as.data.frame(summarize(input(&quot;/tmp/mtcars&quot;), sum(carb) ))
 </code></pre>
 
-<pre><code>     sum.carb.
-X1          10
-X1.1        11
-X1.2        17
-X1.3        15
-X1.4        10
-X1.5        11
-X1.6        16
+<pre><code>    sum.carb.
+1          10
+1.1        11
+1.2        17
+1.3        15
+1.4        10
+1.5        11
+1.6        16
 ....
 </code></pre>
 
@@ -455,8 +455,8 @@ X1.6        16
 <pre><code class="r">as.data.frame(summarize(group.together(input(&quot;/tmp/mtcars&quot;)), sum(carb) ))
 </code></pre>
 
-<pre><code>   sum.carb.
-X1        90
+<pre><code>  sum.carb.
+1        90
 </code></pre>
 
 <p>You may have noticed the contradiction between the above statement that data is always in chunks with the availability of a <code>group.together</code> function. Luckily, there is an advanced way of grouping recursively, in a tree like fashion, that works with associative and commutative operations such as the sum, which is the default for <code>group.together</code>. Anyway, it will all be more clear as we cover other grouping functions.</p>
@@ -472,10 +472,10 @@ X1        90
         mean.mpg = mean(mpg)))
 </code></pre>
 
-<pre><code>     cyl mean.mpg
-X1     6    19.74
-X1.1   4    26.66
-X1.2   8    15.10
+<pre><code>    cyl mean.mpg
+1     6    19.74
+1.1   4    26.66
+1.2   8    15.10
 </code></pre>
 
 <p>This mostly a scalable programs, but there are some caveats: we need to be mindful of the size of the groups. If they are very big they will bust memory limits, so we need to reach for some advanced techniques to avoid this problem. If they are very small, like a handful of rows, we may run into some efficiency issues releated to the current R and <code>rmr2</code> implementations rather than fundamental (so there is hope they will go away one day). </p>
@@ -491,13 +491,13 @@ X1.2   8    15.10
         mean.mpg = mean(mpg)))
 </code></pre>
 
-<pre><code>     unique.carb. mean.mpg
-X1              4    15.79
-X1.1            1    25.34
-X1.2            2    22.40
-X1.3            3    16.30
-X1.4            6    19.70
-X1.5            8    15.00
+<pre><code>    unique.carb. mean.mpg
+1              4    15.79
+1.1            1    25.34
+1.2            2    22.40
+1.3            3    16.30
+1.4            6    19.70
+1.5            8    15.00
 </code></pre>
 
 <p>This assumes that we know <code>carb</code> is the last column, which defeats the purpose of the exercise.  So let&#39;s take an additional and final step:</p>
@@ -514,13 +514,13 @@ X1.5            8    15.00
                 row.names = NULL)))
 </code></pre>
 
-<pre><code>     carb mean.mpg
-X1      4    15.79
-X1.1    1    25.34
-X1.2    2    22.40
-X1.3    3    16.30
-X1.4    6    19.70
-X1.5    8    15.00
+<pre><code>    carb mean.mpg
+1      4    15.79
+1.1    1    25.34
+1.2    2    22.40
+1.3    3    16.30
+1.4    6    19.70
+1.5    8    15.00
 </code></pre>
 
 </body>

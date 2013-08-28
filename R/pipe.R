@@ -29,18 +29,17 @@ make.map.fun =
 		if(is.null(valf)) 
 			valf = identity 
 		function(k, v) {
-			v = as.data.frame(valf(v))
+			v = valf(v)
 			k = keyf(v)
 			keyval(k, v)}}
 
 make.combine.fun = 
 	function(valf) 
-		make.map.fun(identity, function(.x) as.data.frame(valf(.x)))
+		make.map.fun(identity, function(.x) valf(.x))
 
 make.reduce.fun = 
 	function(valf) 
-		make.map.fun(NULL, function(.x) as.data.frame(valf(.x)))
-
+		make.map.fun(NULL, function(.x) valf(.x))
 
 #pipes
 
@@ -66,13 +65,21 @@ setMethodS3(
 		print(as.character(x))
 		invisible(x)})
 
+make.f1 = 
+	function(f, ...) {
+		dot.args = dots(...)
+		freeze.env(
+			function(.x) {
+				.y = do.call(f, c(list(.x), dot.args))
+				if(is.data.frame(.y))
+					.y else {
+						if(is.matrix(.y))
+							as.data.frame(.y, stringsAsFactors = F)
+						else 
+							data.frame(x = .y, stringsAsFactors = F)}})}
 do =  
 	function(.data, f, ...){
-		dot.args = dots(...)
-		f1 = 
-			freeze.env(
-				function(.x) 
-					do.call(f, c(list(.x), dot.args)))
+		f1 = make.f1(f, ...)
 		if(is.null(.data$group.by))
 			.data$map = comp(.data$map, f1)
 		else
@@ -92,11 +99,7 @@ group.by =
 
 group.by.f = 
 	function(.data, f, ..., recursive = FALSE) {
-		dot.args = dots(...)
-		f1 = 
-			freeze.env(
-				function(.x) 
-					do.call(f, c(list(.x), dot.args)))
+		f1 = make.f1(f, ...)
 		if(is.null(.data$group.by)){
 			.data$group.by = f1
 			if(recursive) 

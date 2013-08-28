@@ -30,13 +30,14 @@ setMethodS3(
 	"pipe",
 	function(x, ...)
 		as.data.frame(
-			group.by.f(
-				do(
-					x,  
-					function(.y) 
-						data.frame(names = names(.y))), 
-				function(.x) unique(.x$names), recursive = TRUE)))
-
+			do(
+				group.by(
+					do(
+						x,  
+						names),
+					x,
+					recursive = TRUE),
+				unique))[['x']])
 
 suppressWarnings(
 	setMethodS3(

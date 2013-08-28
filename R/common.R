@@ -36,11 +36,6 @@ freeze.env =
 			environment(x) = nenv}
 		x}
 
-
-# a do.call variant which takes a mix of ... args and a list of args
-do.call.dots = 
- 	function(what, ..., args) {		do.call(what, c(list(...), args))} #not used yet, refactor later
-
 #lists
 
 strip.nulls = 

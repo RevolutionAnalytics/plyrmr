@@ -2,10 +2,9 @@
 \alias{top.k}
 \alias{bottom.k}
 \title{
-Retirm  the top or bottom rows but the specified criteria
-}
+Select top and bottom rows according to some order}
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+
 }
 \usage{
 top.k(x, k, \dots)
@@ -13,8 +12,8 @@ top.k(x, k, \dots)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{A plyrmr pipe}
-  \item{k}{How many items}
-  \item{\dots}{Expressions to be used to define the order.}
+  \item{k}{How many rows to select}
+  \item{\dots}{Expressions to be used to define the order, evaluated in the context of the data.}
 }
 \details{
 For details on how the \dots are evaluated see summarize and for the order definition see order}
@@ -22,7 +21,5 @@ For details on how the \dots are evaluated see summarize and for the order defin
 A pipe with the top or bottom k elements according to the order defined by the \dots arguments}
 
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+as.data.frame(top.k(input(mtcars), 4, carb))
 }

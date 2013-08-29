@@ -112,29 +112,24 @@ bottom.k =
 		extreme.k(x, k, ..., decreasing = FALSE, envir = envir)}
 
 moving.window = 
-	function(x, index, window, f, R = rmr.options("keyval.length")) {
+	function(x, index, window, R = rmr.options("keyval.length")) {
 		partition = 
 			function(x) {
 				part = 
 					function(index, shift)
-						ceiling((index + shift*window)/R)
+						ceiling((index + shift*(window - 1))/R)
 				index = unlist(x[, index])
 				stopifnot(length(index) == nrow(x))
 				partT = part(index, T)
 				partF = part(index, F)
-				mask = partT != partF
-				cbind(x, partT, partF, mask)}
-		map =
-			function(x)
-				rbind(x, x[x$mask, ])
-		group = function(x)
-			rbind(x$partT, x$partF[x$mask])		
+				unique(
+					cbind(
+						.part = c(partT, partF), 
+						rbind(x, x)))}
 		do(
-			group.by.f(
+			group.by(
 				do(
-					do(
-						x, 
-						partition), 
-					map), 
-				group), 
-			f)}
+					x, 
+					partition), 
+				.part), 
+			identity)}

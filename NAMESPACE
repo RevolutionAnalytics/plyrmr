@@ -31,8 +31,8 @@ S3method(as.data.frame, pipe)
 export(
 	do,
 	magic.wand,
-	group.by,
-	group.by.f,
+	group,
+	group.f,
 	group.together,
 	ungroup,
 	output,

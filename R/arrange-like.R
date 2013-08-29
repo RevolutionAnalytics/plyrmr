@@ -66,7 +66,7 @@ quantile.pipe =
 					.x,
 					probs = midprobs(10^4))}
 		do(
-			group.by.f(
+			group.f(
 				do(x, mr.fun), 
 				constant(1)), 
 			mr.fun)}
@@ -127,7 +127,7 @@ moving.window =
 						.part = c(partT, partF), 
 						rbind(x, x)))}
 		do(
-			group.by(
+			group(
 				do(
 					x, 
 					partition), 

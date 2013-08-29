@@ -1,6 +1,6 @@
-\name{group.by}
-\alias{group.by}
-\alias{group.by.f}
+\name{group}
+\alias{group}
+\alias{group.f}
 \alias{group.together}
 \alias{ungroup}
 
@@ -10,8 +10,8 @@ Control grouping in plyrmr computations}
 Large data sets can not be processed by bringing all the data into memory at once. One alternative is to group records by a key or index and process one group at a time, provided they are not too big. The functions documented here allow to do that in plyrmr.
 }
 \usage{
-group.by(.data, \dots, recursive = FALSE)
-group.by.f(.data, f, \dots, recursive = FALSE)
+group(.data, \dots, recursive = FALSE)
+group.f(.data, f, \dots, recursive = FALSE)
 group.together(.data, recursive = FALSE)
 ungroup(.data, \dots)
 
@@ -58,7 +58,7 @@ Additional arguments to f }
 ## The function is currently defined as
 function (.data, \dots) 
 {
-    group.by.f(.data, function(y) summarize(y, \dots))
+    group.f(.data, function(y) summarize(y, \dots))
   }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

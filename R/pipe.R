@@ -76,40 +76,40 @@ make.f1 =
 do =  
 	function(.data, f, ...){
 		f1 = make.f1(f, ...)
-		if(is.null(.data$group.by))
+		if(is.null(.data$group))
 			.data$map = comp(.data$map, f1)
 		else
 			.data$reduce = comp(.data$reduce, f1)
 		.data}
 
-group.by = 
+group = 
 	function(.data, ..., recursive = FALSE, envir = parent.frame()) {
 		force(envir)
 		dot.args = dots(...)
 		gbf = 
-			group.by.f(
+			group.f(
 				.data, 
 				function(.y) 
 					do.call(CurryHalfLazy(select, .envir = envir), c(list(.y), dot.args)),
 				recursive = recursive)}
 
-group.by.f = 
+group.f = 
 	function(.data, f, ..., recursive = FALSE) {
 		f1 = make.f1(f, ...)
-		if(is.null(.data$group.by)){
-			.data$group.by = f1
+		if(is.null(.data$group)){
+			.data$group = f1
 			if(recursive) 
 				.data$recursive.group = TRUE
 			.data}
 		else
-			group.by.f(
+			group.f(
 				input(run(.data)), 
 				f1, 
 				recursive = recursive)}
 
 group.together = 
 	function(.data, recursive = TRUE) 
-		group.by(.data, 1, recursive = recursive)
+		group(.data, 1, recursive = recursive)
 
 mr.options = 
 	function(.data, ...) {
@@ -129,7 +129,7 @@ run =
 		if(
 			all(
 				sapply(
-					pipe[qw(map, reduce, group.by)], 
+					pipe[qw(map, reduce, group)], 
 					is.null))) { 
 			if(!is.null(pipe[["output"]])) {
 				dfs.mv(pipe[["input"]]$data, pipe[["output"]])
@@ -145,10 +145,10 @@ run =
 			mr.args = strip.nulls(mr.args)
 			mr.args$map = 
 				make.map.fun(
-					keyf = pipe$group.by, 
+					keyf = pipe$group, 
 					valf = pipe$map)
 			if(!is.null(pipe$reduce) &&
-				 	!is.null(pipe$group.by)) {
+				 	!is.null(pipe$group)) {
 				mr.args$reduce = 
 					make.reduce.fun(
 						valf = pipe$reduce)}

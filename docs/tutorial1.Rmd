@@ -52,7 +52,7 @@ In `plyrmr` there are `pipes`, which are R expressions describing a computation.
 as.data.frame(input(mtcars))
 ```
 
-To do something useful we need to create more complex expressions combining essentially two sets of basic ingredients: processing steps and grouping steps. We can also combine pipes into more complex ones. As we said, the data is always chunked, due to its size. The initial state is arbitrary, meaning that the data is sorted and grouped arbitrarily, but grouping can be modified with the primitive `group.by.f`. The fundamental processing primitive is `do`, which applies a function to each chunk. The function should transform a data frame into another data frame. For instance, if we wanted to compute the number of carburators per cylinder for the cars in the `mtcars` data set (all of 32, of course this is only for illustrative purposes), one could simply do
+To do something useful we need to create more complex expressions combining essentially two sets of basic ingredients: processing steps and grouping steps. We can also combine pipes into more complex ones. As we said, the data is always chunked, due to its size. The initial state is arbitrary, meaning that the data is sorted and grouped arbitrarily, but grouping can be modified with the primitive `group.f`. The fundamental processing primitive is `do`, which applies a function to each chunk. The function should transform a data frame into another data frame. For instance, if we wanted to compute the number of carburators per cylinder for the cars in the `mtcars` data set (all of 32, of course this is only for illustrative purposes), one could simply do
 
 ```
 transform(mtcars, ratio = carb/cyl)
@@ -136,7 +136,7 @@ Let's create a `plyrmr` data set with `input`
 ```{r input-binomial-sample}
 ```
 
-The equivalent in `plyrmr` is not as close in syntax as before, because we followed more closely the syntax of an experimental package by the same author as `plyr` called `dplyr`, which is focused on data frames and adds multiple backends and can be considered a specialization and evolution of `plyr`. `dplyr` is temporarily incompatible with `rmr2` and not as well known as `plyr` yet and so it is not used here, but was a reference point in the design of `plyrmr`. `plyrmr`, like `dplyr` has a separate `group.by` primitive (`group_by` in `dplyr`), named after its SQL equivalent, that defines a grouping of a data set based on a column (expressions are not supported yet).
+The equivalent in `plyrmr` is not as close in syntax as before, because we followed more closely the syntax of an experimental package by the same author as `plyr` called `dplyr`, which is focused on data frames and adds multiple backends and can be considered a specialization and evolution of `plyr`. `dplyr` is temporarily incompatible with `rmr2` and not as well known as `plyr` yet and so it is not used here, but was a reference point in the design of `plyrmr`. `plyrmr`, like `dplyr` has a separate `group` primitive (`group_by` in `dplyr`), named after its SQL equivalent, that defines a grouping of a data set based on a column (expressions are not supported yet).
 
 ```{r count-plyrmr}
 ```
@@ -185,7 +185,7 @@ We are now going to tackle the extreme data reduction task, whereby we go from a
 ```{r big-sum-data-frame}
 ```
 
-but a little more complex in `plyrmr`, and why that's the case merits a little explanation. `plyr::summarize` works on data frames and has all the data available simultaneously. This is not true for "plyrmr" because large data sets are processed piecemeal. So we need to perform the sum on each chunk of data, group the results together, sum again. `group.by(data, 1)` just means group everything together, in fact there is handy alias for that, `group.together` 
+but a little more complex in `plyrmr`, and why that's the case merits a little explanation. `plyr::summarize` works on data frames and has all the data available simultaneously. This is not true for "plyrmr" because large data sets are processed piecemeal. So we need to perform the sum on each chunk of data, group the results together, sum again. `group(data, 1)` just means group everything together, in fact there is handy alias for that, `group.together` 
 
 ```{r big-sum-plyrmr}
 ```
@@ -194,7 +194,7 @@ In many other use cases, instead of a single summary, we are interested in summa
 	```{r group-sum-data-frame}
 ```
 
-The equivalent in `plyrmr` is `group.by`
+The equivalent in `plyrmr` is `group`
 
 ```{r group-sum-plyrmr}
 ```
@@ -215,7 +215,7 @@ In fact the name `summarize` seems again unsatisfactory for self-documenting cod
 ```{r wordcount-plyrmr}
 ```
 
-## The fundamental primitives: `do`  and `group.by.f`
+## The fundamental primitives: `do`  and `group.f`
 
 
 

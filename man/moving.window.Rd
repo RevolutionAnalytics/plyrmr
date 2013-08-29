@@ -30,8 +30,13 @@ Only for performance, size of the reduce size groups, see details
 \value{
 A pipe with the results of applying f to each window}
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
+as.data.frame(
+  do(
+    moving.window(
+      input(data.frame(t= 1:20)), 
+      "t", 
+      3), 
+    function(x) 
+      if(nrow(x) >= 3) 
+        list(t = filter(x$t, rep(1/3,3)))))
 }

@@ -170,7 +170,7 @@ But if we did that on a Hadoop data set, we would get:
 as.data.frame(summarize(input("/tmp/mtcars"), sum(carb) ))
 ```
 
-What does that mean? The data in Hadoop is always grouped, one way or another (this is also a key difference with the current `dplyr` design). It couldn't be otherwise: it is stored on multiple devices and, even if it weren't, we can only load it into memory in small chunks. So think of it as always grouped, initially in arbitrary fashion and later in the way we determine using the functions `group.by`, `group.by.f` and `group.together`. These were inspired by the notion of key in mapreduce, the SQL statement and the `dplyr` function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:
+What does that mean? The data in Hadoop is always grouped, one way or another (this is also a key difference with the current `dplyr` design). It couldn't be otherwise: it is stored on multiple devices and, even if it weren't, we can only load it into memory in small chunks. So think of it as always grouped, initially in arbitrary fashion and later in the way we determine using the functions `group`, `group.f` and `group.together`. These were inspired by the notion of key in mapreduce, the SQL statement and the `dplyr` function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:
 
 ```{r}
 as.data.frame(summarize(group.together(input("/tmp/mtcars")), sum(carb) ))
@@ -178,12 +178,12 @@ as.data.frame(summarize(group.together(input("/tmp/mtcars")), sum(carb) ))
 
 You may have noticed the contradiction between the above statement that data is always in chunks with the availability of a `group.together` function. Luckily, there is an advanced way of grouping recursively, in a tree like fashion, that works with associative and commutative operations such as the sum, which is the default for `group.together`. Anyway, it will all be more clear as we cover other grouping functions.
 
-The `group.by` function takes an input and a number of arguments that are evaluated in the context of the data, exactly like `transform` and `mutate`. The result is a Hadoop data set grouped by the columns defined in those arguments. After this step, all rows that are identical on the columns defined in the `group.by` call will be loaded into memory at once and processed in the same call. Here is an example. Let's say we want to calculate the average milage for cars with the same number of cylinders:
+The `group` function takes an input and a number of arguments that are evaluated in the context of the data, exactly like `transform` and `mutate`. The result is a Hadoop data set grouped by the columns defined in those arguments. After this step, all rows that are identical on the columns defined in the `group` call will be loaded into memory at once and processed in the same call. Here is an example. Let's say we want to calculate the average milage for cars with the same number of cylinders:
 
 ```{r}
 as.data.frame(
 	select(
-		group.by(
+		group(
 			input("/tmp/mtcars"),
 			cyl),
 		cyl = unique(cyl),
@@ -192,12 +192,12 @@ as.data.frame(
 
 This mostly a scalable programs, but there are some caveats: we need to be mindful of the size of the groups. If they are very big they will bust memory limits, so we need to reach for some advanced techniques to avoid this problem. If they are very small, like a handful of rows, we may run into some efficiency issues releated to the current R and `rmr2` implementations rather than fundamental (so there is hope they will go away one day). 
 
-When the definition of the grouping column is more complicated, we may need to reach for the uber-general `group.by.f`, the grouping relative of `do` (in fact, these two functions are the foundation for everything else in `plyrmr`). Let's go back to the `last.col` example. If we need to group by the last columns of a data frame, this is all we need to do:
+When the definition of the grouping column is more complicated, we may need to reach for the uber-general `group.f`, the grouping relative of `do` (in fact, these two functions are the foundation for everything else in `plyrmr`). Let's go back to the `last.col` example. If we need to group by the last columns of a data frame, this is all we need to do:
 
 ```{r}
 as.data.frame(
 	select(
-		group.by.f(
+		group.f(
 			input("/tmp/mtcars"),
 			last.col),
 		unique(carb),
@@ -210,7 +210,7 @@ This assumes that we know `carb` is the last column, which defeats the purpose o
 ```{r}
 as.data.frame(
 	do(
-		group.by.f(
+		group.f(
 			input("/tmp/mtcars"),
 			last.col),
 		function(x)

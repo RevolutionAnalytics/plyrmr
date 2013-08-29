@@ -20,7 +20,7 @@ dcast.pipe =
 	function(data, formula, ...) {
 		id.vars = reshape2:::parse_formula(formula)[[1]][[1]]
 		do(
-			group.by(
+			group(
 				data, 
 				id.vars), 
 			Curry(dcast, formula = formula),

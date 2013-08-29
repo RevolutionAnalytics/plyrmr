@@ -24,7 +24,7 @@ names.pipe =
 	function(x, ...)
 		as.data.frame(
 			do(
-				group.by(
+				group(
 					do(
 						x,  
 						names),

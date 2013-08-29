@@ -111,6 +111,10 @@ group.together =
 	function(.data, recursive = TRUE) 
 		group(.data, 1, recursive = recursive)
 
+grouped = 
+	function(.data)
+		!is.null(.data[["group"]])
+
 mr.options = 
 	function(.data, ...) {
 		args = list(...)

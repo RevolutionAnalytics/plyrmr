@@ -55,8 +55,8 @@ merge.pipe =
 					}))}
 
 quantile.pipe = 
-	function(x, ...) {
-		mr.fun = 
+	function(x, ..., aggregate = !grouped(x)) {
+		qfun = 
 			function(.x) {
 				midprobs  = 
 					function(N) {
@@ -65,12 +65,12 @@ quantile.pipe =
 				quantile(
 					.x,
 					probs = midprobs(10^4))}
-		do(
-			group.f(
-				do(x, mr.fun), 
-				constant(1)), 
-			mr.fun)}
-
+		first.step = do(x, qfun)
+		second.step = {
+			if(aggregate)
+				do(group.together(first.step), qfun)
+			else(first.step)}
+		do(second.step, quantile, ...)}
 
 quantile.data.frame = 
 	function(x, ...)
@@ -83,7 +83,7 @@ quantile.data.frame =
 							quantile(.y, ...))))
 
 extreme.k= 
-	function(x, k, ..., decreasing, envir = parent.frame()) {
+	function(x, ..., k, decreasing, envir = parent.frame()) {
 		force(envir)
 		this.order = Curry(order, decreasing = decreasing)
 		mr.fun = 
@@ -102,14 +102,14 @@ extreme.k=
 			mr.fun)}
 
 top.k = 
-	function(x, k, ..., envir = parent.frame()) {
+	function(x, ..., k = 1, envir = parent.frame()) {
 		force(envir)
-		extreme.k(x, k, ..., decreasing = TRUE, envir = envir)}
+		extreme.k(x, ..., k = k, decreasing = TRUE, envir = envir)}
 
 bottom.k = 
-	function(x, k, ..., envir = parent.frame()) {
+	function(x, ..., k = 1, envir = parent.frame()) {
 		force(envir)
-		extreme.k(x, k, ..., decreasing = FALSE, envir = envir)}
+		extreme.k(x, ..., k = k, decreasing = FALSE, envir = envir)}
 
 moving.window = 
 	function(x, index, window, R = rmr.options("keyval.length")) {

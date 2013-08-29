@@ -103,7 +103,7 @@ group.f =
 			.data}
 		else
 			group.f(
-				input(run(.data)), 
+				input(run(.data, input.format = "native")), 
 				f1, 
 				recursive = recursive)}
 

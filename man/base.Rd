@@ -8,14 +8,15 @@
 Data manipulation functions to add, modify, select, or otherwise process data frame type data.
 }
 \description{
-These functions are inspired by and actually use in their implementation equally named functions in packages plyr and base. The exception is select which is inspired by the SQL equivalent. In this plyrmr implementation they act on the data in chunks, either arbitrary or as defined by group.by. These functions are generic: you can call them on a data.frame or on plyrmr pipe.
+These functions are inspired by and actually use in their implementation equally named functions in packages plyr and base. In this plyrmr implementation they act on the data in chunks, either arbitrary or as defined by group.by. These functions are generic: you can call them on a data.frame or on plyrmr pipe.
 }
 \usage{
-transform(`_data`, \dots)
-subset(x, \dots)
+\method{transform}{pipe}(`_data`, \dots)
+\method{subset}{pipe}(x, \dots)
 mutate(.data, \dots)
-select(.data, \dots)
+\method{mutate}{pipe}(.data, \dots)
 summarize(.data, \dots)
+\method{summarize}{pipe}(.data, \dots)
 }
 
 \arguments{

@@ -55,7 +55,7 @@ merge.pipe =
 					}))}
 
 quantile.pipe = 
-	function(x, ..., aggregate = !grouped(x)) {
+	function(x, ...) {
 		qfun = 
 			function(.x) {
 				midprobs  = 
@@ -65,12 +65,7 @@ quantile.pipe =
 				quantile(
 					.x,
 					probs = midprobs(10^4))}
-		first.step = do(x, qfun)
-		second.step = {
-			if(aggregate)
-				do(group.together(first.step), qfun)
-			else(first.step)}
-		do(second.step, quantile, ...)}
+		do(group.together(do(x, qfun)), qfun)}
 
 quantile.data.frame = 
 	function(x, ...)

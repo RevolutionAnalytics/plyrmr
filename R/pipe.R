@@ -23,23 +23,23 @@ comp =
 			do.call(Compose, funs)}
 
 make.map.fun = 
-	function(keyf, valf) {
-		if(is.null(keyf)) 
-			keyf = constant(NULL)
+	function(keyf, valf, ungroup) {
 		if(is.null(valf)) 
 			valf = identity 
 		function(k, v) {
 			v = valf(v)
-			k = keyf(v)
+			if (ungroup) k = NULL
+			k = {	
+				if(is.null(keyf)) k else { 
+					if(is.null(k)) keyf(v)
+					else(cbind(k, keyf(v)))}}
 			keyval(k, v)}}
 
-make.combine.fun = 
-	function(valf) 
-		make.map.fun(identity, function(.x) valf(.x))
-
 make.reduce.fun = 
-	function(valf) 
-		make.map.fun(NULL, function(.x) valf(.x))
+	function(valf, ungroup) 
+		make.map.fun(NULL, function(.x) valf(.x), ungroup)
+
+make.combine.fun = Curry(make.reduce.fun, ungroup = FALSE)
 
 #pipes
 
@@ -107,6 +107,11 @@ group.f =
 				f1, 
 				recursive = recursive)}
 
+ungroup = 
+	function(.data) {
+		.data$ungroup = TRUE
+	input(run(.data, input.format = "native"))}
+
 group.together = 
 	function(.data, recursive = TRUE) 
 		group(.data, 1, recursive = recursive)
@@ -150,12 +155,14 @@ run =
 			mr.args$map = 
 				make.map.fun(
 					keyf = pipe$group, 
-					valf = pipe$map)
+					valf = pipe$map,
+					pipe$ungroup)
 			if(!is.null(pipe$reduce) &&
 				 	!is.null(pipe$group)) {
 				mr.args$reduce = 
 					make.reduce.fun(
-						valf = pipe$reduce)}
+						valf = pipe$reduce, 
+						pipe$ungroup)}
 			if(!is.null(pipe$recursive.group) &&
 				 	pipe$recursive.group) {
 				mr.args.combine =
@@ -172,15 +179,14 @@ output =
 
 as.big.data.pipe = run
 
-ungroup = as.big.data.pipe
-
 as.pipe = function(x, ...) UseMethod("as.pipe")
 
 as.pipe.big.data = 
 	function(x, ...) 
 		structure(
 			strip.null.args(
-				input = x),
+				input = x,
+				ungroup = FALSE),
 			class = "pipe")
 
 as.pipe.data.frame = 

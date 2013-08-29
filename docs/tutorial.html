@@ -450,7 +450,7 @@ Duster 360             4
 ....
 </code></pre>
 
-<p>What does that mean? The data in Hadoop is always grouped, one way or another (this is also a key difference with the current <code>dplyr</code> design). It couldn&#39;t be otherwise: it is stored on multiple devices and, even if it weren&#39;t, we can only load it into memory in small chunks. So think of it as always grouped, initially in arbitrary fashion and later in the way we determine using the functions <code>group.by</code>, <code>group.by.f</code> and <code>group.together</code>. These were inspired by the notion of key in mapreduce, the SQL statement and the <code>dplyr</code> function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:</p>
+<p>What does that mean? The data in Hadoop is always grouped, one way or another (this is also a key difference with the current <code>dplyr</code> design). It couldn&#39;t be otherwise: it is stored on multiple devices and, even if it weren&#39;t, we can only load it into memory in small chunks. So think of it as always grouped, initially in arbitrary fashion and later in the way we determine using the functions <code>group</code>, <code>group.f</code> and <code>group.together</code>. These were inspired by the notion of key in mapreduce, the SQL statement and the <code>dplyr</code> function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:</p>
 
 <pre><code class="r">as.data.frame(summarize(group.together(input(&quot;/tmp/mtcars&quot;)), sum(carb) ))
 </code></pre>
@@ -461,11 +461,11 @@ Duster 360             4
 
 <p>You may have noticed the contradiction between the above statement that data is always in chunks with the availability of a <code>group.together</code> function. Luckily, there is an advanced way of grouping recursively, in a tree like fashion, that works with associative and commutative operations such as the sum, which is the default for <code>group.together</code>. Anyway, it will all be more clear as we cover other grouping functions.</p>
 
-<p>The <code>group.by</code> function takes an input and a number of arguments that are evaluated in the context of the data, exactly like <code>transform</code> and <code>mutate</code>. The result is a Hadoop data set grouped by the columns defined in those arguments. After this step, all rows that are identical on the columns defined in the <code>group.by</code> call will be loaded into memory at once and processed in the same call. Here is an example. Let&#39;s say we want to calculate the average milage for cars with the same number of cylinders:</p>
+<p>The <code>group</code> function takes an input and a number of arguments that are evaluated in the context of the data, exactly like <code>transform</code> and <code>mutate</code>. The result is a Hadoop data set grouped by the columns defined in those arguments. After this step, all rows that are identical on the columns defined in the <code>group</code> call will be loaded into memory at once and processed in the same call. Here is an example. Let&#39;s say we want to calculate the average milage for cars with the same number of cylinders:</p>
 
 <pre><code class="r">as.data.frame(
     select(
-        group.by(
+        group(
             input(&quot;/tmp/mtcars&quot;),
             cyl),
         cyl = unique(cyl),
@@ -480,11 +480,11 @@ Duster 360             4
 
 <p>This mostly a scalable programs, but there are some caveats: we need to be mindful of the size of the groups. If they are very big they will bust memory limits, so we need to reach for some advanced techniques to avoid this problem. If they are very small, like a handful of rows, we may run into some efficiency issues releated to the current R and <code>rmr2</code> implementations rather than fundamental (so there is hope they will go away one day). </p>
 
-<p>When the definition of the grouping column is more complicated, we may need to reach for the uber-general <code>group.by.f</code>, the grouping relative of <code>do</code> (in fact, these two functions are the foundation for everything else in <code>plyrmr</code>). Let&#39;s go back to the <code>last.col</code> example. If we need to group by the last columns of a data frame, this is all we need to do:</p>
+<p>When the definition of the grouping column is more complicated, we may need to reach for the uber-general <code>group.f</code>, the grouping relative of <code>do</code> (in fact, these two functions are the foundation for everything else in <code>plyrmr</code>). Let&#39;s go back to the <code>last.col</code> example. If we need to group by the last columns of a data frame, this is all we need to do:</p>
 
 <pre><code class="r">as.data.frame(
     select(
-        group.by.f(
+        group.f(
             input(&quot;/tmp/mtcars&quot;),
             last.col),
         unique(carb),
@@ -504,7 +504,7 @@ Duster 360             4
 
 <pre><code class="r">as.data.frame(
     do(
-        group.by.f(
+        group.f(
             input(&quot;/tmp/mtcars&quot;),
             last.col),
         function(x)

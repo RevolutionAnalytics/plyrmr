@@ -30,7 +30,7 @@ print.big.data =
 as.big.data = function(x, ...) UseMethod("as.big.data")
 
 as.big.data.function = 
-as.big.data.character =
+	as.big.data.character =
 	function(x, format = "native", ...)
 		structure(
 			list(
@@ -58,7 +58,7 @@ as.big.data.list =
 		formats = lapply(data.list, function(x) x$format)
 		format = unique(formats)
 		stopifnot(length(format) == 1)
-		as.big.data_cf(
+		as.big.data.function(
 			lapply(
 				data.list, 
 				function(x) x$data), 

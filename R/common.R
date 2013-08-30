@@ -37,6 +37,12 @@ freeze.env =
 			environment(x) = nenv}
 		x}
 
+#data frames
+safe.cbind  = 
+	function(...) {
+		x = do.call(cbind, strip.null.args(...))
+		x[, unique(names(x)), drop = FALSE]}
+						
 #lists
 
 strip.nulls = 

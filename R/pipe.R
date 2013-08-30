@@ -13,6 +13,7 @@
 # limitations under the License.
 
 # function manip
+
 comp = 
 	function(...) {
 		funs = list(...)
@@ -27,6 +28,7 @@ make.map.fun =
 		if(is.null(valf)) 
 			valf = identity 
 		function(k, v) {
+			v = safe.cbind(k, v)
 			v = valf(v)
 			if (ungroup) k = NULL
 			k = {	

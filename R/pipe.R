@@ -37,7 +37,7 @@ make.map.fun =
 
 make.reduce.fun = 
 	function(valf, ungroup) 
-		make.map.fun(NULL, function(.x) valf(.x), ungroup)
+		make.map.fun(NULL, valf, ungroup)
 
 make.combine.fun = Curry(make.reduce.fun, ungroup = FALSE)
 

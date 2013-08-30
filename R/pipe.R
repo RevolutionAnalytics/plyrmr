@@ -28,14 +28,12 @@ make.map.fun =
 		if(is.null(valf)) 
 			valf = identity 
 		function(k, v) {
-			v = safe.cbind(k, v)
-			v = valf(v)
+			w = safe.cbind(k, valf(safe.cbind(k, v)))
 			if (ungroup) k = NULL
 			k = {	
-				if(is.null(keyf)) k else { 
-					if(is.null(k)) keyf(v)
-					else(cbind(k, keyf(v)))}}
-			keyval(k, v)}}
+				if(is.null(keyf)) k 
+				else safe.cbind(k, keyf(v))}
+			keyval(k, w)}}
 
 make.reduce.fun = 
 	function(valf, ungroup) 
@@ -115,8 +113,11 @@ ungroup =
 	input(run(.data, input.format = "native"))}
 
 group.together = 
-	function(.data, recursive = TRUE) 
-		group(.data, 1, recursive = recursive)
+	function(.data, recursive = TRUE) {
+		if(grouped(.data)) 
+			.data
+		else
+			group(.data, 1, recursive = recursive)}
 
 grouped = 
 	function(.data)

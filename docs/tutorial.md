@@ -57,7 +57,7 @@ transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
 ```
 
 ```
-[1] "Slots set: input, map \n Input: /tmp/mtcars,native \n"
+[1] "Slots set: input, ungroup, map \n Input: /tmp/mtcars,native \n"
 ```
 
 
@@ -344,8 +344,11 @@ as.data.frame(summarize(group.together(input("/tmp/mtcars")), sum(carb) ))
 ```
 
 ```
-  sum.carb.
-1        90
+Warning: is.na() applied to non-(list or vector) of type 'NULL'
+```
+
+```
+Error: Must specify key when using keyval in map and combine functions
 ```
 
 
@@ -360,7 +363,6 @@ as.data.frame(
 		group(
 			input("/tmp/mtcars"),
 			cyl),
-		cyl = unique(cyl),
 		mean.mpg = mean(mpg)))
 ```
 
@@ -383,36 +385,7 @@ as.data.frame(
 		group.f(
 			input("/tmp/mtcars"),
 			last.col),
-		unique(carb),
 		mean.mpg = mean(mpg)))
-```
-
-```
-    unique.carb. mean.mpg
-1.2            2    22.40
-1.3            3    16.30
-1              4    15.79
-1.1            1    25.34
-1.4            6    19.70
-1.5            8    15.00
-```
-
-
-This assumes that we know `carb` is the last column, which defeats the purpose of the exercise.  So let's take an additional and final step:
-
-
-
-```r
-as.data.frame(
-	do(
-		group.f(
-			input("/tmp/mtcars"),
-			last.col),
-		function(x)
-			data.frame(
-				last.col = unique(last.col(x)),
-				mean.mpg = mean(x$mpg),
-				row.names = NULL)))
 ```
 
 ```

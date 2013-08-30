@@ -186,7 +186,6 @@ as.data.frame(
 		group(
 			input("/tmp/mtcars"),
 			cyl),
-		cyl = unique(cyl),
 		mean.mpg = mean(mpg)))
 ```
 
@@ -200,23 +199,6 @@ as.data.frame(
 		group.f(
 			input("/tmp/mtcars"),
 			last.col),
-		unique(carb),
 		mean.mpg = mean(mpg)))
-```
-
-This assumes that we know `carb` is the last column, which defeats the purpose of the exercise.  So let's take an additional and final step:
-
-
-```{r}
-as.data.frame(
-	do(
-		group.f(
-			input("/tmp/mtcars"),
-			last.col),
-		function(x)
-			data.frame(
-				last.col = unique(last.col(x)),
-				mean.mpg = mean(x$mpg),
-				row.names = NULL)))
 ```
 

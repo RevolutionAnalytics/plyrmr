@@ -48,7 +48,7 @@ In `plyrmr` there are `pipes`, which are R expressions describing a computation.
 as.data.frame(input(mtcars))
 ```
 
-To do something useful we need to create more complex expressions combining essentially two sets of basic ingredients: processing steps and grouping steps. We can also combine pipes into more complex ones. As we said, the data is always chunked, due to its size. The initial state is arbitrary, meaning that the data is sorted and grouped arbitrarily, but grouping can be modified with the primitive `group.by.f`. The fundamental processing primitive is `do`, which applies a function to each chunk. The function should transform a data frame into another data frame. For instance, if we wanted to compute the number of carburators per cylinder for the cars in the `mtcars` data set (all of 32, of course this is only for illustrative purposes), one could simply do
+To do something useful we need to create more complex expressions combining essentially two sets of basic ingredients: processing steps and grouping steps. We can also combine pipes into more complex ones. As we said, the data is always chunked, due to its size. The initial state is arbitrary, meaning that the data is sorted and grouped arbitrarily, but grouping can be modified with the primitive `group.f`. The fundamental processing primitive is `do`, which applies a function to each chunk. The function should transform a data frame into another data frame. For instance, if we wanted to compute the number of carburators per cylinder for the cars in the `mtcars` data set (all of 32, of course this is only for illustrative purposes), one could simply do
 
 ```
 transform(mtcars, ratio = carb/cyl)
@@ -90,13 +90,13 @@ as.data.frame(big.mtcars)
 
 ```
                      mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-Mazda.RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-Mazda.RX4.Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-Datsun.710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
-Hornet.4.Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
-Hornet.Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
 Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
-Duster.360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
 ....
 ```
 
@@ -145,7 +145,7 @@ small.squares
 ```
 
 ```
-[1] "Slots set: input, map \n Input: Temporary file \n"
+[1] "Slots set: input, ungroup, map \n Input: Temporary file \n"
 ```
 
 
@@ -157,14 +157,14 @@ as.data.frame(small.squares)
 ```
 
 ```
-     x  x2
-X1   1   1
-X2   2   4
-X3   3   9
-X4   4  16
-X5   5  25
-X6   6  36
-X7   7  49
+    x  x2
+1   1   1
+2   2   4
+3   3   9
+4   4  16
+5   5  25
+6   6  36
+7   7  49
 ....
 ```
 
@@ -196,14 +196,14 @@ And let's check that it actually worked:
 	```
 	
 	```
-	     x  x2
-	X1   1   1
-	X2   2   4
-	X3   3   9
-	X4   4  16
-	X5   5  25
-	X6   6  36
-	X7   7  49
+	    x  x2
+	1   1   1
+	2   2   4
+	3   3   9
+	4   4  16
+	5   5  25
+	6   6  36
+	7   7  49
 	....
 	```
 
@@ -225,14 +225,14 @@ ddply(data, "x", summarize, val = unique(x), count = length(x))
 ```
 
 ```
-    x val count
-1   6   6     1
-2   7   7     1
-3   8   8     1
-4   9   9     2
-5  10  10     8
-6  11  11     4
-7  12  12     4
+   x val count
+1  8   8     1
+2 10  10     8
+3 11  11    12
+4 12  12     7
+5 13  13    10
+6 14  14     6
+7 15  15     5
 ....
 ```
 
@@ -245,11 +245,11 @@ data = input(data)
 ```
 
 
-The equivalent in `plyrmr` is not as close in syntax as before, because we followed more closely the syntax of an experimental package by the same author as `plyr` called `dplyr`, which is focused on data frames and adds multiple backends and can be considered a specialization and evolution of `plyr`. `dplyr` is temporarily incompatible with `rmr2` and not as well known as `plyr` yet and so it is not used here, but was a reference point in the design of `plyrmr`. `plyrmr`, like `dplyr` has a separate `group.by` primitive (`group_by` in `dplyr`), named after its SQL equivalent, that defines a grouping of a data set based on a column (expressions are not supported yet).
+The equivalent in `plyrmr` is not as close in syntax as before, because we followed more closely the syntax of an experimental package by the same author as `plyr` called `dplyr`, which is focused on data frames and adds multiple backends and can be considered a specialization and evolution of `plyr`. `dplyr` is temporarily incompatible with `rmr2` and not as well known as `plyr` yet and so it is not used here, but was a reference point in the design of `plyrmr`. `plyrmr`, like `dplyr` has a separate `group` primitive (`group_by` in `dplyr`), named after its SQL equivalent, that defines a grouping of a data set based on a column (expressions are not supported yet).
 
 
 ```r
-counts = summarize(group.by(data, x), val = unique(x), count = length(x))
+counts = summarize(group(data, x), val = unique(x), count = length(x))
 ```
 
 
@@ -261,14 +261,44 @@ as.data.frame(counts)
 ```
 
 ```
-      val count
-X1      8     1
-X1.1   19     1
-X1.2    7     1
-X1.3   18     3
-X1.4   13     5
-X1.5   11     4
-X1.6    9     2
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+     x val count
+1.1 10  10     8
+1.4 12  12     7
+1   13  13    10
+1.2  8   8     1
+1.6 18  18     1
+1.7 14  14     6
+1.5 15  15     5
 ....
 ```
 
@@ -304,13 +334,13 @@ as.data.frame(big.mtcars.again)
 
 ```
                      mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-Mazda.RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-Mazda.RX4.Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-Datsun.710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
-Hornet.4.Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
-Hornet.Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
 Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
-Duster.360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
 ....
 ```
 
@@ -345,13 +375,13 @@ We now can do exactly the same on a Hadoop data set:
 	
 	```
 	                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-	Mazda.RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-	Mazda.RX4.Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-	Hornet.4.Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
-	Hornet.Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+	Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+	Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+	Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+	Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
 	Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
-	Duster.360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
-	Merc.280            19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
+	Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+	Merc 280            19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
 	....
 	```
 
@@ -383,14 +413,14 @@ as.data.frame(big.mtcars.cyl.carb)
 ```
 
 ```
-     mpg cyl
-X1  21.0   6
-X2  21.0   6
-X3  22.8   4
-X4  21.4   6
-X5  18.7   8
-X6  18.1   6
-X7  14.3   8
+    mpg cyl
+1  21.0   6
+2  21.0   6
+3  22.8   4
+4  21.4   6
+5  18.7   8
+6  18.1   6
+7  14.3   8
 ....
 ```
 
@@ -404,14 +434,14 @@ as.data.frame(big.mtcars.cyl.carb)
 ```
 
 ```
-     mpg cyl
-X1  21.0   6
-X2  21.0   6
-X3  22.8   4
-X4  21.4   6
-X5  18.7   8
-X6  18.1   6
-X7  14.3   8
+    mpg cyl
+1  21.0   6
+2  21.0   6
+3  22.8   4
+4  21.4   6
+5  18.7   8
+6  18.1   6
+7  14.3   8
 ....
 ```
 
@@ -429,18 +459,18 @@ summarize(mtcars, cyl = sum(cyl), carb = sum(carb))
 ```
 
 
-but a little more complex in `plyrmr`, and why that's the case merits a little explanation. `plyr::summarize` works on data frames and has all the data available simultaneously. This is not true for "plyrmr" because large data sets are processed piecemeal. So we need to perform the sum on each chunk of data, group the results together, sum again. `group.by(data, 1)` just means group everything together, in fact there is handy alias for that, `group.together` 
+but a little more complex in `plyrmr`, and why that's the case merits a little explanation. `plyr::summarize` works on data frames and has all the data available simultaneously. This is not true for "plyrmr" because large data sets are processed piecemeal. So we need to perform the sum on each chunk of data, group the results together, sum again. `group(data, 1)` just means group everything together, in fact there is handy alias for that, `group.together` 
 
 
 ```r
 big.mtcars.partial.sums = summarize(big.mtcars, cyl = sum(cyl), carb = sum(carb))
-big.mtcars.sum = summarize(group.by(big.mtcars.partial.sums, 1), cyl = sum(cyl), carb = sum(carb))
+big.mtcars.sum = summarize(group(big.mtcars.partial.sums, 1), cyl = sum(cyl), carb = sum(carb))
 as.data.frame(big.mtcars.sum)
 ```
 
 ```
-   cyl carb
-X1 198   90
+  X1 cyl carb
+1  1 198   90
 ```
 
 
@@ -458,20 +488,35 @@ In many other use cases, instead of a single summary, we are interested in summa
 	```
 
 
-The equivalent in `plyrmr` is `group.by`
+The equivalent in `plyrmr` is `group`
 
 
 ```r
-big.mtcars.by.cyl = group.by(big.mtcars, cyl)
+big.mtcars.by.cyl = group(big.mtcars, cyl)
 big.mtcars.sum.by.cyl	= summarize(big.mtcars.by.cyl, cyl = sum(cyl), carb = sum(carb))
 as.data.frame(big.mtcars.sum.by.cyl)
 ```
 
 ```
-     cyl carb
-X1    42   24
-X1.1  44   17
-X1.2 112   49
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+    cyl carb
+1     6   24
+1.1   4   17
+1.2   8   49
 ```
 
 
@@ -504,13 +549,13 @@ ddply(words, "words", summarize, count = length(words))
 
 ```
    words count
-1      A    39
-2      B    32
-3      C    38
-4      D    31
-5      E    45
-6      F    44
-7      G    38
+1      A    36
+2      B    39
+3      C    35
+4      D    25
+5      E    32
+6      F    43
+7      G    29
 ....
 ```
 
@@ -520,24 +565,154 @@ In fact the name `summarize` seems again unsatisfactory for self-documenting cod
 
 ```r
 words = summarize(input(data), words = unlist(strsplit(lines, " ")))
-wordcount = summarize(group.by(words, words), word = unique(words), count = length(words))
+wordcount = summarize(group(words, words), word = unique(words), count = length(words))
 as.data.frame(wordcount)
 ```
 
 ```
-      word count
-X1       S    33
-X1.1     M    39
-X1.2     O    38
-X1.3     G    38
-X1.4     L    32
-X1.5     F    44
-X1.6     X    44
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+Warning: row names were found from a short variable and have been
+discarded
+```
+
+```
+     words word count
+1.1      F    F    43
+1.18     I    I    33
+1.4      L    L    36
+1.20     O    O    47
+1.9      Y    Y    42
+1.8      B    B    39
+1.6      G    G    29
 ....
 ```
 
 
-## The fundamental primitives: `do`  and `group.by.f`
+## The fundamental primitives: `do`  and `group.f`
 
 
 

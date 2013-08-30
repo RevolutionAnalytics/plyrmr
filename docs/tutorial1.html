@@ -212,7 +212,7 @@ hljs.initHighlightingOnLoad();
 <pre><code>as.data.frame(input(mtcars))
 </code></pre>
 
-<p>To do something useful we need to create more complex expressions combining essentially two sets of basic ingredients: processing steps and grouping steps. We can also combine pipes into more complex ones. As we said, the data is always chunked, due to its size. The initial state is arbitrary, meaning that the data is sorted and grouped arbitrarily, but grouping can be modified with the primitive <code>group.by.f</code>. The fundamental processing primitive is <code>do</code>, which applies a function to each chunk. The function should transform a data frame into another data frame. For instance, if we wanted to compute the number of carburators per cylinder for the cars in the <code>mtcars</code> data set (all of 32, of course this is only for illustrative purposes), one could simply do</p>
+<p>To do something useful we need to create more complex expressions combining essentially two sets of basic ingredients: processing steps and grouping steps. We can also combine pipes into more complex ones. As we said, the data is always chunked, due to its size. The initial state is arbitrary, meaning that the data is sorted and grouped arbitrarily, but grouping can be modified with the primitive <code>group.f</code>. The fundamental processing primitive is <code>do</code>, which applies a function to each chunk. The function should transform a data frame into another data frame. For instance, if we wanted to compute the number of carburators per cylinder for the cars in the <code>mtcars</code> data set (all of 32, of course this is only for illustrative purposes), one could simply do</p>
 
 <pre><code>transform(mtcars, ratio = carb/cyl)
 
@@ -235,13 +235,13 @@ The reverse step is to take some data and turn it into a data frame (do this onl
 </code></pre>
 
 <pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-Mazda.RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-Mazda.RX4.Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-Datsun.710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
-Hornet.4.Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
-Hornet.Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
 Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
-Duster.360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
 ....
 </code></pre>
 
@@ -277,7 +277,7 @@ Duster.360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
 small.squares
 </code></pre>
 
-<pre><code>[1] &quot;Slots set: input, map \n Input: Temporary file \n&quot;
+<pre><code>[1] &quot;Slots set: input, ungroup, map \n Input: Temporary file \n&quot;
 </code></pre>
 
 <p>But if we turn a <code>pipe</code> into a data frame, we see the data as expected. </p>
@@ -285,14 +285,14 @@ small.squares
 <pre><code class="r">as.data.frame(small.squares)
 </code></pre>
 
-<pre><code>     x  x2
-X1   1   1
-X2   2   4
-X3   3   9
-X4   4  16
-X5   5  25
-X6   6  36
-X7   7  49
+<pre><code>    x  x2
+1   1   1
+2   2   4
+3   3   9
+4   4  16
+5   5  25
+6   6  36
+7   7  49
 ....
 </code></pre>
 
@@ -317,14 +317,14 @@ as.data.frame(input(&quot;/tmp/small.squares&quot;))
 ```
 
 ```
-     x  x2
-X1   1   1
-X2   2   4
-X3   3   9
-X4   4  16
-X5   5  25
-X6   6  36
-X7   7  49
+    x  x2
+1   1   1
+2   2   4
+3   3   9
+4   4  16
+5   5  25
+6   6  36
+7   7  49
 ....
 ```
 </code></pre>
@@ -341,14 +341,14 @@ X7   7  49
 <pre><code class="r">ddply(data, &quot;x&quot;, summarize, val = unique(x), count = length(x))
 </code></pre>
 
-<pre><code>    x val count
-1   6   6     1
-2   7   7     1
-3   8   8     1
-4   9   9     2
-5  10  10     8
-6  11  11     4
-7  12  12     4
+<pre><code>   x val count
+1  8   8     1
+2 10  10     8
+3 11  11    12
+4 12  12     7
+5 13  13    10
+6 14  14     6
+7 15  15     5
 ....
 </code></pre>
 
@@ -357,9 +357,9 @@ X7   7  49
 <pre><code class="r">data = input(data)
 </code></pre>
 
-<p>The equivalent in <code>plyrmr</code> is not as close in syntax as before, because we followed more closely the syntax of an experimental package by the same author as <code>plyr</code> called <code>dplyr</code>, which is focused on data frames and adds multiple backends and can be considered a specialization and evolution of <code>plyr</code>. <code>dplyr</code> is temporarily incompatible with <code>rmr2</code> and not as well known as <code>plyr</code> yet and so it is not used here, but was a reference point in the design of <code>plyrmr</code>. <code>plyrmr</code>, like <code>dplyr</code> has a separate <code>group.by</code> primitive (<code>group_by</code> in <code>dplyr</code>), named after its SQL equivalent, that defines a grouping of a data set based on a column (expressions are not supported yet).</p>
+<p>The equivalent in <code>plyrmr</code> is not as close in syntax as before, because we followed more closely the syntax of an experimental package by the same author as <code>plyr</code> called <code>dplyr</code>, which is focused on data frames and adds multiple backends and can be considered a specialization and evolution of <code>plyr</code>. <code>dplyr</code> is temporarily incompatible with <code>rmr2</code> and not as well known as <code>plyr</code> yet and so it is not used here, but was a reference point in the design of <code>plyrmr</code>. <code>plyrmr</code>, like <code>dplyr</code> has a separate <code>group</code> primitive (<code>group_by</code> in <code>dplyr</code>), named after its SQL equivalent, that defines a grouping of a data set based on a column (expressions are not supported yet).</p>
 
-<pre><code class="r">counts = summarize(group.by(data, x), val = unique(x), count = length(x))
+<pre><code class="r">counts = summarize(group(data, x), val = unique(x), count = length(x))
 </code></pre>
 
 <p>What we can see here is that we can combine two <code>pipes</code> by composing two functions. We can check the results with</p>
@@ -367,14 +367,38 @@ X7   7  49
 <pre><code class="r">as.data.frame(counts)
 </code></pre>
 
-<pre><code>      val count
-X1      8     1
-X1.1   19     1
-X1.2    7     1
-X1.3   18     3
-X1.4   13     5
-X1.5   11     4
-X1.6    9     2
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>     x val count
+1.1 10  10     8
+1.4 12  12     7
+1   13  13    10
+1.2  8   8     1
+1.6 18  18     1
+1.7 14  14     6
+1.5 15  15     5
 ....
 </code></pre>
 
@@ -403,13 +427,13 @@ as.data.frame(big.mtcars.again)
 </code></pre>
 
 <pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-Mazda.RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-Mazda.RX4.Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-Datsun.710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
-Hornet.4.Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
-Hornet.Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
 Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
-Duster.360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
 ....
 </code></pre>
 
@@ -438,13 +462,13 @@ as.data.frame(big.mtcars.cyl.gt.4)
 
 ```
                      mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-Mazda.RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-Mazda.RX4.Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-Hornet.4.Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
-Hornet.Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
 Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
-Duster.360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
-Merc.280            19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+Merc 280            19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
 ....
 ```
 </code></pre>
@@ -474,14 +498,14 @@ summarize(mtcars, mpg = mpg, cyl = cyl)
 as.data.frame(big.mtcars.cyl.carb)
 </code></pre>
 
-<pre><code>     mpg cyl
-X1  21.0   6
-X2  21.0   6
-X3  22.8   4
-X4  21.4   6
-X5  18.7   8
-X6  18.1   6
-X7  14.3   8
+<pre><code>    mpg cyl
+1  21.0   6
+2  21.0   6
+3  22.8   4
+4  21.4   6
+5  18.7   8
+6  18.1   6
+7  14.3   8
 ....
 </code></pre>
 
@@ -491,14 +515,14 @@ X7  14.3   8
 as.data.frame(big.mtcars.cyl.carb)
 </code></pre>
 
-<pre><code>     mpg cyl
-X1  21.0   6
-X2  21.0   6
-X3  22.8   4
-X4  21.4   6
-X5  18.7   8
-X6  18.1   6
-X7  14.3   8
+<pre><code>    mpg cyl
+1  21.0   6
+2  21.0   6
+3  22.8   4
+4  21.4   6
+5  18.7   8
+6  18.1   6
+7  14.3   8
 ....
 </code></pre>
 
@@ -511,15 +535,15 @@ X7  14.3   8
 1 198   90
 </code></pre>
 
-<p>but a little more complex in <code>plyrmr</code>, and why that&#39;s the case merits a little explanation. <code>plyr::summarize</code> works on data frames and has all the data available simultaneously. This is not true for &ldquo;plyrmr&rdquo; because large data sets are processed piecemeal. So we need to perform the sum on each chunk of data, group the results together, sum again. <code>group.by(data, 1)</code> just means group everything together, in fact there is handy alias for that, <code>group.together</code> </p>
+<p>but a little more complex in <code>plyrmr</code>, and why that&#39;s the case merits a little explanation. <code>plyr::summarize</code> works on data frames and has all the data available simultaneously. This is not true for &ldquo;plyrmr&rdquo; because large data sets are processed piecemeal. So we need to perform the sum on each chunk of data, group the results together, sum again. <code>group(data, 1)</code> just means group everything together, in fact there is handy alias for that, <code>group.together</code> </p>
 
 <pre><code class="r">big.mtcars.partial.sums = summarize(big.mtcars, cyl = sum(cyl), carb = sum(carb))
-big.mtcars.sum = summarize(group.by(big.mtcars.partial.sums, 1), cyl = sum(cyl), carb = sum(carb))
+big.mtcars.sum = summarize(group(big.mtcars.partial.sums, 1), cyl = sum(cyl), carb = sum(carb))
 as.data.frame(big.mtcars.sum)
 </code></pre>
 
-<pre><code>   cyl carb
-X1 198   90
+<pre><code>  X1 cyl carb
+1  1 198   90
 </code></pre>
 
 <p>In many other use cases, instead of a single summary, we are interested in summaries by group. In <code>plyr</code> this calls for the <code>ddply</code> function (<code>group_by</code> in <code>dplyr</code>)</p>
@@ -536,17 +560,29 @@ ddply(mtcars, &quot;cyl&quot;, summarize, cyl = sum(cyl), carb = sum(carb))
 ```
 </code></pre>
 
-<p>The equivalent in <code>plyrmr</code> is <code>group.by</code></p>
+<p>The equivalent in <code>plyrmr</code> is <code>group</code></p>
 
-<pre><code class="r">big.mtcars.by.cyl = group.by(big.mtcars, cyl)
+<pre><code class="r">big.mtcars.by.cyl = group(big.mtcars, cyl)
 big.mtcars.sum.by.cyl   = summarize(big.mtcars.by.cyl, cyl = sum(cyl), carb = sum(carb))
 as.data.frame(big.mtcars.sum.by.cyl)
 </code></pre>
 
-<pre><code>     cyl carb
-X1    42   24
-X1.1  44   17
-X1.2 112   49
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>    cyl carb
+1     6   24
+1.1   4   17
+1.2   8   49
 </code></pre>
 
 <p>We are ready to write the wordcount function, the &ldquo;hello world&rdquo; equivalent of the Hadoop world. The task is to read in a data frame with lines of text, split the lines into words and count how many times each word occurs. First let&#39;s make up some fake text data to keep things self-contained.</p>
@@ -571,35 +607,139 @@ ddply(words, &quot;words&quot;, summarize, count = length(words))
 </code></pre>
 
 <pre><code>   words count
-1      A    39
-2      B    32
-3      C    38
-4      D    31
-5      E    45
-6      F    44
-7      G    38
+1      A    36
+2      B    39
+3      C    35
+4      D    25
+5      E    32
+6      F    43
+7      G    29
 ....
 </code></pre>
 
 <p>In fact the name <code>summarize</code> seems again unsatisfactory for self-documenting code here. We are looking for at least an alias that could capture this kind of usage. Maybe <code>explode</code>? </p>
 
 <pre><code class="r">words = summarize(input(data), words = unlist(strsplit(lines, &quot; &quot;)))
-wordcount = summarize(group.by(words, words), word = unique(words), count = length(words))
+wordcount = summarize(group(words, words), word = unique(words), count = length(words))
 as.data.frame(wordcount)
 </code></pre>
 
-<pre><code>      word count
-X1       S    33
-X1.1     M    39
-X1.2     O    38
-X1.3     G    38
-X1.4     L    32
-X1.5     F    44
-X1.6     X    44
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>Warning: row names were found from a short variable and have been
+discarded
+</code></pre>
+
+<pre><code>     words word count
+1.1      F    F    43
+1.18     I    I    33
+1.4      L    L    36
+1.20     O    O    47
+1.9      Y    Y    42
+1.8      B    B    39
+1.6      G    G    29
 ....
 </code></pre>
 
-<h2>The fundamental primitives: <code>do</code>  and <code>group.by.f</code></h2>
+<h2>The fundamental primitives: <code>do</code>  and <code>group.f</code></h2>
 
 </body>
 

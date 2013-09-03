@@ -130,7 +130,7 @@ group.together =
 		if(is.grouped(.data)) 
 			.data
 		else
-			group(.data, 1, recursive = recursive)}
+			group(.data, .dummy = 1, recursive = recursive)}
 
 is.grouped = 
 	function(.data)

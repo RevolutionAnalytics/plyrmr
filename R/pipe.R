@@ -114,12 +114,12 @@ ungroup =
 
 group.together = 
 	function(.data, recursive = TRUE) {
-		if(grouped(.data)) 
+		if(is.grouped(.data)) 
 			.data
 		else
 			group(.data, 1, recursive = recursive)}
 
-grouped = 
+is.grouped = 
 	function(.data)
 		!is.null(.data[["group"]])
 

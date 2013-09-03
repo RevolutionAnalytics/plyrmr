@@ -34,7 +34,7 @@ export(
 	group,
 	group.f,
 	group.together,
-	grouped,
+	is.grouped,
 	ungroup,
 	output,
 	input)

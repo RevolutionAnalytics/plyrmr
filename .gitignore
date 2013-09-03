@@ -8,3 +8,5 @@ src/*.dll
 rmr-global-*
 rmr-local-*
 rmr-streaming-*
+
+Rprof.out

@@ -47,6 +47,10 @@ make.combine.fun =
 	function(valf) 
 		make.map.fun(NULL, valf, ungroup = FALSE, combine = TRUE)
 
+is.root = 
+	function(x)
+		attr(x, "plyrmr.is.root", TRUE)
+
 #pipes
 
 is.data = 

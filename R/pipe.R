@@ -109,8 +109,11 @@ group.f =
 
 ungroup = 
 	function(.data) {
-		.data$ungroup = TRUE
-	input(run(.data, input.format = "native"))}
+		if(is.grouped(.data)) {
+			.data$ungroup = TRUE
+			input(run(.data, input.format = "native"))}
+		else
+			.data}
 
 group.together = 
 	function(.data, recursive = TRUE) {

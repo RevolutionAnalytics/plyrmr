@@ -24,11 +24,15 @@ comp =
 			do.call(Compose, funs)}
 
 make.map.fun = 
-	function(keyf, valf, ungroup) {
+	function(keyf, valf, ungroup, combine = FALSE) {
 		if(is.null(valf)) 
 			valf = identity 
+		valf.attr = 
+			function(x) {
+				attr(x, "plyrmr.is.root") =  !combine
+				valf(x)}
 		function(k, v) {
-			w = safe.cbind(k, valf(safe.cbind(k, v)))
+			w = safe.cbind(k, valf.attr(safe.cbind(k, v)))
 			if (ungroup) k = NULL
 			k = {	
 				if(is.null(keyf)) k 
@@ -39,7 +43,9 @@ make.reduce.fun =
 	function(valf, ungroup) 
 		make.map.fun(NULL, valf, ungroup)
 
-make.combine.fun = Curry(make.reduce.fun, ungroup = FALSE)
+make.combine.fun = 
+	function(valf) 
+		make.map.fun(NULL, valf, ungroup = FALSE, combine = TRUE)
 
 #pipes
 
@@ -171,7 +177,7 @@ run =
 						pipe$ungroup)}
 			if(!is.null(pipe$recursive.group) &&
 				 	pipe$recursive.group) {
-				mr.args.combine =
+				mr.args$combine =
 					make.combine.fun(pipe$reduce)}
 			mrexec(mr.args, input.format)}}
 

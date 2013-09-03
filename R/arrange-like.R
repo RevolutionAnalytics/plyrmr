@@ -65,7 +65,15 @@ quantile.pipe =
 				quantile(
 					.x,
 					probs = midprobs(10^4))}
-		do(group.together(do(x, qfun)), qfun)}
+		reduce = 
+			function(.x) {
+				if(is.root(.x)){
+					rmr.str(
+					quantile(.x, ...))[,-1]}
+				else
+					qfun(.x)}
+		do(group.together(do(x, qfun)), reduce)}
+
 
 quantile.data.frame = 
 	function(x, ...)

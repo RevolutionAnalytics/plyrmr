@@ -129,10 +129,8 @@ moving.window =
 					cbind(
 						.part = c(partT, partF), 
 						rbind(x, x)))}
-		do(
-			group(
-				do(
-					x, 
-					partition), 
-				.part), 
-			identity)}
+		group(
+			do(
+				x, 
+				partition), 
+			.part)}

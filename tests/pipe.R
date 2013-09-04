@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+library(plyrmr)
+
 stopifnot(
 	all(
 		as.data.frame(do(input(mtcars), function(x) list(cyl2 =x$cyl^2))) 
@@ -22,7 +24,7 @@ stopifnot(
 	all(
 		(function() {
 			expo1 = 2;
-			envir = sys.frame(1)
+			envir = sys.frame(sys.nframe())
 			as.data.frame(
 				do(
 					input(mtcars), 

@@ -1,4 +1,5 @@
 rm(mtcars)
+library(plyrmr)
 mtcars = cbind(model = rownames(mtcars), mtcars)
 param = 4
 as.data.frame(transform(input(mtcars), fourcarb = carb/param))

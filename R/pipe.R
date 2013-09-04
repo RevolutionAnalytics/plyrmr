@@ -36,7 +36,7 @@ make.map.fun =
 			if (ungroup) k = NULL
 			k = {	
 				if(is.null(keyf)) k 
-				else safe.cbind(k, keyf(v))}
+				else safe.cbind(k, keyf(w))}
 			keyval(k, w)}}
 
 make.reduce.fun = 

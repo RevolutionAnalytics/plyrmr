@@ -1,6 +1,4 @@
-rm(mtcars)
 library(plyrmr)
-mtcars = cbind(model = rownames(mtcars), mtcars)
 param = 4
 as.data.frame(transform(input(mtcars), fourcarb = carb/param))
 rm(param)
@@ -26,6 +24,8 @@ as.data.frame(summarize(input(mtcars), fourcarb = carb/param))
 rm(param)
 #(function(){param = 4; as.data.frame(summarize(input(mtcars), fourcarb = carb/param))})()
 param = "mpg"
+rm(mtcars)
+mtcars = cbind(model = rownames(mtcars), mtcars)
 mmtcars = as.data.frame(melt(input(mtcars), c("model", param)))
 mmtcars
 rm(param)

@@ -97,11 +97,12 @@ extreme.k=
 							select(.x, ..., .envir = envir)),
 						,
 						 drop = FALSE], 
-					k)
-		do(
-			group.together(
-				do(x, mr.fun)),
-			mr.fun)}
+					.k)
+		ungroup(
+			do(
+				group.together(
+					do(.x, mr.fun)),
+				mr.fun))}
 
 top.k = 
 	function(x, ..., k = 1, envir = parent.frame()) {

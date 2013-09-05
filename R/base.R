@@ -34,29 +34,33 @@ names.pipe =
 
 sample.pipe = 
 	function(x, method = c("any", "Bernoulli", "hypergeometric"), ...) {
-			method = match.arg(method)
-			sample.curried = Curry(sample, method = method, ...)
-			switch(
-				method,
-				any = 
+		method = match.arg(method)
+		sample.curried = Curry(sample, method = method, ...)
+		switch(
+			method,
+			any = 
+				ungroup(
 					do(
 						group.together(
 							do(x, sample.curried),
 							recursive = TRUE),
-						sample.curried),
-				Bernoulli = 
-					do(x, sample.curried),
-				hypergeometric = 
-					do(
-						top.k(
-							do(
-								x, 
-								function(x) 
-									cbind(
-										x, 
-										.priority = runif(nrow(x)))), 
-							list(...)[["n"]], 
-							.priority), 
-						function(x)
-							x[,-ncol(x)]))}
+						sample.curried)),
+			Bernoulli = 
+				do(x, sample.curried),
+			hypergeometric = 
+				do(
+					top.k(
+						do(
+							x, 
+							function(x) 
+								cbind(
+									x, 
+									.priority = runif(nrow(x)))), 
+						.k = list(...)[["n"]], 
+						.priority), 
+					function(x){
+						if(is.root(x))
+							x[,-ncol(x)]
+						else
+							x}))}
 

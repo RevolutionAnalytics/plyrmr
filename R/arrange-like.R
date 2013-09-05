@@ -85,16 +85,16 @@ quantile.data.frame =
 							quantile(.y, ...))))
 
 extreme.k= 
-	function(x, ..., k, decreasing, envir = parent.frame()) {
-		force(envir)
-		this.order = Curry(order, decreasing = decreasing)
+	function(.x, .k , ...,  .decreasing, .envir = parent.frame()) {
+		force(.envir)
+		this.order = Curry(order, decreasing = .decreasing)
 		mr.fun = 
 			function(.x) 
 				head(
 					.x[
 						do.call(
 							this.order,
-							select(.x, ..., .envir = envir)),
+							select(.x, ..., .envir = .envir)),
 						,
 						 drop = FALSE], 
 					.k)
@@ -105,14 +105,14 @@ extreme.k=
 				mr.fun))}
 
 top.k = 
-	function(x, ..., k = 1, envir = parent.frame()) {
-		force(envir)
-		extreme.k(x, ..., k = k, decreasing = TRUE, envir = envir)}
+	function(.x, .k = 1, ...,  .envir = parent.frame()) {
+		force(.envir)
+		extreme.k(.x, .k = .k, ..., .decreasing = TRUE, .envir = .envir)}
 
 bottom.k = 
-	function(x, ..., k = 1, envir = parent.frame()) {
-		force(envir)
-		extreme.k(x, ..., k = k, decreasing = FALSE, envir = envir)}
+	function(.x, .k = 1, ..., .envir = parent.frame()) {
+		force(.envir)
+		extreme.k(.x, .k = .k, ..., .decreasing = FALSE, .envir = .envir)}
 
 moving.window = 
 	function(x, index, window, R = rmr.options("keyval.length")) {

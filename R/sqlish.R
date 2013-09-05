@@ -22,6 +22,6 @@ setMethodS3(
 setMethodS3(
 	"select",
 	"pipe",
-	function(.data, ..., .envir = parent.frame()) {
+	function(.data, ..., .replace = TRUE, .envir = parent.frame()) {
 		force(.envir)
-		do(.data, CurryHalfLazy(select, .envir = .envir), ...)})
+		do(.data, CurryHalfLazy(select, .replace = .replace, .envir = .envir), ...)})

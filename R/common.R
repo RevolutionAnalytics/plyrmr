@@ -21,6 +21,7 @@ constant =
 	function(x)
 		function(...) x
 
+#curried arguments are eager, the rest lazy
 CurryHalfLazy = 
 	function(FUN, ...) {
 		.orig = list(...)
@@ -56,7 +57,7 @@ strip.null.args =
 #dynamic scoping
 
 non.standard.eval = 
-	function(.data,  ..., .named = TRUE,  .envir = stop("Why wasn't envir specified? Why?")) {
+	function(.data,  ..., .named = TRUE,  .envir = stop("Why wasn't .envir specified? Why?")) {
 		force(.envir)
 		dotlist = {
 			if(.named)

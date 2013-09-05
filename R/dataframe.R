@@ -27,7 +27,7 @@ where.data.frame =
 
 #(function(){x = 5; where(mtcars, cyl>x)})()
 
-select = function(.data, ..., .replace = TRUE) UseMethod("select")
+select = function(.data, ...) UseMethod("select")
 select.data.frame =
 	function(.data, ..., .replace = TRUE, .envir = parent.frame()) {
 		force(.envir)

@@ -84,8 +84,8 @@ make.f1 =
 						else 
 							data.frame(x = .y, stringsAsFactors = F)}})}
 do =  
-	function(.data, f, ...){
-		f1 = make.f1(f, ...)
+	function(.data, .f, ...){
+		f1 = make.f1(.f, ...)
 		if(is.null(.data$group))
 			.data$map = comp(.data$map, f1)
 		else
@@ -93,29 +93,29 @@ do =
 		.data}
 
 group = 
-	function(.data, ..., recursive = FALSE, envir = parent.frame()) {
-		force(envir)
+	function(.data, ..., .recursive = FALSE, .envir = parent.frame()) {
+		force(.envir)
 		dot.args = dots(...)
 		gbf = 
 			group.f(
 				.data, 
 				function(.y) 
-					do.call(CurryHalfLazy(select, .envir = envir), c(list(.y), dot.args)),
-				recursive = recursive)}
+					do.call(CurryHalfLazy(select, .envir = .envir), c(list(.y), dot.args)),
+				.recursive = .recursive)}
 
 group.f = 
-	function(.data, f, ..., recursive = FALSE) {
-		f1 = make.f1(f, ...)
+	function(.data, .f, ..., .recursive = FALSE) {
+		f1 = make.f1(.f, ...)
 		if(is.null(.data$group)){
 			.data$group = f1
-			if(recursive) 
+			if(.recursive) 
 				.data$recursive.group = TRUE
 			.data}
 		else
 			group.f(
 				input(run(.data, input.format = "native")), 
 				f1, 
-				recursive = recursive)}
+				.recursive = .recursive)}
 
 ungroup = 
 	function(.data) {
@@ -126,11 +126,11 @@ ungroup =
 			.data}
 
 group.together = 
-	function(.data, recursive = TRUE) {
+	function(.data, .recursive = TRUE) {
 		if(is.grouped(.data)) 
 			.data
 		else
-			group(.data, .dummy = 1, recursive = recursive)}
+			group(.data, .dummy = 1, .recursive = .recursive)}
 
 is.grouped = 
 	function(.data)

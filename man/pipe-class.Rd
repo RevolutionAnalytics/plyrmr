@@ -9,7 +9,22 @@
 }
 
 \section{Methods}{
-as.data.frame
+as.character 
+as.data.frame 
+dcast 
+melt 
+merge 
+mutate 
+names 
+print 
+quantile 
+sample 
+select 
+subset 
+summarize 
+transform 
+unique 
+where
 }
 
 

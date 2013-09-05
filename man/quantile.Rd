@@ -5,7 +5,8 @@ Compute the quantiles of a data set}
 \description{
 Find the quantiles of a data set}
 \usage{
-quantile(x, \dots)
+\method{quantile}{data.frame}(x, \dots)
+\method{quantile}{pipe}(x, \dots)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

@@ -2,7 +2,6 @@
 \alias{transform}
 \alias{subset}
 \alias{mutate}
-\alias{select}
 \alias{summarize}
 \title{
 Data manipulation functions to add, modify, select, or otherwise process data frame type data.

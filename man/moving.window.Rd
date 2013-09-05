@@ -6,7 +6,7 @@ Compute a function on a moving window of the data.
 \description{
 }
 \usage{
-moving.window(x, index, window, f, R = rmr.options("keyval.length"))
+moving.window(x, index, window, R = rmr.options("keyval.length"))
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -18,8 +18,6 @@ How to sort the data (time dimension or other total order on the records)
 }
   \item{window}{
 Size of the window}
-  \item{f}{
-Function to compute on the window (takes and returns a data frame)}
   \item{R}{
 Only for performance, size of the reduce size groups, see details
 }

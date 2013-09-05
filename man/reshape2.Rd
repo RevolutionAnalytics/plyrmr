@@ -14,12 +14,17 @@ Modeled after, and actually implemented on top of, equally named functions in th
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{data}{A data set represented by a pipe}
+  \item{data}{A data set represented by a pipe or a data frame}
   \item{formula}{Casting formula}
   \item{\dots}{Additional arguments}
 }
 
 \details{See reshape2::dcast and reshape2::melt for details.}
-\value{A pipe with the desired format}
+\value{A data set with the desired format, represented by an object of the same class as the first argument}
 \examples{
+mtcars = cbind(model = rownames(mtcars), mtcars)
+mmtcars = melt(input(mtcars))
+as.data.frame(mmtcars)
+as.data.frame(dcast(mmtcars, model ~ variable))
+
 }

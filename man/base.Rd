@@ -7,7 +7,7 @@
 Data manipulation functions to add, modify, select, or otherwise process data frame type data.
 }
 \description{
-These functions are inspired by and actually use in their implementation equally named functions in packages plyr and base. In this plyrmr implementation they act on the data in chunks, either arbitrary or as defined by group. These functions are generic: you can call them on a data.frame or on plyrmr pipe.
+These functions are inspired by and actually implemented on top of equally named functions in packages plyr and base. In their plyrmr implementation they act on each group of a pipe. These functions are now generic: you can call them on a data frame or on plyrmr pipe.
 }
 \usage{
 \method{transform}{pipe}(`_data`, \dots)
@@ -19,18 +19,23 @@ summarize(.data, \dots)
 }
 
 \arguments{
-  \item{_data, .data, x}{The input data, represent by an object of class pipe. The different names depends on the names used in the generic functions of which these are methods. The meaning is the same.}
-  \item{\dots}{See the equally named functions in base and plyrmr}
+  \item{_data, .data, x}{The input data, represent by a data frame or pipe. Three different argument name are used only for compatibility with pre-existing data frame function}
+  \item{\dots}{See the equally named functions in base and plyrmr for explanation about how these arguments are evaluated and used}
 }
 \details{
-These are also generic functions and have methods for data frames. Whenever order and grouping of records is immaterial to the computation, operating on a data.frame or a pipe containing the sames data should be the same \code{all(f(x) == f(input(x)))}.}
+See the manuals for base::transform, base::subset, plyr::mutate and plyr::summarize for details. The method for pipes applies the data frame methods on each group of the pipe.
+}
 \value{
-An object of class pipe.
+Same type as the first argument, a data frame or a pipe.
 }
 
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+transform(
+  mtcars, 
+  carb.per.cyl = carb/cyl)
 
+as.data.frame(
+  transform(
+    input(mtcars), 
+    carb.per.cyl = carb/cyl))
 }

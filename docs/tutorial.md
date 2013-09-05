@@ -344,11 +344,12 @@ as.data.frame(summarize(group.together(input("/tmp/mtcars")), sum(carb) ))
 ```
 
 ```
-Warning: is.na() applied to non-(list or vector) of type 'NULL'
+Warning: row names were found from a short variable and have been discarded
 ```
 
 ```
-Error: Must specify key when using keyval in map and combine functions
+  .dummy recursive sum.carb.
+1      1      TRUE        90
 ```
 
 
@@ -364,6 +365,18 @@ as.data.frame(
 			input("/tmp/mtcars"),
 			cyl),
 		mean.mpg = mean(mpg)))
+```
+
+```
+Warning: row names were found from a short variable and have been discarded
+```
+
+```
+Warning: row names were found from a short variable and have been discarded
+```
+
+```
+Warning: row names were found from a short variable and have been discarded
 ```
 
 ```
@@ -386,6 +399,22 @@ as.data.frame(
 			input("/tmp/mtcars"),
 			last.col),
 		mean.mpg = mean(mpg)))
+```
+
+```
+Warning: row names were found from a short variable and have been discarded
+```
+
+```
+Warning: row names were found from a short variable and have been discarded
+```
+
+```
+Warning: row names were found from a short variable and have been discarded
+```
+
+```
+Warning: row names were found from a short variable and have been discarded
 ```
 
 ```

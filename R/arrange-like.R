@@ -68,8 +68,7 @@ quantile.pipe =
 		reduce = 
 			function(.x) {
 				if(is.root(.x)){
-					rmr.str(
-					quantile(.x, ...))[,-1]}
+					quantile(.x, ...)}
 				else
 					qfun(.x)}
 		do(group.together(do(x, qfun)), reduce)}

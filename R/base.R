@@ -43,7 +43,7 @@ sample.pipe =
 					do(
 						group.together(
 							do(x, sample.curried),
-							recursive = TRUE),
+							.recursive = TRUE),
 						sample.curried)),
 			Bernoulli = 
 				do(x, sample.curried),

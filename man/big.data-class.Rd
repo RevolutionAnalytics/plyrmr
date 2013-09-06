@@ -5,7 +5,7 @@
 
 \title{Class \code{"big.data"}}
 \description{
-This class represents a data set stored on the file system. It encapsulates details such as its path and format. It is a front end for rmr2's big data objects, which are garbage collected temporary files. The main call accepting objects of this class is input, and output returns one.
+This class represents a data set stored on the file system. It encapsulates details such as its path and format. It is a front end for rmr2's big data objects, which are garbage collected temporary files, but can also contain persisten, user determined locations. The main call accepting objects of this class is input, and output returns one.
 }
 
 \section{Methods}{
@@ -13,7 +13,7 @@ This class represents a data set stored on the file system. It encapsulates deta
 		\item{as.character}
 		\item{as.data.frame}
 		\item{print}
-}
+}}
 
 
 

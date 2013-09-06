@@ -1,11 +1,10 @@
 \name{sample}
 \alias{sample}
 
-\title{
-Function to sample from big data sets and data frames
-}
+\title{Sample a data set}
+
 \description{
-Albeit methods for a generic function whose default method is the well known base::sample, the methods for data frames and pipes have a different behavior, but they are still meant to perform sampling,
+Sample a data set, represented by a data frame or pipe, according to different methods.
 }
 \usage{
 sample(x, \dots)
@@ -18,6 +17,7 @@ sample(x, \dots)
   \item{\dots}{Additional arguments depending on method. n is sample size  for methods any and hypergeometric, p is probability of being in the sample for Bernoulli}
 }
 \details{
+This function is named after the well known base::sample for vectors but accepts different options and behaves differently, reflecting different needs that arise with large data sets. Non numeric columns are dropped.
 }
 \value{Same object type as x, containing the quantiles of each column, as specified by additional arguments
 }

@@ -1,26 +1,24 @@
 \name{quantile}
 \alias{quantile}
-\title{
-Compute the quantiles of a data set}
-\description{
-Find the quantiles of a data set}
+\title{Compute the quantiles of a data set}
+\description{Find the quantiles of each numerical column of a data set, represented by a pipe or a data.frame}
 \usage{
 \method{quantile}{data.frame}(x, \dots)
 \method{quantile}{pipe}(x, \dots)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{
-A pipe or a data frame
+A data set represented as a pipe or a data frame.
 }
   \item{\dots}{
-Additional arguments}
+Additional arguments, see stats::quantile for details}
 }
 \details{
-The goal here is to approach the interface of base::quantile but we are still pretty far. The quantile function is made into a generic function and methods are provided for data frames and pipes. The algorithm used doesn't have mathematical approximation guarantees, but seems to work in practice.
+The methods for pipes uses an approximation methods whose exact properties need to be studied in more detail. The interaction with the algorithm selection operated by the type argument have not been explored.
 }
+
 \value{
-A pipe or a data frame, depending on class(x)}
+A pipe or a data frame, depending on the class of the first argument}
 
 \examples{
 quantile(mtcars)

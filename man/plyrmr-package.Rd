@@ -3,7 +3,7 @@
 \alias{plyrmr}
 \docType{package}
 \title{
-Easy big data manipulation à la plyr with R and Hadoop }
+Easy big data manipulation plyr-style with R and Hadoop }
 \description{
 }
 \details{

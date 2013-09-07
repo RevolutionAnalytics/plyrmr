@@ -5,7 +5,7 @@
 Functions to perform sql-like operations.
 }
 \description{
-These functions accept a data set, represented by a pipe or a data frame, and apply the operations specified by the \dots arguments, which are evaluated according to non standard evaluation rules.
+These functions accept a data set, represented by a pipe or a data frame, and apply the operations specified by the \dots arguments, which are evaluated according to \link{non standard evaluation} rules.
 where allows to filter a subset of the rows. Additional arguments should evaluate to logical or numeric and are used as row indexes. In the case of logical, the element-wise logical and of the arguments is the overall filter. In the case of numeric, a single \dots arguments should be specified. Normal recycling rules apply. select allows to select or generate new columns from a data set. Additional arguments become columns of the new data set and normal recycling rules apply. In the method for pipes, for both functions, additional arguments are evaluated for each group of the pipe.
 }
 \usage{

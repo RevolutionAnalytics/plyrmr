@@ -20,10 +20,10 @@ summarize(.data, \dots)
 
 \arguments{
   \item{_data, .data, x}{The input data, represent by a data frame or pipe. Three different argument name are used only for compatibility with pre-existing data frame function}
-  \item{\dots}{See the equally named functions in base and plyrmr for explanation about how these arguments are evaluated and used}
+  \item{\dots}{See the equally named functions in \link{base} and \link{plyrmr} for explanation about how these arguments are evaluated and used}
 }
 \details{
-See the manuals for base::transform, base::subset, plyr::mutate and plyr::summarize for details. The method for pipes applies the data frame methods on each group of the pipe.
+See the manuals for \link[base]{transform}, \link[base]{subset}, \link[plyr]{mutate} and \link[plyr]{summarize} for details. The method for pipes applies the data frame methods for each function, or the function itself if non-generic, on each group of the pipe.
 }
 \value{
 Same type as the first argument, a data frame or a pipe.

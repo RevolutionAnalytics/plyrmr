@@ -32,6 +32,7 @@ make.map.fun =
 				attr(x, "plyrmr.is.root") =  !combine
 				valf(x)}
 		function(k, v) {
+			rownames(k) = NULL
 			w = safe.cbind(k, valf.attr(safe.cbind(k, v)))
 			if (ungroup) k = NULL
 			k = {	

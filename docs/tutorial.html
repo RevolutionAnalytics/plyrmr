@@ -455,11 +455,8 @@ Duster 360             4
 <pre><code class="r">as.data.frame(summarize(group.together(input(&quot;/tmp/mtcars&quot;)), sum(carb) ))
 </code></pre>
 
-<pre><code>Warning: row names were found from a short variable and have been discarded
-</code></pre>
-
-<pre><code>  .dummy recursive sum.carb.
-1      1      TRUE        90
+<pre><code>  .dummy sum.carb.
+1      1        90
 </code></pre>
 
 <p>You may have noticed the contradiction between the above statement that data is always in chunks with the availability of a <code>group.together</code> function. Luckily, there is an advanced way of grouping recursively, in a tree like fashion, that works with associative and commutative operations such as the sum, which is the default for <code>group.together</code>. Anyway, it will all be more clear as we cover other grouping functions.</p>
@@ -472,15 +469,6 @@ Duster 360             4
             input(&quot;/tmp/mtcars&quot;),
             cyl),
         mean.mpg = mean(mpg)))
-</code></pre>
-
-<pre><code>Warning: row names were found from a short variable and have been discarded
-</code></pre>
-
-<pre><code>Warning: row names were found from a short variable and have been discarded
-</code></pre>
-
-<pre><code>Warning: row names were found from a short variable and have been discarded
 </code></pre>
 
 <pre><code>    cyl mean.mpg
@@ -499,18 +487,6 @@ Duster 360             4
             input(&quot;/tmp/mtcars&quot;),
             last.col),
         mean.mpg = mean(mpg)))
-</code></pre>
-
-<pre><code>Warning: row names were found from a short variable and have been discarded
-</code></pre>
-
-<pre><code>Warning: row names were found from a short variable and have been discarded
-</code></pre>
-
-<pre><code>Warning: row names were found from a short variable and have been discarded
-</code></pre>
-
-<pre><code>Warning: row names were found from a short variable and have been discarded
 </code></pre>
 
 <pre><code>    carb mean.mpg

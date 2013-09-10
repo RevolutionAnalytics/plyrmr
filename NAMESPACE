@@ -78,7 +78,11 @@ S3method(where, data.frame)
 export(
 	top.k,
 	bottom.k,
-	moving.window)
+	moving.window,
+	most.frequent)
+S3method(most.frequent, data.frame)
+S3method(most.frequent, pipe)
+S3method(most.frequent, default)
 S3method(quantile, pipe)
 S3method(quantile, data.frame)
 S3method(merge, pipe)

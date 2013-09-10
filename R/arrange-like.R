@@ -76,18 +76,68 @@ quantile.pipe =
 
 quantile.data.frame = 
 	function(x, ...) {
- 		y = data.frame(
-			strip.nulls(
-				lapply(
-					x,
-					function(.y)
-						if(is.numeric(.y))
-							quantile(.y, ...))))
+ 		y = 
+ 			data.frame(
+ 				strip.nulls(
+ 					lapply(
+ 						x,
+ 						function(.y)
+ 							if(is.numeric(.y))
+ 								quantile(.y, ...))))
  		attrx = attributes(x)
  		mask = 
  			names(attrx)[!sapply(names(attrx), function(x) is.element(x, qw(names, row.names, class)))]
-	attributes(y)[mask] = attrx[mask]
-	y}
+ 		attributes(y)[mask] = attrx[mask]
+ 		y}
+
+most.frequent = function(x, ...) UseMethod("most.frequent")
+
+				
+most.frequent.default = 
+	function(x, n = 1)
+		tail(
+			arrange(
+				as.data.frame(table(x)), 
+				Freq), 
+			n=n)
+
+most.frequent.data.frame  =
+	function(x, n = 1) {
+		y = 
+			splat(data.frame.fill)( 
+				strip.nulls(
+					splat(c)(
+						lapply(
+							x,
+							function(z)
+								if(!is.numeric(z))
+									most.frequent(z, n = n)))))
+		attrx = attributes(x)
+		mask = 
+			names(attrx)[!sapply(names(attrx), function(x) is.element(x, qw(names, row.names, class)))]
+		attributes(y)[mask] = attrx[mask]
+		y}
+
+merge.frequent = 
+	function(x, n) {
+		merge.one =
+			function(x) {
+				y = ddply(x, 1, function(x) sum(x[, 2]))
+				tail(y[order(y[, 2]), ], n = n)}
+		splat(data.frame.fill)(
+			splat(c)(
+				lapply(
+					1:(ncol(x)/2),
+					function(i) merge.one(x[,c(2*i, 2*i + 1)]))))}				
+
+most.frequent.pipe = 
+	function(x, n = 1)
+		do(
+			group.together(
+				do(
+					x,
+					Curry(most.frequent, n = n))),
+			Curry(merge.frequent, n = n))
 
 extreme.k= 
 	function(.x, .k , ...,  .decreasing, .envir = parent.frame()) {
@@ -139,3 +189,4 @@ moving.window =
 				x, 
 				partition), 
 			.part)}
+

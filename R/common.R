@@ -43,6 +43,15 @@ safe.cbind  =
 	function(...) {
 		x = do.call(cbind, strip.null.args(...))
 		x[, unique(names(x)), drop = FALSE]}
+
+data.frame.fill = 
+	function(..., filler = NA) {
+		argl = list(...)
+		maxlen = max(sapply(argl, length))
+		sapply(
+			seq_along(argl), 
+			function(i) length(argl[[i]]) <<- maxlen)
+		data.frame(argl)}
 						
 #lists
 

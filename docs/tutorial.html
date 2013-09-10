@@ -297,7 +297,11 @@ Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.
 
 <p>What if none of the basic operations is sufficient to perform a needed data processing step? The first available tool is to combine different operations. Going back to the previous example, let&#39;s say we want to select cars with a carburetor per cylinder ratio greater than 1. Do such things even exist? On a data frame, there is a quick way to compute the answer, which is</p>
 
-<pre><code class="r">subset(transform(mtcars, carb.per.cyl = carb/cyl), carb.per.cyl &gt;= 1)
+<pre><code class="r">subset(
+    transform(
+        mtcars, 
+        carb.per.cyl = carb/cyl), 
+    carb.per.cyl &gt;= 1)
 </code></pre>
 
 <pre><code>               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
@@ -307,7 +311,12 @@ Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 
 <p>Wouldn&#39;t it be nice if we could do exactly the same on a Hadoop data set? In fact, we almost can:</p>
 
-<pre><code class="r">x = subset(transform(input(&quot;/tmp/mtcars&quot;), carb.per.cyl = carb/cyl), carb.per.cyl &gt;= 1)
+<pre><code class="r">x = 
+    subset(
+        transform(
+            input(&quot;/tmp/mtcars&quot;), 
+            carb.per.cyl = carb/cyl), 
+        carb.per.cyl &gt;= 1)
 as.data.frame(x)
 </code></pre>
 
@@ -322,7 +331,12 @@ Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 
 <p><code>subset</code> and <code>transform</code> work best interactively, at the prompt, but they have some problems when used in other functions or packages. These limitations are inherited from the <code>base</code> package functions, not peculiar to their <code>plyrmr</code> brethren. <code>plyrmr</code> makes an attempt to provide two functions that match the convenience of <code>transform</code> and <code>subset</code> without their pitfalls. While we were at it, we also tried to make them more general and give them a cleaner but still familiar (SQL-inspired) interface. Let me introduce <code>select</code> and <code>where</code>. These are <code>plyrmr</code> functions with methods for data frames and Hadoop data sets and they are appropriate for interactive and programming use. The previous examples become, using these functions:</p>
 
-<pre><code class="r">where(select(mtcars, carb.per.cyl = carb/cyl, .replace = FALSE), carb.per.cyl &gt;= 1)
+<pre><code class="r">where(
+    select(
+        mtcars, 
+        carb.per.cyl = carb/cyl, 
+        .replace = FALSE), 
+    carb.per.cyl &gt;= 1)
 </code></pre>
 
 <pre><code>               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
@@ -332,7 +346,13 @@ Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 
 <p>and:</p>
 
-<pre><code class="r">x = where(select(input(&quot;/tmp/mtcars&quot;), carb.per.cyl = carb/cyl, .replace = FALSE), carb.per.cyl &gt;= 1)
+<pre><code class="r">x = 
+    where(
+        select(
+            input(&quot;/tmp/mtcars&quot;), 
+            carb.per.cyl = carb/cyl, 
+            .replace = FALSE), 
+        carb.per.cyl &gt;= 1)
 as.data.frame(x)
 </code></pre>
 
@@ -344,11 +364,14 @@ Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 <p>Similar, but they work everywhere. For instance, if <code>subset</code> or <code>where</code> are called within some function, which is in its turn used in some other function, we can have the following situation:</p>
 
 <pre><code class="r">process.mtcars.1 = function(...) subset(mtcars, ...)
-high.carb.cyl.1 = function(x) {process.mtcars.1(data, carb/cyl &gt;= x) }
+high.carb.cyl.1 = function(x) {process.mtcars.1(carb/cyl &gt;= x) }
 high.carb.cyl.1(1)
 </code></pre>
 
-<pre><code>Error: &#39;subset&#39; must be logical
+<pre><code>Warning: longer object length is not a multiple of shorter object length
+</code></pre>
+
+<pre><code>Error: (list) object cannot be coerced to type &#39;double&#39;
 </code></pre>
 
 <pre><code class="r">
@@ -452,7 +475,10 @@ Duster 360             4
 
 <p>What does that mean? The data in Hadoop is always grouped, one way or another (this is also a key difference with the current <code>dplyr</code> design). It couldn&#39;t be otherwise: it is stored on multiple devices and, even if it weren&#39;t, we can only load it into memory in small chunks. So think of it as always grouped, initially in arbitrary fashion and later in the way we determine using the functions <code>group</code>, <code>group.f</code> and <code>group.together</code>. These were inspired by the notion of key in mapreduce, the SQL statement and the <code>dplyr</code> function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:</p>
 
-<pre><code class="r">as.data.frame(summarize(group.together(input(&quot;/tmp/mtcars&quot;)), sum(carb) ))
+<pre><code class="r">as.data.frame(
+    summarize(
+        group.together(input(&quot;/tmp/mtcars&quot;)), 
+        sum(carb) ))
 </code></pre>
 
 <pre><code>  .dummy sum.carb.

@@ -141,7 +141,11 @@ What if none of the basic operations is sufficient to perform a needed data proc
 
 
 ```r
-subset(transform(mtcars, carb.per.cyl = carb/cyl), carb.per.cyl >= 1)
+subset(
+	transform(
+		mtcars, 
+		carb.per.cyl = carb/cyl), 
+	carb.per.cyl >= 1)
 ```
 
 ```
@@ -155,7 +159,12 @@ Wouldn't it be nice if we could do exactly the same on a Hadoop data set? In fac
 
 
 ```r
-x = subset(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl), carb.per.cyl >= 1)
+x = 
+	subset(
+		transform(
+			input("/tmp/mtcars"), 
+			carb.per.cyl = carb/cyl), 
+		carb.per.cyl >= 1)
 as.data.frame(x)
 ```
 
@@ -173,7 +182,12 @@ The main differences between the data frame version and the Hadoop data version 
 
 
 ```r
-where(select(mtcars, carb.per.cyl = carb/cyl, .replace = FALSE), carb.per.cyl >= 1)
+where(
+	select(
+		mtcars, 
+		carb.per.cyl = carb/cyl, 
+		.replace = FALSE), 
+	carb.per.cyl >= 1)
 ```
 
 ```
@@ -187,7 +201,13 @@ and:
 
 
 ```r
-x = where(select(input("/tmp/mtcars"), carb.per.cyl = carb/cyl, .replace = FALSE), carb.per.cyl >= 1)
+x = 
+	where(
+		select(
+			input("/tmp/mtcars"), 
+			carb.per.cyl = carb/cyl, 
+			.replace = FALSE), 
+		carb.per.cyl >= 1)
 as.data.frame(x)
 ```
 
@@ -203,12 +223,16 @@ Similar, but they work everywhere. For instance, if `subset` or `where` are call
 
 ```r
 process.mtcars.1 = function(...) subset(mtcars, ...)
-high.carb.cyl.1 = function(x) {process.mtcars.1(data, carb/cyl >= x) }
+high.carb.cyl.1 = function(x) {process.mtcars.1(carb/cyl >= x) }
 high.carb.cyl.1(1)
 ```
 
 ```
-Error: 'subset' must be logical
+Warning: longer object length is not a multiple of shorter object length
+```
+
+```
+Error: (list) object cannot be coerced to type 'double'
 ```
 
 ```r
@@ -340,7 +364,10 @@ What does that mean? The data in Hadoop is always grouped, one way or another (t
 
 
 ```r
-as.data.frame(summarize(group.together(input("/tmp/mtcars")), sum(carb) ))
+as.data.frame(
+	summarize(
+		group.together(input("/tmp/mtcars")), 
+		sum(carb) ))
 ```
 
 ```

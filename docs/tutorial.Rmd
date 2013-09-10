@@ -93,13 +93,22 @@ as.data.frame(mtcars.w.ratio)
 What if none of the basic operations is sufficient to perform a needed data processing step? The first available tool is to combine different operations. Going back to the previous example, let's say we want to select cars with a carburetor per cylinder ratio greater than 1. Do such things even exist? On a data frame, there is a quick way to compute the answer, which is
 
 ```{r}
-subset(transform(mtcars, carb.per.cyl = carb/cyl), carb.per.cyl >= 1)
+subset(
+	transform(
+		mtcars, 
+		carb.per.cyl = carb/cyl), 
+	carb.per.cyl >= 1)
 ```
 
 Wouldn't it be nice if we could do exactly the same on a Hadoop data set? In fact, we almost can:
 
 ```{r}
-x = subset(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl), carb.per.cyl >= 1)
+x = 
+	subset(
+		transform(
+			input("/tmp/mtcars"), 
+			carb.per.cyl = carb/cyl), 
+		carb.per.cyl >= 1)
 as.data.frame(x)
 ```
 
@@ -109,13 +118,24 @@ The main differences between the data frame version and the Hadoop data version 
 `subset` and `transform` work best interactively, at the prompt, but they have some problems when used in other functions or packages. These limitations are inherited from the `base` package functions, not peculiar to their `plyrmr` brethren. `plyrmr` makes an attempt to provide two functions that match the convenience of `transform` and `subset` without their pitfalls. While we were at it, we also tried to make them more general and give them a cleaner but still familiar (SQL-inspired) interface. Let me introduce `select` and `where`. These are `plyrmr` functions with methods for data frames and Hadoop data sets and they are appropriate for interactive and programming use. The previous examples become, using these functions:
 
 ```{r}
-where(select(mtcars, carb.per.cyl = carb/cyl, .replace = FALSE), carb.per.cyl >= 1)
+where(
+	select(
+		mtcars, 
+		carb.per.cyl = carb/cyl, 
+		.replace = FALSE), 
+	carb.per.cyl >= 1)
 ```
 
 and:
 
 ```{r}
-x = where(select(input("/tmp/mtcars"), carb.per.cyl = carb/cyl, .replace = FALSE), carb.per.cyl >= 1)
+x = 
+	where(
+		select(
+			input("/tmp/mtcars"), 
+			carb.per.cyl = carb/cyl, 
+			.replace = FALSE), 
+		carb.per.cyl >= 1)
 as.data.frame(x)
 ```
 
@@ -123,7 +143,7 @@ Similar, but they work everywhere. For instance, if `subset` or `where` are call
 
 ```{r}
 process.mtcars.1 = function(...) subset(mtcars, ...)
-high.carb.cyl.1 = function(x) {process.mtcars.1(data, carb/cyl >= x) }
+high.carb.cyl.1 = function(x) {process.mtcars.1(carb/cyl >= x) }
 high.carb.cyl.1(1)
 
 process.mtcars.2 = function(...) where(mtcars, ..., .envir = parent.frame())
@@ -173,7 +193,10 @@ as.data.frame(summarize(input("/tmp/mtcars"), sum(carb) ))
 What does that mean? The data in Hadoop is always grouped, one way or another (this is also a key difference with the current `dplyr` design). It couldn't be otherwise: it is stored on multiple devices and, even if it weren't, we can only load it into memory in small chunks. So think of it as always grouped, initially in arbitrary fashion and later in the way we determine using the functions `group`, `group.f` and `group.together`. These were inspired by the notion of key in mapreduce, the SQL statement and the `dplyr` function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:
 
 ```{r}
-as.data.frame(summarize(group.together(input("/tmp/mtcars")), sum(carb) ))
+as.data.frame(
+	summarize(
+		group.together(input("/tmp/mtcars")), 
+		sum(carb) ))
 ```
 
 You may have noticed the contradiction between the above statement that data is always in chunks with the availability of a `group.together` function. Luckily, there is an advanced way of grouping recursively, in a tree like fashion, that works with associative and commutative operations such as the sum, which is the default for `group.together`. Anyway, it will all be more clear as we cover other grouping functions.

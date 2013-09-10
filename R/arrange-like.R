@@ -62,9 +62,9 @@ quantile.pipe =
 					function(N) {
 						probs = seq(0, 1, 1/N)
 						(probs[-1] + probs[-length(probs)])/2}
-				quantile(
-					.x,
-					probs = midprobs(10^4))}
+				args = c(list(.x), list(...))
+				args$probs = midprobs(rmr.options("keyval.length")) 
+				do.call(quantile, args)}
 		reduce = 
 			function(.x) {
 				if(is.root(.x)){
@@ -75,14 +75,19 @@ quantile.pipe =
 
 
 quantile.data.frame = 
-	function(x, ...)
-		data.frame(
+	function(x, ...) {
+ 		y = data.frame(
 			strip.nulls(
 				lapply(
 					x,
 					function(.y)
 						if(is.numeric(.y))
 							quantile(.y, ...))))
+ 		attrx = attributes(x)
+ 		mask = 
+ 			names(attrx)[!sapply(names(attrx), function(x) is.element(x, qw(names, row.names, class)))]
+	attributes(y)[mask] = attrx[mask]
+	y}
 
 extreme.k= 
 	function(.x, .k , ...,  .decreasing, .envir = parent.frame()) {

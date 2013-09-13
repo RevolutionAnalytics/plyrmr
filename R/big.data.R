@@ -24,7 +24,7 @@ as.character.big.data =
 
 print.big.data = 
 	function(x, ...) {
-		print(as.character(x))
+		print(paste("Big Data object", as.character(x)))
 		invisible(x)}
 
 as.big.data = function(x, ...) UseMethod("as.big.data")

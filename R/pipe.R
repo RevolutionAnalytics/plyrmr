@@ -69,7 +69,7 @@ as.character.pipe =
 
 print.pipe =
 	function(x, ...) {
-		print(as.character(x))
+		print("Got it! To generate results call the functions output or as.data.frame on this object. Computation has been delayed at least in part.")
 		invisible(x)}
 
 make.f1 = 

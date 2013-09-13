@@ -34,6 +34,9 @@ make.map.fun =
 		function(k, v) {
 			rownames(k) = NULL
 			w = safe.cbind(k, valf.attr(safe.cbind(k, v)))
+			dummy.col = -which(names(w) == ".dummy")
+			if (length(dummy.col) > 0)
+				w = w[, dummy.col, drop = FALSE]
 			if (ungroup) k = NULL
 			k = {	
 				if(is.null(keyf)) k 

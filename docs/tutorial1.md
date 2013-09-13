@@ -177,7 +177,12 @@ file.remove("/tmp/small.squares")
 ```
 
 ```
-[1] TRUE
+Warning: cannot remove file '/tmp/small.squares', reason 'No such file or
+directory'
+```
+
+```
+[1] FALSE
 ```
 
 ```r
@@ -225,14 +230,14 @@ ddply(data, "x", summarize, val = unique(x), count = length(x))
 ```
 
 ```
-   x val count
-1  8   8     1
-2 10  10     8
-3 11  11    12
-4 12  12     7
-5 13  13    10
-6 14  14     6
-7 15  15     5
+    x val count
+1   7   7     1
+2   9   9     2
+3  10  10     5
+4  11  11     6
+5  12  12    10
+6  13  13     5
+7  14  14     6
 ....
 ```
 
@@ -261,44 +266,14 @@ as.data.frame(counts)
 ```
 
 ```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-     x val count
-1.1 10  10     8
-1.4 12  12     7
-1   13  13    10
-1.2  8   8     1
-1.6 18  18     1
-1.7 14  14     6
-1.5 15  15     5
+      x val count
+1.8  19  19     1
+1.11 10  10     5
+1.5  14  14     6
+1.10  7   7     1
+1    13  13     5
+1.7  15  15     6
+1.3  17  17     3
 ....
 ```
 
@@ -498,21 +473,6 @@ as.data.frame(big.mtcars.sum.by.cyl)
 ```
 
 ```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
     cyl carb
 1     6   24
 1.1   4   17
@@ -549,13 +509,13 @@ ddply(words, "words", summarize, count = length(words))
 
 ```
    words count
-1      A    36
-2      B    39
-3      C    35
-4      D    25
-5      E    32
-6      F    43
-7      G    29
+1      A    48
+2      B    42
+3      C    31
+4      D    34
+5      E    38
+6      F    36
+7      G    41
 ....
 ```
 
@@ -570,144 +530,14 @@ as.data.frame(wordcount)
 ```
 
 ```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
-Warning: row names were found from a short variable and have been
-discarded
-```
-
-```
      words word count
-1.1      F    F    43
-1.18     I    I    33
-1.4      L    L    36
-1.20     O    O    47
-1.9      Y    Y    42
-1.8      B    B    39
-1.6      G    G    29
+1.7      F    F    36
+1        U    U    35
+1.18     G    G    41
+1.17     N    N    43
+1.20     B    B    42
+1.3      H    H    34
+1.10     S    S    36
 ....
 ```
 

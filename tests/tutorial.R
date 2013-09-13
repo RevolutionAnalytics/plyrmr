@@ -1,99 +1,88 @@
-# Copyright 2013 Revolution Analytics
-#    
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-# 
-#      http://www.apache.org/licenses/LICENSE-2.0
-# 
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS, 
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-## @knitr load-library
-suppressPackageStartupMessages(library(plyrmr))
-## @knitr local-backend
-rmr.options(backend = "local")
-## @knitr input
-big.mtcars = input(mtcars) # or input(path)
-## @knitr as.data.frame
-as.data.frame(big.mtcars)
-## @knitr small-integers
-data = data.frame(x = 1:10)
-## @knitr squares-data-frame
-mutate(data, x2 = x^2)
-## @knitr input-small-integers
-data = input(data)
-## @knitr squares-plyrmr
-small.squares = mutate(data, x2 = x^2)
-small.squares
-## @knitr squares-results
-as.data.frame(small.squares)
-## @knitr output
-file.remove("/tmp/small.squares")
-output(small.squares, "/tmp/small.squares")
-## @knitr as.data.frame-output
-as.data.frame(input("/tmp/small.squares"))
-## @knitr binomial-sample
-data = data.frame(x = rbinom(32, n = 50, prob = 0.4))
-## @knitr count-data-frame
-ddply(data, "x", summarize, val = unique(x), count = length(x))
-## @knitr input-binomial-sample
-data = input(data)
-## @knitr count-plyrmr
-counts = summarize(group(data, x), val = unique(x), count = length(x))
-## @knitr count-results
-as.data.frame(counts)
-## @knitr identity-data-frame
-transform(mtcars)
-## @knitr identity-plyrmr
-big.mtcars.again = transform(big.mtcars)
-as.data.frame(big.mtcars.again)
-## @knitr subset-data-frame
-subset(mtcars, cyl > 4)
-## @knitr subset-plyrmr
-big.mtcars.cyl.gt.4 = subset(big.mtcars, cyl > 4)
-as.data.frame(big.mtcars.cyl.gt.4)
-## @knitr select-data-frame
-summarize(mtcars, mpg = mpg, cyl = cyl)
-## @knitr select-plyrmr
-big.mtcars.cyl.carb = summarize(big.mtcars, mpg = mpg, cyl = cyl)
-as.data.frame(big.mtcars.cyl.carb)
-## @knitr select-plyrmr-alternative
-big.mtcars.cyl.carb =select(big.mtcars, mpg = mpg, cyl = cyl)
-as.data.frame(big.mtcars.cyl.carb)
-## @knitr big-sum-data-frame
-summarize(mtcars, cyl = sum(cyl), carb = sum(carb))
-## @knitr big-sum-plyrmr
-big.mtcars.partial.sums = summarize(big.mtcars, cyl = sum(cyl), carb = sum(carb))
-big.mtcars.sum = summarize(group(big.mtcars.partial.sums, 1), cyl = sum(cyl), carb = sum(carb))
-as.data.frame(big.mtcars.sum)
-## @knitr group-sum-data-frame
-ddply(mtcars, "cyl", summarize, cyl = sum(cyl), carb = sum(carb))
-## @knitr group-sum-plyrmr
-big.mtcars.by.cyl = group(big.mtcars, cyl)
-big.mtcars.sum.by.cyl	= summarize(big.mtcars.by.cyl, cyl = sum(cyl), carb = sum(carb))
-as.data.frame(big.mtcars.sum.by.cyl)
-## @knitr textual-data 
-data = 
-	data.frame(
-		lines = 
-			sapply(
-				split(
-					as.character(
-						sample(LETTERS, 1000, replace = TRUE)), 
-					1:1000%%20), 
-				paste, 
-				collapse = " "), 
-		stringsAsFactors = FALSE)
-## @knitr wordcount-data-frame
-words = summarize(data, words = unlist(strsplit(lines, " ")))
-ddply(words, "words", summarize, count = length(words))
-## @knitr wordcount-plyrmr
-words = summarize(input(data), words = unlist(strsplit(lines, " ")))
-wordcount = summarize(group(words, words), word = unique(words), count = length(words))
-as.data.frame(wordcount)
-## @knitr
-
+## @knitr startup
+suppressPackageStartupMessages(library(`plyrmr`))
+invisible(rmr.options(backend="local", keyval.length=5))
+invisible(output(input(mtcars), "/tmp/mtcars"))
+## @knitr mtcars
+mtcars
+## @knitr transform
+transform(mtcars, carb.per.cyl = carb/cyl)
+## @knitr transform-input
+transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
+## @knitr as.data.frame-transform-input
+as.data.frame(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl))
+## @knitr invisible-dfs.rmr
+invisible(dfs.rmr("/tmp/mtcars.out"))
+## @knitr output-transform-input
+output(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl), "/tmp/mtcars.out")
+## @knitr mtcars.w.ratio
+mtcars.w.ratio = transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
+as.data.frame(mtcars.w.ratio)
+## @knitr subset-transform
+subset(
+	transform(
+		mtcars, 
+		carb.per.cyl = carb/cyl), 
+	carb.per.cyl >= 1)
+## @knitr subset-transform-input
+x = 
+	subset(
+		transform(
+			input("/tmp/mtcars"), 
+			carb.per.cyl = carb/cyl), 
+		carb.per.cyl >= 1)
+as.data.frame(x)
+## @knitr where-select
+where(
+	select(
+		mtcars, 
+		carb.per.cyl = carb/cyl, 
+		.replace = FALSE), 
+	carb.per.cyl >= 1)
+## @knitr where-select-input
+x = 
+	where(
+		select(
+			input("/tmp/mtcars"), 
+			carb.per.cyl = carb/cyl, 
+			.replace = FALSE), 
+		carb.per.cyl >= 1)
+as.data.frame(x)
+## @knitr process.mtcars.1
+process.mtcars.1 = function(...) subset(mtcars, ...)
+high.carb.cyl.1 = function(x) {process.mtcars.1(carb/cyl >= x) }
+high.carb.cyl.1(1) 
+## @knitr process.mtcars.2
+process.mtcars.2 = function(...) where(mtcars, ..., .envir = parent.frame())
+high.carb.cyl.2 = function(x) {process.mtcars.2(carb/cyl >= x) }
+high.carb.cyl.2(1)
+## @knitr last.col
+last.col = function(x) x[, ncol(x), drop = FALSE]
+## @knitr do-input
+as.data.frame(do(input("/tmp/mtcars"), last.col))
+## @knitr magic.wand
+magic.wand(last.col)
+last.col(mtcars)
+as.data.frame(last.col(input("/tmp/mtcars")))
+## @knitr summarize
+summarize(mtcars, sum(carb))
+##knitr summarize-input
+as.data.frame(summarize(input("/tmp/mtcars"), sum(carb) ))
+## @knitr summarize-group.together
+as.data.frame(
+	summarize(
+		group.together(input("/tmp/mtcars")), 
+		sum(carb) ))
+## @knitr select-group
+as.data.frame(
+	select(
+		group(
+			input("/tmp/mtcars"),
+			cyl),
+		mean.mpg = mean(mpg)))
+## @knitr select-group.f
+as.data.frame(
+	select(
+		group.f(
+			input("/tmp/mtcars"),
+			last.col),
+		mean.mpg = mean(mpg)))

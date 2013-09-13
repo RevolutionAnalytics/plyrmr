@@ -15,17 +15,19 @@ Let's start with a simple operation such as adding a column to a data frame. The
 
 
 ```r
-head(mtcars)
+mtcars
 ```
 
 ```
-                   mpg cyl disp  hp drat    wt  qsec vs am gear carb
-Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
-Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
-Datsun 710        22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
-Hornet 4 Drive    21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
-Hornet Sportabout 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
-Valiant           18.1   6  225 105 2.76 3.460 20.22  1  0    3    1
+                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+....
 ```
 
 
@@ -37,14 +39,14 @@ transform(mtcars, carb.per.cyl = carb/cyl)
 ```
 
 ```
-                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
-Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
+                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
 ....
 ```
 
@@ -69,14 +71,14 @@ as.data.frame(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl))
 ```
 
 ```
-                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
-Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
+                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
 ....
 ```
 
@@ -87,13 +89,6 @@ In fact the `as.data.frame` call not only loads the data into memory, but trigge
 
 
 
-```r
-output(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl), "/tmp/mtcars.out")
-```
-
-```
-[1] "/tmp/mtcars.out" "native"         
-```
 
 
 This is the real deal: we have performed a computation on the cluster, in parallel, and the data is never loaded into memory at once, but the syntax and semantics remain the familiar ones. The last run processed all of 32 rows, but on a large enough cluster it could run on 32 terabytes &mdash; don't even think of using `as.data.frame` in that case.
@@ -106,14 +101,14 @@ as.data.frame(mtcars.w.ratio)
 ```
 
 ```
-                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
-Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
+                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
 ....
 ```
 
@@ -149,9 +144,12 @@ subset(
 ```
 
 ```
-               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+               mpg cyl disp  hp drat   wt qsec vs am gear carb
+Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6
+Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8
+              carb.per.cyl
+Ferrari Dino             1
+Maserati Bora            1
 ```
 
 
@@ -169,9 +167,12 @@ as.data.frame(x)
 ```
 
 ```
-               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+               mpg cyl disp  hp drat   wt qsec vs am gear carb
+Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6
+Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8
+              carb.per.cyl
+Ferrari Dino             1
+Maserati Bora            1
 ```
 
 
@@ -191,9 +192,12 @@ where(
 ```
 
 ```
-               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+               mpg cyl disp  hp drat   wt qsec vs am gear carb
+Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6
+Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8
+              carb.per.cyl
+Ferrari Dino             1
+Maserati Bora            1
 ```
 
 
@@ -212,9 +216,12 @@ as.data.frame(x)
 ```
 
 ```
-               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+               mpg cyl disp  hp drat   wt qsec vs am gear carb
+Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6
+Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8
+              carb.per.cyl
+Ferrari Dino             1
+Maserati Bora            1
 ```
 
 
@@ -224,7 +231,7 @@ Similar, but they work everywhere. For instance, if `subset` or `where` are call
 ```r
 process.mtcars.1 = function(...) subset(mtcars, ...)
 high.carb.cyl.1 = function(x) {process.mtcars.1(carb/cyl >= x) }
-high.carb.cyl.1(1)
+high.carb.cyl.1(1) 
 ```
 
 ```
@@ -235,8 +242,8 @@ Warning: longer object length is not a multiple of shorter object length
 Error: (list) object cannot be coerced to type 'double'
 ```
 
-```r
 
+```r
 process.mtcars.2 = function(...) where(mtcars, ..., .envir = parent.frame())
 high.carb.cyl.2 = function(x) {process.mtcars.2(carb/cyl >= x) }
 high.carb.cyl.2(1)
@@ -288,7 +295,8 @@ magic.wand(last.col)
 ```
 
 ```
-Warning: Renamed the preexisting function last.col to last.col.default, which was defined in environment base.
+Warning: Renamed the preexisting function last.col to last.col.default,
+which was defined in environment base.
 ```
 
 ```r
@@ -331,7 +339,7 @@ Until now we performed row by row operations, whereby each row in the results de
 
 
 ```r
- summarize(mtcars, sum(carb))
+summarize(mtcars, sum(carb))
 ```
 
 ```
@@ -339,11 +347,8 @@ Until now we performed row by row operations, whereby each row in the results de
 1        90
 ```
 
-
-But if we did that on a Hadoop data set, we would get:
-
-
 ```r
+##knitr summarize-input
 as.data.frame(summarize(input("/tmp/mtcars"), sum(carb) ))
 ```
 
@@ -360,6 +365,11 @@ as.data.frame(summarize(input("/tmp/mtcars"), sum(carb) ))
 ```
 
 
+But if we did that on a Hadoop data set, we would get:
+
+
+
+
 What does that mean? The data in Hadoop is always grouped, one way or another (this is also a key difference with the current `dplyr` design). It couldn't be otherwise: it is stored on multiple devices and, even if it weren't, we can only load it into memory in small chunks. So think of it as always grouped, initially in arbitrary fashion and later in the way we determine using the functions `group`, `group.f` and `group.together`. These were inspired by the notion of key in mapreduce, the SQL statement and the `dplyr` function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:
 
 
@@ -371,8 +381,8 @@ as.data.frame(
 ```
 
 ```
-  .dummy sum.carb.
-1      1        90
+  sum.carb.
+1        90
 ```
 
 

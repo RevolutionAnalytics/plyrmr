@@ -1,0 +1,94 @@
+`r read_chunk('../tests/tutorial.R')`
+`r opts_chunk$set(echo=TRUE, tidy=FALSE, comment="", cache=FALSE)`
+`r opts_knit$set(stop_on_error=0)`
+`r options(width = 120)`
+
+```{r setup, echo=FALSE}
+# the default output hook
+hook_output = knit_hooks$get('output')
+knit_hooks$set(output = function(x, options) {
+	if (!is.null(n <- options$out.lines)) {
+		x = unlist(stringr::str_split(x, '\n'))
+		if (length(x) > n) {
+			# truncate the output
+			x = c(head(x, n), '....\n')
+		}
+		x = paste(x, collapse = '\n') # paste first n lines together
+	}
+	hook_output(x, options)
+})
+opts_chunk$set(out.lines = 8)
+
+```
+
+```{r startup, echo=FALSE}
+
+```
+Plyrmr
+====================================
+author: Antonio Piccolboni
+autosize: true 
+incremental: true
+
+====
+```{r mtcars}
+```
+====
+```{r transform}
+```
+
+```{r transform-input}
+```
+
+```{r as.data.frame-transform-input}
+```
+====
+```{r invisible-dfs.rmr}
+```
+====
+```{r output-transform-input}
+```
+====
+```{r mtcars.w.ratio}
+```
+====
+```{r subset-transform}
+```
+====
+```{r subset-transform-input}
+```
+====
+```{r where-select}
+```
+====
+```{r where-select-input}
+```
+====
+```{r process.mtcars.1}
+```
+====
+```{r process.mtcars.2}
+```
+====
+```{r last.col}
+```
+====
+```{r do-input}
+```
+====
+```{r magic.wand}
+```
+====
+```{r summarize}
+```
+====
+```{r summarize-input}
+```
+====
+```{r summarize-group.together}
+```
+====
+```{r select-group}
+```
+====
+```{r select-group.f}

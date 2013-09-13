@@ -90,19 +90,16 @@ quantile.data.frame =
  		attributes(y)[mask] = attrx[mask]
  		y}
 
-most.frequent = function(x, ...) UseMethod("most.frequent")
+count.cols = function(x, ...) UseMethod("count.cols")
 
-				
-most.frequent.default = 
-	function(x, n = 1)
-		tail(
+count.cols.default = 
+	function(x)
 			arrange(
 				as.data.frame(table(x)), 
-				Freq), 
-			n=n)
+				Freq)
 
-most.frequent.data.frame  =
-	function(x, n = 1) {
+count.cols.data.frame =
+	function(x) {
 		y = 
 			splat(data.frame.fill)( 
 				strip.nulls(
@@ -111,34 +108,42 @@ most.frequent.data.frame  =
 							x,
 							function(z)
 								if(!is.numeric(z))
-									most.frequent(z, n = n)))))
+									count.cols(z)))))
 		attrx = attributes(x)
 		mask = 
 			names(attrx)[!sapply(names(attrx), function(x) is.element(x, qw(names, row.names, class)))]
 		attributes(y)[mask] = attrx[mask]
 		y}
 
-merge.frequent = 
+merge.counts = 
 	function(x, n) {
 		merge.one =
-			function(x) {
-				y = ddply(x, 1, function(x) sum(x[, 2]))
-				tail(y[order(y[, 2]), ], n = n)}
-		splat(data.frame.fill)(
+			function(x)
+				ddply(x, 1, function(x) sum(x[, 2]))				
+		y = splat(data.frame.fill)(
 			splat(c)(
 				lapply(
 					1:(ncol(x)/2),
-					function(i) merge.one(x[,c(2*i, 2*i + 1)]))))}				
+					function(i) merge.one(x[,c(2*i, 2*i + 1)]))))
+		attrx = attributes(x)
+		mask = 
+			names(attrx)[!sapply(names(attrx), function(x) is.element(x, qw(names, row.names, class)))]
+		attributes(y)[mask] = attrx[mask]
+		y}
 
-most.frequent.pipe = 
+count.cols.pipe = 
 	function(x, n = 1)
 		do(
 			group.together(
 				do(
 					x,
-					Curry(most.frequent, n = n))),
-			Curry(merge.frequent, n = n))
+					count.cols)),
+			merge.counts)
 
+# summary.data.frame.plyrmr - 
+# summary.pipe =
+# 	function(object, ...)
+# 		
 extreme.k= 
 	function(.x, .k , ...,  .decreasing, .envir = parent.frame()) {
 		force(.envir)

@@ -59,7 +59,7 @@ transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
 ```
 
 ```
-[1] "Slots set: input, ungroup, map \n Input: /tmp/mtcars,native \n"
+[1] "Got it! To generate results call the functions output or as.data.frame on this object. Computation has been delayed at least in part."
 ```
 
 

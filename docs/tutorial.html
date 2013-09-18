@@ -3,6 +3,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=9" >
 
 <title>Tutorial</title>
 
@@ -219,7 +220,7 @@ Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
 <pre><code class="r">transform(input(&quot;/tmp/mtcars&quot;), carb.per.cyl = carb/cyl)
 </code></pre>
 
-<pre><code>[1] &quot;Slots set: input, ungroup, map \n Input: /tmp/mtcars,native \n&quot;
+<pre><code>[1] &quot;Got it! To generate results call the functions output or as.data.frame on this object. Computation has been delayed at least in part.&quot;
 </code></pre>
 
 <p>Well, that doesn&#39;t look like what we wanted, does it? That&#39;s because, when dealing with very large data sets, one needs to be careful not to try and load them into memory unless they have been filtered or summarized to a much smaller size. Therefore in <code>plyrmr</code> the general rule is that loading into memory happens only when the user decides so. In this case, we know the data set is small so we can just go ahead with this operation  and enter:</p>

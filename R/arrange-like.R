@@ -12,9 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-## this is still a mr call, not a pipe, need to integrate from a pre-existing design.
-
 merge.pipe = 
 	function(
 		x, 

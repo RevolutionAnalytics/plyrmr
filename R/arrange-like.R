@@ -23,15 +23,19 @@ merge.pipe =
 		all.x = all, 
 		all.y = all, 
 		suffixes = c(".x", ".y"), 
-		incomparables,
+		incomparables = NULL,
 		...) {
 		stopifnot((all.x && all.y) == all)
+		ox = output(x)
+		oy = output(y)
+		stopifnot(ox$format == oy$format)
 		map.x =	function(k,v) keyval(v[, by.x], v)
 		map.y =	function(k,v) keyval(v[, by.y], v)
 		input(
 			equijoin(
-				output(x), 
-				output(y),
+				ox$data, 
+				oy$data,
+				input.format = ox$format,
 				outer = 
 					list(NULL, "full", "left", "right")[c((!all.x && !all.y), all, all.x, all.y)][[1]],
 				map.left = map.x,
@@ -48,7 +52,7 @@ merge.pipe =
 							all.x = all.x, 
 							all.y = all.y,
 							suffixes = suffixes,
-							incomparables)
+							incomparables = incomparables)
 					}))}
 
 quantile.pipe = 

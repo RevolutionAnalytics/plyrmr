@@ -117,15 +117,16 @@ count.cols.data.frame =
 		y}
 
 merge.counts = 
-	function(x, n) {
+	function(x) {
 		merge.one =
 			function(x)
-				ddply(x, 1, function(x) sum(x[, 2]))				
-		y = splat(data.frame.fill)(
-			splat(c)(
-				lapply(
-					1:(ncol(x)/2),
-					function(i) merge.one(x[,c(2*i, 2*i + 1)]))))
+				ddply(x, 1, function(x) {y = sum(x[, 2]); names(y) = names(x)[2]; y})		
+		y = 
+			splat(data.frame.fill)(
+				splat(c)(
+					lapply(
+						1:(ncol(x)/2),
+						function(i) merge.one(x[,c(2*i, 2*i + 1)]))))
 		attrx = attributes(x)
 		mask = 
 			names(attrx)[!sapply(names(attrx), function(x) is.element(x, qw(names, row.names, class)))]
@@ -133,7 +134,7 @@ merge.counts =
 		y}
 
 count.cols.pipe = 
-	function(x, n = 1)
+	function(x)
 		do(
 			group.together(
 				do(

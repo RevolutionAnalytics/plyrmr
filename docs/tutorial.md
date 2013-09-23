@@ -5,6 +5,10 @@
 
 
 
+```
+Warning: S3 methods 'as.big.data.list', 'as.pipe.list' were declared in
+NAMESPACE but not found
+```
 
 
 # Tutorial
@@ -347,8 +351,11 @@ summarize(mtcars, sum(carb))
 1        90
 ```
 
+
+But if we did that on a Hadoop data set, we would get:
+
+
 ```r
-##knitr summarize-input
 as.data.frame(summarize(input("/tmp/mtcars"), sum(carb) ))
 ```
 
@@ -363,11 +370,6 @@ as.data.frame(summarize(input("/tmp/mtcars"), sum(carb) ))
 1.6        16
 ....
 ```
-
-
-But if we did that on a Hadoop data set, we would get:
-
-
 
 
 What does that mean? The data in Hadoop is always grouped, one way or another (this is also a key difference with the current `dplyr` design). It couldn't be otherwise: it is stored on multiple devices and, even if it weren't, we can only load it into memory in small chunks. So think of it as always grouped, initially in arbitrary fashion and later in the way we determine using the functions `group`, `group.f` and `group.together`. These were inspired by the notion of key in mapreduce, the SQL statement and the `dplyr` function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:

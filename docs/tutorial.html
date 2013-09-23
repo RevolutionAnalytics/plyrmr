@@ -179,6 +179,10 @@ hljs.initHighlightingOnLoad();
 </head>
 
 <body>
+<pre><code>Warning: S3 methods &#39;as.big.data.list&#39;, &#39;as.pipe.list&#39; were declared in
+NAMESPACE but not found
+</code></pre>
+
 <h1>Tutorial</h1>
 
 <h2>Predefined operations</h2>
@@ -466,8 +470,9 @@ Duster 360             4
 1        90
 </code></pre>
 
-<pre><code class="r">##knitr summarize-input
-as.data.frame(summarize(input(&quot;/tmp/mtcars&quot;), sum(carb) ))
+<p>But if we did that on a Hadoop data set, we would get:</p>
+
+<pre><code class="r">as.data.frame(summarize(input(&quot;/tmp/mtcars&quot;), sum(carb) ))
 </code></pre>
 
 <pre><code>    sum.carb.
@@ -480,8 +485,6 @@ as.data.frame(summarize(input(&quot;/tmp/mtcars&quot;), sum(carb) ))
 1.6        16
 ....
 </code></pre>
-
-<p>But if we did that on a Hadoop data set, we would get:</p>
 
 <p>What does that mean? The data in Hadoop is always grouped, one way or another (this is also a key difference with the current <code>dplyr</code> design). It couldn&#39;t be otherwise: it is stored on multiple devices and, even if it weren&#39;t, we can only load it into memory in small chunks. So think of it as always grouped, initially in arbitrary fashion and later in the way we determine using the functions <code>group</code>, <code>group.f</code> and <code>group.together</code>. These were inspired by the notion of key in mapreduce, the SQL statement and the <code>dplyr</code> function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:</p>
 

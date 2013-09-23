@@ -33,16 +33,16 @@
 
 ### List of sorting related algorithms
 
-2. Duplicate elimination.
-3. Intersections
-3. Unions
-4. Grouping
-5. Joins
-1. Quantiles.
-2. Moving window algorithms
-3. Top-k and bottom k
-4. Rank statistics
-5. Binning and counting
+2. Duplicate elimination. DONE
+3. Intersections TODO
+3. Unions DONE
+4. Grouping DONE
+5. Joins DONE
+1. Quantiles. DONE
+2. Moving window algorithms DONE
+3. Top-k and bottom k DONE
+4. Rank statistics TODO
+5. Binning and counting (counting done, binning todo)
 
 #### Duplicate elimination
 

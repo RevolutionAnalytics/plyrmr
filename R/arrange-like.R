@@ -197,3 +197,23 @@ moving.window =
 				partition), 
 			.part)}
 
+unique.pipe = 
+	function(x, incomparables = FALSE, fromLast = FALSE, ...) {
+		uniquec = Curry(unique, incomparables = incomparables, fromLast = fromLast)
+		do(
+			group.f(
+				do(x, uniquec),
+				identity,
+				.recursive = TRUE),
+			uniquec)}
+		
+rbind = function(...) UseMethod("rbind")
+rbind.default = base::rbind
+rbind.pipe = function(...)
+	do(input(lapply(list(...), output)), identity)
+
+union = function(x,y) UseMethod("union")
+union.default = base::union
+union.pipe = 
+union.data.frame = 
+	function(x, y) unique(rbind(x,y))

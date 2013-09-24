@@ -81,7 +81,8 @@ export(
 	moving.window,
 	count.cols,
 	rbind,
-	union)
+	union,
+	intersect)
 S3method(count.cols, data.frame)
 S3method(count.cols, pipe)
 S3method(count.cols, default)
@@ -93,6 +94,8 @@ S3method(rbind, pipe)
 S3method(rbind, default)
 S3method(union, data.frame)
 S3method(union, pipe)
+S3method(intersect, data.frame)
+S3method(intersect, pipe)
 #reshape2
 export(dcast)
 S3method(dcast, pipe)

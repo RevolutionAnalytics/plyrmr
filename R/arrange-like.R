@@ -231,11 +231,6 @@ intersect = function(x,y) UseMethod("intersect")
 intersect.default = base::intersect
 intersect.data.frame = 
 	intersect.pipe = 
-	function(x, incomparables = FALSE, fromLast = FALSE, ...) {
-		uniquec = Curry(unique, incomparables = incomparables, fromLast = fromLast)
-		do(
-			group.f(
-				x,
-				identity,
-				.recursive = TRUE),
-			function(x) if(nrow(x) > 1) x[1,] else NULL)}
+	function(x,y)
+		unique(merge(x,y))
+	

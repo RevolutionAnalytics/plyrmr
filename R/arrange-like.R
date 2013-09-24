@@ -117,16 +117,23 @@ count.cols.data.frame =
 		y}
 
 merge.counts = 
-	function(x) {
+	function(x, n) {
 		merge.one =
 			function(x)
 				ddply(x, 1, function(x) {y = sum(x[, 2]); names(y) = names(x)[2]; y})		
+		prune = 
+			function(x, n) {
+				if(is.null(n) || nrow(x) <= n) x
+				else {
+					x = x[order(x[,2], decreasing = TRUE),]
+					x[,2] = x[,2] - x[n+1, 2]
+					x[x[,2] > 0, ]}}
 		y = 
-			splat(data.frame.fill)(
+			splat(data.frame.fill) (
 				splat(c)(
 					lapply(
-						1:(ncol(x)/2),
-						function(i) merge.one(x[,c(2*i, 2*i + 1)]))))
+						1:((ncol(x) - 1)/2),
+						function(i) prune(merge.one(x[,c(2*i, 2*i + 1)]), n))))
 		attrx = attributes(x)
 		mask = 
 			names(attrx)[!sapply(names(attrx), function(x) is.element(x, qw(names, row.names, class)))]
@@ -134,18 +141,14 @@ merge.counts =
 		y}
 
 count.cols.pipe = 
-	function(x)
+	function(x, n)
 		do(
 			group.together(
 				do(
 					x,
 					count.cols)),
-			merge.counts)
+			Curry(merge.counts, n = n))
 
-# summary.data.frame.plyrmr - 
-# summary.pipe =
-# 	function(object, ...)
-# 		
 extreme.k= 
 	function(.x, .k , ...,  .decreasing, .envir = parent.frame()) {
 		force(.envir)

@@ -16,7 +16,7 @@ merge.pipe =
 	function(
 		x, 
 		y, 
-		by, 
+		by = NULL, 
 		by.x = by, 
 		by.y = by, 
 		all = FALSE, 
@@ -29,8 +29,16 @@ merge.pipe =
 		ox = output(x)
 		oy = output(y)
 		stopifnot(ox$format == oy$format)
-		map.x =	function(k,v) keyval(v[, by.x], v)
-		map.y =	function(k,v) keyval(v[, by.y], v)
+		map.x =	
+			function(k,v) 
+				keyval(
+					if(is.null(by.x)) v else	v[, by.x], 
+					v)
+		map.y =	
+			function(k,v) 
+				keyval(
+					if(is.null(by.y)) v else	v[, by.y], 
+					v)
 		input(
 			equijoin(
 				ox$data, 
@@ -42,12 +50,22 @@ merge.pipe =
 				map.right = map.y,
 				reduce = 
 					function(k, x, y) {
+						by = {
+							if(is.null(by)) 
+								intersect(names(x), names(y))
+							else by}
+						by.x = {
+							if(is.null(by.x)) by
+							else by.x} 
+						by.y = {
+							if(is.null(by.y)) by
+							else by.y}
 						merge(
 							x, 
 							y, 
 							by = by, 
-							by.x = by.x, 
-							by.y = by.y, 
+							by.x = by.x,
+							by.y = by.y,
 							all = all, 
 							all.x = all.x, 
 							all.y = all.y,
@@ -77,23 +95,23 @@ quantile.pipe =
 
 quantile.data.frame = 
 	function(x, ...) {
- 		y = 
- 			data.frame(
- 				strip.nulls(
- 					lapply(
- 						x,
- 						function(.y)
- 							if(is.numeric(.y))
- 								quantile(.y, ...))))
- 		y}
+		y = 
+			data.frame(
+				strip.nulls(
+					lapply(
+						x,
+						function(.y)
+							if(is.numeric(.y))
+								quantile(.y, ...))))
+		y}
 
 count.cols = function(x, ...) UseMethod("count.cols")
 
 count.cols.default = 
 	function(x)
-			arrange(
-				as.data.frame(table(x)), 
-				Freq)
+		arrange(
+			as.data.frame(table(x)), 
+			Freq)
 
 count.cols.data.frame =
 	function(x) {
@@ -149,7 +167,7 @@ extreme.k=
 							this.order,
 							select(.x, ..., .envir = .envir)),
 						,
-						 drop = FALSE], 
+						drop = FALSE], 
 					.k)
 		ungroup(
 			do(
@@ -197,7 +215,7 @@ unique.pipe =
 				identity,
 				.recursive = TRUE),
 			uniquec)}
-		
+
 rbind = function(...) UseMethod("rbind")
 rbind.default = base::rbind
 rbind.pipe = function(...)
@@ -206,5 +224,18 @@ rbind.pipe = function(...)
 union = function(x,y) UseMethod("union")
 union.default = base::union
 union.pipe = 
-union.data.frame = 
+	union.data.frame = 
 	function(x, y) unique(rbind(x,y))
+
+intersect = function(x,y) UseMethod("intersect")
+intersect.default = base::intersect
+intersect.data.frame = 
+	intersect.pipe = 
+	function(x, incomparables = FALSE, fromLast = FALSE, ...) {
+		uniquec = Curry(unique, incomparables = incomparables, fromLast = fromLast)
+		do(
+			group.f(
+				x,
+				identity,
+				.recursive = TRUE),
+			function(x) if(nrow(x) > 1) x[1,] else NULL)}

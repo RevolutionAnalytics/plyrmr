@@ -27,13 +27,9 @@ make.map.fun =
 	function(keyf, valf, ungroup, combine = FALSE) {
 		if(is.null(valf)) 
 			valf = identity 
-		valf.attr = 
-			function(x) {
-				attr(x, "plyrmr.is.root") =  !combine
-				valf(x)}
 		function(k, v) {
 			rownames(k) = NULL
-			w = safe.cbind(k, valf.attr(safe.cbind(k, v)))
+			w = safe.cbind(k, valf(safe.cbind(k, v)))
 			dummy.col = -which(names(w) == ".dummy")
 			if (length(dummy.col) > 0)
 				w = w[, dummy.col, drop = FALSE]
@@ -52,8 +48,8 @@ make.combine.fun =
 		make.map.fun(NULL, valf, ungroup = FALSE, combine = TRUE)
 
 is.root = 
-	function(x)
-		attr(x, "plyrmr.is.root", TRUE)
+	function()
+		length(grep("_m_", Sys.getenv("mapred_task_id"))) == 0
 
 #pipes
 

@@ -59,7 +59,7 @@ sample.pipe =
 						.k = list(...)[["n"]], 
 						.priority), 
 					function(x){
-						if(is.root(x))
+						if(is.root())
 							x[,-ncol(x)]
 						else
 							x}))}

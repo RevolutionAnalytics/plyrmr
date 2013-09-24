@@ -68,7 +68,7 @@ quantile.pipe =
 				do.call(quantile, args)}
 		reduce = 
 			function(.x) {
-				if(is.root(.x)){
+				if(is.root()){
 					quantile(.x, ...)}
 				else
 					qfun(.x)}
@@ -85,10 +85,6 @@ quantile.data.frame =
  						function(.y)
  							if(is.numeric(.y))
  								quantile(.y, ...))))
- 		attrx = attributes(x)
- 		mask = 
- 			names(attrx)[!sapply(names(attrx), function(x) is.element(x, qw(names, row.names, class)))]
- 		attributes(y)[mask] = attrx[mask]
  		y}
 
 count.cols = function(x, ...) UseMethod("count.cols")
@@ -110,10 +106,6 @@ count.cols.data.frame =
 							function(z)
 								if(!is.numeric(z))
 									count.cols(z)))))
-		attrx = attributes(x)
-		mask = 
-			names(attrx)[!sapply(names(attrx), function(x) is.element(x, qw(names, row.names, class)))]
-		attributes(y)[mask] = attrx[mask]
 		y}
 
 merge.counts = 
@@ -134,10 +126,6 @@ merge.counts =
 					lapply(
 						1:((ncol(x) - 1)/2),
 						function(i) prune(merge.one(x[,c(2*i, 2*i + 1)]), n))))
-		attrx = attributes(x)
-		mask = 
-			names(attrx)[!sapply(names(attrx), function(x) is.element(x, qw(names, row.names, class)))]
-		attributes(y)[mask] = attrx[mask]
 		y}
 
 count.cols.pipe = 

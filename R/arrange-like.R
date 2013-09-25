@@ -147,7 +147,7 @@ merge.counts =
 		y}
 
 count.cols.pipe = 
-	function(x, n)
+	function(x, n = Inf)
 		do(
 			group.together(
 				do(

@@ -73,7 +73,9 @@ merge.pipe =
 							incomparables = incomparables)
 					}))}
 
-quantile.pipe = 
+quantile.cols = function(x, ...) UseMethod("quantile.cols")
+		
+quantile.cols.pipe = 
 	function(x, ...) {
 		qfun = 
 			function(.x) {
@@ -82,6 +84,7 @@ quantile.pipe =
 						probs = seq(0, 1, 1/N)
 						(probs[-1] + probs[-length(probs)])/2}
 				args = c(list(.x), list(...))
+				args$names = FALSE
 				args$probs = midprobs(rmr.options("keyval.length")) 
 				do.call(quantile, args)}
 		reduce = 
@@ -93,7 +96,7 @@ quantile.pipe =
 		do(group.together(do(x, qfun)), reduce)}
 
 
-quantile.data.frame = 
+quantile.cols.data.frame = 
 	function(x, ...) {
 		y = 
 			data.frame(
@@ -104,6 +107,11 @@ quantile.data.frame =
 							if(is.numeric(.y))
 								quantile(.y, ...))))
 		y}
+
+quantile.data.frame =
+	function(x, probs = seq(0, 1, 0.25), ...) {
+	  x = x[splat(order)(x), ]
+	  x[pmax(1, round(nrow(x) * probs)), ]}
 
 count.cols = function(x, ...) UseMethod("count.cols")
 
@@ -233,4 +241,13 @@ intersect.data.frame =
 	intersect.pipe = 
 	function(x,y)
 		unique(merge(x,y))
-	
+# 	
+# arrange(
+# 	as.data.frame(
+# 		do(
+# 			group.f(
+# 				input(uns), 
+# 				function(x) sapply(qu$x, function(t) c(r = sum(x$x > t)))), 
+# 			#function(x) cbind(x, rank(x$x)))), 
+# 			identity)),
+# 	x)

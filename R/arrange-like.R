@@ -91,11 +91,11 @@ quantile.cols.pipe =
 #				args$names = FALSE
 				N = rmr.options("keyval.length")/10
 				args$probs = midprobs(N) 
-				cbind(t(do.call(wquantile, args)), .weight = sum(args$weights)/N)}
+				cbind(t(do.call(wquantile, args)), .weight = sum(args$weights) * 10/N)}
 		reduce = 
 			function(.x) {
 				if(is.root()){
-					quantile(.x, ...)}
+					quantile(.x, ...)[,-ncol(.x)]}
 				else
 					map(.x)}
 		do(group.together(do(x, map)), reduce)}

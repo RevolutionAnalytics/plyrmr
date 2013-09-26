@@ -77,23 +77,28 @@ quantile.cols = function(x, ...) UseMethod("quantile.cols")
 		
 quantile.cols.pipe = 
 	function(x, ...) {
-		qfun = 
+		map = 
 			function(.x) {
 				midprobs  = 
 					function(N) {
 						probs = seq(0, 1, 1/N)
 						(probs[-1] + probs[-length(probs)])/2}
 				args = c(list(.x), list(...))
-				args$names = FALSE
-				args$probs = midprobs(rmr.options("keyval.length")) 
-				do.call(quantile, args)}
+				args$weights = {
+					if(is.null(.x$.weight)) rep(1, nrow(.x))
+					else .x$.weight}
+				args$verbose = FALSE
+#				args$names = FALSE
+				N = rmr.options("keyval.length")/10
+				args$probs = midprobs(N) 
+				cbind(t(do.call(wquantile, args)), .weight = sum(args$weights)/N)}
 		reduce = 
 			function(.x) {
 				if(is.root()){
 					quantile(.x, ...)}
 				else
-					qfun(.x)}
-		do(group.together(do(x, qfun)), reduce)}
+					map(.x)}
+		do(group.together(do(x, map)), reduce)}
 
 
 quantile.cols.data.frame = 

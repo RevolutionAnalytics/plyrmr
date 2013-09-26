@@ -97,8 +97,7 @@ quantile.cols.pipe =
 
 
 quantile.cols.data.frame = 
-	function(x, ...) {
-		y = 
+	function(x, ...) 
 			data.frame(
 				strip.nulls(
 					lapply(
@@ -106,7 +105,6 @@ quantile.cols.data.frame =
 						function(.y)
 							if(is.numeric(.y))
 								quantile(.y, ...))))
-		y}
 
 quantile.data.frame =
 	function(x, probs = seq(0, 1, 0.25), ...) {

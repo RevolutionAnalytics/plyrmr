@@ -5,10 +5,6 @@
 
 
 
-```
-Warning: S3 methods 'as.big.data.list', 'as.pipe.list' were declared in
-NAMESPACE but not found
-```
 
 
 # Tutorial

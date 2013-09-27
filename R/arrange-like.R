@@ -74,47 +74,69 @@ merge.pipe =
 					}))}
 
 quantile.cols = function(x, ...) UseMethod("quantile.cols")
-		
+
 quantile.cols.pipe = 
 	function(x, ...) {
+		N = rmr.options("keyval.length")/10
+		midprobs  = 
+			function() {
+				probs = seq(0, 1, 1/N)
+				(probs[-1] + probs[-length(probs)])/2}
 		map = 
 			function(.x) {
-				midprobs  = 
-					function(N) {
-						probs = seq(0, 1, 1/N)
-						(probs[-1] + probs[-length(probs)])/2}
 				args = c(list(.x), list(...))
-				args$weights = {
-					if(is.null(.x$.weight)) rep(1, nrow(.x))
-					else .x$.weight}
-				args$verbose = FALSE
-#				args$names = FALSE
-				N = rmr.options("keyval.length")/10
-				args$probs = midprobs(N) 
-				cbind(t(do.call(wquantile, args)), .weight = sum(args$weights) * 10/N)}
+				args$weights = rep(1, nrow(.x))
+				args$verbose = TRUE
+				args$probs = midprobs()
+				sink(stderr())
+				y =
+					cbind(
+						t(do.call(wquantile, args)), 
+						.weight = nrow(.x)/N)
+				sink()
+				y}
+		combine = 
+			function(.x) {
+				args = c(list(.x[,-ncol(.x)]), list(...))
+				args$weights = .x$.weight
+				args$verbose = TRUE
+				#				args$names = FALSE
+				args$probs = midprobs() 
+				sink(stderr())
+				y =
+					cbind(
+						t(do.call(wquantile, args)), 
+						.weight = sum(args$weights)/N)
+				sink()
+				y}
 		reduce = 
 			function(.x) {
 				if(is.root()){
-					quantile(.x, ...)[,-ncol(.x)]}
+					quantile.cols(
+						as.data.frame(
+							combine(.x))[,-ncol(.x)], 
+						...)}
 				else
-					map(.x)}
+					combine(.x)}
 		do(group.together(do(x, map)), reduce)}
 
 
 quantile.cols.data.frame = 
 	function(x, ...) 
-			data.frame(
-				strip.nulls(
-					lapply(
-						x,
-						function(.y)
-							if(is.numeric(.y))
-								quantile(.y, ...))))
+		data.frame(
+			strip.nulls(
+				lapply(
+					x,
+					function(.y)
+						if(is.numeric(.y))
+							quantile(.y, ...))))
 
-quantile.data.frame =
-	function(x, probs = seq(0, 1, 0.25), ...) {
-	  x = x[splat(order)(x), ]
-	  x[pmax(1, round(nrow(x) * probs)), ]}
+# quantile.data.frame =
+# 	function(x, probs = seq(0, 1, 0.25), ...) {
+# 		if(!is.null(x$.weights))
+# 			x$.weights = 1
+# 	  x = x[splat(order)(select(x, ...)), ]
+# 	  x[pmax(1, round(nrow(x) * probs)), ]}
 
 count.cols = function(x, ...) UseMethod("count.cols")
 

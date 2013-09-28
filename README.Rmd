@@ -1,34 +1,12 @@
 `r read_chunk('tests/tutorial.R')`
 `r opts_chunk$set(echo=TRUE, tidy=FALSE, comment="")`
 
-```{r setup, echo=FALSE}
-# the default output hook
-hook_output = knit_hooks$get('output')
-knit_hooks$set(output = function(x, options) {
-  if (!is.null(n <- options$out.lines)) {
-    x = unlist(stringr::str_split(x, '\n'))
-    if (length(x) > n) {
-      # truncate the output
-      x = c(head(x, n), '....\n')
-    }
-    x = paste(x, collapse = '\n') # paste first n lines together
-  }
-  hook_output(x, options)
-})
-opts_chunk$set(out.lines = 8)
-```
 
 # plyrmr
 
 The goal of this package is to allow convenient processing on a Hadoop cluster of large data sets. It is based on `rmr2` but should be easier to use and more abstracted from the underlying mapreduce computational model. `plyrmr` provides
 
-* Hadoop-capable versions of well known `data.frame` functions: `transform`, `subset`, `mutate`, `summarize`, `melt`, `dcast` and more from packages `base`, `plyr` and `reshape2`.
-* New `data.frame` functions which are also Hadoop-capable that are more suitable for development than some of the above: `select` and `where`.
-* Simple but powerful ways of converting any `data.frame` functions to Hadoop-capable ones: `do` and `magic.wand`.
-* Simple but powerful ways of aggregating  data: `group.`, `group.f`, `group.together` and `ungroup`.
-* All of the above can be combined by normal functional composition: *delayed evaluation* helps mitigating any performance penalty of doing so by minimizing the number of Hadoop jobs launched to evaluate an expression.
-
-See the [tutorial](docs/tutorial.md) for a gentle introduction.
+Please visit the [RHadoop wiki](/RevolutionAnalytics/RHadoop/wiki) for details or go directly to the [tutorial](docs/tutorial.md) for a gentle introduction.
 
 
 

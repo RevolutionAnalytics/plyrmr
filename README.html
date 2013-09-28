@@ -3,6 +3,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=9" >
 
 <title>plyrmr</title>
 
@@ -145,15 +146,7 @@ hr {
 
 <p>The goal of this package is to allow convenient processing on a Hadoop cluster of large data sets. It is based on <code>rmr2</code> but should be easier to use and more abstracted from the underlying mapreduce computational model. <code>plyrmr</code> provides</p>
 
-<ul>
-<li>Hadoop-capable versions of well known <code>data.frame</code> functions: <code>transform</code>, <code>subset</code>, <code>mutate</code>, <code>summarize</code>, <code>melt</code>, <code>dcast</code> and more from packages <code>base</code>, <code>plyr</code> and <code>reshape2</code>.</li>
-<li>New <code>data.frame</code> functions which are also Hadoop-capable that are more suitable for development than some of the above: <code>select</code> and <code>where</code>.</li>
-<li>Simple but powerful ways of converting any <code>data.frame</code> functions to Hadoop-capable ones: <code>do</code> and <code>magic.wand</code>.</li>
-<li>Simple but powerful ways of aggregating  data: <code>group.</code>, <code>group.f</code>, <code>group.together</code> and <code>ungroup</code>.</li>
-<li>All of the above can be combined by normal functional composition: <em>delayed evaluation</em> helps mitigating any performance penalty of doing so by minimizing the number of Hadoop jobs launched to evaluate an expression.</li>
-</ul>
-
-<p>See the <a href="docs/tutorial.md">tutorial</a> for a gentle introduction.</p>
+<p>Please visit the <a href="/RevolutionAnalytics/RHadoop/wiki">RHadoop wiki</a> for details or go directly to the <a href="docs/tutorial.md">tutorial</a> for a gentle introduction.</p>
 
 </body>
 

@@ -61,18 +61,6 @@ This is a regular data frame processing function from the package `base`. Now wh
 do(input(mtcars), transform, ratio = carb/cyl)
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
 To identify input data we need the function `input`. If we want to process file `"some/path"`, we need to call `input("some/path")`. If we want to create a small data set on the fly, we can pass a data frame as argument. This is most useful for learning and testing purposes. This is an example of the latter: 
 
 
@@ -145,7 +133,7 @@ small.squares
 ```
 
 ```
-[1] "Slots set: input, ungroup, map \n Input: Temporary file \n"
+[1] "Got it! To generate results call the functions output or as.data.frame on this object. Computation has been delayed at least in part."
 ```
 
 
@@ -177,12 +165,7 @@ file.remove("/tmp/small.squares")
 ```
 
 ```
-Warning: cannot remove file '/tmp/small.squares', reason 'No such file or
-directory'
-```
-
-```
-[1] FALSE
+[1] TRUE
 ```
 
 ```r
@@ -190,7 +173,8 @@ output(small.squares, "/tmp/small.squares")
 ```
 
 ```
-[1] "/tmp/small.squares" "native"            
+[1] "Big Data object /tmp/small.squares"
+[2] "Big Data object native"            
 ```
 
 
@@ -231,13 +215,13 @@ ddply(data, "x", summarize, val = unique(x), count = length(x))
 
 ```
     x val count
-1   7   7     1
-2   9   9     2
-3  10  10     5
-4  11  11     6
-5  12  12    10
-6  13  13     5
-7  14  14     6
+1   7   7     2
+2   8   8     2
+3   9   9     1
+4  10  10     5
+5  11  11     7
+6  12  12     9
+7  13  13     9
 ....
 ```
 
@@ -267,13 +251,13 @@ as.data.frame(counts)
 
 ```
       x val count
-1.8  19  19     1
+1.2  18  18     1
+1.10  8   8     2
 1.11 10  10     5
-1.5  14  14     6
-1.10  7   7     1
-1    13  13     5
-1.7  15  15     6
-1.3  17  17     3
+1.1  11  11     7
+1.5  20  20     1
+1.8  16  16     3
+1.9  15  15     5
 ....
 ```
 
@@ -434,7 +418,7 @@ summarize(mtcars, cyl = sum(cyl), carb = sum(carb))
 ```
 
 
-but a little more complex in `plyrmr`, and why that's the case merits a little explanation. `plyr::summarize` works on data frames and has all the data available simultaneously. This is not true for "plyrmr" because large data sets are processed piecemeal. So we need to perform the sum on each chunk of data, group the results together, sum again. `group(data, 1)` just means group everything together, in fact there is handy alias for that, `group.together` 
+but a little more complex in `plyrmr`, and why that's the case merits a little explanation. `plyr::summarize` works on data frames and has all the data available simultaneously. This is not true for "plyrmr" because large data sets are processed piecemeal. So we need to perform the sum on each chunk of data, group the results together, sum again. `group(data, 1)` just means group everything together, in fact there is handy alias for that, `gather` 
 
 
 ```r
@@ -509,13 +493,13 @@ ddply(words, "words", summarize, count = length(words))
 
 ```
    words count
-1      A    48
-2      B    42
-3      C    31
-4      D    34
-5      E    38
-6      F    36
-7      G    41
+1      A    43
+2      B    40
+3      C    35
+4      D    36
+5      E    44
+6      F    48
+7      G    37
 ....
 ```
 
@@ -531,13 +515,13 @@ as.data.frame(wordcount)
 
 ```
      words word count
-1.7      F    F    36
-1        U    U    35
-1.18     G    G    41
-1.17     N    N    43
-1.20     B    B    42
-1.3      H    H    34
-1.10     S    S    36
+1.2      U    U    39
+1.14     K    K    28
+1.11     I    I    33
+1.17     Z    Z    38
+1.6      S    S    45
+1.22     X    X    34
+1.16     Y    Y    44
 ....
 ```
 

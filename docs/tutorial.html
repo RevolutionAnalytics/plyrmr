@@ -482,11 +482,11 @@ Duster 360             4
 ....
 </code></pre>
 
-<p>What does that mean? The data in Hadoop is always grouped, one way or another (this is also a key difference with the current <code>dplyr</code> design). It couldn&#39;t be otherwise: it is stored on multiple devices and, even if it weren&#39;t, we can only load it into memory in small chunks. So think of it as always grouped, initially in arbitrary fashion and later in the way we determine using the functions <code>group</code>, <code>group.f</code> and <code>group.together</code>. These were inspired by the notion of key in mapreduce, the SQL statement and the <code>dplyr</code> function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:</p>
+<p>What does that mean? The data in Hadoop is always grouped, one way or another (this is also a key difference with the current <code>dplyr</code> design). It couldn&#39;t be otherwise: it is stored on multiple devices and, even if it weren&#39;t, we can only load it into memory in small chunks. So think of it as always grouped, initially in arbitrary fashion and later in the way we determine using the functions <code>group</code>, <code>group.f</code> and <code>gather</code>. These were inspired by the notion of key in mapreduce, the SQL statement and the <code>dplyr</code> function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:</p>
 
 <pre><code class="r">as.data.frame(
     summarize(
-        group.together(input(&quot;/tmp/mtcars&quot;)), 
+        gather(input(&quot;/tmp/mtcars&quot;)), 
         sum(carb) ))
 </code></pre>
 
@@ -494,7 +494,7 @@ Duster 360             4
 1        90
 </code></pre>
 
-<p>You may have noticed the contradiction between the above statement that data is always in chunks with the availability of a <code>group.together</code> function. Luckily, there is an advanced way of grouping recursively, in a tree like fashion, that works with associative and commutative operations such as the sum, which is the default for <code>group.together</code>. Anyway, it will all be more clear as we cover other grouping functions.</p>
+<p>You may have noticed the contradiction between the above statement that data is always in chunks with the availability of a <code>gather</code> function. Luckily, there is an advanced way of grouping recursively, in a tree like fashion, that works with associative and commutative operations such as the sum, which is the default for <code>gather</code>. Anyway, it will all be more clear as we cover other grouping functions.</p>
 
 <p>The <code>group</code> function takes an input and a number of arguments that are evaluated in the context of the data, exactly like <code>transform</code> and <code>mutate</code>. The result is a Hadoop data set grouped by the columns defined in those arguments. After this step, all rows that are identical on the columns defined in the <code>group</code> call will be loaded into memory at once and processed in the same call. Here is an example. Let&#39;s say we want to calculate the average milage for cars with the same number of cylinders:</p>
 

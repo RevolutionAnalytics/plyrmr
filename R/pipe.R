@@ -125,7 +125,7 @@ ungroup =
 		else
 			.data}
 
-group.together = 
+gather = 
 	function(.data, .recursive = TRUE) {
 		if(is.grouped(.data)) 
 			.data

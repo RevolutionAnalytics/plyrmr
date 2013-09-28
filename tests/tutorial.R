@@ -67,10 +67,10 @@ as.data.frame(last.col(input("/tmp/mtcars")))
 summarize(mtcars, sum(carb))
 ## @knitr summarize-input
 as.data.frame(summarize(input("/tmp/mtcars"), sum(carb) ))
-## @knitr summarize-group.together
+## @knitr summarize-gather
 as.data.frame(
 	summarize(
-		group.together(input("/tmp/mtcars")), 
+		gather(input("/tmp/mtcars")), 
 		sum(carb) ))
 ## @knitr select-group
 as.data.frame(

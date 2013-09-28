@@ -41,7 +41,7 @@ sample.pipe =
 			any = 
 				ungroup(
 					do(
-						group.together(
+						gather(
 							do(x, sample.curried),
 							.recursive = TRUE),
 						sample.curried)),

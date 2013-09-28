@@ -3,6 +3,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=9" >
 
 <title>Tutorial</title>
 
@@ -277,7 +278,7 @@ Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
 small.squares
 </code></pre>
 
-<pre><code>[1] &quot;Slots set: input, ungroup, map \n Input: Temporary file \n&quot;
+<pre><code>[1] &quot;Got it! To generate results call the functions output or as.data.frame on this object. Computation has been delayed at least in part.&quot;
 </code></pre>
 
 <p>But if we turn a <code>pipe</code> into a data frame, we see the data as expected. </p>
@@ -301,17 +302,14 @@ small.squares
 <pre><code class="r">file.remove(&quot;/tmp/small.squares&quot;)
 </code></pre>
 
-<pre><code>Warning: cannot remove file &#39;/tmp/small.squares&#39;, reason &#39;No such file or
-directory&#39;
-</code></pre>
-
-<pre><code>[1] FALSE
+<pre><code>[1] TRUE
 </code></pre>
 
 <pre><code class="r">output(small.squares, &quot;/tmp/small.squares&quot;)
 </code></pre>
 
-<pre><code>[1] &quot;/tmp/small.squares&quot; &quot;native&quot;            
+<pre><code>[1] &quot;Big Data object /tmp/small.squares&quot;
+[2] &quot;Big Data object native&quot;            
 </code></pre>
 
 <p>And let&#39;s check that it actually worked:</p>
@@ -346,13 +344,13 @@ as.data.frame(input(&quot;/tmp/small.squares&quot;))
 </code></pre>
 
 <pre><code>    x val count
-1   7   7     1
-2   9   9     2
-3  10  10     5
-4  11  11     6
-5  12  12    10
-6  13  13     5
-7  14  14     6
+1   7   7     2
+2   8   8     2
+3   9   9     1
+4  10  10     5
+5  11  11     7
+6  12  12     9
+7  13  13     9
 ....
 </code></pre>
 
@@ -372,13 +370,13 @@ as.data.frame(input(&quot;/tmp/small.squares&quot;))
 </code></pre>
 
 <pre><code>      x val count
-1.8  19  19     1
+1.2  18  18     1
+1.10  8   8     2
 1.11 10  10     5
-1.5  14  14     6
-1.10  7   7     1
-1    13  13     5
-1.7  15  15     6
-1.3  17  17     3
+1.1  11  11     7
+1.5  20  20     1
+1.8  16  16     3
+1.9  15  15     5
 ....
 </code></pre>
 
@@ -515,7 +513,7 @@ as.data.frame(big.mtcars.cyl.carb)
 1 198   90
 </code></pre>
 
-<p>but a little more complex in <code>plyrmr</code>, and why that&#39;s the case merits a little explanation. <code>plyr::summarize</code> works on data frames and has all the data available simultaneously. This is not true for &ldquo;plyrmr&rdquo; because large data sets are processed piecemeal. So we need to perform the sum on each chunk of data, group the results together, sum again. <code>group(data, 1)</code> just means group everything together, in fact there is handy alias for that, <code>group.together</code> </p>
+<p>but a little more complex in <code>plyrmr</code>, and why that&#39;s the case merits a little explanation. <code>plyr::summarize</code> works on data frames and has all the data available simultaneously. This is not true for &ldquo;plyrmr&rdquo; because large data sets are processed piecemeal. So we need to perform the sum on each chunk of data, group the results together, sum again. <code>group(data, 1)</code> just means group everything together, in fact there is handy alias for that, <code>gather</code> </p>
 
 <pre><code class="r">big.mtcars.partial.sums = summarize(big.mtcars, cyl = sum(cyl), carb = sum(carb))
 big.mtcars.sum = summarize(group(big.mtcars.partial.sums, 1), cyl = sum(cyl), carb = sum(carb))
@@ -575,13 +573,13 @@ ddply(words, &quot;words&quot;, summarize, count = length(words))
 </code></pre>
 
 <pre><code>   words count
-1      A    48
-2      B    42
-3      C    31
-4      D    34
-5      E    38
-6      F    36
-7      G    41
+1      A    43
+2      B    40
+3      C    35
+4      D    36
+5      E    44
+6      F    48
+7      G    37
 ....
 </code></pre>
 
@@ -593,13 +591,13 @@ as.data.frame(wordcount)
 </code></pre>
 
 <pre><code>     words word count
-1.7      F    F    36
-1        U    U    35
-1.18     G    G    41
-1.17     N    N    43
-1.20     B    B    42
-1.3      H    H    34
-1.10     S    S    36
+1.2      U    U    39
+1.14     K    K    28
+1.11     I    I    33
+1.17     Z    Z    38
+1.6      S    S    45
+1.22     X    X    34
+1.16     Y    Y    44
 ....
 </code></pre>
 

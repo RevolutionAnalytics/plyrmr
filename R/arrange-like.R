@@ -118,7 +118,7 @@ quantile.cols.pipe =
 						...)}
 				else
 					combine(.x)}
-		do(group.together(do(x, map)), reduce)}
+		do(gather(do(x, map)), reduce)}
 
 
 quantile.cols.data.frame = 
@@ -182,7 +182,7 @@ merge.counts =
 count.cols.pipe = 
 	function(x, n = Inf)
 		do(
-			group.together(
+			gather(
 				do(
 					x,
 					count.cols)),
@@ -204,7 +204,7 @@ extreme.k=
 					.k)
 		ungroup(
 			do(
-				group.together(
+				gather(
 					do(.x, mr.fun)),
 				mr.fun))}
 

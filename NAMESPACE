@@ -33,7 +33,7 @@ export(
 	magic.wand,
 	group,
 	group.f,
-	group.together,
+	gather,
 	is.grouped,
 	is.root,
 	ungroup,

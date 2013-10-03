@@ -13,13 +13,13 @@ sample(x, \dots)
 }
 \arguments{
   \item{x}{A data set represented by a data frame or a pipe}
-  \item{method}{the desired sampling method: any means any subset of rows (no statistical guarantees), Bernoulli means i.i.d Bernoulli trials and hypergeometric mean sampling without replacement}
-  \item{\dots}{Additional arguments depending on method. n is sample size  for methods any and hypergeometric, p is probability of being in the sample for Bernoulli}
+  \item{method}{the desired sampling method: \code{"any"} means any subset of rows (no statistical guarantees), \code{"Bernoulli"} means i.i.d Bernoulli trials and \code{"hypergeometric"} mean sampling without replacement}
+  \item{\dots}{Additional arguments depending on method. \code{n} is sample size  for methods  \code{"any"} and \code{"hypergeometric"}, \code{p} is probability of being in the sample for \code{"Bernoulli"}}
 }
 \details{
-This function is named after the well known base::sample for vectors but accepts different options and behaves differently, reflecting different needs that arise with large data sets. Non numeric columns are dropped.
+This function is named after the well known \code{base::sample} for vectors but accepts different options and behaves differently, reflecting different needs that arise with large data sets.
 }
-\value{Same object type as x, containing the quantiles of each column, as specified by additional arguments
+\value{Same class as \code{x}, representing the sampled data set}
 }
 \examples{
 sample(mtcars, method = "hypergeometric", n = 5)

@@ -12,7 +12,7 @@ bottom.k(.x, .k = 1, \dots, .envir = parent.frame())
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{.x}{A plyrmr pipe}
+  \item{.x}{A \code{plyrmr} pipe}
   \item{.k}{How many rows to select}
   \item{\dots}{Expressions to be used to define the order.}
   \item{.envir}{Environment in which to evaluate the \dots arguments}

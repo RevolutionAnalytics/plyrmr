@@ -1,16 +1,16 @@
-\name{quantile}
-\alias{quantile}
+\name{quantile.cols}
+\alias{quantile.cols}
 \title{Compute the quantiles of a data set}
 \description{Find the quantiles of each numerical column of a data set, represented by a pipe or a data.frame}
 \usage{
-\method{quantile}{data.frame}(x, \dots)
-\method{quantile}{pipe}(x, \dots)
+\method{quantile.cols}{data.frame}(x, \dots)
+\method{quantile.cols}{pipe}(x, \dots)
 }
 \arguments{
   \item{x}{
-A data set represented as a pipe or a data frame.
+A data set represented by a pipe or a data frame.
 }
-  \item{\dots}{
+\item{\dots}{
 Additional arguments, see stats::quantile for details}
 }
 \details{

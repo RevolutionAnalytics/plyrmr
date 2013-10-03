@@ -5,7 +5,7 @@
 Apply a function f to each of the groups of a data set, or set up a method to do just that.
 }
 \description{
-\code{do} applies the function f to each of the groups in the data set represented by .data. The return values of such application become the output of the extended pipe.  \code{magic.wand} creates a method for class pipe for a function named like \code{f} which does exactly what do does. 
+\code{do} applies the function f to each of the groups in the data set represented by .data. The return values of such application become the output of the extended pipe.  \code{magic.wand} creates a method for class pipe for a function named like \code{f} which does exactly what \code{do(x, f, ...)} does. 
 }
 \usage{
 do(.data, .f, \dots)
@@ -28,4 +28,6 @@ as.data.frame(
   do(
     input(mtcars), 
     function(x) x[, -ncol(x)]))
+#extend row.names to work on pipes
+magic.wand(row.names)
 }

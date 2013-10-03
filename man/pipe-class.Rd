@@ -5,29 +5,37 @@
 
 \title{Class \code{"pipe"}}
 \description{
-A pipe represents a data set by way of specifying the input and the computational steps necessary to generate it but with the option of delaying the actual execution of those steps to actually generate the data.
+A pipe represents a data set by way of specifying the input and the computational steps necessary to generate it but delaying the execution of part or all of those steps until necessary to return data or produce a side effect. Constructor is \code{\link{input}}, all methods below accept a pipe as first argument and 
+
 }
 
 \section{Methods}{
-\itemize{
-\item as.character 
-\item as.data.frame 
-\item dcast 
-\item melt 
-\item merge 
-\item mutate 
-\item names 
-\item print 
-\item quantile 
-\item sample 
-\item select 
-\item subset 
-\item summarize 
-\item transform 
-\item unique 
-\item where
-}}
-
+\code{\link{as.data.frame}},
+\code{\link{bottom.k}},
+\code{\link{count.cols}},
+\code{\link{dcast}},
+\code{\link{do}},
+\code{\link{gather}},
+\code{\link{group}},
+\code{\link{group.f}},
+\code{\link{intersect}},
+\code{\link{magic.wand}},
+\code{\link{merge}},
+\code{\link{moving.window}},
+\code{\link{mutate}},
+\code{\link{output}},
+\code{\link{quantile.cols}},
+\code{\link{rbind}},
+\code{\link{sample}},
+\code{\link{select}},
+\code{\link{subset}},
+\code{\link{summarize}},
+\code{\link{top.k}},
+\code{\link{transform}},
+\code{\link{ungroup}},
+\code{\link{union}},
+\code{\link{unique}},
+\code{\link{where}}}
 
 
 \examples{

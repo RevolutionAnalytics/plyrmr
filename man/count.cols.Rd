@@ -3,7 +3,7 @@
 \title{
 Approximate or exact counting of categorical data}
 \description{
-This function works separately on each column, skipping numeric one, computing the frequency of each element or level. When \code{n} is specified, a variant of the Space Saving algorithm is applied, which will return all items with a count \code{N/n} or larger where \code{N} is the total number of rows.
+This function works separately on each column, dropping numeric ones, computing the frequency of each element or level. When \code{n} is specified, a variant of the Space Saving algorithm is applied, which will return all items with a count \code{N/n} or larger where \code{N} is the total number of rows.
 }
 \usage{
 count.cols(x, ...)

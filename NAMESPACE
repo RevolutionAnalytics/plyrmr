@@ -56,7 +56,7 @@ S3method(subset, pipe)
 S3method(transform, pipe)
 S3method(sample, default)
 S3method(sample, data.frame)
-S3method(names, pipe)
+#S3method(names, pipe)
 S3method(sample, pipe)
 #plyr
 export(

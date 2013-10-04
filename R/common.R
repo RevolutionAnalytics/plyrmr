@@ -39,10 +39,28 @@ freeze.env =
 		x}
 
 #data frames
+
+selective.I = function(x) if(is.list(x) && !is.data.frame(x)) I(x) else x
+
 safe.cbind  = 
 	function(...) {
-		x = do.call(cbind, strip.null.args(...))
+		ll = lapply(list(...), selective.I)
+		x = do.call(cbind, strip.nulls(ll))
 		x[, unique(names(x)), drop = FALSE]}
+
+data.frame = 
+	function(..., row.names = NULL, check.rows = FALSE,
+						check.names = TRUE, stringsAsFactors = default.stringsAsFactors()) {
+		base::data.frame(
+			lapply(
+				list(...), 
+				selective.I),
+			row.names = row.names,
+			check.rows = check.rows,
+			check.names = check.names,
+			stringsAsFactors = stringsAsFactors)}
+
+as.data.frame.data.frame = splat(data.frame)
 
 data.frame.fill = 
 	function(..., filler = NA) {

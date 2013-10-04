@@ -279,8 +279,9 @@ summarize(mtcars, sum(carb))
 1        90
 ```
 
+====
+
 ```r
-##knitr summarize-input
 as.data.frame(summarize(input("/tmp/mtcars"), sum(carb) ))
 ```
 
@@ -298,20 +299,6 @@ as.data.frame(summarize(input("/tmp/mtcars"), sum(carb) ))
 
 ====
 
-
-====
-
-```r
-as.data.frame(
-	summarize(
-		group.together(input("/tmp/mtcars")), 
-		sum(carb) ))
-```
-
-```
-  sum.carb.
-1        90
-```
 
 ====
 

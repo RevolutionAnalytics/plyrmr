@@ -38,6 +38,12 @@ as.big.data.function =
 				format = format),
 			class = "big.data")
 
+to.rmr = 
+	function(x) x$data
+
+get.format = 
+	function(x) x$format
+
 as.big.data.data.frame = 
 	function(x, ...)
 		as.big.data(

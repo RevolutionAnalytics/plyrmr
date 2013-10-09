@@ -204,14 +204,14 @@ Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
 <pre><code class="r">transform(mtcars, carb.per.cyl = carb/cyl)
 </code></pre>
 
-<pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
-Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
-Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
-Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
-Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+<pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
 ....
 </code></pre>
 
@@ -228,14 +228,14 @@ Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
 <pre><code class="r">as.data.frame(transform(input(&quot;/tmp/mtcars&quot;), carb.per.cyl = carb/cyl))
 </code></pre>
 
-<pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
-Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
-Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
-Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
-Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+<pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
 ....
 </code></pre>
 
@@ -248,14 +248,14 @@ The return value of <code>output</code> contains the path and some format inform
 as.data.frame(mtcars.w.ratio)
 </code></pre>
 
-<pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
-Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
-Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
-Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
-Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+<pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
 ....
 </code></pre>
 
@@ -301,12 +301,9 @@ Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
     carb.per.cyl &gt;= 1)
 </code></pre>
 
-<pre><code>               mpg cyl disp  hp drat   wt qsec vs am gear carb
-Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6
-Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8
-              carb.per.cyl
-Ferrari Dino             1
-Maserati Bora            1
+<pre><code>               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 </code></pre>
 
 <p>Wouldn&#39;t it be nice if we could do exactly the same on a Hadoop data set? In fact, we almost can:</p>
@@ -320,12 +317,9 @@ Maserati Bora            1
 as.data.frame(x)
 </code></pre>
 
-<pre><code>               mpg cyl disp  hp drat   wt qsec vs am gear carb
-Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6
-Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8
-              carb.per.cyl
-Ferrari Dino             1
-Maserati Bora            1
+<pre><code>               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 </code></pre>
 
 <p>The main differences between the data frame version and the Hadoop data version are the input and the output. All there is in between, pretty much works the same. </p>
@@ -342,12 +336,9 @@ Maserati Bora            1
     carb.per.cyl &gt;= 1)
 </code></pre>
 
-<pre><code>               mpg cyl disp  hp drat   wt qsec vs am gear carb
-Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6
-Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8
-              carb.per.cyl
-Ferrari Dino             1
-Maserati Bora            1
+<pre><code>               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 </code></pre>
 
 <p>and:</p>
@@ -362,12 +353,9 @@ Maserati Bora            1
 as.data.frame(x)
 </code></pre>
 
-<pre><code>               mpg cyl disp  hp drat   wt qsec vs am gear carb
-Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6
-Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8
-              carb.per.cyl
-Ferrari Dino             1
-Maserati Bora            1
+<pre><code>               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 </code></pre>
 
 <p>Similar, but they work everywhere. For instance, if <code>subset</code> or <code>where</code> are called within some function, which is in its turn used in some other function, we can have the following situation:</p>
@@ -423,8 +411,7 @@ Duster 360             4
 <pre><code class="r">magic.wand(last.col)
 </code></pre>
 
-<pre><code>Warning: Renamed the preexisting function last.col to last.col.default,
-which was defined in environment base.
+<pre><code>Warning: Renamed the preexisting function last.col to last.col.default, which was defined in environment base.
 </code></pre>
 
 <pre><code class="r">last.col(mtcars)

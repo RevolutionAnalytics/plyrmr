@@ -21,6 +21,6 @@ The methods for pipes uses an approximation methods whose exact properties need 
 A pipe or a data frame, depending on the class of the first argument}
 
 \examples{
-quantile(mtcars)
-as.data.frame(quantile(input(mtcars)))
+quantile.cols(mtcars)
+as.data.frame(quantile.cols(input(mtcars)))
 }

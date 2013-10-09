@@ -19,7 +19,7 @@ A methods for the generic function merge that implements the same operation as t
   \item{\dots}{Additional arguments for methods}
 }
 \details{
-See \code{\link{base::merge}} for details
+See \code{\link[base]{merge}} for details
 }
 \value{
 The merged data set represented by a pipe}

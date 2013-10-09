@@ -4,7 +4,7 @@
 \title{
 Select top and bottom rows according to some order}
 \description{
-
+Select top and bottom rows according to order specified by the \dots arguments.
 }
 \usage{
 top.k(.x, .k = 1, \dots, .envir = parent.frame())
@@ -18,7 +18,7 @@ bottom.k(.x, .k = 1, \dots, .envir = parent.frame())
   \item{.envir}{Environment in which to evaluate the \dots arguments}
 }
 \details{
-For details on how the \dots are evaluated see \link{non standard evaluation}, which also clarifies the role of the .envir argument, and for the order definition see \code{\link{order}}}
+For details on how the \dots are evaluated see \link{non standard evaluation}, which also clarifies the role of the \code{.envir} argument, and for the order definition see \code{\link{order}}}
 
 \value{
 A data set containing the top or bottom k elements according to the order defined by the \dots arguments, represented by a \link[=pipe-class]{pipe}}

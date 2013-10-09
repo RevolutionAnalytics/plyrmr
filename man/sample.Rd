@@ -20,7 +20,7 @@ sample(x, \dots)
 This function is named after the well known \code{base::sample} for vectors but accepts different options and behaves differently, reflecting different needs that arise with large data sets.
 }
 \value{Same class as \code{x}, representing the sampled data set}
-}
+
 \examples{
 sample(mtcars, method = "hypergeometric", n = 5)
 as.data.frame(sample(input(mtcars), method = "hypergeometric", n = 5))

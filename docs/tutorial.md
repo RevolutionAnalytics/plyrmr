@@ -39,14 +39,14 @@ transform(mtcars, carb.per.cyl = carb/cyl)
 ```
 
 ```
-                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
-Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
-Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
-Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
-Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
 ....
 ```
 
@@ -71,14 +71,14 @@ as.data.frame(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl))
 ```
 
 ```
-                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
-Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
-Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
-Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
-Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
 ....
 ```
 
@@ -101,14 +101,14 @@ as.data.frame(mtcars.w.ratio)
 ```
 
 ```
-                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
-Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
-Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
-Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
-Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
 ....
 ```
 
@@ -144,12 +144,9 @@ subset(
 ```
 
 ```
-               mpg cyl disp  hp drat   wt qsec vs am gear carb
-Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6
-Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8
-              carb.per.cyl
-Ferrari Dino             1
-Maserati Bora            1
+               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 ```
 
 
@@ -167,12 +164,9 @@ as.data.frame(x)
 ```
 
 ```
-               mpg cyl disp  hp drat   wt qsec vs am gear carb
-Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6
-Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8
-              carb.per.cyl
-Ferrari Dino             1
-Maserati Bora            1
+               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 ```
 
 
@@ -192,12 +186,9 @@ where(
 ```
 
 ```
-               mpg cyl disp  hp drat   wt qsec vs am gear carb
-Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6
-Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8
-              carb.per.cyl
-Ferrari Dino             1
-Maserati Bora            1
+               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 ```
 
 
@@ -216,12 +207,9 @@ as.data.frame(x)
 ```
 
 ```
-               mpg cyl disp  hp drat   wt qsec vs am gear carb
-Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6
-Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8
-              carb.per.cyl
-Ferrari Dino             1
-Maserati Bora            1
+               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 ```
 
 
@@ -295,8 +283,7 @@ magic.wand(last.col)
 ```
 
 ```
-Warning: Renamed the preexisting function last.col to last.col.default,
-which was defined in environment base.
+Warning: Renamed the preexisting function last.col to last.col.default, which was defined in environment base.
 ```
 
 ```r

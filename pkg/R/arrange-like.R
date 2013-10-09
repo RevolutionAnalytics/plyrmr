@@ -123,7 +123,7 @@ quantile.cols.pipe =
 
 quantile.cols.data.frame = 
 	function(x, ...) 
-		data.frame(
+		splat(data.frame)(
 			strip.nulls(
 				lapply(
 					x,
@@ -147,17 +147,14 @@ count.cols.default =
 			Freq)
 
 count.cols.data.frame =
-	function(x) {
-		y = 
-			splat(data.frame.fill)( 
-				strip.nulls(
-					splat(c)(
-						lapply(
-							x,
-							function(z)
-								if(!is.numeric(z))
-									count.cols(z)))))
-		y}
+	function(x) 
+		splat(data.frame.fill)( 
+			strip.nulls(
+				lapply(
+					x,
+					function(z)
+						if(!is.numeric(z))
+							count.cols(z))))
 
 merge.counts = 
 	function(x, n) {
@@ -171,13 +168,10 @@ merge.counts =
 					x = x[order(x[,2], decreasing = TRUE),]
 					x[,2] = x[,2] - x[n+1, 2]
 					x[x[,2] > 0, ]}}
-		y = 
-			splat(data.frame.fill) (
-				splat(c)(
-					lapply(
-						1:((ncol(x) - 1)/2),
-						function(i) prune(merge.one(x[,c(2*i, 2*i + 1)]), n))))
-		y}
+		splat(data.frame.fill) (
+				lapply(
+					1:((ncol(x) - 1)/2),
+					function(i) prune(merge.one(x[,c(2*i, 2*i + 1)]), n)))}
 
 count.cols.pipe = 
 	function(x, n = Inf)

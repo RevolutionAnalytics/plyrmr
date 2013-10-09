@@ -1,6 +1,6 @@
 \name{union}
 \alias{union}
-\alias{intersection}
+\alias{intersect}
 \title{
 Set operation on data sets
 }

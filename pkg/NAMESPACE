@@ -18,6 +18,9 @@ importFrom("stats", quantile)
 importFrom("reshape2", melt)
 
 #big.data
+export(
+	to.rmr,
+	get.format)
 S3method(as.character, big.data)
 S3method(as.big.data, character)
 S3method(as.big.data, "function")

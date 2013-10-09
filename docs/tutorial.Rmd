@@ -1,4 +1,4 @@
-`r read_chunk('../tests/tutorial.R')`
+`r read_chunk('../pkg/tests/tutorial.R')`
 `r opts_chunk$set(echo=TRUE, tidy=FALSE, comment="", cache=FALSE)`
 
 ```{r setup, echo=FALSE}
@@ -16,6 +16,7 @@ knit_hooks$set(output = function(x, options) {
 	hook_output(x, options)
 })
 opts_chunk$set(out.lines = 8)
+options(width = 120)
 ```
 
 ```{r startup, echo=FALSE}

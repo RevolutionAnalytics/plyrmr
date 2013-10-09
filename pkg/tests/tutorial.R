@@ -47,10 +47,14 @@ x =
 			.replace = FALSE), 
 		carb.per.cyl >= 1)
 as.data.frame(x)
+## @knitr end
+if(FALSE) {
 ## @knitr process.mtcars.1
 process.mtcars.1 = function(...) subset(mtcars, ...)
 high.carb.cyl.1 = function(x) {process.mtcars.1(carb/cyl >= x) }
 high.carb.cyl.1(1) 
+## @knitr end
+}
 ## @knitr process.mtcars.2
 process.mtcars.2 = function(...) where(mtcars, ..., .envir = parent.frame())
 high.carb.cyl.2 = function(x) {process.mtcars.2(carb/cyl >= x) }

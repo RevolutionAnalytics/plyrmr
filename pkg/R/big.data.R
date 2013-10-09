@@ -24,7 +24,7 @@ as.character.big.data =
 
 print.big.data = 
 	function(x, ...) {
-		print(paste("Big Data object", as.character(x)))
+		print(paste(c("Big Data object:", as.character(x))))
 		invisible(x)}
 
 as.big.data = function(x, ...) UseMethod("as.big.data")
@@ -37,6 +37,12 @@ as.big.data.function =
 				data = x, 
 				format = format),
 			class = "big.data")
+
+to.rmr = 
+	function(x) x$data
+
+get.format = 
+	function(x) x$format
 
 as.big.data.data.frame = 
 	function(x, ...)

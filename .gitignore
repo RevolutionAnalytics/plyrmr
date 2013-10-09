@@ -10,3 +10,5 @@ rmr-local-*
 rmr-streaming-*
 
 Rprof.out
+
+plyrmr.Rcheck

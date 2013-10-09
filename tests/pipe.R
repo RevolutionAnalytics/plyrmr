@@ -16,7 +16,7 @@ library(plyrmr)
 
 stopifnot(
 	all(
-		as.data.frame(do(input(mtcars), function(x) list(cyl2 =x$cyl^2))) 
+		as.data.frame(do(input(mtcars), function(x) data.frame(cyl2 =x$cyl^2))) 
 		== 
 			mtcars$cyl^2))
 
@@ -30,7 +30,7 @@ stopifnot(
 					input(mtcars), 
 					function(x , ...) {
 						vars = plyrmr:::non.standard.eval(x, ..., .envir = envir)
-						list(cyl2 =x$cyl^vars[['expo2']])},
+						data.frame(cyl2 =x$cyl^vars[['expo2']])},
 					expo2 = expo1))})()		
 		 == 
 		 	mtcars$cyl^2))

@@ -30,6 +30,8 @@ as.data.frame(
     input(mtcars),
     cyl > 4))
     
+dfs.rmr("/tmp/output")
+
 output(
   where(
     input(mtcars),
@@ -40,5 +42,4 @@ as.data.frame(
   select(
     input("/tmp/output"),
     mpg))    
-dfs.rmr("/tmp/output")
 }

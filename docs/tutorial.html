@@ -241,6 +241,12 @@ Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.
 
 <p>In fact the <code>as.data.frame</code> call not only loads the data into memory, but triggers the computation as well. <code>plyrmr</code> uses a technique called <em>delayed evaluation</em> to create the opportunity for some optimizations. In general the user need not worry about the details of this, as long as it is clear that the actual computational work may be shifted w.r.t. an equivalent computation in memory. If we want to trigger the computation without loading the data into memory but storing it into a file, we need the <code>output</code> call, as in:</p>
 
+<pre><code class="r">output(transform(input(&quot;/tmp/mtcars&quot;), carb.per.cyl = carb/cyl), &quot;/tmp/mtcars.out&quot;)
+</code></pre>
+
+<pre><code>[1] &quot;Big Data object:&quot; &quot;/tmp/mtcars.out&quot;  &quot;native&quot;          
+</code></pre>
+
 <p>This is the real deal: we have performed a computation on the cluster, in parallel, and the data is never loaded into memory at once, but the syntax and semantics remain the familiar ones. The last run processed all of 32 rows, but on a large enough cluster it could run on 32 terabytes &mdash; don&#39;t even think of using <code>as.data.frame</code> in that case.
 The return value of <code>output</code> contains the path and some format information. In general an effort is made throughout <code>plyrmr</code> to make return values of functions as useful as possible so as to be able to combine simple expressions into larger ones. You can also store intermediate results to a variable as in:</p>
 

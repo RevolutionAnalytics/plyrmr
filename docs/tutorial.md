@@ -220,7 +220,7 @@ Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 ```
 
 
-Similar, but they work everywhere. For instance, if `subset` or `where` are called within some function, which is in its turn used in some other function, we can have the following situation:
+Similar, but they work everywhere. For instance, if `subset` is called within some function, which is in its turn used in some other function, we can have the following situation:
 
 
 ```r
@@ -236,6 +236,9 @@ Warning: longer object length is not a multiple of shorter object length
 ```
 Error: (list) object cannot be coerced to type 'double'
 ```
+
+
+Unfortunately, it doesn't work. With `where` instead:
 
 
 ```r

@@ -103,10 +103,13 @@ and:
 ```{r where-select-input}
 ```
 
-Similar, but they work everywhere. For instance, if `subset` or `where` are called within some function, which is in its turn used in some other function, we can have the following situation:
+Similar, but they work everywhere. For instance, if `subset` is called within some function, which is in its turn used in some other function, we can have the following situation:
 
 ```{r process.mtcars.1}
 ```
+
+Unfortunately, it doesn't work. With `where` instead:
+
 ```{r process.mtcars.2}
 ```
 

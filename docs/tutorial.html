@@ -364,7 +364,7 @@ Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 </code></pre>
 
-<p>Similar, but they work everywhere. For instance, if <code>subset</code> or <code>where</code> are called within some function, which is in its turn used in some other function, we can have the following situation:</p>
+<p>Similar, but they work everywhere. For instance, if <code>subset</code> is called within some function, which is in its turn used in some other function, we can have the following situation:</p>
 
 <pre><code class="r">process.mtcars.1 = function(...) subset(mtcars, ...)
 high.carb.cyl.1 = function(x) {process.mtcars.1(carb/cyl &gt;= x) }
@@ -376,6 +376,8 @@ high.carb.cyl.1(1)
 
 <pre><code>Error: (list) object cannot be coerced to type &#39;double&#39;
 </code></pre>
+
+<p>Unfortunately, it doesn&#39;t work. With <code>where</code> instead:</p>
 
 <pre><code class="r">process.mtcars.2 = function(...) where(mtcars, ..., .envir = parent.frame())
 high.carb.cyl.2 = function(x) {process.mtcars.2(carb/cyl &gt;= x) }

@@ -90,3 +90,23 @@ as.data.frame(
 			input("/tmp/mtcars"),
 			last.col),
 		mean.mpg = mean(mpg)))
+## @knitr group-quantile
+as.data.frame(
+	quantile(
+		group(
+			input("/tmp/mtcars"),
+			carb)))
+## @knitr group-lm
+as.data.frame(
+	select(
+		group(
+			input("/tmp/mtcars"),
+			carb),
+		model = lm(mpg~cyl+disp)))
+## @knitr group-lm
+as.data.frame(
+	select(
+		group(
+			input("/tmp/mtcars"),
+			carb),
+		model = list(lm(mpg~cyl+disp))))

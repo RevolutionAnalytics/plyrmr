@@ -414,7 +414,7 @@ Duster 360             4
 ....
 </code></pre>
 
-<p>What <code>do</code> does is take any function that reads and writes data frames, execute it on a Hadoop data set in parallel on relatively small chunks of the data and pass the results to <code>as.data.frame</code> or <code>output</code> which send them to their final destination. Wouldn&#39;t it absolutely perfect if the <code>lastcol</code> function itself knew whether it&#39;s working on a Hadoop data set or a data frame and do the right thing?</p>
+<p>What <code>do</code> does is take any function that reads and writes data frames, execute it on a Hadoop data set in parallel on relatively small chunks of the data and pass the results to <code>as.data.frame</code> or <code>output</code> which send them to their final destination. Wouldn&#39;t it absolutely perfect if the <code>lastcol</code> function itself knew whether it&#39;s working on a Hadoop data set or a data frame and do the right thing? It actually is possible:</p>
 
 <pre><code class="r">magic.wand(last.col)
 </code></pre>
@@ -526,6 +526,20 @@ Duster 360             4
 1.1    1    25.34
 1.4    6    19.70
 1.5    8    15.00
+</code></pre>
+
+<h2>Better than SQL</h2>
+
+<p>Despite the SQL-ish flavor and undeniable SQL inspiration for some of these operations, we want to highlight a few ways in which <code>plyrmr</code> is much more powerful than SQL. The first is that summaries or aggregation don&#39;t need to be limited to a single row. One form of aggregation are summaries and summaries can have many elements, even thousands. Momenta, quantiles, histograms, samples, they all have multiple entries. You could represent them as multiple columns up to a certain size, but removing the SQL limitation on aggregations is a good thing. Here how it works. Let&#39;s say you want to examine the quantiles of the gas milage data in each group of cars with the same number of carburetors</p>
+
+<pre><code class="r">as.data.frame(
+    quantile(
+        group(
+            input(&quot;/tmp/mtcars&quot;),
+            carb)))
+</code></pre>
+
+<pre><code>Error: unimplemented type &#39;list&#39; in &#39;greater&#39;
 </code></pre>
 
 </body>

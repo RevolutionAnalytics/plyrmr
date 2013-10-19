@@ -285,7 +285,7 @@ Duster 360             4
 ```
 
 
-What `do` does is take any function that reads and writes data frames, execute it on a Hadoop data set in parallel on relatively small chunks of the data and pass the results to `as.data.frame` or `output` which send them to their final destination. Wouldn't it absolutely perfect if the `lastcol` function itself knew whether it's working on a Hadoop data set or a data frame and do the right thing?
+What `do` does is take any function that reads and writes data frames, execute it on a Hadoop data set in parallel on relatively small chunks of the data and pass the results to `as.data.frame` or `output` which send them to their final destination. Wouldn't it absolutely perfect if the `lastcol` function itself knew whether it's working on a Hadoop data set or a data frame and do the right thing? It actually is possible:
 
 
 ```r
@@ -427,4 +427,21 @@ as.data.frame(
 1.5    8    15.00
 ```
 
+
+## Better than SQL
+
+Despite the SQL-ish flavor and undeniable SQL inspiration for some of these operations, we want to highlight a few ways in which `plyrmr` is much more powerful than SQL. The first is that summaries or aggregation don't need to be limited to a single row. One form of aggregation are summaries and summaries can have many elements, even thousands. Momenta, quantiles, histograms, samples, they all have multiple entries. You could represent them as multiple columns up to a certain size, but removing the SQL limitation on aggregations is a good thing. Here how it works. Let's say you want to examine the quantiles of the gas milage data in each group of cars with the same number of carburetors
+
+
+```r
+as.data.frame(
+	quantile(
+		group(
+			input("/tmp/mtcars"),
+			carb)))
+```
+
+```
+Error: unimplemented type 'list' in 'greater'
+```
 

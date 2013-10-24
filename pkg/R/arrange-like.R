@@ -77,7 +77,7 @@ quantile.cols = function(x, ...) UseMethod("quantile.cols")
 
 quantile.cols.pipe = 
 	function(x, ...) {
-		N = rmr.options("keyval.length")/10
+		N = max(10, rmr.options("keyval.length")/10)
 		midprobs  = 
 			function() {
 				probs = seq(0, 1, 1/N)

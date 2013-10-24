@@ -92,7 +92,7 @@ as.data.frame(
 		mean.mpg = mean(mpg)))
 ## @knitr group-quantile
 as.data.frame(
-	quantile(
+	quantile.cols(
 		group(
 			input("/tmp/mtcars"),
 			carb)))

@@ -135,8 +135,9 @@ count.cols = function(x, ...) UseMethod("count.cols")
 count.cols.default = 
 	function(x)
 		arrange(
-			as.data.frame(table(x)), 
-			Freq)
+			count(data.frame(x=x)), 
+			freq)
+
 
 count.cols.data.frame =
 	function(x) 
@@ -150,6 +151,9 @@ count.cols.data.frame =
 
 merge.counts = 
 	function(x, n) {
+		select.cols = 
+			function(x)
+				grep(names(x),pattern=".freq$")
 		merge.one =
 			function(x)
 				ddply(x, 1, function(x) {y = sum(x[, 2]); names(y) = names(x)[2]; y})		

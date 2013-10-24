@@ -84,31 +84,21 @@ quantile.cols.pipe =
 				(probs[-1] + probs[-length(probs)])/2}
 		map = 
 			function(.x) {
+				.x = select.numeric(.x)
 				args = c(list(.x), list(...))
 				args$weights = rep(1, nrow(.x))
-				args$verbose = TRUE
 				args$probs = midprobs()
-				sink(stderr())
-				y =
-					cbind(
-						t(do.call(wquantile, args)), 
-						.weight = nrow(.x)/N)
-				sink()
-				y}
+				cbind(
+					do.call(quantile.cols, args), 
+					.weight = nrow(.x)/N)}
 		combine = 
 			function(.x) {
 				args = c(list(.x[,-ncol(.x)]), list(...))
 				args$weights = .x$.weight
-				args$verbose = TRUE
-				#				args$names = FALSE
 				args$probs = midprobs() 
-				sink(stderr())
-				y =
-					cbind(
-						t(do.call(wquantile, args)), 
-						.weight = sum(args$weights)/N)
-				sink()
-				y}
+				cbind(
+					do.call(quantile.cols, args), 
+					.weight = sum(args$weights)/N)}
 		reduce = 
 			function(.x) {
 				if(is.root()){
@@ -120,16 +110,18 @@ quantile.cols.pipe =
 					combine(.x)}
 		do(gather(do(x, map)), reduce)}
 
+select.numeric = 
+	function(x) 
+		subset(x, select = sapply(x, is.numeric))
 
 quantile.cols.data.frame = 
-	function(x, ...) 
+	function(x, ...) {
+		x = select.numeric(x)	
 		splat(data.frame)(
-			strip.nulls(
-				lapply(
-					x,
-					function(.y)
-						if(is.numeric(.y))
-							quantile(.y, ...))))
+			lapply(
+				x,
+				function(.y)
+					wtd.quantile(.y, ...)))}
 
 # quantile.data.frame =
 # 	function(x, probs = seq(0, 1, 0.25), ...) {

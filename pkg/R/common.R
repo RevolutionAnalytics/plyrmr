@@ -44,9 +44,13 @@ selective.I = function(x) if(is.list(x) && !is.data.frame(x)) I(x) else x
 
 safe.cbind  = 
 	function(...) {
-		ll = lapply(list(...), selective.I)
-		x = do.call(cbind, strip.nulls(ll))
-		x[, unique(names(x)), drop = FALSE]}
+		ll = lapply(strip.null.args(...), selective.I)
+		shortest = min(rmr2:::sapply.rmr.length(ll))
+		if(shortest == 0)
+			data.frame()
+		else {
+		x = do.call(cbind, ll)
+		x[, unique(names(x)), drop = FALSE]}}
 
 data.frame = 
 	function(..., row.names = NULL, check.rows = FALSE,

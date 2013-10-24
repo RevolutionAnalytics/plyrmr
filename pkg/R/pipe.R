@@ -24,7 +24,7 @@ comp =
 			do.call(Compose, funs)}
 
 make.map.fun = 
-	function(keyf, valf, ungroup, combine = FALSE) {
+	function(keyf, valf, ungroup) {
 		if(is.null(valf)) 
 			valf = identity 
 		function(k, v) {
@@ -45,7 +45,7 @@ make.reduce.fun =
 
 make.combine.fun = 
 	function(valf) 
-		make.map.fun(NULL, valf, ungroup = FALSE, combine = TRUE)
+		make.map.fun(NULL, valf, ungroup = FALSE)
 
 is.root = 
 	function()

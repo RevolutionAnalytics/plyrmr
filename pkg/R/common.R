@@ -68,13 +68,15 @@ as.data.frame.data.frame = splat(data.frame)
 
 data.frame.fill = 
 	function(..., filler = NA) {
-		argl = list(...)
+		argl = strip.null.args(...)
 		argl = splat(c)(argl)
+		if(is.null(argl)) NULL
+		else {
 		maxlen = max(sapply(argl, length))
 		sapply(
 			seq_along(argl), 
 			function(i) length(argl[[i]]) <<- maxlen)
-		splat(data.frame)(argl)}
+		splat(data.frame)(argl)}}
 						
 #lists
 

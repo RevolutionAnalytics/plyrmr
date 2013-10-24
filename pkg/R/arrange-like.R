@@ -166,8 +166,8 @@ merge.counts =
 					x[x[,2] > 0, ]}}
 		splat(data.frame.fill) (
 				lapply(
-					1:((ncol(x) - 1)/2),
-					function(i) prune(merge.one(x[,c(2*i, 2*i + 1)]), n)))}
+					select.cols(x),
+					function(i) prune(merge.one(x[,c(i - 1, i)]), n)))}
 
 count.cols.pipe = 
 	function(x, n = Inf)

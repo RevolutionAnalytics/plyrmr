@@ -37,7 +37,7 @@ make.map.fun =
 			k = {	
 				if(is.null(keyf)) k 
 				else safe.cbind(k, keyf(w))}
-			if(nrow(w) > 0) keyval(k, w)}}
+			if(!is.null(w) && nrow(w) > 0) keyval(k, w)}}
 
 make.reduce.fun = 
 	function(valf, ungroup) 

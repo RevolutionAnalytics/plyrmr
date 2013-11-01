@@ -403,7 +403,7 @@ as.data.frame(
 ```
 
 
-This mostly a scalable programs, but there are some caveats: we need to be mindful of the size of the groups. If they are very big they will bust memory limits, so we need to reach for some advanced techniques to avoid this problem. If they are very small, like a handful of rows, we may run into some efficiency issues releated to the current R and `rmr2` implementations rather than fundamental (so there is hope they will go away one day). 
+This is mostly a scalable programs, but there are some caveats: we need to be mindful of the size of the groups. If they are very big they will bust memory limits, so we need to reach for some advanced techniques to avoid this problem. If they are very small, like a handful of rows, we may run into some efficiency issues releated to the current R and `rmr2` implementations rather than fundamental (so there is hope they will go away one day). 
 
 When the definition of the grouping column is more complicated, we may need to reach for the uber-general `group.f`, the grouping relative of `do` (in fact, these two functions are the foundation for everything else in `plyrmr`). Let's go back to the `last.col` example. If we need to group by the last columns of a data frame, this is all we need to do:
 
@@ -435,13 +435,21 @@ Despite the SQL-ish flavor and undeniable SQL inspiration for some of these oper
 
 ```r
 as.data.frame(
-	quantile(
+	quantile.cols(
 		group(
 			input("/tmp/mtcars"),
 			carb)))
 ```
 
 ```
-Error: unimplemented type 'list' in 'greater'
+    carb   mpg   cyl   disp     hp  drat    wt  qsec       vs     am  gear
+1.2    2 15.91 4.000  93.20  63.54 2.994 1.667 16.82 0.000000 0.0000 3.000
+2.2    2 19.21 4.000 122.65  94.69 3.203 2.546 16.97 0.001875 0.0000 3.098
+3.2    2 22.10 4.000 143.75 111.00 3.730 3.170 17.18 0.500000 0.0000 4.000
+4.2    2 24.92 7.610 294.56 146.39 3.985 3.413 18.43 0.998125 0.9025 4.000
+5.2    2 29.71 8.000 365.48 171.06 4.531 3.606 20.66 1.000000 1.0000 4.842
+1.3    3 16.10 8.000 275.80 180.00 3.070 3.775 17.56 0.000000 0.0000 3.000
+2.3    3 16.39 8.000 275.80 180.00 3.070 3.821 17.64 0.000000 0.0000 3.000
+....
 ```
 

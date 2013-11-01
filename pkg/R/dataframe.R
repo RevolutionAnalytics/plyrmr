@@ -29,7 +29,7 @@ where.data.frame =
 
 select = function(.data, ...) UseMethod("select")
 select.data.frame =
-	function(.data, ..., .replace = TRUE, .envir = parent.frame()) {
+	function(.data, ..., .replace = TRUE, .columns = NULL, .envir = parent.frame()) {
 		force(.envir)
 		args = 
 			non.standard.eval(
@@ -38,8 +38,10 @@ select.data.frame =
 			.named = TRUE,
 			.envir = .envir)
 		newcols = splat(data.frame)(c(args, list(stringsAsFactors = FALSE)))
+		if(!is.null(.columns))
+			newcols = safe.cbind(newcols, .data[,.columns, drop = FALSE])
 		if(.replace)  newcols
-		else cbind(.data, newcols)}
+		else safe.cbind(.data, newcols)}
 
 #(function(){v = 5;  select(mtcars, cy32 = cyl^2, carb + 5)})()
 

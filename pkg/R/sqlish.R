@@ -16,12 +16,12 @@ setMethodS3(
 	"where",
 	"pipe",
 	function(.data, ..., .envir = parent.frame()) {
-		force(.envir)
+		.envir = copy.env(.envir)
 		do(.data, CurryHalfLazy(where, .envir = .envir), ...)})
 
 setMethodS3(
 	"select",
 	"pipe",
 	function(.data, ..., .replace = TRUE, .envir = parent.frame()) {
-		force(.envir)
+		.envir = copy.env(.envir)
 		do(.data, CurryHalfLazy(select, .replace = .replace, .envir = .envir), ...)})

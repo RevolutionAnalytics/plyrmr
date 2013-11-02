@@ -74,7 +74,6 @@ print.pipe =
 make.f1 = 
 	function(f, ...) {
 		dot.args = dots(...)
-		freeze.env(
 			function(.x) {
 				.y = do.call(f, c(list(.x), dot.args))
 				if(is.data.frame(.y))
@@ -82,9 +81,10 @@ make.f1 =
 						if(is.matrix(.y))
 							as.data.frame(.y, stringsAsFactors = F)
 						else 
-							data.frame(x = .y, stringsAsFactors = F)}})}
+							data.frame(x = .y, stringsAsFactors = F)}}}
 do =  
 	function(.data, .f, ...){
+		.f = freeze.env(.f)
 		f1 = make.f1(.f, ...)
 		if(is.null(.data$group))
 			.data$map = comp(.data$map, f1)
@@ -105,6 +105,7 @@ group =
 
 group.f = 
 	function(.data, .f, ..., .recursive = FALSE) {
+		.f = freeze.env(.f)
 		f1 = make.f1(.f, ...)
 		if(is.null(.data$group)){
 			.data$group = f1

@@ -62,13 +62,29 @@ safe.cbind  =
 		x = do.call(cbind, ll)
 		x[, unique(names(x)), drop = FALSE]}}
 
+fract.recycling = 
+	function(ll) {
+		ind = 
+			do.call(
+				cbind, 
+				lapply(
+					ll, 
+					function(x) 1: rmr2:::rmr.length(x)))
+		retval =
+			lapply(
+				1:length(ll), 
+				function(i) rmr2:::rmr.slice(ll[[i]],ind[,i]))
+		names(retval) = names(ll)
+		retval}
+
 data.frame = 
 	function(..., row.names = NULL, check.rows = FALSE,
-						check.names = TRUE, stringsAsFactors = default.stringsAsFactors()) {
+					 check.names = TRUE, stringsAsFactors = default.stringsAsFactors()) {
 		base::data.frame(
-			lapply(
-				list(...), 
-				selective.I),
+			fract.recycling(
+				lapply(
+					list(...), 
+					selective.I)),
 			row.names = row.names,
 			check.rows = check.rows,
 			check.names = check.names,

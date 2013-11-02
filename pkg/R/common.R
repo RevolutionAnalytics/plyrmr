@@ -34,8 +34,12 @@ copy.env =
 	function(envx) {
 		if(!is.null(envx)) {
 			nenv = as.environment(as.list(envx, all.names = TRUE))
-			parent.env(nenv) = parent.env(envx)}
-		nenv}
+			parent.env(nenv) = {
+				if(identical(envx, globalenv()))
+					parent.env(envx)
+				else
+					copy.env(parent.env(envx))}
+			nenv}}
 
 freeze.env = 
 	function(x) {

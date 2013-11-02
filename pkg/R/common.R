@@ -29,13 +29,19 @@ CurryHalfLazy =
 			do.call(FUN, c(.orig, dots(...)))}
 
 # retun a function whose env is a copy of the original env (one level only)
+
+copy.env = 
+	function(envx) {
+		if(!is.null(envx)) {
+			nenv = as.environment(as.list(envx, all.names = TRUE))
+			parent.env(nenv) = parent.env(envx)}
+		nenv}
+
 freeze.env = 
 	function(x) {
 		envx = environment(x)
-		if(!is.null(envx)) {
-			nenv = as.environment(as.list(envx))
-			parent.env(nenv) = parent.env(envx)
-			environment(x) = nenv}
+		nenv = copy.env(envx)
+		environment(x) = nenv
 		x}
 
 #data frames

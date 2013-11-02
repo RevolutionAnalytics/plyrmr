@@ -33,13 +33,13 @@ CurryHalfLazy =
 copy.env = 
 	function(envx) {
 		if(!is.null(envx)) {
-			nenv = as.environment(as.list(envx, all.names = TRUE))
-			parent.env(nenv) = {
-				if(identical(envx, globalenv()))
-					parent.env(envx)
-				else
-					copy.env(parent.env(envx))}
-			nenv}}
+			list2env(
+				as.list(envx, all.names = TRUE), 
+				parent= {
+					if(identical(envx, globalenv()))
+						parent.env(envx)
+					else
+						copy.env(parent.env(envx))})}}
 
 freeze.env = 
 	function(x) {

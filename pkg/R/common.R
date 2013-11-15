@@ -154,3 +154,9 @@ non.standard.eval =
 				dots(...) }
 		env = list2env(.data, parent = .envir)
 		lapply(dotlist, function(x) eval(eval(x, env), env))}
+
+non.standard.eval.single = 
+	function(.data,  .arg, .named = TRUE,  .envir = stop("Why wasn't .envir specified? Why?")) {
+		force(.envir)
+		env = list2env(.data, parent = .envir)
+		eval(eval(.arg, env), env)}

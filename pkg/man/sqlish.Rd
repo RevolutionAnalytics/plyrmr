@@ -10,15 +10,16 @@ These functions accept a data set, represented by a pipe or a data frame, and ap
 }
 \usage{
 where(.data, \dots)
-\method{where}{data.frame}(.data, \dots, .envir = parent.frame())
-\method{where}{pipe}(.data, \dots, .envir = parent.frame())
+\method{where}{data.frame}(.data, .cond, .envir = parent.frame())
+\method{where}{pipe}(.data, .cond, .envir = parent.frame())
 select(.data, \dots)
 \method{select}{data.frame}(.data, \dots, .replace = TRUE, .envir = parent.frame())
 \method{select}{pipe}(.data, \dots, .replace = TRUE, .envir = parent.frame())
 }
 \arguments{
   \item{.data}{A data set represented by a pipe}
-  \item{\dots}{Additional arguments interpreted as filtering criteria by where and data columns by \code{select}}
+  \item{\dots}{Additional arguments interpreted as columns by \code{select}}
+  \item{.cond}{Expression to evaluate to logical and used to select rows of the data}
   \item{.replace}{whether to replace existing columns}
   \item{.envir}{environment in which to evaluate the \dots arguments}
 }

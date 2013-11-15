@@ -15,15 +15,16 @@
 where = function(.data, ...) UseMethod("where")
 
 where.data.frame = 
-	function(.data, ..., .envir = parent.frame()) {
+	function(.data, .cond, .envir = parent.frame()) {
 		force(.envir)
+		cond = substitute(.cond)
 		cond = 
-			non.standard.eval(
+			non.standard.eval.single(
 				.data, 
-				..., 
+				cond, 
 				.named = FALSE, 
 				.envir = .envir)
-		.data[Reduce(`&`, cond), , drop = FALSE]}
+		.data[cond, , drop = FALSE]}
 
 #(function(){x = 5; where(mtcars, cyl>x)})()
 

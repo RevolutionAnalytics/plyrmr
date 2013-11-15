@@ -80,15 +80,18 @@ fract.recycling =
 data.frame = 
 	function(..., row.names = NULL, check.rows = FALSE,
 					 check.names = TRUE, stringsAsFactors = default.stringsAsFactors()) {
-		base::data.frame(
-			fract.recycling(
-				lapply(
-					list(...), 
-					selective.I)),
-			row.names = row.names,
-			check.rows = check.rows,
-			check.names = check.names,
-			stringsAsFactors = stringsAsFactors)}
+		if(length(list(...)) == 0) 
+			base::data.frame()
+		else
+			base::data.frame(
+				fract.recycling(
+					lapply(
+						list(...), 
+						selective.I)),
+				row.names = row.names,
+				check.rows = check.rows,
+				check.names = check.names,
+				stringsAsFactors = stringsAsFactors)}
 
 as.data.frame.data.frame = splat(data.frame)
 

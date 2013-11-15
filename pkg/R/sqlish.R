@@ -12,8 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+where.pipe = 
+	function(.data, .cond, .envir = parent.frame()) {
 		.envir = copy.env(.envir)
-		do(.data, CurryHalfLazy(where, .envir = .envir), ...)})
+		.cond = substitute(.cond)
+		eval(
+			substitute(
+				do(.data, CurryHalfLazy(where, .envir = .envir), .cond),
+				list(.cond = .cond)))}
 
 select.pipe = 
 	function(.data, ..., .replace = TRUE, .envir = parent.frame()) {

@@ -59,8 +59,8 @@ safe.cbind  =
 		if(shortest == 0)
 			data.frame()
 		else {
-		x = do.call(cbind, ll)
-		x[, unique(names(x)), drop = FALSE]}}
+			x = splat(data.frame)(ll)
+			x[, unique(names(x)), drop = FALSE]}}
 
 fract.recycling = 
 	function(ll) {
@@ -80,18 +80,39 @@ fract.recycling =
 data.frame = 
 	function(..., row.names = NULL, check.rows = FALSE,
 					 check.names = TRUE, stringsAsFactors = default.stringsAsFactors()) {
-		if(length(list(...)) == 0) 
+		dot.args = list(...)
+		if(length(dot.args) == 0) 
 			base::data.frame()
-		else
-			base::data.frame(
-				fract.recycling(
-					lapply(
-						list(...), 
-						selective.I)),
-				row.names = row.names,
-				check.rows = check.rows,
-				check.names = check.names,
-				stringsAsFactors = stringsAsFactors)}
+		else {
+			if(is.null(row.names)) {
+				row.names = {
+					strip.nulls(
+						lapply(
+							dot.args, 
+							function(arg) {
+								if(rmr2:::has.rows(arg)) row.names(arg) 
+								else names(arg)}))}
+				row.names = { 
+					if(length(row.names) > 0)
+						row.names[[1]]
+					else NULL }}
+			X =  				
+				base::data.frame(
+					fract.recycling(
+						lapply(
+							dot.args, 
+							selective.I)),
+					row.names = NULL,
+					check.rows = check.rows,
+					check.names = check.names,
+					stringsAsFactors = stringsAsFactors)
+			if (!is.null(row.names)) {
+				row.names(X) = 
+					make.names(
+						fract.recycling(
+							list(row.names, 1:nrow(X)))[[1]],
+						unique = TRUE)}
+			X }}
 
 as.data.frame.data.frame = splat(data.frame)
 
@@ -101,12 +122,12 @@ data.frame.fill =
 		argl = splat(c)(argl)
 		if(is.null(argl)) NULL
 		else {
-		maxlen = max(sapply(argl, length))
-		sapply(
-			seq_along(argl), 
-			function(i) length(argl[[i]]) <<- maxlen)
-		splat(data.frame)(argl)}}
-						
+			maxlen = max(sapply(argl, length))
+			sapply(
+				seq_along(argl), 
+				function(i) length(argl[[i]]) <<- maxlen)
+			splat(data.frame)(argl)}}
+
 #lists
 
 strip.nulls = 
@@ -119,7 +140,7 @@ strip.null.args =
 
 strip.zero.col = 
 	function(x)
-					 x[sapply(x, ncol) > 0]
+		x[sapply(x, ncol) > 0]
 
 #dynamic scoping
 

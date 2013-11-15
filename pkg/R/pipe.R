@@ -23,21 +23,21 @@ comp =
 		else		
 			do.call(Compose, funs)}
 
-make.map.fun = 
-	function(keyf, valf, ungroup) {
-		if(is.null(valf)) 
+make.map.fun = 																					# this function is a little complicated so some comments are in order
+	function(keyf, valf, ungroup) {												# make a valid map function from two separate one for keys and values
+		if(is.null(valf))                                   # the value function defaults to identity
 			valf = identity 
-		function(k, v) {
-			rownames(k) = NULL
-			w = safe.cbind(k, valf(safe.cbind(k, v)))
-			dummy.col = which(names(w) == ".dummy")
+		function(k, v) {                                    # this is the signature of a correct map function
+			rownames(k) = NULL                                # wipe row names unless you want them to count in the grouping (Hadoop only sees serialization)
+			w = safe.cbind(k, valf(safe.cbind(k, v)))         # pass both keys and values to val function as a single data frame, then make sure we keep keys for the next step
+			dummy.col = which(names(w) == ".dummy")						# dummy col used by gather always has a constant, no need to keep it
 			if (length(dummy.col) > 0)
 				w = w[, -dummy.col, drop = FALSE]
-			if (ungroup) k = NULL
+			if (ungroup) k = NULL                             # if ungroup called reset keys, otherwise accumulate
 			k = {	
-				if(is.null(keyf)) k 
-				else safe.cbind(k, keyf(w))}
-			if(!is.null(w) && nrow(w) > 0) keyval(k, w)}}
+				if(is.null(keyf)) k 														# by default keep grouping whatever it is
+				else safe.cbind(k, keyf(w))}										# but if you have a key function, use it and cbind old and new keys
+			if(!is.null(w) && nrow(w) > 0) keyval(k, w)}}     # special care for empty cases
 
 make.reduce.fun = 
 	function(valf, ungroup) 

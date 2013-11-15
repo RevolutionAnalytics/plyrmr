@@ -160,3 +160,30 @@ non.standard.eval.single =
 		force(.envir)
 		env = list2env(.data, parent = .envir)
 		eval(eval(.arg, env), env)}
+
+#reflection
+# next four functions borrowed from pryr pending CRAN submission, with
+# Hadley's permission
+
+"%||%" <- function(x, y) if (is.null(x)) y else x
+
+alist = 
+	function (...) 
+		as.list(sys.call())[-1L]
+dots = 
+	function(...) 
+		eval(substitute(alist(...)))
+
+named_dots =
+	function(...) {
+		args <- dots(...)
+		
+		nms <- names(args) %||% rep("", length(args))
+		missing <- nms == ""
+		if (all(!missing)) return(args)
+		
+		deparse2 <- function(x) paste(deparse(x, 500L), collapse = "")
+		defaults <- vapply(args[missing], deparse2, character(1), USE.NAMES = FALSE)
+		
+		names(args)[missing] <- defaults
+		args}

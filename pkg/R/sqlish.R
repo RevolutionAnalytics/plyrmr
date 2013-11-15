@@ -12,16 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-setMethodS3(
-	"where",
-	"pipe",
-	function(.data, ..., .envir = parent.frame()) {
 		.envir = copy.env(.envir)
 		do(.data, CurryHalfLazy(where, .envir = .envir), ...)})
 
-setMethodS3(
-	"select",
-	"pipe",
+select.pipe = 
 	function(.data, ..., .replace = TRUE, .envir = parent.frame()) {
 		.envir = copy.env(.envir)
-		do(.data, CurryHalfLazy(select, .replace = .replace, .envir = .envir), ...)})
+		do(.data, CurryHalfLazy(select, .replace = .replace, .envir = .envir), ...)}

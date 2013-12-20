@@ -21,6 +21,43 @@ constant =
 	function(x)
 		function(...) x
 
+
+chain.call.q =
+	function(f, g, envir)
+		function(x) {
+			chain.value.q(
+				chain.value.q(x, f, envir = envir), 
+				g, 
+				envir = envir)}
+
+chain.call = 
+	function(f, g, envir = parent.frame()) {
+		f = substitute(f)
+		g = substitute(g)
+		chain.call.q(f, g, envir = envir)}
+
+chain.value.q = 
+	function(x, f, envir) {
+		ff = { 
+			if(is.symbol(f))
+				list(f, x)
+			else {
+				if(f[[1]] == "(")
+					list(eval(f[[2]]), x)
+				else
+					c(list(f[[1]], x), as.list(f[-1]))}}
+		eval(as.call(ff), envir = envir)}
+
+chain.value =
+	function(x, f, envir = parent.frame()) {
+		f = substitute(f)
+		chain.value.q(x, f, envir = envir)}
+
+`%|%` = chain.value
+`%.%` = chain.call
+
+
+
 #curried arguments are eager, the rest lazy
 CurryHalfLazy = 
 	function(FUN, ...) {

@@ -92,6 +92,21 @@ Wouldn't it be nice if we could do exactly the same on a Hadoop data set? In fac
 
 The main differences between the data frame version and the Hadoop data version are the input and the output. All there is in between, pretty much works the same. 
 
+## The pipe operator
+
+You may have noticed that the last example consists of a fairly complex expression, with function calls nested inside other function calls multiple times. The drawbacks of that are twofold. First, the order in which functions appear in the code, top to bottom, is the opposite of the order in which things happen. Second, additional arguments to each function can be very far from the name of the function. This problem can be mitigated with proper indentation, but it still is a problem. One workaround is to rewrite complex expressions as chains of assignments:
+
+```{r assignment-chain}
+```
+
+The purists will find that introducing one variable for each intermediate step quite unsightly. To avoid this plyrmr offers a unix-style pipe operator, inspired by two precedents, by[@crowding](https://github.com/crowding/vadr/blob/master/R/chain.R) and [@hadley](https://github.com/hadley/dplyr/blob/master/R/chain.r).
+
+```{r pipe-operator}
+```
+
+What this does is providing the value of the leftmost expression as the first unnamed argument of the next function call, evaluate this combination and continue to the next operator. Rather than arguing over which style is best, it's probably best to bask in the flexibility made possible by the R language and your indefatigable developers and pick the one that's best case-by-case. In particular, pipes can not express more complex data flows where two flows merge or one splits.
+
+
 ## Why you should use `plyrmr`'s `select` and `where`
 `subset` and `transform` work best interactively, at the prompt, but they have some problems when used in other functions or packages. These limitations are inherited from the `base` package functions, not peculiar to their `plyrmr` brethren. `plyrmr` makes an attempt to provide two functions that match the convenience of `transform` and `subset` without their pitfalls. While we were at it, we also tried to make them more general and give them a cleaner but still familiar (SQL-inspired) interface. Let me introduce `select` and `where`. These are `plyrmr` functions with methods for data frames and Hadoop data sets and they are appropriate for interactive and programming use. The previous examples become, using these functions:
 

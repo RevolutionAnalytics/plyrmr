@@ -5,6 +5,10 @@
 
 
 
+```
+Warning: cannot rename file '/var/folders/_p/1gx4vy311_x4syn2xq6f2xtc0000gr/T//RtmpdjDlYs/file4b6d4839d4d3' to
+'/tmp/mtcars', reason 'Directory not empty'
+```
 
 
 # Tutorial
@@ -71,14 +75,14 @@ as.data.frame(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl))
 ```
 
 ```
-                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-Mazda.RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-Mazda.RX4.Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-Datsun.710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-Hornet.4.Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-Hornet.Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
-Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-Duster.360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
+    mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+1  21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+2  21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+3  22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+4  21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+5  18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+6  18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+7  14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
 ....
 ```
 
@@ -108,14 +112,14 @@ as.data.frame(mtcars.w.ratio)
 ```
 
 ```
-                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-Mazda.RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-Mazda.RX4.Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-Datsun.710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-Hornet.4.Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-Hornet.Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
-Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-Duster.360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
+    mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+1  21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+2  21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+3  22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+4  21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+5  18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+6  18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+7  14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
 ....
 ```
 
@@ -162,34 +166,65 @@ Wouldn't it be nice if we could do exactly the same on a Hadoop data set? In fac
 
 ```r
 x = 
-	subset(
-		transform(
-			input("/tmp/mtcars"), 
-			carb.per.cyl = carb/cyl), 
-		carb.per.cyl >= 1)
+	input("/tmp/mtcars") %|%
+	transform(carb.per.cyl = carb/cyl) %|%
+	subset(carb.per.cyl >= 1)
 as.data.frame(x)
 ```
 
 ```
-               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-Ferrari.Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-Maserati.Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+   mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+1 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+2 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 ```
 
 
 The main differences between the data frame version and the Hadoop data version are the input and the output. All there is in between, pretty much works the same. 
+
+## The pipe operator
+
+You may have noticed that the last example consists of a fairly complex expression, with function calls nested inside other function calls multiple times. The drawbacks of that are twofold. First, the order in which functions appear in the code, top to bottom, is the opposite of the order in which things happen. Second, additional arguments to each function can be very far from the name of the function. This problem can be mitigated with proper indentation, but it still is a problem. One workaround is to rewrite complex expressions as chains of assignments:
+
+
+```r
+x =	transform(mtcars, carb.per.cyl = carb/cyl) 
+subset(x, carb.per.cyl >= 1)
+```
+
+```
+               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+```
+
+
+The purists will find that introducing one variable for each intermediate step quite unsightly. To avoid this plyrmr offers a unix-style pipe operator, inspired by two precedents, by[@crowding](https://github.com/crowding/vadr/blob/master/R/chain.R) and [@hadley](https://github.com/hadley/dplyr/blob/master/R/chain.r).
+
+
+```r
+mtcars %|%
+	transform(carb.per.cyl = carb/cyl) %|%
+	subset(carb.per.cyl >= 1)
+```
+
+```
+               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+```
+
+
+What this does is providing the value of the leftmost expression as the first unnamed argument of the next function call, evaluate this combination and continue to the next operator. Rather than arguing over which style is best, it's probably best to bask in the flexibility made possible by the R language and your indefatigable developers and pick the one that's best case-by-case. In particular, pipes can not express more complex data flows where two flows merge or one splits.
+
 
 ## Why you should use `plyrmr`'s `select` and `where`
 `subset` and `transform` work best interactively, at the prompt, but they have some problems when used in other functions or packages. These limitations are inherited from the `base` package functions, not peculiar to their `plyrmr` brethren. `plyrmr` makes an attempt to provide two functions that match the convenience of `transform` and `subset` without their pitfalls. While we were at it, we also tried to make them more general and give them a cleaner but still familiar (SQL-inspired) interface. Let me introduce `select` and `where`. These are `plyrmr` functions with methods for data frames and Hadoop data sets and they are appropriate for interactive and programming use. The previous examples become, using these functions:
 
 
 ```r
-where(
-	select(
-		mtcars, 
-		carb.per.cyl = carb/cyl, 
-		.replace = FALSE), 
-	carb.per.cyl >= 1)
+mtcars %|%
+	select(carb.per.cyl = carb/cyl, .replace = FALSE) %|%
+	where(carb.per.cyl >= 1)
 ```
 
 ```
@@ -204,19 +239,16 @@ and:
 
 ```r
 x = 
-	where(
-		select(
-			input("/tmp/mtcars"), 
-			carb.per.cyl = carb/cyl, 
-			.replace = FALSE), 
-		carb.per.cyl >= 1)
+	input("/tmp/mtcars") %|%
+	select(carb.per.cyl = carb/cyl, .replace = FALSE) %|%
+	where(carb.per.cyl >= 1)
 as.data.frame(x)
 ```
 
 ```
-               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-Ferrari.Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-Maserati.Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+   mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+1 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+2 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 ```
 
 
@@ -273,14 +305,14 @@ as.data.frame(do(input("/tmp/mtcars"), last.col))
 ```
 
 ```
-                    carb
-Mazda.RX4              4
-Mazda.RX4.Wag          4
-Datsun.710             1
-Hornet.4.Drive         1
-Hornet.Sportabout      2
-Valiant                1
-Duster.360             4
+   carb
+1     4
+2     4
+3     1
+4     1
+5     2
+6     1
+7     4
 ....
 ```
 
@@ -317,14 +349,14 @@ as.data.frame(last.col(input("/tmp/mtcars")))
 ```
 
 ```
-                    carb
-Mazda.RX4              4
-Mazda.RX4.Wag          4
-Datsun.710             1
-Hornet.4.Drive         1
-Hornet.Sportabout      2
-Valiant                1
-Duster.360             4
+   carb
+1     4
+2     4
+3     1
+4     1
+5     2
+6     1
+7     4
 ....
 ```
 
@@ -353,15 +385,8 @@ as.data.frame(summarize(input("/tmp/mtcars"), sum(carb) ))
 ```
 
 ```
-     sum.carb.
-X1          10
-X1.1        11
-X1.2        17
-X1.3        15
-X1.4        10
-X1.5        11
-X1.6        16
-....
+  sum.carb.
+1        90
 ```
 
 
@@ -369,15 +394,15 @@ What does that mean? The data in Hadoop is always grouped, one way or another (t
 
 
 ```r
-as.data.frame(
-	summarize(
-		gather(input("/tmp/mtcars")), 
-		sum(carb) ))
+input("/tmp/mtcars") %|%
+	gather() %|%
+	summarize(carb = sum(carb)) %|%
+	as.data.frame()
 ```
 
 ```
-   sum.carb.
-X1        90
+  carb
+1   90
 ```
 
 
@@ -387,19 +412,17 @@ The `group` function takes an input and a number of arguments that are evaluated
 
 
 ```r
-as.data.frame(
-	select(
-		group(
-			input("/tmp/mtcars"),
-			cyl),
-		mean.mpg = mean(mpg)))
+input("/tmp/mtcars") %|%
+	group(cyl) %|%
+	select(mean.mpg = mean(mpg)) %|%
+	as.data.frame()
 ```
 
 ```
-     cyl mean.mpg
-X1     6    19.74
-X1.1   4    26.66
-X1.2   8    15.10
+  cyl mean.mpg
+1   6    19.74
+2   4    26.66
+3   8    15.10
 ```
 
 
@@ -409,22 +432,20 @@ When the definition of the grouping column is more complicated, we may need to r
 
 
 ```r
-as.data.frame(
-	select(
-		group.f(
-			input("/tmp/mtcars"),
-			last.col),
-		mean.mpg = mean(mpg)))
+input("/tmp/mtcars") %|%
+	group.f(last.col) %|%
+	select(mean.mpg = mean(mpg)) %|%
+	as.data.frame()
 ```
 
 ```
-     carb mean.mpg
-X1.2    2    22.40
-X1.3    3    16.30
-X1      4    15.79
-X1.1    1    25.34
-X1.4    6    19.70
-X1.5    8    15.00
+  carb mean.mpg
+1    4    15.79
+2    1    25.34
+3    2    22.40
+4    3    16.30
+5    6    19.70
+6    8    15.00
 ```
 
 
@@ -434,22 +455,21 @@ Despite the SQL-ish flavor and undeniable SQL inspiration for some of these oper
 
 
 ```r
-as.data.frame(
-	quantile.cols(
-		group(
-			input("/tmp/mtcars"),
-			carb)))
+input("/tmp/mtcars") %|%
+	group(carb) %|%
+	quantile.cols() %|%
+	as.data.frame()
 ```
 
 ```
-       carb carb.2   mpg   cyl   disp     hp  drat    wt  qsec       vs     am  gear carb.1
-X1.6      2      2 15.91 4.000  93.20  63.54 2.994 1.667 16.82 0.000000 0.0000 3.000      2
-X1.1.2    2      2 19.21 4.000 122.65  94.69 3.203 2.546 16.97 0.001875 0.0000 3.098      2
-X1.2.2    2      2 22.10 4.000 143.75 111.00 3.730 3.170 17.18 0.500000 0.0000 4.000      2
-X1.3.2    2      2 24.92 7.610 294.56 146.39 3.985 3.413 18.43 0.998125 0.9025 4.000      2
-X1.4.2    2      2 29.71 8.000 365.48 171.06 4.531 3.606 20.66 1.000000 1.0000 4.842      2
-X1.7      3      3 16.10 8.000 275.80 180.00 3.070 3.775 17.56 0.000000 0.0000 3.000      3
-X1.1.3    3      3 16.39 8.000 275.80 180.00 3.070 3.821 17.64 0.000000 0.0000 3.000      3
+   carb carb.2   mpg   cyl   disp     hp  drat    wt  qsec       vs     am  gear carb.1
+1     4      4 10.86 6.000 161.20 112.05 3.012 2.844 15.20 0.000000 0.0000 3.000      4
+2     4      4 13.92 6.195 185.39 131.01 3.271 3.326 16.25 0.000000 0.0000 3.002      4
+3     4      4 15.25 8.000 350.50 210.00 3.815 3.505 17.22 0.000000 0.0000 3.500      4
+4     4      4 18.19 8.000 392.87 234.85 3.908 4.408 17.85 0.000000 0.4219 3.998      4
+5     4      4 20.72 8.000 460.48 250.75 4.011 5.354 18.43 0.842500 1.0000 4.302      4
+6     1      1 21.18 4.000  78.21  65.93 3.151 1.968 18.96 1.000000 0.0000 3.000      1
+7     1      1 22.09 4.000  91.94  78.05 3.652 2.205 19.36 1.000000 0.4450 3.445      1
 ....
 ```
 

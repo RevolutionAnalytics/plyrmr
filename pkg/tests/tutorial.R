@@ -1,6 +1,6 @@
 ## @knitr startup
 suppressPackageStartupMessages(library(`plyrmr`))
-invisible(rmr.options(backend="local", keyval.length=5))
+invisible(rmr.options(backend="local"))
 invisible(output(input(mtcars), "/tmp/mtcars"))
 ## @knitr mtcars
 mtcars
@@ -23,29 +23,28 @@ subset(
 		mtcars, 
 		carb.per.cyl = carb/cyl), 
 	carb.per.cyl >= 1)
+## @knitr assignment-chain
+x =	transform(mtcars, carb.per.cyl = carb/cyl) 
+subset(x, carb.per.cyl >= 1)
+## @knitr pipe-operator
+mtcars %|%
+	transform(carb.per.cyl = carb/cyl) %|%
+	subset(carb.per.cyl >= 1)
 ## @knitr subset-transform-input
 x = 
-	subset(
-		transform(
-			input("/tmp/mtcars"), 
-			carb.per.cyl = carb/cyl), 
-		carb.per.cyl >= 1)
+	input("/tmp/mtcars") %|%
+	transform(carb.per.cyl = carb/cyl) %|%
+	subset(carb.per.cyl >= 1)
 as.data.frame(x)
 ## @knitr where-select
-where(
-	select(
-		mtcars, 
-		carb.per.cyl = carb/cyl, 
-		.replace = FALSE), 
-	carb.per.cyl >= 1)
+mtcars %|%
+	select(carb.per.cyl = carb/cyl, .replace = FALSE) %|%
+	where(carb.per.cyl >= 1)
 ## @knitr where-select-input
 x = 
-	where(
-		select(
-			input("/tmp/mtcars"), 
-			carb.per.cyl = carb/cyl, 
-			.replace = FALSE), 
-		carb.per.cyl >= 1)
+	input("/tmp/mtcars") %|%
+	select(carb.per.cyl = carb/cyl, .replace = FALSE) %|%
+	where(carb.per.cyl >= 1)
 as.data.frame(x)
 ## @knitr end
 if(FALSE) {
@@ -72,41 +71,32 @@ summarize(mtcars, sum(carb))
 ## @knitr summarize-input
 as.data.frame(summarize(input("/tmp/mtcars"), sum(carb) ))
 ## @knitr summarize-gather
-as.data.frame(
-	summarize(
-		gather(input("/tmp/mtcars")), 
-		sum(carb) ))
+input("/tmp/mtcars") %|%
+	gather() %|%
+	summarize(carb = sum(carb)) %|%
+	as.data.frame()
 ## @knitr select-group
-as.data.frame(
-	select(
-		group(
-			input("/tmp/mtcars"),
-			cyl),
-		mean.mpg = mean(mpg)))
+input("/tmp/mtcars") %|%
+	group(cyl) %|%
+	select(mean.mpg = mean(mpg)) %|%
+	as.data.frame()
 ## @knitr select-group.f
-as.data.frame(
-	select(
-		group.f(
-			input("/tmp/mtcars"),
-			last.col),
-		mean.mpg = mean(mpg)))
+input("/tmp/mtcars") %|%
+	group.f(last.col) %|%
+	select(mean.mpg = mean(mpg)) %|%
+	as.data.frame()
 ## @knitr group-quantile
-as.data.frame(
-	quantile.cols(
-		group(
-			input("/tmp/mtcars"),
-			carb)))
+input("/tmp/mtcars") %|%
+	group(carb) %|%
+	quantile.cols() %|%
+	as.data.frame()
 ## @knitr group-lm
-as.data.frame(
-	select(
-		group(
-			input("/tmp/mtcars"),
-			carb),
-		model = lm(mpg~cyl+disp)))
+input("/tmp/mtcars") %|%
+	group(carb) %|%
+	select(model = lm(mpg~cyl+disp)) %|%
+	as.data.frame()
 ## @knitr group-lm
-as.data.frame(
-	select(
-		group(
-			input("/tmp/mtcars"),
-			carb),
-		model = list(lm(mpg~cyl+disp))))
+input("/tmp/mtcars") %|%
+	group(carb) %|%
+	select(model = list(lm(mpg~cyl+disp))) %|%
+	as.data.frame()

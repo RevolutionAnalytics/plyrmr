@@ -108,6 +108,7 @@ S3method(dcast, pipe)
 S3method(dcast, default)
 S3method(melt, pipe)
 
-
+#chain operators
+export("%|%", "%.%")
 
 

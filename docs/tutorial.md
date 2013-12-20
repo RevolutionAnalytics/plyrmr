@@ -6,7 +6,7 @@
 
 
 ```
-Warning: cannot rename file '/var/folders/_p/1gx4vy311_x4syn2xq6f2xtc0000gr/T//RtmpdjDlYs/file4b6d4839d4d3' to
+Warning: cannot rename file '/var/folders/_p/1gx4vy311_x4syn2xq6f2xtc0000gr/T//RtmpHdcQmA/file4c8f5b9d86f0' to
 '/tmp/mtcars', reason 'Directory not empty'
 ```
 
@@ -165,10 +165,12 @@ Wouldn't it be nice if we could do exactly the same on a Hadoop data set? In fac
 
 
 ```r
-x = 
-	input("/tmp/mtcars") %|%
-	transform(carb.per.cyl = carb/cyl) %|%
-	subset(carb.per.cyl >= 1)
+x =
+	subset(
+		transform(
+			input("/tmp/mtcars"),
+			carb.per.cyl = carb/cyl),
+		carb.per.cyl >= 1)
 as.data.frame(x)
 ```
 

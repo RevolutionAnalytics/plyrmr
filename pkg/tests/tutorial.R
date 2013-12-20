@@ -26,16 +26,18 @@ subset(
 ## @knitr assignment-chain
 x =	transform(mtcars, carb.per.cyl = carb/cyl) 
 subset(x, carb.per.cyl >= 1)
+## @knitr subset-transform-input
+x =
+	subset(
+		transform(
+			input("/tmp/mtcars"),
+			carb.per.cyl = carb/cyl),
+		carb.per.cyl >= 1)
+as.data.frame(x)
 ## @knitr pipe-operator
 mtcars %|%
 	transform(carb.per.cyl = carb/cyl) %|%
 	subset(carb.per.cyl >= 1)
-## @knitr subset-transform-input
-x = 
-	input("/tmp/mtcars") %|%
-	transform(carb.per.cyl = carb/cyl) %|%
-	subset(carb.per.cyl >= 1)
-as.data.frame(x)
 ## @knitr where-select
 mtcars %|%
 	select(carb.per.cyl = carb/cyl, .replace = FALSE) %|%

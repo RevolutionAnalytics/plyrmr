@@ -8,7 +8,7 @@ src/*.dll
 rmr-global-*
 rmr-local-*
 rmr-streaming-*
-
 Rprof.out
-
-plyrmr.Rcheck
+rmr2-combine-template-*
+rmr2-map-template-*
+job_local*

@@ -179,7 +179,7 @@ hljs.initHighlightingOnLoad();
 </head>
 
 <body>
-<pre><code>Warning: cannot rename file &#39;/var/folders/_p/1gx4vy311_x4syn2xq6f2xtc0000gr/T//RtmpHdcQmA/file4c8f5b9d86f0&#39; to
+<pre><code>Warning: cannot rename file &#39;/var/folders/_p/1gx4vy311_x4syn2xq6f2xtc0000gr/T//RtmpdCrgME/file59fa410b09cf&#39; to
 &#39;/tmp/mtcars&#39;, reason &#39;Directory not empty&#39;
 </code></pre>
 
@@ -359,7 +359,7 @@ Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 </code></pre>
 
-<p>What this does is providing the value of the leftmost expression as the first unnamed argument of the next function call, evaluate this combination and continue to the next operator. Rather than arguing over which style is best, it&#39;s probably best to bask in the flexibility made possible by the R language and your indefatigable developers and pick the one that&#39;s best case-by-case. In particular, pipes can not express more complex data flows where two flows merge or one splits.</p>
+<p>What this does is providing the value of the leftmost expression as the first unnamed argument of the next function call, evaluate this combination and continue to the next operator. Rather than arguing over which style is best, it&#39;s probably best to bask in the flexibility made possible by the R language and your indefatigable developers and pick the one that&#39;s best case-by-case. In particular, pipes can not express more complex data flows where two flows merge or one splits. In the following I will alternate between these three notations (nested, assignment chaing and pipe operator) based on which seems the clearest. It should be safe to assume that each example can be translated into any of the three.</p>
 
 <h2>Why you should use <code>plyrmr</code>&#39;s <code>select</code> and <code>where</code></h2>
 
@@ -486,7 +486,7 @@ Duster 360             4
 1        90
 </code></pre>
 
-<p>But if we did that on a Hadoop data set, we would get:</p>
+<p>What happens if we do this on a Hadoop data set?</p>
 
 <pre><code class="r">as.data.frame(summarize(input(&quot;/tmp/mtcars&quot;), sum(carb) ))
 </code></pre>
@@ -495,7 +495,7 @@ Duster 360             4
 1        90
 </code></pre>
 
-<p>What does that mean? The data in Hadoop is always grouped, one way or another (this is also a key difference with the current <code>dplyr</code> design). It couldn&#39;t be otherwise: it is stored on multiple devices and, even if it weren&#39;t, we can only load it into memory in small chunks. So think of it as always grouped, initially in arbitrary fashion and later in the way we determine using the functions <code>group</code>, <code>group.f</code> and <code>gather</code>. These were inspired by the notion of key in mapreduce, the SQL statement and the <code>dplyr</code> function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:</p>
+<p>Bingo, the same, but there&#39;s a catch. Unfortunately this example is misleading because it&#39;s based on a small data set that fits into main memory. In general, the data in Hadoop is always grouped, one way or another. It couldn&#39;t be otherwise: it is stored on multiple devices and, even if it weren&#39;t, we can only load it into memory in small chunks. In this specific example, there is only one chunk, but in general there would be multiple chunksSo think of it as always grouped, initially in arbitrary fashion and later in the way we determine using the functions <code>group</code>, <code>group.f</code> and <code>gather</code>. These were inspired by the notion of key in mapreduce, the SQL statement and the <code>dplyr</code> function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:</p>
 
 <pre><code class="r">input(&quot;/tmp/mtcars&quot;) %|%
     gather() %|%

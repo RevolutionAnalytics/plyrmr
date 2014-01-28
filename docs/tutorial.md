@@ -6,7 +6,7 @@
 
 
 ```
-Warning: cannot rename file '/var/folders/_p/1gx4vy311_x4syn2xq6f2xtc0000gr/T//RtmpHdcQmA/file4c8f5b9d86f0' to
+Warning: cannot rename file '/var/folders/_p/1gx4vy311_x4syn2xq6f2xtc0000gr/T//RtmpdCrgME/file59fa410b09cf' to
 '/tmp/mtcars', reason 'Directory not empty'
 ```
 
@@ -216,7 +216,7 @@ Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 ```
 
 
-What this does is providing the value of the leftmost expression as the first unnamed argument of the next function call, evaluate this combination and continue to the next operator. Rather than arguing over which style is best, it's probably best to bask in the flexibility made possible by the R language and your indefatigable developers and pick the one that's best case-by-case. In particular, pipes can not express more complex data flows where two flows merge or one splits.
+What this does is providing the value of the leftmost expression as the first unnamed argument of the next function call, evaluate this combination and continue to the next operator. Rather than arguing over which style is best, it's probably best to bask in the flexibility made possible by the R language and your indefatigable developers and pick the one that's best case-by-case. In particular, pipes can not express more complex data flows where two flows merge or one splits. In the following I will alternate between these three notations (nested, assignment chaing and pipe operator) based on which seems the clearest. It should be safe to assume that each example can be translated into any of the three.
 
 
 ## Why you should use `plyrmr`'s `select` and `where`
@@ -379,7 +379,7 @@ summarize(mtcars, sum(carb))
 ```
 
 
-But if we did that on a Hadoop data set, we would get:
+What happens if we do this on a Hadoop data set?
 
 
 ```r
@@ -392,7 +392,7 @@ as.data.frame(summarize(input("/tmp/mtcars"), sum(carb) ))
 ```
 
 
-What does that mean? The data in Hadoop is always grouped, one way or another (this is also a key difference with the current `dplyr` design). It couldn't be otherwise: it is stored on multiple devices and, even if it weren't, we can only load it into memory in small chunks. So think of it as always grouped, initially in arbitrary fashion and later in the way we determine using the functions `group`, `group.f` and `gather`. These were inspired by the notion of key in mapreduce, the SQL statement and the `dplyr` function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:
+Bingo, the same, but there's a catch. Unfortunately this example is misleading because it's based on a small data set that fits into main memory. In general, the data in Hadoop is always grouped, one way or another. It couldn't be otherwise: it is stored on multiple devices and, even if it weren't, we can only load it into memory in small chunks. In this specific example, there is only one chunk, but in general there would be multiple chunksSo think of it as always grouped, initially in arbitrary fashion and later in the way we determine using the functions `group`, `group.f` and `gather`. These were inspired by the notion of key in mapreduce, the SQL statement and the `dplyr` function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:
 
 
 ```r

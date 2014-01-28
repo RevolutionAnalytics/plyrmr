@@ -14,7 +14,7 @@ as.data.frame(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl))
 invisible(dfs.rmr("/tmp/mtcars.out"))
 ## @knitr output-transform-input
 output(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl), "/tmp/mtcars.out")
-## @knitr mtcars.w.ratio
+## @knitr mtcars-w-ratio
 mtcars.w.ratio = transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
 as.data.frame(mtcars.w.ratio)
 ## @knitr subset-transform

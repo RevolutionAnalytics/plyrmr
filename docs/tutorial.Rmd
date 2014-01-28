@@ -52,13 +52,13 @@ In fact the `as.data.frame` call not only loads the data into memory, but trigge
 invisible(dfs.rmr("/tmp/mtcars.out"))
 ```
 
-```{r output-transfomr-input}
+```{r output-transform-input}
 ```
 
 This is the real deal: we have performed a computation on the cluster, in parallel, and the data is never loaded into memory at once, but the syntax and semantics remain the familiar ones. The last run processed all of 32 rows, but on a large enough cluster it could run on 32 terabytes &mdash; don't even think of using `as.data.frame` in that case.
 The return value of `output` contains the path and some format information. In general an effort is made throughout `plyrmr` to make return values of functions as useful as possible so as to be able to combine simple expressions into larger ones. You can also store intermediate results to a variable as in:
 
-```{r mtcars.w.ratio}
+```{r mtcars-w-ratio}
 ``` 
 
 `transform` is one of several functions that `plyrmr` provides in a Hadoop-powered version:

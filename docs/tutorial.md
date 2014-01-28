@@ -89,6 +89,13 @@ In fact the `as.data.frame` call not only loads the data into memory, but trigge
 
 
 
+```r
+output(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl), "/tmp/mtcars.out")
+```
+
+```
+[1] "Big Data object:" "/tmp/mtcars.out"  "native"          
+```
 
 
 This is the real deal: we have performed a computation on the cluster, in parallel, and the data is never loaded into memory at once, but the syntax and semantics remain the familiar ones. The last run processed all of 32 rows, but on a large enough cluster it could run on 32 terabytes &mdash; don't even think of using `as.data.frame` in that case.

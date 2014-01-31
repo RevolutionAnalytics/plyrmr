@@ -5,9 +5,11 @@
 
 
 
-```
-Warning: cannot rename file '/var/folders/_p/1gx4vy311_x4syn2xq6f2xtc0000gr/T//RtmpdCrgME/file59fa410b09cf' to
-'/tmp/mtcars', reason 'Directory not empty'
+```r
+suppressPackageStartupMessages(library("plyrmr"))
+invisible(rmr.options(backend="local"))
+invisible(dfs.rmr("/tmp/mtcars"))
+invisible(output(input(mtcars), "/tmp/mtcars"))
 ```
 
 

@@ -179,8 +179,10 @@ hljs.initHighlightingOnLoad();
 </head>
 
 <body>
-<pre><code>Warning: cannot rename file &#39;/var/folders/_p/1gx4vy311_x4syn2xq6f2xtc0000gr/T//RtmpdCrgME/file59fa410b09cf&#39; to
-&#39;/tmp/mtcars&#39;, reason &#39;Directory not empty&#39;
+<pre><code class="r">suppressPackageStartupMessages(library(&quot;plyrmr&quot;))
+invisible(rmr.options(backend=&quot;local&quot;))
+invisible(dfs.rmr(&quot;/tmp/mtcars&quot;))
+invisible(output(input(mtcars), &quot;/tmp/mtcars&quot;))
 </code></pre>
 
 <h1>Tutorial</h1>

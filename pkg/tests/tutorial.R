@@ -1,6 +1,7 @@
 ## @knitr startup
-suppressPackageStartupMessages(library(`plyrmr`))
-invisible(rmr.options(backend="local", keyval.length=5))
+suppressPackageStartupMessages(library("plyrmr"))
+invisible(rmr.options(backend="local"))
+invisible(dfs.rmr("/tmp/mtcars"))
 invisible(output(input(mtcars), "/tmp/mtcars"))
 ## @knitr mtcars
 mtcars

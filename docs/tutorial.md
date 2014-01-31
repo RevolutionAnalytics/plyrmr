@@ -5,6 +5,12 @@
 
 
 
+```r
+suppressPackageStartupMessages(library("plyrmr"))
+invisible(rmr.options(backend="local"))
+invisible(dfs.rmr("/tmp/mtcars"))
+invisible(output(input(mtcars), "/tmp/mtcars"))
+```
 
 
 # Tutorial
@@ -71,14 +77,14 @@ as.data.frame(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl))
 ```
 
 ```
-                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
-Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
+    mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+1  21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+2  21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+3  22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+4  21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+5  18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+6  18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+7  14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
 ....
 ```
 
@@ -108,14 +114,14 @@ as.data.frame(mtcars.w.ratio)
 ```
 
 ```
-                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
-Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
+    mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+1  21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+2  21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+3  22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+4  21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+5  18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+6  18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+7  14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
 ....
 ```
 
@@ -171,9 +177,9 @@ as.data.frame(x)
 ```
 
 ```
-               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+   mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+1 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+2 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 ```
 
 
@@ -214,9 +220,9 @@ as.data.frame(x)
 ```
 
 ```
-               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+   mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+1 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+2 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 ```
 
 
@@ -270,14 +276,14 @@ as.data.frame(do(input("/tmp/mtcars"), last.col))
 ```
 
 ```
-                    carb
-Mazda RX4              4
-Mazda RX4 Wag          4
-Datsun 710             1
-Hornet 4 Drive         1
-Hornet Sportabout      2
-Valiant                1
-Duster 360             4
+   carb
+1     4
+2     4
+3     1
+4     1
+5     2
+6     1
+7     4
 ....
 ```
 
@@ -314,14 +320,14 @@ as.data.frame(last.col(input("/tmp/mtcars")))
 ```
 
 ```
-                    carb
-Mazda RX4              4
-Mazda RX4 Wag          4
-Datsun 710             1
-Hornet 4 Drive         1
-Hornet Sportabout      2
-Valiant                1
-Duster 360             4
+   carb
+1     4
+2     4
+3     1
+4     1
+5     2
+6     1
+7     4
 ....
 ```
 
@@ -350,15 +356,8 @@ as.data.frame(summarize(input("/tmp/mtcars"), sum(carb) ))
 ```
 
 ```
-    sum.carb.
-1          10
-1.1        11
-1.2        17
-1.3        15
-1.4        10
-1.5        11
-1.6        16
-....
+  sum.carb.
+1        90
 ```
 
 
@@ -393,10 +392,10 @@ as.data.frame(
 ```
 
 ```
-    cyl mean.mpg
-1     6    19.74
-1.1   4    26.66
-1.2   8    15.10
+  cyl mean.mpg
+1   6    19.74
+2   4    26.66
+3   8    15.10
 ```
 
 
@@ -415,13 +414,13 @@ as.data.frame(
 ```
 
 ```
-    carb mean.mpg
-1.2    2    22.40
-1.3    3    16.30
-1      4    15.79
-1.1    1    25.34
-1.4    6    19.70
-1.5    8    15.00
+  carb mean.mpg
+1    4    15.79
+2    1    25.34
+3    2    22.40
+4    3    16.30
+5    6    19.70
+6    8    15.00
 ```
 
 

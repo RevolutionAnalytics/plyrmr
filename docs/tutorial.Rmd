@@ -19,7 +19,7 @@ opts_chunk$set(out.lines = 8)
 options(width = 120)
 ```
 
-```{r startup, echo=FALSE}
+```{r startup, echo=TRUE}
 ```
 
 # Tutorial

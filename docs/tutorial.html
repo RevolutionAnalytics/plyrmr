@@ -179,6 +179,12 @@ hljs.initHighlightingOnLoad();
 </head>
 
 <body>
+<pre><code class="r">suppressPackageStartupMessages(library(&quot;plyrmr&quot;))
+invisible(rmr.options(backend=&quot;local&quot;))
+invisible(dfs.rmr(&quot;/tmp/mtcars&quot;))
+invisible(output(input(mtcars), &quot;/tmp/mtcars&quot;))
+</code></pre>
+
 <h1>Tutorial</h1>
 
 <h2>Predefined operations</h2>
@@ -228,14 +234,14 @@ Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.
 <pre><code class="r">as.data.frame(transform(input(&quot;/tmp/mtcars&quot;), carb.per.cyl = carb/cyl))
 </code></pre>
 
-<pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
-Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
+<pre><code>    mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+1  21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+2  21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+3  22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+4  21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+5  18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+6  18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+7  14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
 ....
 </code></pre>
 
@@ -254,14 +260,14 @@ The return value of <code>output</code> contains the path and some format inform
 as.data.frame(mtcars.w.ratio)
 </code></pre>
 
-<pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
-Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
+<pre><code>    mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+1  21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+2  21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+3  22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+4  21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+5  18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+6  18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+7  14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
 ....
 </code></pre>
 
@@ -323,9 +329,9 @@ Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 as.data.frame(x)
 </code></pre>
 
-<pre><code>               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+<pre><code>   mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+1 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+2 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 </code></pre>
 
 <p>The main differences between the data frame version and the Hadoop data version are the input and the output. All there is in between, pretty much works the same. </p>
@@ -359,9 +365,9 @@ Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 as.data.frame(x)
 </code></pre>
 
-<pre><code>               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+<pre><code>   mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+1 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+2 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 </code></pre>
 
 <p>Similar, but they work everywhere. For instance, if <code>subset</code> or <code>where</code> are called within some function, which is in its turn used in some other function, we can have the following situation:</p>
@@ -401,14 +407,14 @@ Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8
 <pre><code class="r">as.data.frame(do(input(&quot;/tmp/mtcars&quot;), last.col))
 </code></pre>
 
-<pre><code>                    carb
-Mazda RX4              4
-Mazda RX4 Wag          4
-Datsun 710             1
-Hornet 4 Drive         1
-Hornet Sportabout      2
-Valiant                1
-Duster 360             4
+<pre><code>   carb
+1     4
+2     4
+3     1
+4     1
+5     2
+6     1
+7     4
 ....
 </code></pre>
 
@@ -437,14 +443,14 @@ Duster 360             4
 <pre><code class="r">as.data.frame(last.col(input(&quot;/tmp/mtcars&quot;)))
 </code></pre>
 
-<pre><code>                    carb
-Mazda RX4              4
-Mazda RX4 Wag          4
-Datsun 710             1
-Hornet 4 Drive         1
-Hornet Sportabout      2
-Valiant                1
-Duster 360             4
+<pre><code>   carb
+1     4
+2     4
+3     1
+4     1
+5     2
+6     1
+7     4
 ....
 </code></pre>
 
@@ -464,15 +470,8 @@ Duster 360             4
 <pre><code class="r">as.data.frame(summarize(input(&quot;/tmp/mtcars&quot;), sum(carb) ))
 </code></pre>
 
-<pre><code>    sum.carb.
-1          10
-1.1        11
-1.2        17
-1.3        15
-1.4        10
-1.5        11
-1.6        16
-....
+<pre><code>  sum.carb.
+1        90
 </code></pre>
 
 <p>What does that mean? The data in Hadoop is always grouped, one way or another (this is also a key difference with the current <code>dplyr</code> design). It couldn&#39;t be otherwise: it is stored on multiple devices and, even if it weren&#39;t, we can only load it into memory in small chunks. So think of it as always grouped, initially in arbitrary fashion and later in the way we determine using the functions <code>group</code>, <code>group.f</code> and <code>gather</code>. These were inspired by the notion of key in mapreduce, the SQL statement and the <code>dplyr</code> function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:</p>
@@ -499,10 +498,10 @@ Duster 360             4
         mean.mpg = mean(mpg)))
 </code></pre>
 
-<pre><code>    cyl mean.mpg
-1     6    19.74
-1.1   4    26.66
-1.2   8    15.10
+<pre><code>  cyl mean.mpg
+1   6    19.74
+2   4    26.66
+3   8    15.10
 </code></pre>
 
 <p>This mostly a scalable programs, but there are some caveats: we need to be mindful of the size of the groups. If they are very big they will bust memory limits, so we need to reach for some advanced techniques to avoid this problem. If they are very small, like a handful of rows, we may run into some efficiency issues releated to the current R and <code>rmr2</code> implementations rather than fundamental (so there is hope they will go away one day). </p>
@@ -517,13 +516,13 @@ Duster 360             4
         mean.mpg = mean(mpg)))
 </code></pre>
 
-<pre><code>    carb mean.mpg
-1.2    2    22.40
-1.3    3    16.30
-1      4    15.79
-1.1    1    25.34
-1.4    6    19.70
-1.5    8    15.00
+<pre><code>  carb mean.mpg
+1    4    15.79
+2    1    25.34
+3    2    22.40
+4    3    16.30
+5    6    19.70
+6    8    15.00
 </code></pre>
 
 </body>

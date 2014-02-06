@@ -477,10 +477,12 @@ input("/tmp/mtcars") %|%
 
 
 ```r
-input("/tmp/mtcars") %|%
+models = 
+	input("/tmp/mtcars") %|%
 	group(carb) %|%
 	select(model = list(lm(mpg~cyl+disp))) %|%
 	as.data.frame()
+models
 ```
 
 ```
@@ -491,5 +493,21 @@ input("/tmp/mtcars") %|%
 1.3    3 c(16.3, ....
 1.4    6 c(19.7, ....
 1.5    8 c(15, NA....
+```
+
+```r
+models[1,2]
+```
+
+```
+[[1]]
+
+Call:
+lm(formula = mpg ~ cyl + disp)
+
+Coefficients:
+(Intercept)          cyl         disp  
+     22.694        0.329       -0.030  
+....
 ```
 

@@ -107,7 +107,10 @@ input("/tmp/mtcars") %|%
 	quantile.cols() %|%
 	as.data.frame()
 ## @knitr group-lm
-input("/tmp/mtcars") %|%
+models = 
+	input("/tmp/mtcars") %|%
 	group(carb) %|%
 	select(model = list(lm(mpg~cyl+disp))) %|%
 	as.data.frame()
+models
+models[1,2]

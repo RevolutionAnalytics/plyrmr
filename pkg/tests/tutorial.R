@@ -1,7 +1,11 @@
 ## @knitr startup
+options(warn = -1)
+rm(mtcars)
 suppressPackageStartupMessages(library("plyrmr"))
 invisible(rmr.options(backend="local"))
 invisible(dfs.rmr("/tmp/mtcars"))
+mtcars = cbind(model = row.names(mtcars), mtcars)
+row.names(mtcars) = NULL
 invisible(output(input(mtcars), "/tmp/mtcars"))
 ## @knitr mtcars
 mtcars
@@ -71,13 +75,22 @@ last.col(mtcars)
 as.data.frame(last.col(input("/tmp/mtcars")))
 ## @knitr summarize
 summarize(mtcars, sum(carb))
+## @knitr summarize-input-setup
+invisible({
+	rmr.options(backend = "hadoop")
+	if3 = make.input.format("native", read.size = 1000)
+	of3 = make.output.format("native", write.size = 1000)
+	dfs.rmr("/tmp/mtcars3")
+	to.dfs(mtcars, format = of3, output = "/tmp/mtcars3")})
 ## @knitr summarize-input
-as.data.frame(summarize(input("/tmp/mtcars"), sum(carb) ))
+as.data.frame(summarize(input("/tmp/mtcars3", format = if3), sum(carb) ))
 ## @knitr summarize-gather
-input("/tmp/mtcars") %|%
+input("/tmp/mtcars3", format = if3) %|%
 	gather() %|%
 	summarize(carb = sum(carb)) %|%
 	as.data.frame()
+## @knitr summarize-gather-cleanup
+invisible(suppressWarnings(rmr.options(backend = "local")))
 ## @knitr select-group
 input("/tmp/mtcars") %|%
 	group(cyl) %|%
@@ -92,11 +105,6 @@ input("/tmp/mtcars") %|%
 input("/tmp/mtcars") %|%
 	group(carb) %|%
 	quantile.cols() %|%
-	as.data.frame()
-## @knitr group-lm
-input("/tmp/mtcars") %|%
-	group(carb) %|%
-	select(model = lm(mpg~cyl+disp)) %|%
 	as.data.frame()
 ## @knitr group-lm
 input("/tmp/mtcars") %|%

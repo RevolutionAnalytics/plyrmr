@@ -99,7 +99,7 @@ You may have noticed that the last example consists of a fairly complex expressi
 ```{r assignment-chain}
 ```
 
-The purists will find that introducing one variable for each intermediate step quite unsightly. To avoid this plyrmr offers a unix-style pipe operator, inspired by two precedents, by[@crowding](https://github.com/crowding/vadr/blob/master/R/chain.R) and [@hadley](https://github.com/hadley/dplyr/blob/master/R/chain.r).
+The purists will find that introducing one variable for each intermediate step quite unsightly. To avoid this plyrmr offers a unix-style pipe operator, inspired by two precedents, by [@crowding](https://github.com/crowding/vadr/blob/master/R/chain.R) and [@hadley](https://github.com/hadley/dplyr/blob/master/R/chain.r).
 
 ```{r pipe-operator}
 ```
@@ -157,12 +157,18 @@ Until now we performed row by row operations, whereby each row in the results de
 
 What happens if we do this on a Hadoop data set?
 
+```{r summarize-input-setup, echo=FALSE}
+```
+
 ```{r summarize-input}
 ```
 
 Bingo, the same, but there's a catch. Unfortunately this example is misleading because it's based on a small data set that fits into main memory. In general, the data in Hadoop is always grouped, one way or another. It couldn't be otherwise: it is stored on multiple devices and, even if it weren't, we can only load it into memory in small chunks. In this specific example, there is only one chunk, but in general there would be multiple chunksSo think of it as always grouped, initially in arbitrary fashion and later in the way we determine using the functions `group`, `group.f` and `gather`. These were inspired by the notion of key in mapreduce, the SQL statement and the `dplyr` function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:
 
 ```{r summarize-gather}
+```
+
+```{r summarize-gather-cleanup, echo=FALSE}
 ```
 
 You may have noticed the contradiction between the above statement that data is always in chunks with the availability of a `gather` function. Luckily, there is an advanced way of grouping recursively, in a tree like fashion, that works with associative and commutative operations such as the sum, which is the default for `gather`. Anyway, it will all be more clear as we cover other grouping functions.
@@ -184,4 +190,8 @@ When the definition of the grouping column is more complicated, we may need to r
 Despite the SQL-ish flavor and undeniable SQL inspiration for some of these operations, we want to highlight a few ways in which `plyrmr` is much more powerful than SQL. The first is that summaries or aggregation don't need to be limited to a single row. One form of aggregation are summaries and summaries can have many elements, even thousands. Momenta, quantiles, histograms, samples, they all have multiple entries. You could represent them as multiple columns up to a certain size, but removing the SQL limitation on aggregations is a good thing. Here how it works. Let's say you want to examine the quantiles of the gas milage data in each group of cars with the same number of carburetors
 
 ```{r group-quantile}
+```	
+
+
+```{r group-lm}
 ```	

@@ -179,12 +179,6 @@ hljs.initHighlightingOnLoad();
 </head>
 
 <body>
-<pre><code class="r">suppressPackageStartupMessages(library(&quot;plyrmr&quot;))
-invisible(rmr.options(backend=&quot;local&quot;))
-invisible(dfs.rmr(&quot;/tmp/mtcars&quot;))
-invisible(output(input(mtcars), &quot;/tmp/mtcars&quot;))
-</code></pre>
-
 <h1>Tutorial</h1>
 
 <h2>Predefined operations</h2>
@@ -194,14 +188,14 @@ invisible(output(input(mtcars), &quot;/tmp/mtcars&quot;))
 <pre><code class="r">mtcars
 </code></pre>
 
-<pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
-Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
-Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
-Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
-Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+<pre><code>                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+1            Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+2        Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+3           Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+4       Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+5    Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+6              Valiant 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+7           Duster 360 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
 ....
 </code></pre>
 
@@ -210,14 +204,14 @@ Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
 <pre><code class="r">transform(mtcars, carb.per.cyl = carb/cyl)
 </code></pre>
 
-<pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
-Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
+<pre><code>                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+1            Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+2        Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+3           Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+4       Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+5    Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+6              Valiant 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+7           Duster 360 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
 ....
 </code></pre>
 
@@ -234,14 +228,14 @@ Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.
 <pre><code class="r">as.data.frame(transform(input(&quot;/tmp/mtcars&quot;), carb.per.cyl = carb/cyl))
 </code></pre>
 
-<pre><code>    mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-1  21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-2  21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-3  22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-4  21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-5  18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
-6  18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-7  14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
+<pre><code>                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+1            Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+2        Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+3           Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+4       Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+5    Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+6              Valiant 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+7           Duster 360 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
 ....
 </code></pre>
 
@@ -260,14 +254,14 @@ The return value of <code>output</code> contains the path and some format inform
 as.data.frame(mtcars.w.ratio)
 </code></pre>
 
-<pre><code>    mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-1  21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-2  21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-3  22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-4  21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-5  18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
-6  18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-7  14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
+<pre><code>                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+1            Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+2        Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+3           Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+4       Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+5    Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+6              Valiant 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+7           Duster 360 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
 ....
 </code></pre>
 
@@ -313,9 +307,9 @@ as.data.frame(mtcars.w.ratio)
     carb.per.cyl &gt;= 1)
 </code></pre>
 
-<pre><code>               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+<pre><code>           model  mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+30  Ferrari Dino 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+31 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 </code></pre>
 
 <p>Wouldn&#39;t it be nice if we could do exactly the same on a Hadoop data set? In fact, we almost can:</p>
@@ -329,9 +323,9 @@ Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 as.data.frame(x)
 </code></pre>
 
-<pre><code>   mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-1 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-2 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+<pre><code>          model  mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+1  Ferrari Dino 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+2 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 </code></pre>
 
 <p>The main differences between the data frame version and the Hadoop data version are the input and the output. All there is in between, pretty much works the same. </p>
@@ -344,21 +338,21 @@ as.data.frame(x)
 subset(x, carb.per.cyl &gt;= 1)
 </code></pre>
 
-<pre><code>               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+<pre><code>           model  mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+30  Ferrari Dino 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+31 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 </code></pre>
 
-<p>The purists will find that introducing one variable for each intermediate step quite unsightly. To avoid this plyrmr offers a unix-style pipe operator, inspired by two precedents, by<a href="https://github.com/crowding/vadr/blob/master/R/chain.R">@crowding</a> and <a href="https://github.com/hadley/dplyr/blob/master/R/chain.r">@hadley</a>.</p>
+<p>The purists will find that introducing one variable for each intermediate step quite unsightly. To avoid this plyrmr offers a unix-style pipe operator, inspired by two precedents, by <a href="https://github.com/crowding/vadr/blob/master/R/chain.R">@crowding</a> and <a href="https://github.com/hadley/dplyr/blob/master/R/chain.r">@hadley</a>.</p>
 
 <pre><code class="r">mtcars %|%
     transform(carb.per.cyl = carb/cyl) %|%
     subset(carb.per.cyl &gt;= 1)
 </code></pre>
 
-<pre><code>               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+<pre><code>           model  mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+30  Ferrari Dino 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+31 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 </code></pre>
 
 <p>What this does is providing the value of the leftmost expression as the first unnamed argument of the next function call, evaluate this combination and continue to the next operator. Rather than arguing over which style is best, it&#39;s probably best to bask in the flexibility made possible by the R language and your indefatigable developers and pick the one that&#39;s best case-by-case. In particular, pipes can not express more complex data flows where two flows merge or one splits. In the following I will alternate between these three notations (nested, assignment chaing and pipe operator) based on which seems the clearest. It should be safe to assume that each example can be translated into any of the three.</p>
@@ -372,9 +366,9 @@ Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
     where(carb.per.cyl &gt;= 1)
 </code></pre>
 
-<pre><code>               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-Ferrari.Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-Maserati.Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+<pre><code>            model  mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+X30  Ferrari Dino 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+X31 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 </code></pre>
 
 <p>and:</p>
@@ -386,9 +380,9 @@ Maserati.Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 as.data.frame(x)
 </code></pre>
 
-<pre><code>   mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-1 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-2 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+<pre><code>          model  mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+1  Ferrari Dino 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+2 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 </code></pre>
 
 <p>Similar, but they work everywhere. For instance, if <code>subset</code> is called within some function, which is in its turn used in some other function, we can have the following situation:</p>
@@ -396,9 +390,6 @@ as.data.frame(x)
 <pre><code class="r">process.mtcars.1 = function(...) subset(mtcars, ...)
 high.carb.cyl.1 = function(x) {process.mtcars.1(carb/cyl &gt;= x) }
 high.carb.cyl.1(1) 
-</code></pre>
-
-<pre><code>Warning: longer object length is not a multiple of shorter object length
 </code></pre>
 
 <pre><code>Error: (list) object cannot be coerced to type &#39;double&#39;
@@ -411,9 +402,9 @@ high.carb.cyl.2 = function(x) {process.mtcars.2(carb/cyl &gt;= x) }
 high.carb.cyl.2(1)
 </code></pre>
 
-<pre><code>               mpg cyl disp  hp drat   wt qsec vs am gear carb
-Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6
-Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8
+<pre><code>           model  mpg cyl disp  hp drat   wt qsec vs am gear carb
+30  Ferrari Dino 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6
+31 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8
 </code></pre>
 
 <p>The exact reason why <code>where</code> needs an additional argument in this scenario and what to provide are out of scope for this tutorial, but the message is that with <code>where</code> and <code>select</code> you can transition nicely from interactive R use to development. The R documentation recommends to use <code>[]</code> only when programming, but having to rewrite code in a different context, to a computer scientist, is just an admission of defeat. Therefore <code>plyrmr</code> provides methods for <code>transform</code>, <code>subset</code>, <code>mutate</code> and <code>summarize</code> because of their widespread use, but we recommend to check out <code>where</code> and <code>select</code> (many thanks to Hadley Wickham for valuable discussions on this issue).</p>
@@ -444,22 +435,17 @@ Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8
 <p>What <code>do</code> does is take any function that reads and writes data frames, execute it on a Hadoop data set in parallel on relatively small chunks of the data and pass the results to <code>as.data.frame</code> or <code>output</code> which send them to their final destination. Wouldn&#39;t it absolutely perfect if the <code>lastcol</code> function itself knew whether it&#39;s working on a Hadoop data set or a data frame and do the right thing? It actually is possible:</p>
 
 <pre><code class="r">magic.wand(last.col)
+last.col(mtcars)
 </code></pre>
 
-<pre><code>Warning: Renamed the preexisting function last.col to last.col.default, which was defined in environment base.
-</code></pre>
-
-<pre><code class="r">last.col(mtcars)
-</code></pre>
-
-<pre><code>                    carb
-Mazda RX4              4
-Mazda RX4 Wag          4
-Datsun 710             1
-Hornet 4 Drive         1
-Hornet Sportabout      2
-Valiant                1
-Duster 360             4
+<pre><code>   carb
+1     4
+2     4
+3     1
+4     1
+5     2
+6     1
+7     4
 ....
 </code></pre>
 
@@ -490,23 +476,36 @@ Duster 360             4
 
 <p>What happens if we do this on a Hadoop data set?</p>
 
-<pre><code class="r">as.data.frame(summarize(input(&quot;/tmp/mtcars&quot;), sum(carb) ))
+<pre><code>Error: Please make sure that the env. variable HADOOP_CMD is set
 </code></pre>
 
-<pre><code>  sum.carb.
-1        90
+<pre><code class="r">as.data.frame(summarize(input(&quot;/tmp/mtcars3&quot;, format = if3), sum(carb) ))
+</code></pre>
+
+<pre><code>Error: Please make sure that the env. variable HADOOP_CMD is set
+</code></pre>
+
+<pre><code>Error: Please make sure that the env. variable HADOOP_STREAMING is set
+</code></pre>
+
+<pre><code>Error: Please make sure that the env. variable HADOOP_CMD is set
 </code></pre>
 
 <p>Bingo, the same, but there&#39;s a catch. Unfortunately this example is misleading because it&#39;s based on a small data set that fits into main memory. In general, the data in Hadoop is always grouped, one way or another. It couldn&#39;t be otherwise: it is stored on multiple devices and, even if it weren&#39;t, we can only load it into memory in small chunks. In this specific example, there is only one chunk, but in general there would be multiple chunksSo think of it as always grouped, initially in arbitrary fashion and later in the way we determine using the functions <code>group</code>, <code>group.f</code> and <code>gather</code>. These were inspired by the notion of key in mapreduce, the SQL statement and the <code>dplyr</code> function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:</p>
 
-<pre><code class="r">input(&quot;/tmp/mtcars&quot;) %|%
+<pre><code class="r">input(&quot;/tmp/mtcars3&quot;, format = if3) %|%
     gather() %|%
     summarize(carb = sum(carb)) %|%
     as.data.frame()
 </code></pre>
 
-<pre><code>  carb
-1   90
+<pre><code>Error: Please make sure that the env. variable HADOOP_CMD is set
+</code></pre>
+
+<pre><code>Error: Please make sure that the env. variable HADOOP_STREAMING is set
+</code></pre>
+
+<pre><code>Error: Please make sure that the env. variable HADOOP_CMD is set
 </code></pre>
 
 <p>You may have noticed the contradiction between the above statement that data is always in chunks with the availability of a <code>gather</code> function. Luckily, there is an advanced way of grouping recursively, in a tree like fashion, that works with associative and commutative operations such as the sum, which is the default for <code>gather</code>. Anyway, it will all be more clear as we cover other grouping functions.</p>
@@ -563,6 +562,21 @@ Duster 360             4
 6     1      1 21.18 4.000  78.21  65.93 3.151 1.968 18.96 1.000000 0.0000 3.000      1
 7     1      1 22.09 4.000  91.94  78.05 3.652 2.205 19.36 1.000000 0.4450 3.445      1
 ....
+</code></pre>
+
+<pre><code class="r">input(&quot;/tmp/mtcars&quot;) %|%
+    group(carb) %|%
+    select(model = list(lm(mpg~cyl+disp))) %|%
+    as.data.frame()
+</code></pre>
+
+<pre><code>    carb        model
+1      4 list(coe....
+1.1    1 list(coe....
+1.2    2 list(coe....
+1.3    3 list(coe....
+1.4    6 list(coe....
+1.5    8 list(coe....
 </code></pre>
 
 </body>

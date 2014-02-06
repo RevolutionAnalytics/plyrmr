@@ -367,9 +367,6 @@ summarize(mtcars, sum(carb))
 What happens if we do this on a Hadoop data set?
 
 
-```
-Error: Please make sure that the env. variable HADOOP_CMD is set
-```
 
 
 
@@ -378,15 +375,15 @@ as.data.frame(summarize(input("/tmp/mtcars3", format = if3), sum(carb) ))
 ```
 
 ```
-Error: Please make sure that the env. variable HADOOP_CMD is set
-```
-
-```
-Error: Please make sure that the env. variable HADOOP_STREAMING is set
-```
-
-```
-Error: Please make sure that the env. variable HADOOP_CMD is set
+  sum.carb.
+1        10
+2         9
+3        16
+4        15
+5         5
+6        11
+7        14
+....
 ```
 
 
@@ -401,15 +398,8 @@ input("/tmp/mtcars3", format = if3) %|%
 ```
 
 ```
-Error: Please make sure that the env. variable HADOOP_CMD is set
-```
-
-```
-Error: Please make sure that the env. variable HADOOP_STREAMING is set
-```
-
-```
-Error: Please make sure that the env. variable HADOOP_CMD is set
+  carb
+1   90
 ```
 
 
@@ -472,14 +462,14 @@ input("/tmp/mtcars") %|%
 ```
 
 ```
-   carb carb.2   mpg   cyl   disp     hp  drat    wt  qsec       vs     am  gear carb.1
-1     4      4 10.86 6.000 161.20 112.05 3.012 2.844 15.20 0.000000 0.0000 3.000      4
-2     4      4 13.92 6.195 185.39 131.01 3.271 3.326 16.25 0.000000 0.0000 3.002      4
-3     4      4 15.25 8.000 350.50 210.00 3.815 3.505 17.22 0.000000 0.0000 3.500      4
-4     4      4 18.19 8.000 392.87 234.85 3.908 4.408 17.85 0.000000 0.4219 3.998      4
-5     4      4 20.72 8.000 460.48 250.75 4.011 5.354 18.43 0.842500 1.0000 4.302      4
-6     1      1 21.18 4.000  78.21  65.93 3.151 1.968 18.96 1.000000 0.0000 3.000      1
-7     1      1 22.09 4.000  91.94  78.05 3.652 2.205 19.36 1.000000 0.4450 3.445      1
+   carb   mpg   cyl   disp     hp  drat    wt  qsec       vs     am  gear
+1     4 10.86 6.000 161.20 112.05 3.012 2.844 15.20 0.000000 0.0000 3.000
+2     4 13.92 6.195 185.39 131.01 3.271 3.326 16.25 0.000000 0.0000 3.002
+3     4 15.25 8.000 350.50 210.00 3.815 3.505 17.22 0.000000 0.0000 3.500
+4     4 18.19 8.000 392.87 234.85 3.908 4.408 17.85 0.000000 0.4219 3.998
+5     4 20.72 8.000 460.48 250.75 4.011 5.354 18.43 0.842500 1.0000 4.302
+6     1 21.18 4.000  78.21  65.93 3.151 1.968 18.96 1.000000 0.0000 3.000
+7     1 22.09 4.000  91.94  78.05 3.652 2.205 19.36 1.000000 0.4450 3.445
 ....
 ```
 
@@ -495,11 +485,11 @@ input("/tmp/mtcars") %|%
 
 ```
     carb        model
-1      4 list(coe....
-1.1    1 list(coe....
-1.2    2 list(coe....
-1.3    3 list(coe....
-1.4    6 list(coe....
-1.5    8 list(coe....
+1      4 c(22.693....
+1.1    1 c(9.2859....
+1.2    2 c(32.723....
+1.3    3 c(16.3, ....
+1.4    6 c(19.7, ....
+1.5    8 c(15, NA....
 ```
 

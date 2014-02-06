@@ -476,19 +476,18 @@ last.col(mtcars)
 
 <p>What happens if we do this on a Hadoop data set?</p>
 
-<pre><code>Error: Please make sure that the env. variable HADOOP_CMD is set
-</code></pre>
-
 <pre><code class="r">as.data.frame(summarize(input(&quot;/tmp/mtcars3&quot;, format = if3), sum(carb) ))
 </code></pre>
 
-<pre><code>Error: Please make sure that the env. variable HADOOP_CMD is set
-</code></pre>
-
-<pre><code>Error: Please make sure that the env. variable HADOOP_STREAMING is set
-</code></pre>
-
-<pre><code>Error: Please make sure that the env. variable HADOOP_CMD is set
+<pre><code>  sum.carb.
+1        10
+2         9
+3        16
+4        15
+5         5
+6        11
+7        14
+....
 </code></pre>
 
 <p>Bingo, the same, but there&#39;s a catch. Unfortunately this example is misleading because it&#39;s based on a small data set that fits into main memory. In general, the data in Hadoop is always grouped, one way or another. It couldn&#39;t be otherwise: it is stored on multiple devices and, even if it weren&#39;t, we can only load it into memory in small chunks. In this specific example, there is only one chunk, but in general there would be multiple chunksSo think of it as always grouped, initially in arbitrary fashion and later in the way we determine using the functions <code>group</code>, <code>group.f</code> and <code>gather</code>. These were inspired by the notion of key in mapreduce, the SQL statement and the <code>dplyr</code> function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:</p>
@@ -499,13 +498,8 @@ last.col(mtcars)
     as.data.frame()
 </code></pre>
 
-<pre><code>Error: Please make sure that the env. variable HADOOP_CMD is set
-</code></pre>
-
-<pre><code>Error: Please make sure that the env. variable HADOOP_STREAMING is set
-</code></pre>
-
-<pre><code>Error: Please make sure that the env. variable HADOOP_CMD is set
+<pre><code>  carb
+1   90
 </code></pre>
 
 <p>You may have noticed the contradiction between the above statement that data is always in chunks with the availability of a <code>gather</code> function. Luckily, there is an advanced way of grouping recursively, in a tree like fashion, that works with associative and commutative operations such as the sum, which is the default for <code>gather</code>. Anyway, it will all be more clear as we cover other grouping functions.</p>
@@ -553,14 +547,14 @@ last.col(mtcars)
     as.data.frame()
 </code></pre>
 
-<pre><code>   carb carb.2   mpg   cyl   disp     hp  drat    wt  qsec       vs     am  gear carb.1
-1     4      4 10.86 6.000 161.20 112.05 3.012 2.844 15.20 0.000000 0.0000 3.000      4
-2     4      4 13.92 6.195 185.39 131.01 3.271 3.326 16.25 0.000000 0.0000 3.002      4
-3     4      4 15.25 8.000 350.50 210.00 3.815 3.505 17.22 0.000000 0.0000 3.500      4
-4     4      4 18.19 8.000 392.87 234.85 3.908 4.408 17.85 0.000000 0.4219 3.998      4
-5     4      4 20.72 8.000 460.48 250.75 4.011 5.354 18.43 0.842500 1.0000 4.302      4
-6     1      1 21.18 4.000  78.21  65.93 3.151 1.968 18.96 1.000000 0.0000 3.000      1
-7     1      1 22.09 4.000  91.94  78.05 3.652 2.205 19.36 1.000000 0.4450 3.445      1
+<pre><code>   carb   mpg   cyl   disp     hp  drat    wt  qsec       vs     am  gear
+1     4 10.86 6.000 161.20 112.05 3.012 2.844 15.20 0.000000 0.0000 3.000
+2     4 13.92 6.195 185.39 131.01 3.271 3.326 16.25 0.000000 0.0000 3.002
+3     4 15.25 8.000 350.50 210.00 3.815 3.505 17.22 0.000000 0.0000 3.500
+4     4 18.19 8.000 392.87 234.85 3.908 4.408 17.85 0.000000 0.4219 3.998
+5     4 20.72 8.000 460.48 250.75 4.011 5.354 18.43 0.842500 1.0000 4.302
+6     1 21.18 4.000  78.21  65.93 3.151 1.968 18.96 1.000000 0.0000 3.000
+7     1 22.09 4.000  91.94  78.05 3.652 2.205 19.36 1.000000 0.4450 3.445
 ....
 </code></pre>
 
@@ -571,12 +565,12 @@ last.col(mtcars)
 </code></pre>
 
 <pre><code>    carb        model
-1      4 list(coe....
-1.1    1 list(coe....
-1.2    2 list(coe....
-1.3    3 list(coe....
-1.4    6 list(coe....
-1.5    8 list(coe....
+1      4 c(22.693....
+1.1    1 c(9.2859....
+1.2    2 c(32.723....
+1.3    3 c(16.3, ....
+1.4    6 c(19.7, ....
+1.5    8 c(15, NA....
 </code></pre>
 
 </body>

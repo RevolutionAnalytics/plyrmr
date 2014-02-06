@@ -100,3 +100,14 @@ incremental: true
 ```
 ====
 ```{r select-group.f}
+```
+
+====
+
+```{r group-quantile}
+```	
+
+====
+
+```{r group-lm}
+```	

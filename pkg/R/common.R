@@ -107,7 +107,7 @@ safe.cbind  =
 		if(shortest == 0)
 			data.frame()
 		else {
-			x = splat(data.frame)(ll)
+			x = splat(data.frame)(c(ll, list(check.names = FALSE)))
 			x[, unique(names(x)), drop = FALSE]}}
 
 fract.recycling = 

@@ -1,4 +1,4 @@
-`r read_chunk('../tests/tutorial.R')`
+`r read_chunk('../pkg/tests/tutorial.R')`
 `r opts_chunk$set(echo=TRUE, tidy=FALSE, comment="", cache=FALSE)`
 `r opts_knit$set(stop_on_error=0)`
 `r options(width = 120)`
@@ -43,13 +43,13 @@ incremental: true
 ```{r as.data.frame-transform-input}
 ```
 ====
-```{r invisible-dfs.rmr}
+```{r invisible-dfs.rmr, echo=FALSE}
 ```
-====
+
 ```{r output-transform-input}
 ```
 ====
-```{r mtcars.w.ratio}
+```{r mtcars-w-ratio}
 ```
 ====
 ```{r subset-transform}
@@ -66,13 +66,13 @@ incremental: true
 ====
 ```{r process.mtcars.1}
 ```
-====
+
 ```{r process.mtcars.2}
 ```
 ====
 ```{r last.col}
 ```
-====
+
 ```{r do-input}
 ```
 ====
@@ -81,11 +81,19 @@ incremental: true
 ====
 ```{r summarize}
 ```
-====
+
+
+```{r summarize-input-setup, echo=FALSE}
+```
+
 ```{r summarize-input}
 ```
-====
-```{r summarize-group.together}
+
+
+```{r summarize-gather}
+```
+
+```{r summarize-gather-cleanup, echo=FALSE}
 ```
 ====
 ```{r select-group}

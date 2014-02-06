@@ -10,7 +10,7 @@
 
 Plyrmr
 ====================================
-author: Antonio Piccolboni
+author: Antonio Piccolboni for Revolution Analytics
 autosize: true 
 incremental: true
 
@@ -144,7 +144,27 @@ as.data.frame(x)
 2 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 ```
 
-====
+
+
+
+```r
+x =	transform(mtcars, carb.per.cyl = carb/cyl) 
+subset(x, carb.per.cyl >= 1)
+```
+
+
+
+
+
+```r
+mtcars %|%
+	transform(carb.per.cyl = carb/cyl) %|%
+	subset(carb.per.cyl >= 1)
+```
+
+
+===
+
 
 ```r
 mtcars %|%
@@ -373,19 +393,37 @@ input("/tmp/mtcars") %|%
 
 
 ```r
-input("/tmp/mtcars") %|%
+models = 
+	input("/tmp/mtcars") %|%
 	group(carb) %|%
 	select(model = list(lm(mpg~cyl+disp))) %|%
 	as.data.frame()
+models
 ```
 
 ```
     carb        model
-1      4 list(coe....
-1.1    1 list(coe....
-1.2    2 list(coe....
-1.3    3 list(coe....
-1.4    6 list(coe....
-1.5    8 list(coe....
+1      4 c(22.693....
+1.1    1 c(9.2859....
+1.2    2 c(32.723....
+1.3    3 c(16.3, ....
+1.4    6 c(19.7, ....
+1.5    8 c(15, NA....
+```
+
+```r
+models[1,2]
+```
+
+```
+[[1]]
+
+Call:
+lm(formula = mpg ~ cyl + disp)
+
+Coefficients:
+(Intercept)          cyl         disp  
+     22.694        0.329       -0.030  
+....
 ```
 

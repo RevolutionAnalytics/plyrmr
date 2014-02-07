@@ -21,6 +21,14 @@ constant =
 	function(x)
 		function(...) x
 
+callapply = 
+	function(x, f) {
+		x = substitute(x)
+		calapply.q(x, f)}
+
+callapply.q = 
+	function(x, f)
+		as.call(lapply(x, function(y) if(is.call(y)) callapply.q(y, f) else f(y)))
 
 chain.call.q =
 	function(f, g, envir)
@@ -44,12 +52,17 @@ chain.value.q =
 			else {
 				if(f[[1]] == "(")
 					list(eval(f[[2]]), x)
-				else
-					c(list(f[[1]], x), as.list(f[-1]))}}
+				else {
+					use.default.arg = TRUE
+					f = callapply.q(f, function(y) if(is.symbol(y) && y == ".") {use.default.arg <<- FALSE; x} else y)
+					if(use.default.arg) 
+						c(list(f[[1]], x), as.list(f[-1]))
+					else f}}}
 		eval(as.call(ff), envir = envir)}
 
 chain.value =
 	function(x, f, envir = parent.frame()) {
+		x = substitute(x)
 		f = substitute(f)
 		chain.value.q(x, f, envir = envir)}
 
@@ -66,7 +79,7 @@ CurryL.curried.args.last =
 `|` = function(a.call) {
 	a.call = substitute(a.call)
 	f = a.call[[1]]
-  splat(CurryL.curried.args.last)(c(list(FUN=f), as.list(a.call)[-1]))}
+	splat(CurryL.curried.args.last)(c(list(FUN=f), as.list(a.call)[-1]))}
 
 
 #curried arguments are eager, the rest lazy

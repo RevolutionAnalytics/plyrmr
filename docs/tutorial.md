@@ -254,8 +254,8 @@ Similar, but they work everywhere. For instance, if `subset` is called within so
 
 
 ```r
-process.mtcars.1 = function(...) subset(mtcars, ...)
-high.carb.cyl.1 = function(x) {process.mtcars.1(carb/cyl >= x) }
+subset.mtcars.1 = function(...) subset(mtcars, ...)
+high.carb.cyl.1 = function(x) {subset.mtcars.1(carb/cyl >= x) }
 high.carb.cyl.1(1) 
 ```
 
@@ -268,8 +268,8 @@ Unfortunately, it doesn't work. With `where` instead:
 
 
 ```r
-process.mtcars.2 = function(...) where(mtcars, ..., .envir = parent.frame())
-high.carb.cyl.2 = function(x) {process.mtcars.2(carb/cyl >= x) }
+subset.mtcars.2 = function(...) where(mtcars, ..., .envir = parent.frame())
+high.carb.cyl.2 = function(x) {subset.mtcars.2(carb/cyl >= x) }
 high.carb.cyl.2(1)
 ```
 

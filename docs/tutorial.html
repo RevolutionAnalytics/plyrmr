@@ -387,8 +387,8 @@ as.data.frame(x)
 
 <p>Similar, but they work everywhere. For instance, if <code>subset</code> is called within some function, which is in its turn used in some other function, we can have the following situation:</p>
 
-<pre><code class="r">process.mtcars.1 = function(...) subset(mtcars, ...)
-high.carb.cyl.1 = function(x) {process.mtcars.1(carb/cyl &gt;= x) }
+<pre><code class="r">subset.mtcars.1 = function(...) subset(mtcars, ...)
+high.carb.cyl.1 = function(x) {subset.mtcars.1(carb/cyl &gt;= x) }
 high.carb.cyl.1(1) 
 </code></pre>
 
@@ -397,8 +397,8 @@ high.carb.cyl.1(1)
 
 <p>Unfortunately, it doesn&#39;t work. With <code>where</code> instead:</p>
 
-<pre><code class="r">process.mtcars.2 = function(...) where(mtcars, ..., .envir = parent.frame())
-high.carb.cyl.2 = function(x) {process.mtcars.2(carb/cyl &gt;= x) }
+<pre><code class="r">subset.mtcars.2 = function(...) where(mtcars, ..., .envir = parent.frame())
+high.carb.cyl.2 = function(x) {subset.mtcars.2(carb/cyl &gt;= x) }
 high.carb.cyl.2(1)
 </code></pre>
 

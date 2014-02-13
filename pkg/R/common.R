@@ -67,7 +67,7 @@ chain.value =
 		chain.value.q(x, f, envir = envir)}
 
 `%|%` = chain.value
-`%.%` = chain.call
+`%*%` = chain.call
 
 CurryL.curried.args.last =
 	function (FUN, ...) {

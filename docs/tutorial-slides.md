@@ -57,9 +57,19 @@ transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
 ```
 
 ```
-[1] "Got it! To generate results call the functions output or as.data.frame on this object. Computation has been delayed at least in part."
+                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+1            Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+2        Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+3           Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+4       Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+5    Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+6              Valiant 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+7           Duster 360 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
+....
 ```
 
+
+===
 
 
 ```r
@@ -78,7 +88,7 @@ as.data.frame(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl))
 ....
 ```
 
-====
+
 
 
 
@@ -88,7 +98,15 @@ output(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl), "/tmp/mtcars.ou
 ```
 
 ```
-[1] "Big Data object:" "/tmp/mtcars.out"  "native"          
+                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+1            Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+2        Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+3           Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+4       Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+5    Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+6              Valiant 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+7           Duster 360 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
+....
 ```
 
 ====
@@ -126,7 +144,7 @@ subset(
 31 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 ```
 
-====
+
 
 ```r
 x =
@@ -197,8 +215,8 @@ as.data.frame(x)
 ====
 
 ```r
-process.mtcars.1 = function(...) subset(mtcars, ...)
-high.carb.cyl.1 = function(x) {process.mtcars.1(carb/cyl >= x) }
+subset.mtcars.1 = function(...) subset(mtcars, ...)
+high.carb.cyl.1 = function(x) {subset.mtcars.1(carb/cyl >= x) }
 high.carb.cyl.1(1) 
 ```
 
@@ -209,8 +227,8 @@ Error: (list) object cannot be coerced to type 'double'
 
 
 ```r
-process.mtcars.2 = function(...) where(mtcars, ..., .envir = parent.frame())
-high.carb.cyl.2 = function(x) {process.mtcars.2(carb/cyl >= x) }
+subset.mtcars.2 = function(...) where(mtcars, ..., .envir = parent.frame())
+high.carb.cyl.2 = function(x) {subset.mtcars.2(carb/cyl >= x) }
 high.carb.cyl.2(1)
 ```
 
@@ -293,6 +311,9 @@ summarize(mtcars, sum(carb))
 
 
 
+```
+Error: Please make sure that the env. variable HADOOP_CMD is set
+```
 
 
 
@@ -301,15 +322,15 @@ as.data.frame(summarize(input("/tmp/mtcars3", format = if3), sum(carb) ))
 ```
 
 ```
-  sum.carb.
-1        10
-2         9
-3        16
-4        15
-5         5
-6        11
-7        14
-....
+Error: Please make sure that the env. variable HADOOP_CMD is set
+```
+
+```
+Error: Please make sure that the env. variable HADOOP_STREAMING is set
+```
+
+```
+Error: Please make sure that the env. variable HADOOP_CMD is set
 ```
 
 
@@ -323,8 +344,15 @@ input("/tmp/mtcars3", format = if3) %|%
 ```
 
 ```
-  carb
-1   90
+Error: Please make sure that the env. variable HADOOP_CMD is set
+```
+
+```
+Error: Please make sure that the env. variable HADOOP_STREAMING is set
+```
+
+```
+Error: Please make sure that the env. variable HADOOP_CMD is set
 ```
 
 

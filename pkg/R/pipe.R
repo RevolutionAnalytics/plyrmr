@@ -68,8 +68,8 @@ as.character.pipe =
 
 print.pipe =
 	function(x, ...) {
-		print("Got it! To generate results call the functions output or as.data.frame on this object. Computation has been delayed at least in part.")
-		invisible(x)}
+		print(as.data.frame(sample(x, method = "any", n = 100)))
+	 	invisible(x)}
 
 make.f1 = 
 	function(f, ...) {
@@ -82,6 +82,7 @@ make.f1 =
 							as.data.frame(.y, stringsAsFactors = F)
 						else 
 							data.frame(x = .y, stringsAsFactors = F)}}}
+
 do =  
 	function(.data, .f, ...){
 		.f = freeze.env(.f)

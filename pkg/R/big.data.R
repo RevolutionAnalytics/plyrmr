@@ -24,7 +24,7 @@ as.character.big.data =
 
 print.big.data = 
 	function(x, ...) {
-		print(paste(c("Big Data object:", as.character(x))))
+		print(as.data.frame(sample(input(x), method = "any", n = 100)))
 		invisible(x)}
 
 as.big.data = function(x, ...) UseMethod("as.big.data")

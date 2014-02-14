@@ -30,13 +30,16 @@ callapply.q =
 	function(x, f)
 		as.call(lapply(x, function(y) if(is.call(y)) callapply.q(y, f) else f(y)))
 
-chain.call.q =
-	function(f, g, envir)
-		function(x) {
-			chain.value.q(
-				chain.value.q(x, f, envir = envir), 
-				g, 
-				envir = envir)}
+to.function = 
+	function(f, envir) {
+		if(!is.function(f))
+			function(x) chain.value.q(x, f, envir)
+		else 
+			f}
+
+chain.call.q = 
+  function(f, g, envir)
+  	Compose(to.function(f, envir), to.function(g, envir))
 
 chain.call = 
 	function(f, g, envir = parent.frame()) {
@@ -51,13 +54,16 @@ chain.value.q =
 				list(f, x)
 			else {
 				if(f[[1]] == "(")
-					list(eval(f[[2]]), x)
+					list(f[[2]], x)
 				else {
-					use.default.arg = TRUE
-					f = callapply.q(f, function(y) if(is.symbol(y) && y == ".") {use.default.arg <<- FALSE; x} else y)
-					if(use.default.arg) 
-						c(list(f[[1]], x), as.list(f[-1]))
-					else f}}}
+					if(f[[1]] == "%*%")
+						list(f, x)
+					else {
+						use.default.arg = TRUE
+						f = callapply.q(f, function(y) if(is.symbol(y) && y == ".") {use.default.arg <<- FALSE; x} else y)
+						if(use.default.arg) 
+							c(list(f[[1]], x), as.list(f[-1]))
+						else f}}}}
 		eval(as.call(ff), envir = envir)}
 
 chain.value =

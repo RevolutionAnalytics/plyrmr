@@ -43,7 +43,7 @@ export(
 	output,
 	input,
 	"%|%",
-	"%.%")
+	"%*%")
 S3method(as.pipe, big.data)
 S3method(as.pipe, data.frame)
 S3method(as.pipe, character)
@@ -109,8 +109,5 @@ export(dcast)
 S3method(dcast, pipe)
 S3method(dcast, default)
 S3method(melt, pipe)
-
-#chain operators
-export("%|%", "%.%")
 
 

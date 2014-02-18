@@ -68,11 +68,11 @@ high.carb.cyl.2(1)
 ## @knitr last.col
 last.col = function(x) x[, ncol(x), drop = FALSE]
 ## @knitr do-input
-as.data.frame(do(input("/tmp/mtcars"), last.col))
+do(input("/tmp/mtcars"), last.col)
 ## @knitr magic.wand
 magic.wand(last.col)
 last.col(mtcars)
-as.data.frame(last.col(input("/tmp/mtcars")))
+last.col(input("/tmp/mtcars"))
 ## @knitr summarize
 summarize(mtcars, sum(carb))
 ## @knitr summarize-input-setup
@@ -80,32 +80,28 @@ invisible({
 	rmr.options(backend = "hadoop")
 	if3 = make.input.format("native", read.size = 1000)
 	of3 = make.output.format("native", write.size = 1000)
-	dfs.rmr("/tmp/mtcars3")
+	if(dfs.exists("/tmp/mtcars3")) dfs.rmr("/tmp/mtcars3")
 	to.dfs(mtcars, format = of3, output = "/tmp/mtcars3")})
 ## @knitr summarize-input
-as.data.frame(summarize(input("/tmp/mtcars3", format = if3), sum(carb) ))
+summarize(input("/tmp/mtcars3", format = if3), sum(carb) )
 ## @knitr summarize-gather
 input("/tmp/mtcars3", format = if3) %|%
 	gather() %|%
-	summarize(carb = sum(carb)) %|%
-	as.data.frame()
+	summarize(carb = sum(carb))
 ## @knitr summarize-gather-cleanup
 invisible(suppressWarnings(rmr.options(backend = "local")))
 ## @knitr select-group
 input("/tmp/mtcars") %|%
 	group(cyl) %|%
-	select(mean.mpg = mean(mpg)) %|%
-	as.data.frame()
+	select(mean.mpg = mean(mpg))
 ## @knitr select-group.f
 input("/tmp/mtcars") %|%
 	group.f(last.col) %|%
-	select(mean.mpg = mean(mpg)) %|%
-	as.data.frame()
+	select(mean.mpg = mean(mpg)) 
 ## @knitr group-quantile
 input("/tmp/mtcars") %|%
 	group(carb) %|%
-	quantile.cols() %|%
-	as.data.frame()
+	quantile.cols() 
 ## @knitr group-lm
 models = 
 	input("/tmp/mtcars") %|%

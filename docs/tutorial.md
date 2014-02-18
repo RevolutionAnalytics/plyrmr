@@ -311,7 +311,7 @@ Wouldn't it be great if we could run this on a Hadoop data set? Well, we almost 
 
 
 ```r
-as.data.frame(do(input("/tmp/mtcars"), last.col))
+do(input("/tmp/mtcars"), last.col)
 ```
 
 ```
@@ -348,7 +348,7 @@ last.col(mtcars)
 ```
 
 ```r
-as.data.frame(last.col(input("/tmp/mtcars")))
+last.col(input("/tmp/mtcars"))
 ```
 
 ```
@@ -383,26 +383,23 @@ summarize(mtcars, sum(carb))
 What happens if we do this on a Hadoop data set?
 
 
-```
-Error: Please make sure that the env. variable HADOOP_CMD is set
-```
 
 
 
 ```r
-as.data.frame(summarize(input("/tmp/mtcars3", format = if3), sum(carb) ))
+summarize(input("/tmp/mtcars3", format = if3), sum(carb) )
 ```
 
 ```
-Error: Please make sure that the env. variable HADOOP_CMD is set
-```
-
-```
-Error: Please make sure that the env. variable HADOOP_STREAMING is set
-```
-
-```
-Error: Please make sure that the env. variable HADOOP_CMD is set
+  sum.carb.
+1        10
+2        14
+3        11
+4         5
+5        15
+6        16
+7         9
+....
 ```
 
 
@@ -412,20 +409,12 @@ Bingo, the same, but there's a catch. Unfortunately this example is misleading b
 ```r
 input("/tmp/mtcars3", format = if3) %|%
 	gather() %|%
-	summarize(carb = sum(carb)) %|%
-	as.data.frame()
+	summarize(carb = sum(carb))
 ```
 
 ```
-Error: Please make sure that the env. variable HADOOP_CMD is set
-```
-
-```
-Error: Please make sure that the env. variable HADOOP_STREAMING is set
-```
-
-```
-Error: Please make sure that the env. variable HADOOP_CMD is set
+  carb
+1   90
 ```
 
 
@@ -440,8 +429,7 @@ The `group` function takes an input and a number of arguments that are evaluated
 ```r
 input("/tmp/mtcars") %|%
 	group(cyl) %|%
-	select(mean.mpg = mean(mpg)) %|%
-	as.data.frame()
+	select(mean.mpg = mean(mpg))
 ```
 
 ```
@@ -460,8 +448,7 @@ When the definition of the grouping column is more complicated, we may need to r
 ```r
 input("/tmp/mtcars") %|%
 	group.f(last.col) %|%
-	select(mean.mpg = mean(mpg)) %|%
-	as.data.frame()
+	select(mean.mpg = mean(mpg)) 
 ```
 
 ```
@@ -483,8 +470,7 @@ Despite the SQL-ish flavor and undeniable SQL inspiration for some of these oper
 ```r
 input("/tmp/mtcars") %|%
 	group(carb) %|%
-	quantile.cols() %|%
-	as.data.frame()
+	quantile.cols() 
 ```
 
 ```

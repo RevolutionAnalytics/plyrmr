@@ -44,8 +44,17 @@ make.reduce.fun =
 		make.map.fun(NULL, valf, ungroup)
 
 make.combine.fun = 
-	function(valf) 
-		make.map.fun(NULL, valf, ungroup = FALSE)
+	function(valf) {
+		cf  = make.map.fun(NULL, valf, ungroup = FALSE)
+		function(k, v) {
+			retval  = cf(k, v)
+			nm = sapply(names(v), function(col) grep(paste0(".", col, "."), names(retval$val), value=T))
+			mn = names(nm)
+			names(mn) = nm
+			new.names = mn[names(retval$val)]
+			mask = !is.na(new.names)
+			names(retval$val)[mask] = new.names[mask]
+			retval}}
 
 is.root = 
 	function()

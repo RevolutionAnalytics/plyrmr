@@ -30,17 +30,23 @@ author: Antonio Piccolboni for Revolution Analytics
 autosize: true 
 incremental: true
 
+mtcars
 ====
+title:false
 ```{r mtcars}
 ```
+transform
 ====
+title:false
 ```{r transform}
 ```
 
 ```{r transform-input}
 ```
 
+as.data.frame
 ===
+title:false
 
 ```{r as.data.frame-transform-input}
 ```
@@ -50,10 +56,14 @@ incremental: true
 
 ```{r output-transform-input}
 ```
+mtcars-w-ratio
 ====
+title:false
 ```{r mtcars-w-ratio}
 ```
+subset-transform
 ====
+title:false
 ```{r subset-transform}
 ```
 
@@ -69,29 +79,40 @@ incremental: true
 ```{r pipe-operator, eval=FALSE}
 ```
 
+where-select
 ===
+title:false
 
 ```{r where-select}
 ```
-====
+
 ```{r where-select-input}
 ```
+
+process.mtcars
 ====
+title:false
 ```{r process.mtcars.1}
 ```
 
 ```{r process.mtcars.2}
 ```
+do
 ====
+title:false
 ```{r last.col}
 ```
 
 ```{r do-input}
 ```
+magic.wand
 ====
+title:false
 ```{r magic.wand}
 ```
+summarize
 ====
+title:false
 ```{r summarize}
 ```
 
@@ -108,19 +129,25 @@ incremental: true
 
 ```{r summarize-gather-cleanup, echo=FALSE}
 ```
+select-group
 ====
+title:false
 ```{r select-group}
 ```
-====
+
 ```{r select-group.f}
 ```
 
+group-quantile
 ====
+title:false
 
 ```{r group-quantile}
 ```	
 
+group-lm
 ====
+title:false
 
 ```{r group-lm}
 ```	

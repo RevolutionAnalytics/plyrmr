@@ -14,7 +14,9 @@ author: Antonio Piccolboni for Revolution Analytics
 autosize: true 
 incremental: true
 
+mtcars
 ====
+title:false
 
 ```r
 mtcars
@@ -32,7 +34,9 @@ mtcars
 ....
 ```
 
+transform
 ====
+title:false
 
 ```r
 transform(mtcars, carb.per.cyl = carb/cyl)
@@ -69,7 +73,9 @@ transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
 ```
 
 
+as.data.frame
 ===
+title:false
 
 
 ```r
@@ -109,7 +115,9 @@ output(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl), "/tmp/mtcars.ou
 ....
 ```
 
+mtcars-w-ratio
 ====
+title:false
 
 ```r
 mtcars.w.ratio = transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
@@ -128,7 +136,9 @@ as.data.frame(mtcars.w.ratio)
 ....
 ```
 
+subset-transform
 ====
+title:false
 
 ```r
 subset(
@@ -181,7 +191,9 @@ mtcars %|%
 ```
 
 
+where-select
 ===
+title:false
 
 
 ```r
@@ -196,7 +208,7 @@ X30  Ferrari Dino 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
 X31 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 ```
 
-====
+
 
 ```r
 x = 
@@ -212,7 +224,10 @@ as.data.frame(x)
 2 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 ```
 
+
+process.mtcars
 ====
+title:false
 
 ```r
 subset.mtcars.1 = function(...) subset(mtcars, ...)
@@ -238,7 +253,9 @@ high.carb.cyl.2(1)
 31 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8
 ```
 
+do
 ====
+title:false
 
 ```r
 last.col = function(x) x[, ncol(x), drop = FALSE]
@@ -247,7 +264,7 @@ last.col = function(x) x[, ncol(x), drop = FALSE]
 
 
 ```r
-as.data.frame(do(input("/tmp/mtcars"), last.col))
+do(input("/tmp/mtcars"), last.col)
 ```
 
 ```
@@ -262,7 +279,9 @@ as.data.frame(do(input("/tmp/mtcars"), last.col))
 ....
 ```
 
+magic.wand
 ====
+title:false
 
 ```r
 magic.wand(last.col)
@@ -282,7 +301,7 @@ last.col(mtcars)
 ```
 
 ```r
-as.data.frame(last.col(input("/tmp/mtcars")))
+last.col(input("/tmp/mtcars"))
 ```
 
 ```
@@ -297,7 +316,9 @@ as.data.frame(last.col(input("/tmp/mtcars")))
 ....
 ```
 
+summarize
 ====
+title:false
 
 ```r
 summarize(mtcars, sum(carb))
@@ -311,26 +332,23 @@ summarize(mtcars, sum(carb))
 
 
 
-```
-Error: Please make sure that the env. variable HADOOP_CMD is set
-```
 
 
 
 ```r
-as.data.frame(summarize(input("/tmp/mtcars3", format = if3), sum(carb) ))
+summarize(input("/tmp/mtcars3", format = if3), sum(carb) )
 ```
 
 ```
-Error: Please make sure that the env. variable HADOOP_CMD is set
-```
-
-```
-Error: Please make sure that the env. variable HADOOP_STREAMING is set
-```
-
-```
-Error: Please make sure that the env. variable HADOOP_CMD is set
+  sum.carb.
+1        10
+2        14
+3        11
+4         5
+5        15
+6        16
+7         9
+....
 ```
 
 
@@ -339,32 +357,25 @@ Error: Please make sure that the env. variable HADOOP_CMD is set
 ```r
 input("/tmp/mtcars3", format = if3) %|%
 	gather() %|%
-	summarize(carb = sum(carb)) %|%
-	as.data.frame()
+	summarize(carb = sum(carb))
 ```
 
 ```
-Error: Please make sure that the env. variable HADOOP_CMD is set
-```
-
-```
-Error: Please make sure that the env. variable HADOOP_STREAMING is set
-```
-
-```
-Error: Please make sure that the env. variable HADOOP_CMD is set
+  carb
+1   90
 ```
 
 
 
 
+select-group
 ====
+title:false
 
 ```r
 input("/tmp/mtcars") %|%
 	group(cyl) %|%
-	select(mean.mpg = mean(mpg)) %|%
-	as.data.frame()
+	select(mean.mpg = mean(mpg))
 ```
 
 ```
@@ -374,13 +385,12 @@ input("/tmp/mtcars") %|%
 3   8    15.10
 ```
 
-====
+
 
 ```r
 input("/tmp/mtcars") %|%
 	group.f(last.col) %|%
-	select(mean.mpg = mean(mpg)) %|%
-	as.data.frame()
+	select(mean.mpg = mean(mpg)) 
 ```
 
 ```
@@ -394,14 +404,15 @@ input("/tmp/mtcars") %|%
 ```
 
 
+group-quantile
 ====
+title:false
 
 
 ```r
 input("/tmp/mtcars") %|%
 	group(carb) %|%
-	quantile.cols() %|%
-	as.data.frame()
+	quantile.cols() 
 ```
 
 ```
@@ -417,7 +428,9 @@ input("/tmp/mtcars") %|%
 ```
 
 
+group-lm
 ====
+title:false
 
 
 ```r

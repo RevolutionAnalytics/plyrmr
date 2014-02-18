@@ -24,7 +24,7 @@ comp =
 			do.call(Compose, funs)}
 
 make.map.fun = 																					# this function is a little complicated so some comments are in order
-	function(keyf, valf, ungroup) {												# make a valid map function from two separate one for keys and values
+	function(keyf, valf, ungroup) {												# make a valid map function from two separate ones for keys and values
 		if(is.null(valf))                                   # the value function defaults to identity
 			valf = identity 
 		function(k, v) {                                    # this is the signature of a correct map function

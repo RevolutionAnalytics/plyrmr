@@ -87,7 +87,7 @@ summarize(input("/tmp/mtcars3", format = if3), sum(carb))
 ## @knitr summarize-gather
 input("/tmp/mtcars3", format = if3) %|%
 	gather() %|%
-	summarize(carb = sum(carb))
+	summarize(sum(carb))
 ## @knitr summarize-gather-cleanup
 invisible(suppressWarnings(rmr.options(backend = "local")))
 ## @knitr select-group

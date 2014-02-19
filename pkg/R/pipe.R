@@ -120,9 +120,13 @@ group.f =
 		f1 = make.f1(.f, ...)
 		if(is.null(.data$group)) { #ungrouped
 			.data$group = f1
-			.data$recursive = .recursive}
+			.data$recursive = .recursive
+			.data$vectorized = .vectorized}
 		else {
-			if(is.null(.data$reduce) && .recursive == .data$recursive){ #refine grouping with no mr job
+			if(
+				is.null(.data$reduce) && 
+					.recursive == .data$recursive &&
+					.vectorized == .data$vectorized){ #refine grouping with no mr job
 				prev.group = .data$group
 				.data$group = function(v) safe.cbind(prev.group(v), f1(v))}
 			else #run and apply grouping
@@ -131,7 +135,7 @@ group.f =
 					input(run(.data, input.format = "native")), 
 					f1, 
 					.recursive = .recursive,
-					.vectorizes = .vectorized)}
+					.vectorized = .vectorized)}
 		.data}
 
 ungroup = 
@@ -195,7 +199,8 @@ run =
 				mr.args$reduce = 
 					make.reduce.fun(
 						valf = pipe$reduce, 
-						pipe$ungroup)}
+						pipe$ungroup)
+				mr.args$vectorized.reduce = pipe$vectorized}
 			if(!is.null(pipe$recursive.group) &&
 				 	pipe$recursive.group) {
 				mr.args$combine =

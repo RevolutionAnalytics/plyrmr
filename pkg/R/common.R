@@ -56,7 +56,7 @@ chain.value.q =
 				if(f[[1]] == "(")
 					list(f[[2]], x)
 				else {
-					if(f[[1]] == "%*%")
+					if(f[[1]] == "%!%")
 						list(f, x)
 					else {
 						use.default.arg = TRUE
@@ -73,7 +73,7 @@ chain.value =
 		chain.value.q(x, f, envir = envir)}
 
 `%|%` = chain.value
-`%*%` = chain.call
+`%!%` = chain.call
 
 #curried arguments are eager, the rest lazy
 CurryHalfLazy = 

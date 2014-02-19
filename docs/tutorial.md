@@ -403,18 +403,18 @@ summarize(input("/tmp/mtcars3", format = if3), sum(carb) )
 ```
 
 
-Bingo, the same, but there's a catch. Unfortunately this example is misleading because it's based on a small data set that fits into main memory. In general, the data in Hadoop is always grouped, one way or another. It couldn't be otherwise: it is stored on multiple devices and, even if it weren't, we can only load it into memory in small chunks. In this specific example, there is only one chunk, but in general there would be multiple chunksSo think of it as always grouped, initially in arbitrary fashion and later in the way we determine using the functions `group`, `group.f` and `gather`. These were inspired by the notion of key in mapreduce, the SQL statement and the `dplyr` function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:
+That's not what we wanted and where the size of the data catches up with us. In general, the data in Hadoop is always grouped, one way or another. It couldn't be otherwise: it is stored on multiple devices and, even if it weren't, we can only load it into memory in small chunks. In this specific example, the data is small and to highlight this problem I created a somewhat unreasonable input format that reads the data in unreasonably small chunks, but in mainstream Hadoop application this is the norm. So think of the data as always grouped, initially in arbitrary fashion and later in the way we determine using the functions `group`, `group.f` and `gather`. These were inspired by the notion of key in mapreduce, the SQL statement and the `dplyr` function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:
 
 
 ```r
 input("/tmp/mtcars3", format = if3) %|%
 	gather() %|%
-	summarize(carb = sum(carb))
+	summarize(sum(carb))
 ```
 
 ```
-  carb
-1   90
+  sum.carb.
+1        90
 ```
 
 

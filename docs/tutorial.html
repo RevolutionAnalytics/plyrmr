@@ -506,15 +506,15 @@ last.col(mtcars)
 ....
 </code></pre>
 
-<p>Bingo, the same, but there&#39;s a catch. Unfortunately this example is misleading because it&#39;s based on a small data set that fits into main memory. In general, the data in Hadoop is always grouped, one way or another. It couldn&#39;t be otherwise: it is stored on multiple devices and, even if it weren&#39;t, we can only load it into memory in small chunks. In this specific example, there is only one chunk, but in general there would be multiple chunksSo think of it as always grouped, initially in arbitrary fashion and later in the way we determine using the functions <code>group</code>, <code>group.f</code> and <code>gather</code>. These were inspired by the notion of key in mapreduce, the SQL statement and the <code>dplyr</code> function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:</p>
+<p>That&#39;s not what we wanted and where the size of the data catches up with us. In general, the data in Hadoop is always grouped, one way or another. It couldn&#39;t be otherwise: it is stored on multiple devices and, even if it weren&#39;t, we can only load it into memory in small chunks. In this specific example, the data is small and to highlight this problem I created a somewhat unreasonable input format that reads the data in unreasonably small chunks, but in mainstream Hadoop application this is the norm. So think of the data as always grouped, initially in arbitrary fashion and later in the way we determine using the functions <code>group</code>, <code>group.f</code> and <code>gather</code>. These were inspired by the notion of key in mapreduce, the SQL statement and the <code>dplyr</code> function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:</p>
 
 <pre><code class="r">input(&quot;/tmp/mtcars3&quot;, format = if3) %|%
     gather() %|%
-    summarize(carb = sum(carb))
+    summarize(sum(carb))
 </code></pre>
 
-<pre><code>  carb
-1   90
+<pre><code>  sum.carb.
+1        90
 </code></pre>
 
 <p>You may have noticed the contradiction between the above statement that data is always in chunks with the availability of a <code>gather</code> function. Luckily, there is an advanced way of grouping recursively, in a tree like fashion, that works with associative and commutative operations such as the sum, which is the default for <code>gather</code>. Anyway, it will all be more clear as we cover other grouping functions.</p>

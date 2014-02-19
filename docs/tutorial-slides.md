@@ -336,7 +336,7 @@ summarize(mtcars, sum(carb))
 
 
 ```r
-summarize(input("/tmp/mtcars3", format = if3), sum(carb) )
+summarize(input("/tmp/mtcars3", format = if3), sum(carb))
 ```
 
 ```
@@ -357,12 +357,12 @@ summarize(input("/tmp/mtcars3", format = if3), sum(carb) )
 ```r
 input("/tmp/mtcars3", format = if3) %|%
 	gather() %|%
-	summarize(carb = sum(carb))
+	summarize(sum(carb))
 ```
 
 ```
-  carb
-1   90
+  sum.carb.
+1        90
 ```
 
 

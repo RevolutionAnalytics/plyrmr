@@ -387,7 +387,7 @@ What happens if we do this on a Hadoop data set?
 
 
 ```r
-summarize(input("/tmp/mtcars3", format = if3), sum(carb) )
+summarize(input("/tmp/mtcars3", format = if3), sum(carb))
 ```
 
 ```

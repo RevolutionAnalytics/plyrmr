@@ -48,7 +48,7 @@ make.combine.fun =
 		cf  = make.map.fun(NULL, valf, ungroup = FALSE)
 		function(k, v) {
 			retval  = cf(k, v)
-			nm = sapply(names(v), function(col) grep(paste0(".", col, "."), names(retval$val), value=T))
+			nm = sapply(names(v), function(col) grep(paste0(col), names(retval$val), value=T))
 			mn = names(nm)
 			names(mn) = nm
 			new.names = mn[names(retval$val)]

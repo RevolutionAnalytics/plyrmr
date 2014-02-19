@@ -75,19 +75,6 @@ chain.value =
 `%|%` = chain.value
 `%*%` = chain.call
 
-CurryL.curried.args.last =
-	function (FUN, ...) {
-		.curried <- as.list(match.call())[c(-1, -2)]
-		function(...) {
-			.args <- as.list(match.call())[-1]
-			eval(substitute(do.call(FUN, c(.args, .curried))))}}
-
-`|` = function(a.call) {
-	a.call = substitute(a.call)
-	f = a.call[[1]]
-	splat(CurryL.curried.args.last)(c(list(FUN=f), as.list(a.call)[-1]))}
-
-
 #curried arguments are eager, the rest lazy
 CurryHalfLazy = 
 	function(FUN, ...) {

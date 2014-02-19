@@ -83,7 +83,7 @@ invisible({
 	if(dfs.exists("/tmp/mtcars3")) dfs.rmr("/tmp/mtcars3")
 	to.dfs(mtcars, format = of3, output = "/tmp/mtcars3")})
 ## @knitr summarize-input
-summarize(input("/tmp/mtcars3", format = if3), sum(carb) )
+summarize(input("/tmp/mtcars3", format = if3), sum(carb))
 ## @knitr summarize-gather
 input("/tmp/mtcars3", format = if3) %|%
 	gather() %|%

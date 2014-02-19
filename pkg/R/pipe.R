@@ -103,7 +103,7 @@ do =
 		.data}
 
 group = 
-	function(.data, ..., .recursive = FALSE, .envir = parent.frame()) {
+	function(.data, ..., .recursive = FALSE, .vectorized = FALSE, .envir = parent.frame()) {
 		force(.envir)
 		dot.args = dots(...)
 		gbf = 
@@ -111,22 +111,28 @@ group =
 				.data, 
 				function(.y) 
 					do.call(CurryHalfLazy(select, .envir = .envir), c(list(.y), dot.args)),
-				.recursive = .recursive)}
+				.recursive = .recursive,
+				.vectorized = .vectorized)}
 
 group.f = 
-	function(.data, .f, ..., .recursive = FALSE) {
+	function(.data, .f, ..., .recursive = FALSE, .vectorized = FALSE ) {
 		.f = freeze.env(.f)
 		f1 = make.f1(.f, ...)
-		if(is.null(.data$group)){
+		if(is.null(.data$group)) { #ungrouped
 			.data$group = f1
-			if(.recursive) 
-				.data$recursive.group = TRUE
-			.data}
-		else
-			group.f(
-				input(run(.data, input.format = "native")), 
-				f1, 
-				.recursive = .recursive)}
+			.data$recursive = .recursive}
+		else {
+			if(is.null(.data$reduce) && .recursive == .data$recursive){ #refine grouping with no mr job
+				prev.group = .data$group
+				.data$group = function(v) safe.cbind(prev.group(v), f1(v))}
+			else #run and apply grouping
+				.data = 
+				group.f(
+					input(run(.data, input.format = "native")), 
+					f1, 
+					.recursive = .recursive,
+					.vectorizes = .vectorized)}
+		.data}
 
 ungroup = 
 	function(.data) {

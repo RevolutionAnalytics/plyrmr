@@ -18,7 +18,6 @@
 using namespace Rcpp; 
 using namespace std;
 
-enum Aggregate_types {SUM = 1, MEAN = 2};
 
 template<typename I, typename S>
 class Reduce {

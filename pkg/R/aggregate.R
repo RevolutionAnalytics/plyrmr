@@ -14,10 +14,10 @@
 
 
 fast.summary = 
-	function(xx) {
-		if(is.null(xx) || length(xx) == 0) xx
-		switch(
-			class(xx[[1]]),
-			integer = fast.summary.integer(xx),
-			numeric = fast.summary.numeric(xx),
-			stop("Fast summaries for ", class(xx[[1]]), " not supported."))}
+	function(xx, type) {
+		if(length(xx) == 0) 
+			xx
+		else
+			get(
+				paste("fast", type, class(xx[[1]]), sep = "."),
+			envir = environment(plyrmr::do))(xx)}

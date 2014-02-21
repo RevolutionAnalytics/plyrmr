@@ -23,3 +23,7 @@ Rprof.out
 !build/*
 
 .Renviron
+
+*.o
+
+*.so

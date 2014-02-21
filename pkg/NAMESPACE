@@ -13,8 +13,7 @@
 # limitations under the License.
 
 
-#useDynLib(plyrmr)
-importFrom("stats", quantile)
+useDynLib(plyrmr)
 importFrom("reshape2", melt)
 
 #big.data

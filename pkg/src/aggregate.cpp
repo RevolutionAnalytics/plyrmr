@@ -20,70 +20,95 @@ using namespace std;
 
 
 template<typename I, typename S>
-class Reduce {
+class BinaryOp_ {
 	public:
 	typedef I Input;
 	typedef S State;
 	virtual S operator()(S state, I elem) = 0;};
 
 template<typename S, typename O>
-class Finish{
+class Finish_{
 	public:
 	typedef S State;
 	typedef O Output;
 	virtual O operator()(S state) = 0;};
 	
 template<typename R, typename F>
-typename F::Output aggregate(
+typename F::Output reduce(
 	vector<typename R::Input> x, 
 	typename R::State state, 
-	R reduce, 
+	R binary_op, 
 	F finish) {
 	for(unsigned int i = 0; i < x.size(); i++) {
-		state = reduce(state, x[i]);}
+		state = binary_op(state, x[i]);}
 	return finish(state);}
 
-//sum
+
 template<typename N>
 class Sum {
-	class Sum2: public Reduce<N, N> {
+	class BinaryOp: public BinaryOp_<N, N> {
 		public:
 		N operator()(N state, N elem) {
 			return state + elem;}};
 	
-	class IdFinish: public Finish<N, N> {
+	class Finish: public Finish_<N, N> {
 		public:
 		N operator()(N x) {return x;}};
 	public:	
 	N operator()(vector<N> x) {
-	  return aggregate(x, N(), Sum2(), IdFinish());}};
+	  return reduce(x, N(), BinaryOp(), Finish());}};
  
-//mean
 template <typename N> 
 class Mean{
-	class MeanState {
+	class State {
 		public:
-		MeanState() {
+		State() {
 			acc = 0;
 			count = 0;}
-			N acc;
-			unsigned int count;};
+		N acc;
+		unsigned int count;};
 			
-	class MeanSum: public Reduce<N, MeanState > {
+	class BinaryOp: public BinaryOp_<N, State > {
 		public:
-		MeanState operator()(MeanState state, N elem) {
+		State operator()(State state, N elem) {
 			state.acc += elem;
 			state.count++;
 			return state;}};
 			
-	class RatioFinish: public Finish<MeanState, double> {
+	class Finish: public Finish_<State, double> {
 		public:
-		double operator()(MeanState state) {
+		double operator()(State state) {
 			return ((double)state.acc)/state.count;}};
 	public:	
 	double operator()(vector<N> x) {
-		return aggregate(x, MeanState(), MeanSum(), RatioFinish());}};
+		return reduce(x, State(), BinaryOp(), Finish());}};
 
+template <typename N>
+class Variance{
+	class State {
+		public:
+		State() {
+			X = 0;
+			X2 = 0;
+			count = 0;}
+		N X, X2;
+		unsigned int count;};
+		
+		class BinaryOp: public BinaryOp_<N, State> {
+			public:
+			State operator()(State state, N elem) {
+				state.X += elem;
+				state.X2 += elem;
+				state.count++;
+				return state;}};
+				
+		class Finish: public Finish_<State, double> {
+			public:
+			double operator()(State state) {
+				return ((double) state.X2)/state.count - ((double) state.X*state.X)/(state.count*state.count);}};
+		public:
+		double operator()(vector<N> x) {
+			return reduce(x, State(), BinaryOp(), Finish());}};
 
 template<typename N, typename Summary>
 vector<N> fast_summary(List xx) {

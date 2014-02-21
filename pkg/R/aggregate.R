@@ -13,7 +13,12 @@
 # limitations under the License.
 
 
+
+
 fast.summary = 
+	function(xx, type, ...) UseMethod("fast.summary")
+
+fast.summary.list = 
 	function(xx, type) {
 		if(length(xx) == 0) 
 			xx
@@ -21,3 +26,15 @@ fast.summary =
 			get(
 				paste("fast", type, class(xx[[1]]), sep = "."),
 			envir = environment(plyrmr::do))(xx)}
+
+fast.summary.default = 
+	function(xx, type, index)
+		fast.summary(split(xx, index, drop = TRUE), type)
+		
+fast.summary.data.frame = 
+	function(xxx, type, index)
+		as.data.frame(
+			lapply(
+				xxx, 
+				function(xx) fast.summary.default(xx, type, index)))
+

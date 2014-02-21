@@ -22,15 +22,23 @@ using namespace std;
 template<typename I, typename S>
 class Reduce {
 	public:
+	typedef I Input;
+	typedef S State;
 	virtual S operator()(S state, I elem) = 0;};
 
 template<typename S, typename O>
 class Finish{
 	public:
+	typedef S State;
+	typedef O Output;
 	virtual O operator()(S state) = 0;};
 	
-template<typename I, typename S, typename R, typename F, typename O>
-O aggregate(vector<I> x, S state, R reduce, F finish, O out) {
+template<typename R, typename F>
+typename F::Output aggregate(
+	vector<typename R::Input> x, 
+	typename R::State state, 
+	R reduce, 
+	F finish) {
 	for(unsigned int i = 0; i < x.size(); i++) {
 		state = reduce(state, x[i]);}
 	return finish(state);}
@@ -48,7 +56,7 @@ class Sum {
 		N operator()(N x) {return x;}};
 	public:	
 	N operator()(vector<N> x) {
-	  return aggregate(x, N(), Sum2(), IdFinish(), N());}};
+	  return aggregate(x, N(), Sum2(), IdFinish());}};
  
 //mean
 template <typename N> 
@@ -74,7 +82,7 @@ class Mean{
 			return ((double)state.acc)/state.count;}};
 	public:	
 	double operator()(vector<N> x) {
-		return aggregate(x, MeanState(), MeanSum(), RatioFinish(), N());}};
+		return aggregate(x, MeanState(), MeanSum(), RatioFinish());}};
 
 
 template<typename N, typename Summary>

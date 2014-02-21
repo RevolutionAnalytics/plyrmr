@@ -19,71 +19,68 @@ using namespace Rcpp;
 using namespace std;
 
 
-template<typename I, typename S>
+template<typename Input_, typename State_>
 class BinaryOp_ {
 	public:
-	typedef I Input;
-	typedef S State;
-	virtual S operator()(S state, I elem) = 0;};
+	typedef Input_ Input;
+	typedef State_ State;
+	virtual State operator()(State state, Input elem) = 0;};
 
-template<typename S, typename O>
+template<typename State_, typename Output_>
 class Finish_{
 	public:
-	typedef S State;
-	typedef O Output;
-	virtual O operator()(S state) = 0;};
+	typedef State_ State;
+	typedef Output_ Output;
+	virtual Output operator()(State state) = 0;};
 	
-template<typename R, typename F>
-typename F::Output reduce(
-	vector<typename R::Input> x, 
-	typename R::State state, 
-	R binary_op, 
-	F finish) {
+template<typename BinaryOp, typename Finish>
+typename Finish::Output reduce(
+	vector<typename BinaryOp::Input> x, 
+	typename BinaryOp::State state, 
+	BinaryOp binary_op, 
+	Finish finish) {
 	for(unsigned int i = 0; i < x.size(); i++) {
 		state = binary_op(state, x[i]);}
 	return finish(state);}
 
-
-template<typename N>
+template<typename Number>
 class Sum {
-	class BinaryOp: public BinaryOp_<N, N> {
+	class BinaryOp: public BinaryOp_<Number, Number> {
 		public:
-		N operator()(N state, N elem) {
+		Number operator()(Number state, Number elem) {
 			return state + elem;}};
-	
-	class Finish: public Finish_<N, N> {
+	class Finish: public Finish_<Number, Number> {
 		public:
-		N operator()(N x) {return x;}};
+		Number operator()(Number x) {return x;}};
 	public:	
-	N operator()(vector<N> x) {
-	  return reduce(x, N(), BinaryOp(), Finish());}};
+	Number operator()(vector<Number> x) {
+	  return reduce(x, Number(), BinaryOp(), Finish());}};
+
  
-template <typename N> 
+template <typename Number> 
 class Mean{
 	class State {
 		public:
 		State() {
 			acc = 0;
 			count = 0;}
-		N acc;
+		Number acc;
 		unsigned int count;};
-			
-	class BinaryOp: public BinaryOp_<N, State > {
+	class BinaryOp: public BinaryOp_<Number, State > {
 		public:
-		State operator()(State state, N elem) {
+		State operator()(State state, Number elem) {
 			state.acc += elem;
 			state.count++;
-			return state;}};
-			
+			return state;}};			
 	class Finish: public Finish_<State, double> {
 		public:
 		double operator()(State state) {
 			return ((double)state.acc)/state.count;}};
 	public:	
-	double operator()(vector<N> x) {
+	double operator()(vector<Number> x) {
 		return reduce(x, State(), BinaryOp(), Finish());}};
 
-template <typename N>
+template <typename Number>
 class Variance{
 	class State {
 		public:
@@ -91,12 +88,12 @@ class Variance{
 			X = 0;
 			X2 = 0;
 			count = 0;}
-		N X, X2;
+		Number X, X2;
 		unsigned int count;};
 		
-		class BinaryOp: public BinaryOp_<N, State> {
+		class BinaryOp: public BinaryOp_<Number, State> {
 			public:
-			State operator()(State state, N elem) {
+			State operator()(State state, Number elem) {
 				state.X += elem;
 				state.X2 += elem;
 				state.count++;
@@ -107,14 +104,14 @@ class Variance{
 			double operator()(State state) {
 				return ((double) state.X2)/state.count - ((double) state.X*state.X)/(state.count*state.count);}};
 		public:
-		double operator()(vector<N> x) {
+		double operator()(vector<Number> x) {
 			return reduce(x, State(), BinaryOp(), Finish());}};
 
-template<typename N, typename Summary>
-vector<N> fast_summary(List xx) {
-	vector<N> results(xx.size());
+template<typename Number, typename Summary>
+vector<Number> fast_summary(List xx) {
+	vector<Number> results(xx.size());
   for(unsigned int i = 0; i < xx.size(); i ++) {
-    vector<N> x = as<vector<N> >(xx[i]);
+    vector<Number> x = as<vector<Number> >(xx[i]);
     results[i] = Summary()(x);}
   return results;}
 

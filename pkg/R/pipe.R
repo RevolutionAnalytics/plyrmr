@@ -23,13 +23,17 @@ comp =
 		else		
 			do.call(Compose, funs)}
 
-make.map.fun = 																					# this function is a little complicated so some comments are in order
-	function(keyf, valf, ungroup) {												# make a valid map function from two separate ones for keys and values
+make.task.fun = 																					# this function is a little complicated so some comments are in order
+	function(keyf, valf, ungroup, vectorized) {												# make a valid map function from two separate ones for keys and values
 		if(is.null(valf))                                   # the value function defaults to identity
 			valf = identity 
 		function(k, v) {                                    # this is the signature of a correct map function
 			rownames(k) = NULL                                # wipe row names unless you want them to count in the grouping (Hadoop only sees serialization)
-			w = safe.cbind(k, valf(safe.cbind(k, v)))         # pass both keys and values to val function as a single data frame, then make sure we keep keys for the next step
+			if(vectorized) {
+				w = valf(safe.cbind.kv(k, v))
+				k = w[, names(k)]}
+			else
+				w = safe.cbind(k,	valf(safe.cbind.kv(k, v)))         # pass both keys and values to val function as a single data frame, then make sure we keep keys for the next step
 			dummy.col = which(names(w) == ".dummy")						# dummy col used by gather always has a constant, no need to keep it
 			if (length(dummy.col) > 0)
 				w = w[, -dummy.col, drop = FALSE]
@@ -39,13 +43,17 @@ make.map.fun = 																					# this function is a little complicated so s
 				else safe.cbind(k, keyf(w))}										# but if you have a key function, use it and cbind old and new keys
 			if(!is.null(w) && nrow(w) > 0) keyval(k, w)}}     # special care for empty cases
 
+make.map.fun = 
+	function(keyf, valf, ungroup)
+		make.task.fun(keyf, valf, ungroup, vectorized = FALSE)
+
 make.reduce.fun = 
-	function(valf, ungroup) 
-		make.map.fun(NULL, valf, ungroup)
+	function(valf, ungroup, vectorized) 
+		make.task.fun(NULL, valf, ungroup, vectorized)
 
 make.combine.fun = 
-	function(valf) {
-		cf  = make.map.fun(NULL, valf, ungroup = FALSE)
+	function(valf, vectorized) {
+		cf  = make.task.fun(NULL, valf, ungroup = FALSE, vectorized = vectorized)
 		function(k, v) {
 			retval  = cf(k, v)
 			nm = sapply(names(v), function(col) grep(paste0(col), names(retval$val), value=T))
@@ -199,12 +207,13 @@ run =
 				mr.args$reduce = 
 					make.reduce.fun(
 						valf = pipe$reduce, 
-						pipe$ungroup)
+						ungroup = pipe$ungroup,
+						vectorized = pipe$vectorized)
 				mr.args$vectorized.reduce = pipe$vectorized}
 			if(!is.null(pipe$recursive.group) &&
 				 	pipe$recursive.group) {
 				mr.args$combine =
-					make.combine.fun(pipe$reduce)}
+					make.combine.fun(pipe$reduce, pipe$vectorized)}
 			mrexec(mr.args, input.format)}}
 
 output = 

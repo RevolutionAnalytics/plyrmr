@@ -112,4 +112,6 @@ S3method(melt, pipe)
 S3method(fast.summary, data.frame)
 S3method(fast.summary, list)
 S3method(fast.summary, default)
+S3method(fast.summary, pipe)
+
 

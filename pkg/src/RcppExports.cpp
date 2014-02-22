@@ -65,3 +65,78 @@ BEGIN_RCPP
     return __sexp_result;
 END_RCPP
 }
+// fast_first_integer
+std::vector<int> fast_first_integer(List xx);
+RcppExport SEXP plyrmr_fast_first_integer(SEXP xxSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< List >::type xx(xxSEXP );
+        std::vector<int> __result = fast_first_integer(xx);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// fast_first_numeric
+std::vector<double> fast_first_numeric(List xx);
+RcppExport SEXP plyrmr_fast_first_numeric(SEXP xxSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< List >::type xx(xxSEXP );
+        std::vector<double> __result = fast_first_numeric(xx);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// fast_first_character
+std::vector<std::string> fast_first_character(List xx);
+RcppExport SEXP plyrmr_fast_first_character(SEXP xxSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< List >::type xx(xxSEXP );
+        std::vector<std::string> __result = fast_first_character(xx);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// fast_first_factor
+std::vector<int> fast_first_factor(List xx);
+RcppExport SEXP plyrmr_fast_first_factor(SEXP xxSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< List >::type xx(xxSEXP );
+        std::vector<int> __result = fast_first_factor(xx);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// fast_first_logical
+std::vector<bool> fast_first_logical(List xx);
+RcppExport SEXP plyrmr_fast_first_logical(SEXP xxSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< List >::type xx(xxSEXP );
+        std::vector<bool> __result = fast_first_logical(xx);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}

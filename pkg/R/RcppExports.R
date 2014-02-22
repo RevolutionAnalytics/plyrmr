@@ -17,3 +17,23 @@ fast.mean.numeric <- function(xx) {
     .Call('plyrmr_fast_mean_numeric', PACKAGE = 'plyrmr', xx)
 }
 
+fast.first.integer <- function(xx) {
+    .Call('plyrmr_fast_first_integer', PACKAGE = 'plyrmr', xx)
+}
+
+fast.first.numeric <- function(xx) {
+    .Call('plyrmr_fast_first_numeric', PACKAGE = 'plyrmr', xx)
+}
+
+fast.first.character <- function(xx) {
+    .Call('plyrmr_fast_first_character', PACKAGE = 'plyrmr', xx)
+}
+
+fast.first.factor <- function(xx) {
+    .Call('plyrmr_fast_first_factor', PACKAGE = 'plyrmr', xx)
+}
+
+fast.first.logical <- function(xx) {
+    .Call('plyrmr_fast_first_logical', PACKAGE = 'plyrmr', xx)
+}
+

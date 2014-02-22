@@ -107,6 +107,12 @@ class Variance{
 		double operator()(vector<Number> x) {
 			return reduce(x, State(), BinaryOp(), Finish());}};
 
+template<typename T>
+class First{
+	public:	
+	T operator()(vector<T> x) {
+	  return x[0];}};
+
 template<typename Number, typename Summary>
 vector<Number> fast_summary(List xx) {
 	vector<Number> results(xx.size());
@@ -131,3 +137,22 @@ std::vector<int> fast_mean_integer(List xx) {
 std::vector<double> fast_mean_numeric(List xx) {
 	return fast_summary<double, Mean<double> >(xx);}
 
+// [[Rcpp::export("fast.first.integer")]]
+std::vector<int> fast_first_integer(List xx) {
+	return fast_summary<int, First<int> >(xx);}
+
+// [[Rcpp::export("fast.first.numeric")]]
+std::vector<double> fast_first_numeric(List xx) {
+	return fast_summary<double, First<double> >(xx);}
+
+// [[Rcpp::export("fast.first.character")]]
+std::vector<std::string> fast_first_character(List xx) {
+	return fast_summary<string, First<string> >(xx);}
+
+// [[Rcpp::export("fast.first.factor")]]
+std::vector<int> fast_first_factor(List xx) {
+	return fast_summary<int, First<int> >(xx);}
+
+// [[Rcpp::export("fast.first.logical")]]
+std::vector<bool> fast_first_logical(List xx) {
+	return fast_summary<bool, First<bool> >(xx);}

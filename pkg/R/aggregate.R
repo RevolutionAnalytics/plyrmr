@@ -14,7 +14,6 @@
 
 
 
-
 fast.summary = 
 	function(xx, type, ...) UseMethod("fast.summary")
 
@@ -25,16 +24,26 @@ fast.summary.list =
 		else
 			get(
 				paste("fast", type, class(xx[[1]]), sep = "."),
-			envir = environment(plyrmr::do))(xx)}
+				envir = environment(plyrmr::do))(xx)}
 
 fast.summary.default = 
 	function(xx, type, index)
 		fast.summary(split(xx, index, drop = TRUE), type)
-		
-fast.summary.data.frame = 
-	function(xxx, type, index)
-		as.data.frame(
-			lapply(
-				xxx, 
-				function(xx) fast.summary.default(xx, type, index)))
 
+fast.summary.data.frame = 
+	function(xxx, type, index) {
+		keycol = names(index)
+		structure(
+			as.data.frame(
+				c(
+					lapply(
+						index,
+						function(xx) fast.summary.default(xx, "first", index)),
+					lapply(
+						xxx[, -match(keycol, names(xxx)), drop = FALSE], 
+						function(xx) fast.summary.default(xx, type, index)))),
+			keys = attributes(xxx)$keys)}
+
+fast.summary.pipe = 
+	function(x, type)
+		do(x, function(y) fast.summary(y, type = type, index = y[, attributes(y)$keys, drop = F]))

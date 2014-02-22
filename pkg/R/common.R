@@ -116,6 +116,12 @@ safe.cbind  =
 			x = splat(data.frame)(c(ll, list(check.names = FALSE)))
 			x[, unique(names(x)), drop = FALSE]}}
 
+safe.cbind.kv = 
+	function(k, v) 
+		structure(
+			safe.cbind(k, v),
+			keys = names(k))
+
 fract.recycling = 
 	function(ll) {
 		ind = 

@@ -166,12 +166,12 @@ data.frame =
 					check.rows = check.rows,
 					check.names = check.names,
 					stringsAsFactors = stringsAsFactors)
-			if (!is.null(row.names)) {
-				row.names(X) = 
-					make.names(
-						fract.recycling(
-							list(row.names, 1:nrow(X)))[[1]],
-						unique = TRUE)}
+# 			if (!is.null(row.names)) {
+# 				row.names(X) = 
+# 					make.names(
+# 						fract.recycling(
+# 							list(row.names, 1:nrow(X)))[[1]],
+# 						unique = TRUE)}
 			X }}
 
 as.data.frame.data.frame = splat(data.frame)

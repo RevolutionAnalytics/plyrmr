@@ -242,9 +242,9 @@ mtcars %|%
 ```
 
 ```
-            model  mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-X30  Ferrari Dino 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-X31 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+           model  mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+30  Ferrari Dino 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+31 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 ```
 
 

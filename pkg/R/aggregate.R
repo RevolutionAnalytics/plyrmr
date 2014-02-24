@@ -46,4 +46,4 @@ fast.summary.data.frame =
 
 fast.summary.pipe = 
 	function(x, type)
-		do(x, function(y) fast.summary(y, type = type, index = y[, attributes(y)$keys, drop = F]))
+		do(x, function(y) fast.summary(y, type = type, index = y[, attributes(y)$keys, drop = FALSE]))

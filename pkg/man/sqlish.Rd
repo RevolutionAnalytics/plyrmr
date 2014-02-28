@@ -17,14 +17,14 @@ select(.data, \dots)
 \method{select}{pipe}(.data, \dots, .replace = TRUE, .envir = parent.frame())
 }
 \arguments{
-  \item{.data}{A data set represented by a pipe}
+  \item{.data}{A data set represented by a pipe or a data.frame}
   \item{\dots}{Additional arguments interpreted as columns by \code{select}}
   \item{.cond}{Expression to evaluate to logical and used to select rows of the data}
   \item{.replace}{whether to replace existing columns}
   \item{.envir}{environment in which to evaluate the \dots arguments}
 }
 \details{
-\code{select} tries to merge the functionality of \code{base::transform}, \code{plyr::mutate}, \code{plyr::summarize} and the SQL statement by the same name. When argument \code{.replace} is \code{TRUE}, the default, the first argument columns are discarded and the ones defined in the \dots arguments are used to form a new data frame. In this case the number of rows returned can be different from the number of rows in the \code{.data} argument but not necessarily one as it is the case for \code{summarize}. When \code{.replace} is \code{FALSE} the behavior is more like \code{transform} and the numbers of rows returned remains the same as in \code{.data}. Recycling rules are applied to the \dots arguments. \code{where} is somewhat equivalent to \code{base::subset}, but focuses only on the selection of rows, not columns. Both functions have methods for data frames and pipes. \code{where} and \code{select} are more appropriate for programming then they \code{base} and \code{plyr} equivalent, \code{transform}, \code{subset}, \code{mutate} and \code{summarize}, because of the additional \code{.envir} argument which allows to specify an evaluation environment different from that of the caller. See \file{tests/non-standard-eval.R} for examples of \code{select} and \code{where} working in contexts where the other functions don't.
+\code{select} tries to merge the functionality of \code{base::transform}, \code{plyr::mutate}, \code{plyr::summarize} and the SQL statement by the same name. When argument \code{.replace} is \code{TRUE}, the default, the first argument columns are discarded and the ones defined in the \dots arguments are used to form a new data frame. In this case the number of rows returned can be different from the number of rows in the \code{.data} argument but not necessarily one as it is the case for \code{plyr::summarize}. When \code{.replace} is \code{FALSE} the behavior is more like \code{transform} and the numbers of rows returned remains the same as in \code{.data}. Recycling rules are applied to the \dots arguments. \code{where} is somewhat equivalent to \code{base::subset}, but focuses only on the selection of rows, not columns. Both functions have methods for data frames and pipes. \code{where} and \code{select} are more appropriate for programming then they \code{base} and \code{plyr} equivalent, \code{transform}, \code{subset}, \code{mutate} and \code{summarize}, because of the additional \code{.envir} argument which allows to specify an evaluation environment different from that of the caller. See \file{tests/non-standard-eval.R} for examples of \code{select} and \code{where} working in contexts where the other functions don't.
 }
 \value{
 The same type as the first argument, either a data frame or a pipe.

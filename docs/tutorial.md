@@ -11,7 +11,7 @@
 
 ## Predefined operations
 
-Let's start with a simple operation such as adding a column to a data frame. The data set `mtcars` comes with R and describes the characteristics of a few car models:
+Let's start with a simple operation such as adding a column to a data frame. The data set `mtcars` comes with R and contains specification and performance data  about a few car models:
 
 
 ```r
@@ -51,7 +51,8 @@ transform(mtcars, carb.per.cyl = carb/cyl)
 ```
 
 
-Now let's imagine that we have a huge data set with the same structure but instead of being stored in memory, it is stored in a HDFS file named "/tmp/mtcars". It's way too big to be loaded with `read.table` or equivalent. With `plyrmr` one just needs to  enter:
+`transform` provides a model that is common to many functions in `plyr` and `plyrmr`. The function name gives only a general idea of what the function is going to do. The first argument is always the data set to be processed. The following arguments provide the details of what type of processing is going to take place, in the form of one or more expression, sometimes named ones. These expression can refer to the columns of the data frame as if they were additional variables.
+Now let's imagine that we have a huge data set with the same structure but instead of being stored in memory, it is stored in a HDFS file named "/mp/mt cars". It's way too big to be loaded with `read.table` or equivalent. With `plyrmr` one just needs to  enter:
 
 
 ```r
@@ -71,7 +72,7 @@ transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
 ```
 
 
-Well, that doesn't look like what we wanted, does it? That's because, when dealing with very large data sets, one needs to be careful not to try and load them into memory unless they have been filtered or summarized to a much smaller size. Therefore in `plyrmr` the general rule is that loading into memory happens only when the user decides so. In this case, we know the data set is small so we can just go ahead with this operation  and enter:
+What we see are only a few arbitrary rows from the resulting data set. This is not only a consequence of the limited screen real estate, but also, in the case of large data sets, of the capacity gap between memory of a single machine and big data. In general, we can't expect to be able to load big data in memory. Sometimes, after summarization or filtering, the result of processing big data is small enough to fit into main memory. In this example, we know the data set is small so we can just go ahead and enter:
 
 
 ```r
@@ -91,7 +92,7 @@ as.data.frame(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl))
 ```
 
 
-In fact the `as.data.frame` call not only loads the data into memory, but triggers the computation as well. `plyrmr` uses a technique called *delayed evaluation* to create the opportunity for some optimizations. In general the user need not worry about the details of this, as long as it is clear that the actual computational work may be shifted w.r.t. an equivalent computation in memory. If we want to trigger the computation without loading the data into memory but storing it into a file, we need the `output` call, as in:
+If we can't make this assumption, we may need to write the results of a computation out to a specific path, that is we need the `output` call:
 
 
 
@@ -114,8 +115,9 @@ output(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl), "/tmp/mtcars.ou
 ```
 
 
-This is the real deal: we have performed a computation on the cluster, in parallel, and the data is never loaded into memory at once, but the syntax and semantics remain the familiar ones. The last run processed all of 32 rows, but on a large enough cluster it could run on 32 terabytes &mdash; don't even think of using `as.data.frame` in that case.
-The return value of `output` contains the path and some format information. In general an effort is made throughout `plyrmr` to make return values of functions as useful as possible so as to be able to combine simple expressions into larger ones. You can also store intermediate results to a variable as in:
+This is the real deal: we have performed a computation on the cluster, in parallel, and the data is never loaded into memory at once, but the syntax and semantics remain the familiar ones. The last run processed all of 32 rows, but on a large enough cluster it could run on 32 terabytes &mdash; in that case you can not use `as.data.frame`.
+Even if `output` appears to return the data to be printed, that's only a sampling. The main effect of the `output` call is to write out to the specified file.
+You can also store intermediate results to a variable as in:
 
 
 ```r
@@ -136,6 +138,8 @@ as.data.frame(mtcars.w.ratio)
 ```
 
 
+You'll notice that the assignment happens instantly. That's a consequence of a technique known as *delayed evaluation* that `plyrmr` uses to reduce the number of mapreduce job necessary to perform a calculation. But you don't need to worry about this, it all happens behind the scenes.
+
 `transform` is one of several functions that `plyrmr` provides in a Hadoop-powered version:
 
  * from `base`:
@@ -150,6 +154,10 @@ as.data.frame(mtcars.w.ratio)
    * `select`: does everything that `transform` and `summarize` do in addition to selecting columns.
    * `where`: select rows
    * these are more suitable for programming then the functions they replace, as will be explained later.
+ * analysis:
+   * `count.cols`
+   * `quantile.cols`
+   * `sample`
  
 `plyrmr` extends all these operations to Hadoop data sets, trying to maintain semantic equivalence, with limitations that will be made clear later. These functions are not intended as a minimal set of operations: there is a lot of functionality overlap. We just wanted to support existing usage to help users transitioning to Hadoop programming.
  
@@ -197,7 +205,7 @@ The main differences between the data frame version and the Hadoop data version 
 
 ## The pipe operator
 
-You may have noticed that the last example consists of a fairly complex expression, with function calls nested inside other function calls multiple times. The drawbacks of that are twofold. First, the order in which functions appear in the code, top to bottom, is the opposite of the order in which things happen. Second, additional arguments to each function can be very far from the name of the function. This problem can be mitigated with proper indentation, but it still is a problem. One workaround is to rewrite complex expressions as chains of assignments:
+You may have noticed that the last example consists of a fairly complex expression, with function calls nested inside other function calls multiple times. The drawbacks of that are twofold. First, the order in which functions appear in the code, top to bottom, is the opposite of the order in which they are executed. Second, additional arguments to each function can be very far from the name of the function. This problem can be mitigated with proper indentation, but it still is a problem. One workaround is to rewrite complex expressions as chains of assignments:
 
 
 ```r
@@ -212,7 +220,7 @@ subset(x, carb.per.cyl >= 1)
 ```
 
 
-The purists will find that introducing one variable for each intermediate step quite unsightly. To avoid this plyrmr offers a unix-style pipe operator, inspired by two precedents, by [@crowding](https://github.com/crowding/vadr/blob/master/R/chain.R) and [@hadley](https://github.com/hadley/dplyr/blob/master/R/chain.r).
+The purists will find that introducing one variable for each intermediate step quite unsightly. To avoid this plyrmr offers a UNIX-style pipe operator, inspired by two R implementations, by [@crowding](https://github.com/crowding/vadr/blob/master/R/chain.R) and [@hadley](https://github.com/hadley/dplyr/blob/master/R/chain.r).
 
 
 ```r
@@ -228,7 +236,7 @@ mtcars %|%
 ```
 
 
-What this does is providing the value of the leftmost expression as the first unnamed argument of the next function call, evaluate this combination and continue to the next operator. Rather than arguing over which style is best, it's probably best to bask in the flexibility made possible by the R language and your indefatigable developers and pick the one that's best case-by-case. In particular, pipes can not express more complex data flows where two flows merge or one splits. In the following I will alternate between these three notations (nested, assignment chaing and pipe operator) based on which seems the clearest. It should be safe to assume that each example can be translated into any of the three.
+What this does is providing the value of the leftmost expression as the first unnamed argument of the next function call, evaluate this combination and continue to the next operator. Actually, that's the default behavior, but you can specify any function argument in a complex expression to be the designated one with the special name `.`. Rather than arguing over which style is best, it's probably best to bask in the flexibility made possible by the R language and your indefatigable developers and pick the one that fits one's style or a specific situation. In particular, pipes can not express more complex data flows where two flows merge or one splits. In the following I will alternate between these three notations (nested, assignment chain and pipe operator) based on which seems the clearest. It should be safe to assume that each example can be translated into any of the three.
 
 
 ## Why you should use `plyrmr`'s `select` and `where`
@@ -364,6 +372,7 @@ last.col(input("/tmp/mtcars"))
 ```
 
 
+For people familiar with object oriented programming in R, this function takes an existing data frame function, meaning one with a data frame as its first argument and return value and creates a generic function by the same name, with a method for data frames equal to the original function and one for big data sets using do as shown above. The internal R dispatch machinery decides which of the methods to call based on the class of the first argument.
 
 ## Grouping
 
@@ -403,7 +412,7 @@ summarize(input("/tmp/mtcars3", format = if3), sum(carb))
 ```
 
 
-That's not what we wanted and where the size of the data catches up with us. In general, the data in Hadoop is always grouped, one way or another. It couldn't be otherwise: it is stored on multiple devices and, even if it weren't, we can only load it into memory in small chunks. In this specific example, the data is small and to highlight this problem I created a somewhat unreasonable input format that reads the data in unreasonably small chunks, but in mainstream Hadoop application this is the norm. So think of the data as always grouped, initially in arbitrary fashion and later in the way we determine using the functions `group`, `group.f` and `gather`. These were inspired by the notion of key in mapreduce, the SQL statement and the `dplyr` function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:
+That's not what we wanted and that's the where the size of the data cannot be ignored or abstracted away. Think of data in Hadoop as always grouped, one way or another. It couldn't be otherwise: it is stored on multiple devices and, even if it weren't, we can only load it into memory in small chunks of it at a time. In this specific example, the data is small and to highlight this problem I created an input format that reads the data in unreasonably small chunks, but in Hadoop application this is the norm. So think of the data as always grouped, initially in arbitrary fashion and later in the way we determine using the functions `group`, `group.f` and `gather` and more. These were inspired by the notion of key in mapreduce, the SQL statement and the `dplyr` function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:
 
 
 ```r
@@ -423,7 +432,7 @@ input("/tmp/mtcars3", format = if3) %|%
 
 You may have noticed the contradiction between the above statement that data is always in chunks with the availability of a `gather` function. Luckily, there is an advanced way of grouping recursively, in a tree like fashion, that works with associative and commutative operations such as the sum, which is the default for `gather`. Anyway, it will all be more clear as we cover other grouping functions.
 
-The `group` function takes an input and a number of arguments that are evaluated in the context of the data, exactly like `transform` and `mutate`. The result is a Hadoop data set grouped by the columns defined in those arguments. After this step, all rows that are identical on the columns defined in the `group` call will be loaded into memory at once and processed in the same call. Here is an example. Let's say we want to calculate the average milage for cars with the same number of cylinders:
+The `group` function takes an input and a number of arguments that are evaluated in the context of the data, exactly like `transform` and `mutate`. The result is a Hadoop data set grouped by the columns defined in those arguments. After this step, all rows that are identical on the columns defined in the `group` call will be loaded into memory at once and processed in the same call. Here is an example. Let's say we want to calculate the average mileage for cars with the same number of cylinders:
 
 
 ```r
@@ -440,7 +449,7 @@ input("/tmp/mtcars") %|%
 ```
 
 
-This is mostly a scalable programs, but there are some caveats: we need to be mindful of the size of the groups. If they are very big they will bust memory limits, so we need to reach for some advanced techniques to avoid this problem. If they are very small, like a handful of rows, we may run into some efficiency issues releated to the current R and `rmr2` implementations rather than fundamental (so there is hope they will go away one day). 
+This is mostly a scalable programs, but there are some caveats: we need to be mindful of the size of the groups. If they are very big they will bust memory limits, so we need to reach for some advanced techniques to avoid this problem. If they are very small, like a handful of rows, we may run into some efficiency issues related to the current R and `rmr2` implementations rather than fundamental (so there is hope they will go away one day). 
 
 When the definition of the grouping column is more complicated, we may need to reach for the uber-general `group.f`, the grouping relative of `do` (in fact, these two functions are the foundation for everything else in `plyrmr`). Let's go back to the `last.col` example. If we need to group by the last columns of a data frame, this is all we need to do:
 
@@ -464,7 +473,7 @@ input("/tmp/mtcars") %|%
 
 ## Better than SQL
 
-Despite the SQL-ish flavor and undeniable SQL inspiration for some of these operations, we want to highlight a few ways in which `plyrmr` is much more powerful than SQL. The first is that summaries or aggregation don't need to be limited to a single row. One form of aggregation are summaries and summaries can have many elements, even thousands. Momenta, quantiles, histograms, samples, they all have multiple entries. You could represent them as multiple columns up to a certain size, but removing the SQL limitation on aggregations is a good thing. Here how it works. Let's say you want to examine the quantiles of the gas milage data in each group of cars with the same number of carburetors
+Despite the SQL-ish flavor and undeniable SQL inspiration for some of these operations, we want to highlight a few ways in which `plyrmr` is much more powerful than SQL. The first is that summaries or aggregation don't need to be limited to a single row. One form of aggregation are summaries and summaries can have many elements, even thousands. Momenta, quantiles, histograms, samples, they all have multiple entries. You could represent them as multiple columns up to a certain size, but removing the SQL limitation on aggregations is a good thing. Here how it works. Let's say you want to examine the quantiles of the gas mileage data in each group of cars with the same number of carburetors
 
 
 ```r

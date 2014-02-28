@@ -26,9 +26,11 @@ opts_chunk$set(out.lines = 8)
 ```
 Plyrmr
 ====================================
-author: Antonio Piccolboni for Revolution Analytics
+author: Antonio Piccolboni
 autosize: true 
 incremental: true
+
+Revolution Analytics
 
 mtcars
 ====

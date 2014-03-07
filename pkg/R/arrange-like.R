@@ -207,7 +207,7 @@ bottom.k =
 		extreme.k(.x, .k = .k, ..., .decreasing = FALSE, .envir = .envir)}
 
 moving.window = 
-	function(x, index, window, R = rmr.options("keyval.length")) {
+	function(x, index, window, R) {
 		partition = 
 			function(x) {
 				part = 

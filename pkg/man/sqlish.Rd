@@ -31,9 +31,9 @@ The same type as the first argument, either a data frame or a pipe.
 }
 \examples{
 #data.frame
-where(mtcars, cyl>4, mpg > 15)
+where(mtcars, cyl>4 & mpg > 15)
 #pipe
-as.data.frame(where(input(mtcars), cyl > 4, mpg > 15))
+as.data.frame(where(input(mtcars), cyl > 4 & mpg > 15))
 # select two columns
 as.data.frame(select(input(mtcars), cyl, mpg))
 # create additional column

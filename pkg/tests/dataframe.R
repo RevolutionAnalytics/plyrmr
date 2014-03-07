@@ -16,7 +16,7 @@ library(plyrmr)
 
 stopifnot(
 	all(
-		(function(){s = 5; where(mtcars, cyl>s, carb < s)})() ==
+		(function(){s = 5; where(mtcars, cyl > s & carb < s)})() ==
 			subset(mtcars, subset = cyl > 5 & carb < 5)))
 
 stopifnot(

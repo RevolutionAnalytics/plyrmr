@@ -29,16 +29,14 @@ merge.pipe =
 		ox = output(x)
 		oy = output(y)
 		stopifnot(ox$format == oy$format)
-		map.x =	
-			function(k,v) 
-				keyval(
-					if(is.null(by.x)) v else	v[, by.x], 
-					v)
-		map.y =	
-			function(k,v) 
-				keyval(
-					if(is.null(by.y)) v else	v[, by.y], 
-					v)
+		map =
+			function(by.what)
+				function(k,v) 
+					keyval(
+						if(is.null(by.what)) v else	v[, by.what], 
+						v)
+		map.x = map(by.x)
+		map.y =	map(by.y)
 		input(
 			equijoin(
 				ox$data, 

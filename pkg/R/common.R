@@ -24,7 +24,7 @@ constant =
 callapply = 
 	function(x, f) {
 		x = substitute(x)
-		calapply.q(x, f)}
+		callapply.q(x, f)}
 
 callapply.q = 
 	function(x, f)

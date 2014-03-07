@@ -108,7 +108,7 @@ selective.I = function(x) if(is.list(x) && !is.data.frame(x)) I(x) else x
 
 safe.cbind  = 
 	function(...) {
-		ll = lapply(strip.zero.col(strip.null.args(...)), selective.I)
+		ll = lapply(strip.null.args(...), selective.I)
 		shortest = min(rmr2:::sapply.rmr.length(ll))
 		if(shortest == 0)
 			data.frame()

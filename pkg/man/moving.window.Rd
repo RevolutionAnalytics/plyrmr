@@ -32,5 +32,5 @@ as.data.frame(
       10), 
     function(x) 
       if(nrow(x) >= 3) 
-        data.frame(y = filter(x$x, rep(1/3,3)))))
+        data.frame(t = x$t, y = filter(x$x, rep(1/3,3)))))
 }

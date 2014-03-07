@@ -30,8 +30,10 @@ fast.summary.default =
 	function(xx, type, index)
 		fast.summary(split(xx, index, drop = TRUE), type)
 
-fast.summary.data.frame = 
-	function(xxx, type, index) {
+.fast.summary.data.frame = 
+	function(xxx, type, index = data.frame(.dummy = TRUE)) {
+		if(!is.data.frame(index))
+			index = data.frame(keycol = index)
 		keycol = names(index)
 		structure(
 			as.data.frame(

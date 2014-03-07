@@ -30,7 +30,7 @@ as.data.frame(
     input(mtcars),
     cyl > 4))
     
-dfs.rmr("/tmp/output")
+tryCatch(dfs.rmr("/tmp/output"), error = function(e) NULL)
 
 output(
   where(

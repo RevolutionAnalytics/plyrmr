@@ -17,7 +17,7 @@
 fast.summary = 
 	function(xx, type, ...) UseMethod("fast.summary")
 
-fast.summary.list = 
+.fast.summary.list = 
 	function(xx, type) {
 		if(length(xx) == 0) 
 			xx
@@ -26,9 +26,9 @@ fast.summary.list =
 				paste("fast", type, class(xx[[1]]), sep = "."),
 				envir = environment(plyrmr::do))(xx)}
 
-fast.summary.default = 
+.fast.summary.default = 
 	function(xx, type, index)
-		fast.summary(split(xx, index, drop = TRUE), type)
+		.fast.summary.list(split(xx, index, drop = TRUE), type)
 
 .fast.summary.data.frame = 
 	function(xxx, type, index = data.frame(.dummy = TRUE)) {
@@ -40,12 +40,22 @@ fast.summary.default =
 				c(
 					lapply(
 						index,
-						function(xx) fast.summary.default(xx, "first", index)),
+						function(xx) .fast.summary.default(xx, "first", index)),
 					lapply(
-						xxx[, -match(keycol, names(xxx)), drop = FALSE], 
-						function(xx) fast.summary.default(xx, type, index)))),
+						xxx[, rmr2:::default(-match(keycol, names(xxx)), TRUE, is.na), drop = FALSE], 
+						function(xx) .fast.summary.default(xx, type, index)))),
 			keys = attributes(xxx)$keys)}
 
 fast.summary.pipe = 
 	function(x, type)
-		do(x, function(y) fast.summary(y, type = type, index = y[, attributes(y)$keys, drop = FALSE]))
+		do(
+			x, 
+			function(y) 
+				.fast.summary.data.frame(
+					y, 
+					type = type, 
+					index = 
+						rmr2:::default(
+							y[, attributes(y)$keys, drop = FALSE], 
+							data.frame(.dummy = TRUE), 
+							function(x) ncol(x) == 0)))

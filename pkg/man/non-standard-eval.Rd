@@ -6,6 +6,6 @@
 t = 4
 # t from the caller environment, cyl from the data
 as.data.frame(where(input(mtcars), cyl > t))
-#select the last column
+#select the last column of any data frame
 select(mtcars, last.col = .data[, ncol(.data)])
 }

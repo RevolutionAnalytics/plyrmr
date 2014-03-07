@@ -83,6 +83,9 @@ You'll notice that the assignment happens instantly. That's a consequence of a t
    * `count.cols`
    * `quantile.cols`
    * `sample`
+ * extract
+   * top.k
+   * bottom.k
  
 `plyrmr` extends all these operations to Hadoop data sets, trying to maintain semantic equivalence, with limitations that will be made clear later. These functions are not intended as a minimal set of operations: there is a lot of functionality overlap. We just wanted to support existing usage to help users transitioning to Hadoop programming.
  

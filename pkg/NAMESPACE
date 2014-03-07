@@ -109,9 +109,7 @@ S3method(dcast, pipe)
 S3method(dcast, default)
 S3method(melt, pipe)
 #fast summaries
-S3method(fast.summary, data.frame)
-S3method(fast.summary, list)
-S3method(fast.summary, default)
+export(fast.summary)
 S3method(fast.summary, pipe)
 
 

@@ -28,7 +28,8 @@ as.data.frame(
     moving.window(
       input(data.frame(t= 1:20, x = rnorm(20))), 
       "t", 
-      3), 
+      3, 
+      10), 
     function(x) 
       if(nrow(x) >= 3) 
         data.frame(y = filter(x$x, rep(1/3,3)))))

@@ -1,0 +1,18 @@
+# What's new in `plyrmr` 0.2.0
+
+* Fast summaries
+* `.data` variable
+* new pipe operators `%|%` `%!%`
+* vectorized grouping
+* optimizations for nested grouping
+* heuristic to avoid name changes in recursive group
+* `.` special argument for `%|%` operator
+* `where` takes a single argument now
+* `select` allows fractional recycling `select(mtcars, even = c(F,T), triad = 1:3, .replace=FALSE)`
+* `.columns` argument for select
+
+
+* fixed bug that resulted in column duplication
+* removed `pryr` dependency with modest borrowing of code courtesy of @hadley
+* more aggressive *freezing* of environments to make delayed evaluation and pipe optimization semantically neutral
+* uncountable corner cases addressed (things like 0-rows, 0-columns etc, please report any broken corner case, they are all important)

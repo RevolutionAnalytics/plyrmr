@@ -58,12 +58,6 @@ invisible(dfs.rmr("/tmp/mtcars.out"))
 
 This is the real deal: we have performed a computation on the cluster, in parallel, and the data is never loaded into memory at once, but the syntax and semantics remain the familiar ones. The last run processed all of 32 rows, but on a large enough cluster it could run on 32 terabytes &mdash; in that case you can not use `as.data.frame`.
 Even if `output` appears to return the data to be printed, that's only a sampling. The main effect of the `output` call is to write out to the specified file.
-You can also store intermediate results to a variable as in:
-
-```{r mtcars-w-ratio}
-``` 
-
-You'll notice that the assignment happens instantly. That's a consequence of a technique known as *delayed evaluation* that `plyrmr` uses to reduce the number of mapreduce job necessary to perform a calculation. But you don't need to worry about this, it all happens behind the scenes.
 
 `transform` is one of several functions that `plyrmr` provides in a Hadoop-powered version:
 
@@ -75,7 +69,7 @@ You'll notice that the assignment happens instantly. That's a consequence of a t
    * `summarize`: create summaries
  * from `reshape2`:
    * `melt` and `dcast`: convert between *long* and *wide* data frames
- * new in `plyr`:
+ * new in `plyrmr`:
    * `select`: does everything that `transform` and `summarize` do in addition to selecting columns.
    * `where`: select rows
    * these are more suitable for programming then the functions they replace, as will be explained later.

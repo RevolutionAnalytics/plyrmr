@@ -32,13 +32,11 @@ subset(
 x =	transform(mtcars, carb.per.cyl = carb/cyl) 
 subset(x, carb.per.cyl >= 1)
 ## @knitr subset-transform-input
-x =
-	subset(
-		transform(
-			input("/tmp/mtcars"),
-			carb.per.cyl = carb/cyl),
-		carb.per.cyl >= 1)
-as.data.frame(x)
+subset(
+	transform(
+		input("/tmp/mtcars"),
+		carb.per.cyl = carb/cyl),
+	carb.per.cyl >= 1)
 ## @knitr pipe-operator
 mtcars %|%
 	transform(carb.per.cyl = carb/cyl) %|%

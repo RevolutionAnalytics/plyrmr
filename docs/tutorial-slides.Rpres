@@ -1,7 +1,7 @@
 `r read_chunk('../pkg/tests/tutorial.R')`
 `r opts_chunk$set(echo=TRUE, tidy=FALSE, comment="", cache=FALSE)`
 `r opts_knit$set(stop_on_error=0)`
-`r options(width = 120)`
+`r options(width = 200)`
 
 ```{r setup, echo=FALSE}
 # the default output hook
@@ -27,7 +27,7 @@ opts_chunk$set(out.lines = 8)
 Plyrmr
 ====================================
 author: Antonio Piccolboni
-autosize: true 
+autosize: true
 incremental: true
 
 Revolution Analytics
@@ -43,6 +43,10 @@ title:false
 ```{r transform}
 ```
 
+transform-input
+====
+title:false
+
 ```{r transform-input}
 ```
 
@@ -56,27 +60,43 @@ title:false
 ```{r invisible-dfs.rmr, echo=FALSE}
 ```
 
-```{r output-transform-input}
-```
-mtcars-w-ratio
+output
 ====
 title:false
-```{r mtcars-w-ratio}
+
+```{r output-transform-input}
 ```
+
+predefined-ops
+====
+title:false
+
+|package| functions|
+|-------|-----|
+|base| transform, subset, sample, union, intersect, rbind, unique, merge|
+|plyr| mutate, summarize|
+|reshape2| melt, dcast|
+|plyrmr| select, where, count.cols, quantile.cols, top.k, bottom.k|
+
 subset-transform
 ====
 title:false
 ```{r subset-transform}
 ```
 
+subset-transform-input
+====
+title:false
+
 ```{r subset-transform-input}
 ```
 
+assignment-chain
+====
+title:false
 
 ```{r assignment-chain, eval=FALSE}
 ```
-
-
 
 ```{r pipe-operator, eval=FALSE}
 ```
@@ -87,6 +107,11 @@ title:false
 
 ```{r where-select}
 ```
+
+where-select-input
+====
+title:false
+
 
 ```{r where-select-input}
 ```
@@ -99,6 +124,7 @@ title:false
 
 ```{r process.mtcars.2}
 ```
+
 do
 ====
 title:false
@@ -121,13 +147,19 @@ title:false
 
 ```{r summarize-input-setup, echo=FALSE}
 ```
+====
+title:false
 
 ```{r summarize-input}
 ```
+====
+title:false
 
 
 ```{r summarize-gather}
 ```
+====
+title:false
 
 ```{r summarize-gather-cleanup, echo=FALSE}
 ```
@@ -137,6 +169,8 @@ title:false
 ```{r select-group}
 ```
 
+====
+title:false
 ```{r select-group.f}
 ```
 

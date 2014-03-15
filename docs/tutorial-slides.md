@@ -11,7 +11,7 @@
 Plyrmr
 ====================================
 author: Antonio Piccolboni
-autosize: true 
+autosize: true
 incremental: true
 
 Revolution Analytics
@@ -57,6 +57,10 @@ transform(mtcars, carb.per.cyl = carb/cyl)
 ```
 
 
+transform-input
+====
+title:false
+
 
 ```r
 transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
@@ -100,6 +104,10 @@ as.data.frame(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl))
 
 
 
+output
+====
+title:false
+
 
 ```r
 output(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl), "/tmp/mtcars.out")
@@ -117,26 +125,17 @@ output(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl), "/tmp/mtcars.ou
 ....
 ```
 
-mtcars-w-ratio
+
+predefined-ops
 ====
 title:false
 
-```r
-mtcars.w.ratio = transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
-as.data.frame(mtcars.w.ratio)
-```
-
-```
-                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-1            Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-2        Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-3           Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-4       Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-5    Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
-6              Valiant 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-7           Duster 360 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
-....
-```
+|package| functions|
+|-------|-----|
+|base| transform, subset, sample, union, intersect, rbind, unique, merge|
+|plyr| mutate, summarize|
+|reshape2| melt, dcast|
+|plyrmr| select, where, count.cols, quantile.cols, top.k, bottom.k|
 
 subset-transform
 ====
@@ -157,15 +156,17 @@ subset(
 ```
 
 
+subset-transform-input
+====
+title:false
+
 
 ```r
-x =
-	subset(
-		transform(
-			input("/tmp/mtcars"),
-			carb.per.cyl = carb/cyl),
-		carb.per.cyl >= 1)
-as.data.frame(x)
+subset(
+	transform(
+		input("/tmp/mtcars"),
+		carb.per.cyl = carb/cyl),
+	carb.per.cyl >= 1)
 ```
 
 ```
@@ -175,14 +176,15 @@ as.data.frame(x)
 ```
 
 
+assignment-chain
+====
+title:false
 
 
 ```r
 x =	transform(mtcars, carb.per.cyl = carb/cyl) 
 subset(x, carb.per.cyl >= 1)
 ```
-
-
 
 
 
@@ -209,6 +211,11 @@ mtcars %|%
 30  Ferrari Dino 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
 31 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 ```
+
+
+where-select-input
+====
+title:false
 
 
 
@@ -254,6 +261,7 @@ high.carb.cyl.2(1)
 30  Ferrari Dino 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6
 31 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8
 ```
+
 
 do
 ====
@@ -335,6 +343,8 @@ summarize(mtcars, sum(carb))
 
 
 
+====
+title:false
 
 
 ```r
@@ -353,6 +363,8 @@ summarize(input("/tmp/mtcars3", format = if3), sum(carb))
 ....
 ```
 
+====
+title:false
 
 
 
@@ -367,6 +379,8 @@ input("/tmp/mtcars3", format = if3) %|%
 1        90
 ```
 
+====
+title:false
 
 
 
@@ -388,6 +402,8 @@ input("/tmp/mtcars") %|%
 ```
 
 
+====
+title:false
 
 ```r
 input("/tmp/mtcars") %|%
@@ -445,13 +461,13 @@ models
 ```
 
 ```
-    carb        model
-1      4 c(22.693....
-1.1    1 c(9.2859....
-1.2    2 c(32.723....
-1.3    3 c(16.3, ....
-1.4    6 c(19.7, ....
-1.5    8 c(15, NA....
+  carb        model
+1    4 c(22.693....
+2    1 c(9.2859....
+3    2 c(32.723....
+4    3 c(16.3, ....
+5    6 c(19.7, ....
+6    8 c(15, NA....
 ```
 
 ```r

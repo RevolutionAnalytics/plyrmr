@@ -1,0 +1,31 @@
+<style type="text/css"> 
+.reveal section code{ 
+		font-size: 50%; 
+}
+.reveal pre code{ 
+		font-size: 80%; 
+} 
+.reveal section code.r{ 
+	font-size: 130%; 
+} 
+/*
+.reveal .state-background {
+        background-image:url(file:/Users/antonio/Projects/Revolution/rmr2/docs/resources/revolution.jpeg);
+        background-repeat:no-repeat;
+        margin:2% 2% 2% 2%;
+        padding:2% 2% 2% 2%;
+}
+.section .reveal .state-background {
+        background-image:url(file:/Users/antonio/Projects/Revolution/rmr2/docs/resources/revolution.jpeg);
+        background-repeat:no-repeat;
+        margin:2% 2% 2% 2%;
+        padding:2% 2% 2% 2%;
+}
+.sub-section .reveal .state-background {
+        background-image:url(file:/Users/antonio/Projects/Revolution/rmr2/docs/resources/revolution.jpeg);
+        background-repeat:no-repeat;
+        margin:2% 2% 2% 2%;
+        padding:2% 2% 2% 2%;
+}
+*/
+</style>

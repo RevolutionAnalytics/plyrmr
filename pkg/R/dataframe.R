@@ -39,8 +39,13 @@ select.data.frame =
 			.named = TRUE,
 			.envir = .envir)
 		newcols = splat(data.frame)(c(args, list(stringsAsFactors = FALSE)))
-		if(!is.null(.columns))
-			newcols = safe.cbind(newcols, .data[,.columns, drop = FALSE])
+		if(!is.null(.columns)) {
+			.columns = .data[,.columns, drop = FALSE]
+			newcols = {
+				if (nrow(newcols) * ncol(newcols) == 0)
+					.columns
+				else
+					safe.cbind(newcols, .columns )}}
 		if(.replace)  newcols
 		else safe.cbind(.data, newcols)}
 

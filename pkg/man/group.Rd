@@ -11,8 +11,8 @@
 A data set in \code{plyrmr} , as represented by a pipe, is always grouped in one way or another. This means  that every computation acting on a pipe, acts on a subset of the data at a time. By contolling the group definition, we can implement complex algorithms while never loading all data into main memory, which wouldn't be feasible. The functions documented here allow to do that in \code{\link{plyrmr}}.
 }
 \usage{
-group(.data, \dots, .recursive = FALSE, .vectorized = FALSE, .envir = parent.frame())
-group.f(.data, .f, \dots, .recursive = FALSE, .vectorized = FALSE)
+group(.data, \dots, .recursive = FALSE, .envir = parent.frame())
+group.f(.data, .f, \dots, .recursive = FALSE)
 gather(.data, .recursive = TRUE)
 ungroup(.data)
 is.grouped(.data)
@@ -23,7 +23,7 @@ is.root()
   \item{.f}{Function with data frame argument and value}
   \item{\dots}{For group.f, additional arguments to f; for group, expressions that define grouping, such as column names (these are evaluated according to \link{non standard evaluation} rules)}
   \item{.recursive}{whether the data can be grouped in a tree like fashion, rather than a flat grouping; scales to large groups but requires operations on the groups to be associative and commitative, like a sum or max}
-  \item{.vectorized}{process multiple groups at once. The data will containg an attribute, \code{keys}, that denotes which columns represent the grouping; this is more efficient for very small group, if loops, apply family functions or other slow R constructs can be avoided.}
+%  \item{.vectorized}{process multiple groups at once. The data will containg an attribute, \code{keys}, that denotes which columns represent the grouping; this is more efficient for very small group, if loops, apply family functions or other slow R constructs can be avoided.}
   \item{.envir}{environment in which to evaluate \dots arguments}
 }
 

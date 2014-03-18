@@ -110,7 +110,7 @@ S3method(dcast, pipe)
 S3method(dcast, default)
 S3method(melt, pipe)
 #fast summaries
-export(fast.summary)
-S3method(fast.summary, pipe)
+#export(fast.summary)
+#S3method(fast.summary, pipe)
 
 

@@ -265,25 +265,7 @@ Now let&#39;s imagine that we have a huge data set with the same structure but i
 </code></pre>
 
 <p>This is the real deal: we have performed a computation on the cluster, in parallel, and the data is never loaded into memory at once, but the syntax and semantics remain the familiar ones. The last run processed all of 32 rows, but on a large enough cluster it could run on 32 terabytes &mdash; in that case you can not use <code>as.data.frame</code>.
-Even if <code>output</code> appears to return the data to be printed, that&#39;s only a sampling. The main effect of the <code>output</code> call is to write out to the specified file.
-You can also store intermediate results to a variable as in:</p>
-
-<pre><code class="r">mtcars.w.ratio = transform(input(&quot;/tmp/mtcars&quot;), carb.per.cyl = carb/cyl)
-as.data.frame(mtcars.w.ratio)
-</code></pre>
-
-<pre><code>                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-1            Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-2        Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-3           Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-4       Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-5    Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
-6              Valiant 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-7           Duster 360 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
-....
-</code></pre>
-
-<p>You&#39;ll notice that the assignment happens instantly. That&#39;s a consequence of a technique known as <em>delayed evaluation</em> that <code>plyrmr</code> uses to reduce the number of mapreduce job necessary to perform a calculation. But you don&#39;t need to worry about this, it all happens behind the scenes.</p>
+Even if <code>output</code> appears to return the data to be printed, that&#39;s only a sampling. The main effect of the <code>output</code> call is to write out to the specified file.</p>
 
 <p><code>transform</code> is one of several functions that <code>plyrmr</code> provides in a Hadoop-powered version:</p>
 
@@ -305,19 +287,25 @@ as.data.frame(mtcars.w.ratio)
 <ul>
 <li><code>melt</code> and <code>dcast</code>: convert between <em>long</em> and <em>wide</em> data frames</li>
 </ul></li>
-<li>new in <code>plyr</code>:
+<li>new in <code>plyrmr</code>:
 
 <ul>
 <li><code>select</code>: does everything that <code>transform</code> and <code>summarize</code> do in addition to selecting columns.</li>
 <li><code>where</code>: select rows</li>
 <li>these are more suitable for programming then the functions they replace, as will be explained later.</li>
 </ul></li>
-<li>analysis:
+<li>summary:
 
 <ul>
 <li><code>count.cols</code></li>
 <li><code>quantile.cols</code></li>
 <li><code>sample</code></li>
+</ul></li>
+<li>extract
+
+<ul>
+<li>top.k</li>
+<li>bottom.k</li>
 </ul></li>
 </ul>
 
@@ -341,13 +329,11 @@ as.data.frame(mtcars.w.ratio)
 
 <p>Wouldn&#39;t it be nice if we could do exactly the same on a Hadoop data set? In fact, we almost can:</p>
 
-<pre><code class="r">x =
-    subset(
-        transform(
-            input(&quot;/tmp/mtcars&quot;),
-            carb.per.cyl = carb/cyl),
-        carb.per.cyl &gt;= 1)
-as.data.frame(x)
+<pre><code class="r">subset(
+    transform(
+        input(&quot;/tmp/mtcars&quot;),
+        carb.per.cyl = carb/cyl),
+    carb.per.cyl &gt;= 1)
 </code></pre>
 
 <pre><code>          model  mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
@@ -591,13 +577,13 @@ last.col(mtcars)
 models
 </code></pre>
 
-<pre><code>    carb        model
-1      4 c(22.693....
-1.1    1 c(9.2859....
-1.2    2 c(32.723....
-1.3    3 c(16.3, ....
-1.4    6 c(19.7, ....
-1.5    8 c(15, NA....
+<pre><code>  carb        model
+1    4 c(22.693....
+2    1 c(9.2859....
+3    2 c(32.723....
+4    3 c(16.3, ....
+5    6 c(19.7, ....
+6    8 c(15, NA....
 </code></pre>
 
 <pre><code class="r">models[1,2]

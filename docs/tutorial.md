@@ -117,28 +117,6 @@ output(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl), "/tmp/mtcars.ou
 
 This is the real deal: we have performed a computation on the cluster, in parallel, and the data is never loaded into memory at once, but the syntax and semantics remain the familiar ones. The last run processed all of 32 rows, but on a large enough cluster it could run on 32 terabytes &mdash; in that case you can not use `as.data.frame`.
 Even if `output` appears to return the data to be printed, that's only a sampling. The main effect of the `output` call is to write out to the specified file.
-You can also store intermediate results to a variable as in:
-
-
-```r
-mtcars.w.ratio = transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
-as.data.frame(mtcars.w.ratio)
-```
-
-```
-                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-1            Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-2        Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-3           Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-4       Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-5    Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
-6              Valiant 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-7           Duster 360 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
-....
-```
-
-
-You'll notice that the assignment happens instantly. That's a consequence of a technique known as *delayed evaluation* that `plyrmr` uses to reduce the number of mapreduce job necessary to perform a calculation. But you don't need to worry about this, it all happens behind the scenes.
 
 `transform` is one of several functions that `plyrmr` provides in a Hadoop-powered version:
 
@@ -150,14 +128,17 @@ You'll notice that the assignment happens instantly. That's a consequence of a t
    * `summarize`: create summaries
  * from `reshape2`:
    * `melt` and `dcast`: convert between *long* and *wide* data frames
- * new in `plyr`:
+ * new in `plyrmr`:
    * `select`: does everything that `transform` and `summarize` do in addition to selecting columns.
    * `where`: select rows
    * these are more suitable for programming then the functions they replace, as will be explained later.
- * analysis:
+ * summary:
    * `count.cols`
    * `quantile.cols`
    * `sample`
+ * extract
+   * top.k
+   * bottom.k
  
 `plyrmr` extends all these operations to Hadoop data sets, trying to maintain semantic equivalence, with limitations that will be made clear later. These functions are not intended as a minimal set of operations: there is a lot of functionality overlap. We just wanted to support existing usage to help users transitioning to Hadoop programming.
  
@@ -185,13 +166,11 @@ Wouldn't it be nice if we could do exactly the same on a Hadoop data set? In fac
 
 
 ```r
-x =
-	subset(
-		transform(
-			input("/tmp/mtcars"),
-			carb.per.cyl = carb/cyl),
-		carb.per.cyl >= 1)
-as.data.frame(x)
+subset(
+	transform(
+		input("/tmp/mtcars"),
+		carb.per.cyl = carb/cyl),
+	carb.per.cyl >= 1)
 ```
 
 ```
@@ -507,13 +486,13 @@ models
 ```
 
 ```
-    carb        model
-1      4 c(22.693....
-1.1    1 c(9.2859....
-1.2    2 c(32.723....
-1.3    3 c(16.3, ....
-1.4    6 c(19.7, ....
-1.5    8 c(15, NA....
+  carb        model
+1    4 c(22.693....
+2    1 c(9.2859....
+3    2 c(32.723....
+4    3 c(16.3, ....
+5    6 c(19.7, ....
+6    8 c(15, NA....
 ```
 
 ```r

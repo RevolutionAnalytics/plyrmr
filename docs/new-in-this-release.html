@@ -144,21 +144,25 @@ hr {
 <body>
 <h1>What&#39;s new in <code>plyrmr</code> 0.2.0</h1>
 
+<h1>Features</h1>
+
 <ul>
-<li>Fast summaries</li>
-<li><code>.data</code> variable</li>
-<li>new pipe operators <code>%|%</code> <code>%!%</code></li>
-<li>vectorized grouping</li>
-<li>optimizations for nested grouping</li>
-<li>heuristic to avoid name changes in recursive group</li>
-<li><code>.</code> special argument for <code>%|%</code> operator</li>
-<li><code>where</code> takes a single argument now</li>
-<li><code>select</code> allows fractional recycling <code>select(mtcars, even = c(F,T), triad = 1:3, .replace=FALSE)</code></li>
-<li><p><code>.columns</code> argument for select</p></li>
-<li><p>fixed bug that resulted in column duplication</p></li>
-<li><p>removed <code>pryr</code> dependency with modest borrowing of code courtesy of @hadley</p></li>
-<li><p>more aggressive <em>freezing</em> of environments to make delayed evaluation and pipe optimization semantically neutral</p></li>
-<li><p>uncountable corner cases addressed (things like 0-rows, 0-columns etc, please report any broken corner case, they are all important)</p></li>
+<li><code>.data</code> variable in <code>select</code> and <code>where</code> expressions allow to refer to the whole chunk of data, not just one column, for instance to select odd columns: <code>select(mtcars, odd = .data[, c(T,F)])</code>.</li>
+<li>new pipe operators <code>%|%</code> and <code>%!%</code>: <code>select(group(select(input(data), select2.args), group.args), select1.args)</code> can be written like <code>data %|% input %|% select(select1.args) %|% group(group.args) %|% select(select2.args)</code> in a unix shell like fashion. <code>a %!% b</code> is a shorthand for <code>function(x) x %|% a %|% b</code>.   Works with complex expressions and piping into arguments other than the first using the special <code>.</code> variable, as in: <code>LETTERS %|% grep(&quot;A&quot;, .)</code> or <code>LETTERS %|% paste0(.,.,.)</code>. Similar to features found in packages <code>vadr</code>, <code>dplyr</code> and <code>magrittr</code>.</li>
+<li>optimizations for nested grouping, saves a job in certain circumstances.</li>
+<li>heuristic to avoid name changes in recursive group: <code>mtcars  %|% input %|% gather %|% select(sum(carb))</code> just works.</li>
+<li><code>where</code> takes a single argument now. The multiple argument form just calculated a logical <code>&amp;</code> of all the arguments, which is an arbitrary default and one more thing to remember. Therefore <code>where(data, cond1, cond2, cond3)</code> becomes <code>where(data, cond1 &amp; cond2 &amp; cond3)</code>. More clear, same verbosity and symmetric to <code>where(data, cond1 | cond2 | cond3)</code>, and we all love symmetries, don&#39;t we?</li>
+<li><code>select</code> allows fractional recycling <code>select(mtcars, even = c(FALSE, TRUE), triad = 1:3, .replace = FALSE)</code>.</li>
+<li><code>.columns</code> argument for <code>select</code>, allows to select multiple cols with a string character: <code>select(mtcars, .columns=c(&quot;carb&quot;, &quot;cyl&quot;, &quot;mpg&quot;))</code>.</li>
+</ul>
+
+<h2>Bugs</h2>
+
+<ul>
+<li>fixed bug that resulted in column duplication</li>
+<li>removed <code>pryr</code> dependency with modest borrowing of code courtesy of the always supportive @hadley</li>
+<li>more aggressive <em>freezing</em> of environments to make delayed evaluation and pipe optimization semantically neutral</li>
+<li>uncountable corner cases addressed (things like 0-rows, 0-columns etc), but there may be more.</li>
 </ul>
 
 </body>

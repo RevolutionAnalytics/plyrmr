@@ -113,4 +113,9 @@ S3method(melt, pipe)
 #export(fast.summary)
 #S3method(fast.summary, pipe)
 
-
+#workarond  for R imports bug
+importFrom(Rcpp, Rcpp.package.skeleton) 
+importFrom(dplyr, dim_desc)
+importFrom(R.methodsS3, setMethodS3)
+importFrom(reshape2, acast) 
+importFrom(Hmisc, .R.)

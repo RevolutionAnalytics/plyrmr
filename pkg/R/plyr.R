@@ -25,8 +25,8 @@ setMethodS3("mutate", "default", plyr::mutate)
 
 
 summarize.fun = 
-	function(.data, ...)
-		do(.data, summarize, ...)
+	function(.data, ..., .mergeable = FALSE)
+		do(.data, if(.mergeable) mergeable(summarize) else summarize, ...)
 
 summarize = function(.data, ...) UseMethod("summarize")
 setMethodS3("summarize", "pipe", summarize.fun)

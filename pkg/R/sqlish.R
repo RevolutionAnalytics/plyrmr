@@ -22,6 +22,8 @@ where.pipe =
 				list(.cond = .cond)))}
 
 select.pipe = 
-	function(.data, ..., .replace = TRUE, .envir = parent.frame()) {
+	function(.data, ..., .replace = TRUE, .mergeable = FALSE, .envir = parent.frame()) {
 		.envir = copy.env(.envir)
-		do(.data, CurryHalfLazy(select, .replace = .replace, .envir = .envir), ...)}
+		fun = CurryHalfLazy(select, .replace = .replace, .envir = .envir)
+		if(.mergeable) fun = mergeable(fun)
+		do(.data, fun, ...)}

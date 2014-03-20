@@ -42,9 +42,8 @@ sample.pipe =
 				ungroup(
 					do(
 						gather(
-							do(x, sample.curried),
-							.recursive = TRUE),
-						sample.curried)),
+							do(x, sample.curried)),
+						mergeable(sample.curried))),
 			Bernoulli = 
 				do(x, sample.curried),
 			hypergeometric = 

@@ -42,7 +42,9 @@ export(
 	output,
 	input,
 	"%|%",
-	"%!%")
+	"%!%",
+	mergeable,
+	vectorized)
 S3method(as.pipe, big.data)
 S3method(as.pipe, data.frame)
 S3method(as.pipe, character)
@@ -113,9 +115,11 @@ S3method(melt, pipe)
 #export(fast.summary)
 #S3method(fast.summary, pipe)
 
-#workarond  for R imports bug
+#workaround  for R imports bug
 importFrom(Rcpp, Rcpp.package.skeleton) 
 importFrom(dplyr, dim_desc)
+#real imports
 importFrom(R.methodsS3, setMethodS3)
-importFrom(reshape2, acast) 
-importFrom(Hmisc, .R.)
+importFrom(reshape2, dcast) 
+importFrom(reshape2, melt) 
+importFrom(Hmisc, wtd.quantile)

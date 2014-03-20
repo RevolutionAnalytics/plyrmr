@@ -509,7 +509,7 @@ last.col(mtcars)
 
 <pre><code class="r">input(&quot;/tmp/mtcars3&quot;, format = if3) %|%
     gather() %|%
-    summarize(sum(carb))
+    summarize(sum(carb), .mergeable = TRUE)
 </code></pre>
 
 <pre><code>  sum.carb.

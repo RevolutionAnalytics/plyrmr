@@ -397,7 +397,7 @@ That's not what we wanted and that's the where the size of the data cannot be ig
 ```r
 input("/tmp/mtcars3", format = if3) %|%
 	gather() %|%
-	summarize(sum(carb))
+	summarize(sum(carb), .mergeable = TRUE)
 ```
 
 ```

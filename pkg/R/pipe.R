@@ -86,64 +86,82 @@ as.character.pipe =
 print.pipe =
 	function(x, ...) {
 		print(as.data.frame(sample(x, method = "any", n = 100)))
-	 	invisible(x)}
+		invisible(x)}
 
 make.f1 = 
 	function(f, ...) {
 		dot.args = dots(...)
-			function(.x) {
-				.y = do.call(f, c(list(.x), dot.args))
-				if(is.data.frame(.y))
-					.y else {
-						if(is.matrix(.y))
-							as.data.frame(.y, stringsAsFactors = F)
-						else 
-							data.frame(x = .y, stringsAsFactors = F)}}}
+		function(.x) {
+			.y = do.call(f, c(list(.x), dot.args))
+			if(is.data.frame(.y))
+				.y else {
+					if(is.matrix(.y))
+						as.data.frame(.y, stringsAsFactors = F)
+					else 
+						data.frame(x = .y, stringsAsFactors = F)}}}
+
+mergeable = 
+	function(f) 
+		structure(f, mergeable = TRUE)
+
+vectorized = 
+	function(f) 
+		structure(f, vectorized = TRUE)
+
+is.mergeable = 
+	function(f) 
+		default(attr(f, "mergeable", exact=TRUE), FALSE)
+
+is.vectorized = 
+	function(f) 
+		default(attr(f, "vectorized", exact=TRUE), FALSE)
 
 do =  
 	function(.data, .f, ...){
 		.f = freeze.env(.f)
 		f1 = make.f1(.f, ...)
-		if(is.null(.data$group))
+		if(is.null(.data$group)) #still map phase
 			.data$map = comp(.data$map, f1)
-		else
+		else { #reduce phase
+			if(!is.mergeable(.f) && 
+				 	is.null(.data$reduce) && 
+				 	default(.data$recursive.group, FALSE))
+				stop("Did you try to combine a gather with a non-mergeable operation?")
+			if(is.mergeable(.f) && is.null(.data$reduce)) { #can use combiner
+				.data$recursive.group = TRUE
+				.data$combine = f1
+				.data$vectorized.combine = is.vectorized(.f)}
 			.data$reduce = comp(.data$reduce, f1)
+			.data$vectorized.reduce =
+				default(.data$vectorized.reduce, TRUE) &&
+				is.vectorized(.f)}
 		.data}
 
 group = 
-	function(.data, ..., .recursive = FALSE, .envir = parent.frame()) {
+	function(.data, ..., .envir = parent.frame()) {
 		force(.envir)
 		dot.args = dots(...)
 		gbf = 
 			group.f(
 				.data, 
 				function(.y) 
-					do.call(CurryHalfLazy(select, .envir = .envir), c(list(.y), dot.args)),
-				.recursive = .recursive)}
-#				.vectorized = .vectorized)}
+					do.call(CurryHalfLazy(select, .envir = .envir), c(list(.y), dot.args)))}
 
 group.f = 
-	function(.data, .f, ..., .recursive = FALSE) {
+	function(.data, .f, ...) {
 		.f = freeze.env(.f)
 		f1 = make.f1(.f, ...)
 		if(is.null(.data$group)) { #ungrouped
-			.data$group = f1
-			.data$recursive = .recursive 
-			.data$vectorized = FALSE} #.vectorized}
+			.data$group = f1}
 		else {
-			if(
-				is.null(.data$reduce) && 
-					.recursive == .data$recursive &&
-					.vectorized == .data$vectorized){ #refine grouping with no mr job
+			if(is.null(.data$reduce)){ #refine grouping with no mr job
 				prev.group = .data$group
 				.data$group = function(v) safe.cbind(prev.group(v), f1(v))}
 			else #run and apply grouping
 				.data = 
 				group.f(
 					input(run(.data, input.format = "native")), 
-					f1, 
-					.recursive = .recursive)}
-#					.vectorized = .vectorized)}
+					f1)}
 		.data}
 
 ungroup = 
@@ -155,11 +173,13 @@ ungroup =
 			.data}
 
 gather = 
-	function(.data, .recursive = TRUE) {
+	function(.data) {
 		if(is.grouped(.data)) 
 			.data
-		else
-			group(.data, .dummy = 1, .recursive = .recursive)}
+		else {
+			pipe = group(.data, .dummy = 1)
+			pipe$recursive.group = TRUE
+			pipe}}
 
 is.grouped = 
 	function(.data)
@@ -207,13 +227,13 @@ run =
 				mr.args$reduce = 
 					make.reduce.fun(
 						valf = pipe$reduce, 
-						ungroup = pipe$ungroup,
-						vectorized = pipe$vectorized)
+						ungroup = default(pipe$ungroup, FALSE),
+						vectorized = default(pipe$vectorized, FALSE))
 				mr.args$vectorized.reduce = pipe$vectorized}
 			if(!is.null(pipe$recursive.group) &&
 				 	pipe$recursive.group) {
 				mr.args$combine =
-					make.combine.fun(pipe$reduce, pipe$vectorized)}
+					make.combine.fun(pipe$reduce, default(pipe$vectorized, FALSE))}
 			mrexec(mr.args, input.format)}}
 
 output = 
@@ -241,7 +261,7 @@ as.pipe.data.frame =
 		as.pipe(as.big.data(x, "native"))
 
 as.pipe.character = 
-as.pipe.function = 
+	as.pipe.function = 
 	function(x, format = "native", ...) 
 		as.pipe(as.big.data(x, format))
 

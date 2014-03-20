@@ -106,7 +106,7 @@ quantile.cols.pipe =
 						...)}
 				else
 					combine(.x)}
-		do(gather(do(x, map)), reduce)}
+		do(gather(do(x, map)), mergeable(reduce))}
 
 select.numeric = 
 	function(x) 
@@ -174,7 +174,7 @@ count.cols.pipe =
 				do(
 					x,
 					count.cols)),
-			Curry(merge.counts, n = n))
+			mergeable(Curry(merge.counts, n = n)))
 
 extreme.k= 
 	function(.x, .k , ...,  .decreasing, .envir = parent.frame()) {
@@ -194,7 +194,7 @@ extreme.k=
 			do(
 				gather(
 					do(.x, mr.fun)),
-				mr.fun))}
+				mergeable(mr.fun)))}
 
 top.k = 
 	function(.x, .k = 1, ...,  .envir = parent.frame()) {
@@ -229,12 +229,13 @@ moving.window =
 
 unique.pipe = 
 	function(x, incomparables = FALSE, fromLast = FALSE, ...) {
-		uniquec = Curry(unique, incomparables = incomparables, fromLast = fromLast)
+		uniquec = 
+			mergeable(
+				Curry(unique, incomparables = incomparables, fromLast = fromLast))
 		do(
 			group.f(
 				do(x, uniquec),
-				identity,
-				.recursive = TRUE),
+				identity),
 			uniquec)}
 
 rbind = function(...) UseMethod("rbind")

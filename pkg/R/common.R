@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+default = rmr2:::default
+
 #strings
 # of perl fame
 qw = function(...) as.character(match.call())[-1]

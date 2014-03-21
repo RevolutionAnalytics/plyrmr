@@ -48,5 +48,5 @@ as.data.frame(
   do(
     gather(
       input(mtcars)),
-    function(x) t(colSums(x))))
+    mergeable(function(x) t(colSums(x)))))
 }

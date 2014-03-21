@@ -233,7 +233,7 @@ run =
 			if(!is.null(pipe$recursive.group) &&
 				 	pipe$recursive.group) {
 				mr.args$combine =
-					make.combine.fun(pipe$reduce, default(pipe$vectorized, FALSE))}
+					make.combine.fun(pipe$combine, default(pipe$vectorized, FALSE))}
 			mrexec(mr.args, input.format)}}
 
 output = 

@@ -129,11 +129,10 @@ do =
 				stop("Did you try to combine a gather with a non-mergeable operation?")
 			if(is.mergeable(.f) && is.null(.data$reduce)) { #can use combiner
 				.data$recursive.group = TRUE
-				.data$combine = f1
-				.data$vectorized.combine = is.vectorized(.f)}
+				.data$combine = f1}
 			.data$reduce = comp(.data$reduce, f1)
-			.data$vectorized.reduce =
-				default(.data$vectorized.reduce, TRUE) &&
+			.data$vectorized =
+				default(.data$vectorized, TRUE) &&
 				is.vectorized(.f)}
 		.data}
 

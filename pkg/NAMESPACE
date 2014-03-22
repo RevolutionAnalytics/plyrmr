@@ -37,7 +37,6 @@ export(
 	group.f,
 	gather,
 	is.grouped,
-	is.root,
 	ungroup,
 	output,
 	input,

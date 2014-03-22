@@ -64,10 +64,6 @@ make.combine.fun =
 			names(retval$val)[mask] = new.names[mask]
 			retval}}
 
-is.root = 
-	function()
-		length(grep("_m_", Sys.getenv("mapred_task_id"))) == 0
-
 #pipes
 
 is.data = 

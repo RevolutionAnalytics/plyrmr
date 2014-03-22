@@ -4,7 +4,6 @@
 \alias{gather}
 \alias{ungroup}
 \alias{is.grouped}
-\alias{is.root}
 
 \title{Control grouping of data sets}
 \description{
@@ -16,7 +15,6 @@ group.f(.data, .f, \dots)
 gather(.data)
 ungroup(.data)
 is.grouped(.data)
-is.root()
 }
 \arguments{
   \item{.data}{A data sets represented by a pipe.}
@@ -25,9 +23,9 @@ is.root()
   \item{.envir}{environment in which to evaluate \dots arguments}
 }
 
-\details{\code{group} is inspired by the SQL \code{GROUP BY} statement and is analogous but not identical to \code{dplyr:::group_by}. In its simplest form, it allows to select some columns or variables to define the grouping, specified as \dots arguments. This means all rows sharing the same values for the grouping columns become part of the same group. The next step in complexity is grouping by R expressions, also specified as \dots arguments and evaluated according to \link{non standard evaluation} rules. An additional level in flexibility is offered by \code{group.f}, which allows to compute the grouping columns in a general R function that is only restricted to accept and return a data frame. \code{gather} is a shorthand for \code{group(data, constant)} which implies that all data should belong to single group. Multiple grouping operations applied to the same data set accumulate in the sense that each grouping is seen as a refinement of the existing one (this is a major departure from the equivalent SQL operation). Therefore \code{group(group(input(mtcars), cyl), mpg)} is equivalent to \code{group(input(mtcars), cyl, mpg)}. \code{ungroup} resets the grouping to the initial state, which is of arbitrary grouping (arbitrary grouping is best for performance). \code{is.grouped} tests if a data set is already grouped in any way other than arbitrary grouping. \code{is.root} is useful with recursive grouping and can be used inside a function passed to \code{do} as an argument. It returns \code{TRUE} when the argument \code{x} represents a complete group as opposed to a subgroup.}
+\details{\code{group} is inspired by the SQL \code{GROUP BY} statement and is analogous but not identical to \code{dplyr:::group_by}. In its simplest form, it allows to select some columns or variables to define the grouping, specified as \dots arguments. This means all rows sharing the same values for the grouping columns become part of the same group. The next step in complexity is grouping by R expressions, also specified as \dots arguments and evaluated according to \link{non standard evaluation} rules. An additional level in flexibility is offered by \code{group.f}, which allows to compute the grouping columns in a general R function that is only restricted to accept and return a data frame. \code{gather} is a shorthand for \code{group(data, constant)} which implies that all data should belong to single group. Multiple grouping operations applied to the same data set accumulate in the sense that each grouping is seen as a refinement of the existing one (this is a major departure from the equivalent SQL operation). Therefore \code{group(group(input(mtcars), cyl), mpg)} is equivalent to \code{group(input(mtcars), cyl, mpg)}. \code{ungroup} resets the grouping to the initial state, which is of arbitrary grouping (arbitrary grouping is best for performance). \code{is.grouped} tests if a data set is already grouped in any way other than arbitrary grouping.}
 
-\value{A data set represented by a pipe for all but \code{is.grouped} and \code{is.root}, which return a \code{logical}}
+\value{A data set represented by a pipe for all but \code{is.grouped}, which return a \code{logical}, where \code{FALSE} stands for arbitrary grouping}
 
 \examples{
 as.data.frame(

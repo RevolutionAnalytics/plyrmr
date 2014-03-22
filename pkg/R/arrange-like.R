@@ -98,15 +98,11 @@ quantile.cols.pipe =
 					do.call(quantile.cols, args), 
 					.weight = sum(args$weights)/N)}
 		reduce = 
-			function(.x) {
-				if(is.root()){
-					quantile.cols(
-						as.data.frame(
-							combine(.x))[,-ncol(.x)], 
-						...)}
-				else
-					combine(.x)}
-		do(gather(do(x, map)), mergeable(reduce))}
+			function(.x) 
+				quantile.cols(
+					as.data.frame(.x)[,-ncol(.x)], 
+					...)
+		do(do(gather(do(x, map)), mergeable(combine)), reduce)}
 
 select.numeric = 
 	function(x) 

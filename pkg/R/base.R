@@ -28,9 +28,8 @@ names.pipe =
 					do(
 						x,  
 						names),
-					x,
-					recursive = TRUE),
-				unique))[['x']]
+					x),
+				mergeable(unique)))[['x']]
 
 sample.pipe = 
 	function(x, method = c("any", "Bernoulli", "hypergeometric"), ...) {
@@ -57,9 +56,5 @@ sample.pipe =
 									.priority = runif(nrow(x)))), 
 						.k = list(...)[["n"]], 
 						.priority), 
-					function(x){
-						if(is.root())
-							x[,-ncol(x)]
-						else
-							x}))}
+					function(x)	x[,-ncol(x)]))}
 

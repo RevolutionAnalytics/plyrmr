@@ -121,13 +121,6 @@ quantile.cols.data.frame =
 				function(.y)
 					wtd.quantile(.y, ...)))}
 
-# quantile.data.frame =
-# 	function(x, probs = seq(0, 1, 0.25), ...) {
-# 		if(!is.null(x$.weights))
-# 			x$.weights = 1
-# 	  x = x[splat(order)(select(x, ...)), ]
-# 	  x[pmax(1, round(nrow(x) * probs)), ]}
-
 count.cols = function(x, ...) UseMethod("count.cols")
 
 count.cols.default = 

@@ -12,11 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-setMethodS3(
-	"melt", 
-	"pipe", 
-	function(data, ...) 
-		do(data, melt, ...))
+
+magic.wand(melt)
 
 dcast = function(data, formula, ...) UseMethod("dcast")
 

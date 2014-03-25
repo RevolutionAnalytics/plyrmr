@@ -31,11 +31,11 @@ mtcars
 ```
 
 
-One may be interested in how many carburetors per cylinder each model uses, and that's a simple `transform` call away:
+One may be interested in how many carburetors per cylinder each model uses, and that's a simple `select` call away:
 
 
 ```r
-transform(mtcars, carb.per.cyl = carb/cyl)
+bind.cols(mtcars, carb.per.cyl = carb/cyl)
 ```
 
 ```
@@ -51,32 +51,17 @@ transform(mtcars, carb.per.cyl = carb/cyl)
 ```
 
 
-`transform` provides a model that is common to many functions in `plyr` and `plyrmr`. The function name gives only a general idea of what the function is going to do. The first argument is always the data set to be processed. The following arguments provide the details of what type of processing is going to take place, in the form of one or more expression, sometimes named ones. These expression can refer to the columns of the data frame as if they were additional variables.
-Now let's imagine that we have a huge data set with the same structure but instead of being stored in memory, it is stored in a HDFS file named "/mp/mt cars". It's way too big to be loaded with `read.table` or equivalent. With `plyrmr` one just needs to  enter:
+`bind.cols` is `plyrmr`'s own version of `transform` and provides a model that is common to many functions in `plyr` and `plyrmr`. The function name gives a general idea of what the function is for. The first argument is always the data set to be processed. The following arguments provide the details of what type of processing is going to take place, in the form of one or more optionally named expressions. These expressions can refer to the columns of the data frame as if they were additional variables, according to *non standard evaluation* rules.
+Now let's imagine that we have a huge data set with the same structure but instead of being stored in memory, it is stored in a HDFS file named "/tmp/mtcars". It's way too big to be loaded with `read.table` or equivalent. With `plyrmr` one just needs to  enter:
 
 
-```r
-transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
-```
-
-```
-                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-1            Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-2        Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-3           Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-4       Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-5    Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
-6              Valiant 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-7           Duster 360 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
-....
-```
 
 
 What we see are only a few arbitrary rows from the resulting data set. This is not only a consequence of the limited screen real estate, but also, in the case of large data sets, of the capacity gap between memory of a single machine and big data. In general, we can't expect to be able to load big data in memory. Sometimes, after summarization or filtering, the result of processing big data is small enough to fit into main memory. In this example, we know the data set is small so we can just go ahead and enter:
 
 
 ```r
-as.data.frame(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl))
+as.data.frame(bind.cols(input("/tmp/mtcars"), carb.per.cyl = carb/cyl))
 ```
 
 ```
@@ -98,38 +83,22 @@ If we can't make this assumption, we may need to write the results of a computat
 
 
 
-```r
-output(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl), "/tmp/mtcars.out")
-```
-
-```
-                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-1            Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-2        Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-3           Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-4       Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-5    Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
-6              Valiant 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-7           Duster 360 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
-....
-```
 
 
 This is the real deal: we have performed a computation on the cluster, in parallel, and the data is never loaded into memory at once, but the syntax and semantics remain the familiar ones. The last run processed all of 32 rows, but on a large enough cluster it could run on 32 terabytes &mdash; in that case you can not use `as.data.frame`.
 Even if `output` appears to return the data to be printed, that's only a sampling. The main effect of the `output` call is to write out to the specified file.
 
-`transform` is one of several functions that `plyrmr` provides in a Hadoop-powered version:
+`select` is one of several functions that `plyrmr` provides in a Hadoop-powered version:
 
  * from `base`:
-   * `transform`: add new columns
-   * `subset`: select columns and rows
+   * `select`: add new columns
+   * `where`: select columns and rows
  * from `plyr`:
-   * `mutate`: similar to `transform`
-   * `summarize`: create summaries
+    * `summarize`: create summaries
  * from `reshape2`:
    * `melt` and `dcast`: convert between *long* and *wide* data frames
  * new in `plyrmr`:
-   * `select`: does everything that `transform` and `summarize` do in addition to selecting columns.
+   * `select`: does everything that `select` and `summarize` do in addition to selecting columns.
    * `where`: select rows
    * these are more suitable for programming then the functions they replace, as will be explained later.
  * summary:
@@ -148,11 +117,9 @@ What if none of the basic operations is sufficient to perform a needed data proc
 
 
 ```r
-subset(
-	transform(
-		mtcars, 
-		carb.per.cyl = carb/cyl), 
-	carb.per.cyl >= 1)
+mtcars %|%
+	bind.cols(carb.per.cyl = carb/cyl) %|%
+	where(carb.per.cyl >= 1)
 ```
 
 ```
@@ -166,11 +133,11 @@ Wouldn't it be nice if we could do exactly the same on a Hadoop data set? In fac
 
 
 ```r
-subset(
-	transform(
-		input("/tmp/mtcars"),
-		carb.per.cyl = carb/cyl),
-	carb.per.cyl >= 1)
+x = 
+	input("/tmp/mtcars") %|%
+	bind.cols(carb.per.cyl = carb/cyl) %|%
+	where(carb.per.cyl >= 1)
+as.data.frame(x)
 ```
 
 ```
@@ -188,8 +155,8 @@ You may have noticed that the last example consists of a fairly complex expressi
 
 
 ```r
-x =	transform(mtcars, carb.per.cyl = carb/cyl) 
-subset(x, carb.per.cyl >= 1)
+x =	bind.cols(mtcars, carb.per.cyl = carb/cyl) 
+where(x, carb.per.cyl >= 1)
 ```
 
 ```
@@ -204,8 +171,8 @@ The purists will find that introducing one variable for each intermediate step q
 
 ```r
 mtcars %|%
-	transform(carb.per.cyl = carb/cyl) %|%
-	subset(carb.per.cyl >= 1)
+	bind.cols(carb.per.cyl = carb/cyl) %|%
+	where(carb.per.cyl >= 1)
 ```
 
 ```
@@ -218,13 +185,14 @@ mtcars %|%
 What this does is providing the value of the leftmost expression as the first unnamed argument of the next function call, evaluate this combination and continue to the next operator. Actually, that's the default behavior, but you can specify any function argument in a complex expression to be the designated one with the special name `.`. Rather than arguing over which style is best, it's probably best to bask in the flexibility made possible by the R language and your indefatigable developers and pick the one that fits one's style or a specific situation. In particular, pipes can not express more complex data flows where two flows merge or one splits. In the following I will alternate between these three notations (nested, assignment chain and pipe operator) based on which seems the clearest. It should be safe to assume that each example can be translated into any of the three.
 
 
-## Why you should use `plyrmr`'s `select` and `where`
-`subset` and `transform` work best interactively, at the prompt, but they have some problems when used in other functions or packages. These limitations are inherited from the `base` package functions, not peculiar to their `plyrmr` brethren. `plyrmr` makes an attempt to provide two functions that match the convenience of `transform` and `subset` without their pitfalls. While we were at it, we also tried to make them more general and give them a cleaner but still familiar (SQL-inspired) interface. Let me introduce `select` and `where`. These are `plyrmr` functions with methods for data frames and Hadoop data sets and they are appropriate for interactive and programming use. The previous examples become, using these functions:
+## Why you should use `plyrmr`'s `bind.cols`, `transmute` and `where`
+TODO: rewrite this part
+work best interactively, at the prompt, but they have some problems when used in other functions or packages. These limitations are inherited from the `base` package functions, not peculiar to their `plyrmr` brethren. `plyrmr` makes an attempt to provide two functions that match the convenience of `select` and `where` without their pitfalls. While we were at it, we also tried to make them more general and give them a cleaner but still familiar (SQL-inspired) interface. Let me introduce `select` and `where`. These are `plyrmr` functions with methods for data frames and Hadoop data sets and they are appropriate for interactive and programming use. The previous examples become, using these functions:
 
 
 ```r
 mtcars %|%
-	select(carb.per.cyl = carb/cyl, .replace = FALSE) %|%
+	bind.cols(carb.per.cyl = carb/cyl) %|%
 	where(carb.per.cyl >= 1)
 ```
 
@@ -241,7 +209,7 @@ and:
 ```r
 x = 
 	input("/tmp/mtcars") %|%
-	select(carb.per.cyl = carb/cyl, .replace = FALSE) %|%
+	bind.cols(carb.per.cyl = carb/cyl) %|%
 	where(carb.per.cyl >= 1)
 as.data.frame(x)
 ```
@@ -253,12 +221,12 @@ as.data.frame(x)
 ```
 
 
-Similar, but they work everywhere. For instance, if `subset` is called within some function, which is in its turn used in some other function, we can have the following situation:
+Similar, but they work everywhere. For instance, if `where` is called within some function, which is in its turn used in some other function, we can have the following situation:
 
 
 ```r
-subset.mtcars.1 = function(...) subset(mtcars, ...)
-high.carb.cyl.1 = function(x) {subset.mtcars.1(carb/cyl >= x) }
+where.mtcars.1 = function(...) where(mtcars, ...)
+high.carb.cyl.1 = function(x) {where.mtcars.1(carb/cyl >= x) }
 high.carb.cyl.1(1) 
 ```
 
@@ -271,8 +239,8 @@ Unfortunately, it doesn't work. With `where` instead:
 
 
 ```r
-subset.mtcars.2 = function(...) where(mtcars, ..., .envir = parent.frame())
-high.carb.cyl.2 = function(x) {subset.mtcars.2(carb/cyl >= x) }
+where.mtcars.2 = function(...) where(mtcars, ..., .envir = parent.frame())
+high.carb.cyl.2 = function(x) {where.mtcars.2(carb/cyl >= x) }
 high.carb.cyl.2(1)
 ```
 
@@ -283,7 +251,7 @@ high.carb.cyl.2(1)
 ```
 
 
-The exact reason why `where` needs an additional argument in this scenario and what to provide are out of scope for this tutorial, but the message is that with `where` and `select` you can transition nicely from interactive R use to development. The R documentation recommends to use `[]` only when programming, but having to rewrite code in a different context, to a computer scientist, is just an admission of defeat. Therefore `plyrmr` provides methods for `transform`, `subset`, `mutate` and `summarize` because of their widespread use, but we recommend to check out `where` and `select` (many thanks to Hadley Wickham for valuable discussions on this issue).
+The exact reason why `where` needs an additional argument in this scenario and what to provide are out of scope for this tutorial, but the message is that with `where` and `select` you can transition nicely from interactive R use to development. The R documentation recommends to use `[]` only when programming, but having to rewrite code in a different context, to a computer scientist, is just an admission of defeat. Therefore `plyrmr` provides methods for `select`, `where`,  and `summarize` because of their widespread use, but we recommend to check out `where` and `select` (many thanks to Hadley Wickham for valuable discussions on this issue).
 
 ## Custom operations
 Another way to extend the functionality of `plyrmr` built-in data manipulation functions is to take any function that accepts a data frame in input and returns a data frame and use the function `do` to give it Hadoop superpowers (`do` is named after the equivalent function in `dplyr`, but the idea is not new). For instance, you have a function that returns the rightmost column of a data frame. This is not simple to achieve with the functions explored so far, but it is a quick one liner:
@@ -298,7 +266,7 @@ Wouldn't it be great if we could run this on a Hadoop data set? Well, we almost 
 
 
 ```r
-do(input("/tmp/mtcars"), last.col)
+as.data.frame(gapply(input("/tmp/mtcars"), last.col))
 ```
 
 ```
@@ -359,11 +327,11 @@ Until now we performed row by row operations, whereby each row in the results de
 
 
 ```r
-summarize(mtcars, sum(carb))
+transmute(mtcars, sum(carb))
 ```
 
 ```
-  sum(carb)
+  sum.carb.
 1        90
 ```
 
@@ -375,7 +343,7 @@ What happens if we do this on a Hadoop data set?
 
 
 ```r
-summarize(input("/tmp/mtcars3", format = if3), sum(carb))
+transmute(input("/tmp/mtcars3", format = if3), sum(carb))
 ```
 
 ```
@@ -397,7 +365,7 @@ That's not what we wanted and that's the where the size of the data cannot be ig
 ```r
 input("/tmp/mtcars3", format = if3) %|%
 	gather() %|%
-	summarize(sum(carb), .mergeable = TRUE)
+	transmute(sum(carb), .mergeable = TRUE)
 ```
 
 ```
@@ -411,13 +379,13 @@ input("/tmp/mtcars3", format = if3) %|%
 
 You may have noticed the contradiction between the above statement that data is always in chunks with the availability of a `gather` function. Luckily, there is an advanced way of grouping recursively, in a tree like fashion, that works with associative and commutative operations such as the sum, which is the default for `gather`. Anyway, it will all be more clear as we cover other grouping functions.
 
-The `group` function takes an input and a number of arguments that are evaluated in the context of the data, exactly like `transform` and `mutate`. The result is a Hadoop data set grouped by the columns defined in those arguments. After this step, all rows that are identical on the columns defined in the `group` call will be loaded into memory at once and processed in the same call. Here is an example. Let's say we want to calculate the average mileage for cars with the same number of cylinders:
+The `group` function takes an input and a number of arguments that are evaluated in the context of the data, exactly like `select`. The result is a Hadoop data set grouped by the columns defined in those arguments. After this step, all rows that are identical on the columns defined in the `group` call will be loaded into memory at once and processed in the same call. Here is an example. Let's say we want to calculate the average mileage for cars with the same number of cylinders:
 
 
 ```r
 input("/tmp/mtcars") %|%
 	group(cyl) %|%
-	select(mean.mpg = mean(mpg))
+	transmute(mean.mpg = mean(mpg))
 ```
 
 ```
@@ -433,21 +401,6 @@ This is mostly a scalable programs, but there are some caveats: we need to be mi
 When the definition of the grouping column is more complicated, we may need to reach for the uber-general `group.f`, the grouping relative of `do` (in fact, these two functions are the foundation for everything else in `plyrmr`). Let's go back to the `last.col` example. If we need to group by the last columns of a data frame, this is all we need to do:
 
 
-```r
-input("/tmp/mtcars") %|%
-	group.f(last.col) %|%
-	select(mean.mpg = mean(mpg)) 
-```
-
-```
-  carb mean.mpg
-1    4    15.79
-2    1    25.34
-3    2    22.40
-4    3    16.30
-5    6    19.70
-6    8    15.00
-```
 
 
 ## Better than SQL
@@ -480,7 +433,7 @@ input("/tmp/mtcars") %|%
 models = 
 	input("/tmp/mtcars") %|%
 	group(carb) %|%
-	select(model = list(lm(mpg~cyl+disp))) %|%
+	transmute(model = list(lm(mpg~cyl+disp))) %|%
 	as.data.frame()
 models
 ```

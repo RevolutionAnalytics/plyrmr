@@ -199,9 +199,9 @@ hljs.initHighlightingOnLoad();
 ....
 </code></pre>
 
-<p>One may be interested in how many carburetors per cylinder each model uses, and that&#39;s a simple <code>transform</code> call away:</p>
+<p>One may be interested in how many carburetors per cylinder each model uses, and that&#39;s a simple <code>select</code> call away:</p>
 
-<pre><code class="r">transform(mtcars, carb.per.cyl = carb/cyl)
+<pre><code class="r">bind.cols(mtcars, carb.per.cyl = carb/cyl)
 </code></pre>
 
 <pre><code>                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
@@ -215,26 +215,12 @@ hljs.initHighlightingOnLoad();
 ....
 </code></pre>
 
-<p><code>transform</code> provides a model that is common to many functions in <code>plyr</code> and <code>plyrmr</code>. The function name gives only a general idea of what the function is going to do. The first argument is always the data set to be processed. The following arguments provide the details of what type of processing is going to take place, in the form of one or more expression, sometimes named ones. These expression can refer to the columns of the data frame as if they were additional variables.
-Now let&#39;s imagine that we have a huge data set with the same structure but instead of being stored in memory, it is stored in a HDFS file named &ldquo;/mp/mt cars&rdquo;. It&#39;s way too big to be loaded with <code>read.table</code> or equivalent. With <code>plyrmr</code> one just needs to  enter:</p>
-
-<pre><code class="r">transform(input(&quot;/tmp/mtcars&quot;), carb.per.cyl = carb/cyl)
-</code></pre>
-
-<pre><code>                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-1            Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-2        Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-3           Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-4       Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-5    Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
-6              Valiant 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-7           Duster 360 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
-....
-</code></pre>
+<p><code>bind.cols</code> is <code>plyrmr</code>&#39;s own version of <code>transform</code> and provides a model that is common to many functions in <code>plyr</code> and <code>plyrmr</code>. The function name gives a general idea of what the function is for. The first argument is always the data set to be processed. The following arguments provide the details of what type of processing is going to take place, in the form of one or more optionally named expressions. These expressions can refer to the columns of the data frame as if they were additional variables, according to <em>non standard evaluation</em> rules.
+Now let&#39;s imagine that we have a huge data set with the same structure but instead of being stored in memory, it is stored in a HDFS file named &ldquo;/tmp/mtcars&rdquo;. It&#39;s way too big to be loaded with <code>read.table</code> or equivalent. With <code>plyrmr</code> one just needs to  enter:</p>
 
 <p>What we see are only a few arbitrary rows from the resulting data set. This is not only a consequence of the limited screen real estate, but also, in the case of large data sets, of the capacity gap between memory of a single machine and big data. In general, we can&#39;t expect to be able to load big data in memory. Sometimes, after summarization or filtering, the result of processing big data is small enough to fit into main memory. In this example, we know the data set is small so we can just go ahead and enter:</p>
 
-<pre><code class="r">as.data.frame(transform(input(&quot;/tmp/mtcars&quot;), carb.per.cyl = carb/cyl))
+<pre><code class="r">as.data.frame(bind.cols(input(&quot;/tmp/mtcars&quot;), carb.per.cyl = carb/cyl))
 </code></pre>
 
 <pre><code>                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
@@ -250,36 +236,21 @@ Now let&#39;s imagine that we have a huge data set with the same structure but i
 
 <p>If we can&#39;t make this assumption, we may need to write the results of a computation out to a specific path, that is we need the <code>output</code> call:</p>
 
-<pre><code class="r">output(transform(input(&quot;/tmp/mtcars&quot;), carb.per.cyl = carb/cyl), &quot;/tmp/mtcars.out&quot;)
-</code></pre>
-
-<pre><code>                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-1            Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-2        Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-3           Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-4       Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-5    Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
-6              Valiant 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-7           Duster 360 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
-....
-</code></pre>
-
 <p>This is the real deal: we have performed a computation on the cluster, in parallel, and the data is never loaded into memory at once, but the syntax and semantics remain the familiar ones. The last run processed all of 32 rows, but on a large enough cluster it could run on 32 terabytes &mdash; in that case you can not use <code>as.data.frame</code>.
 Even if <code>output</code> appears to return the data to be printed, that&#39;s only a sampling. The main effect of the <code>output</code> call is to write out to the specified file.</p>
 
-<p><code>transform</code> is one of several functions that <code>plyrmr</code> provides in a Hadoop-powered version:</p>
+<p><code>select</code> is one of several functions that <code>plyrmr</code> provides in a Hadoop-powered version:</p>
 
 <ul>
 <li>from <code>base</code>:
 
 <ul>
-<li><code>transform</code>: add new columns</li>
-<li><code>subset</code>: select columns and rows</li>
+<li><code>select</code>: add new columns</li>
+<li><code>where</code>: select columns and rows</li>
 </ul></li>
 <li>from <code>plyr</code>:
 
 <ul>
-<li><code>mutate</code>: similar to <code>transform</code></li>
 <li><code>summarize</code>: create summaries</li>
 </ul></li>
 <li>from <code>reshape2</code>:
@@ -290,7 +261,7 @@ Even if <code>output</code> appears to return the data to be printed, that&#39;s
 <li>new in <code>plyrmr</code>:
 
 <ul>
-<li><code>select</code>: does everything that <code>transform</code> and <code>summarize</code> do in addition to selecting columns.</li>
+<li><code>select</code>: does everything that <code>select</code> and <code>summarize</code> do in addition to selecting columns.</li>
 <li><code>where</code>: select rows</li>
 <li>these are more suitable for programming then the functions they replace, as will be explained later.</li>
 </ul></li>
@@ -315,11 +286,9 @@ Even if <code>output</code> appears to return the data to be printed, that&#39;s
 
 <p>What if none of the basic operations is sufficient to perform a needed data processing step? The first available tool is to combine different operations. Going back to the previous example, let&#39;s say we want to select cars with a carburetor per cylinder ratio greater than 1. Do such things even exist? On a data frame, there is a quick way to compute the answer, which is</p>
 
-<pre><code class="r">subset(
-    transform(
-        mtcars, 
-        carb.per.cyl = carb/cyl), 
-    carb.per.cyl &gt;= 1)
+<pre><code class="r">mtcars %|%
+    bind.cols(carb.per.cyl = carb/cyl) %|%
+    where(carb.per.cyl &gt;= 1)
 </code></pre>
 
 <pre><code>           model  mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
@@ -329,11 +298,11 @@ Even if <code>output</code> appears to return the data to be printed, that&#39;s
 
 <p>Wouldn&#39;t it be nice if we could do exactly the same on a Hadoop data set? In fact, we almost can:</p>
 
-<pre><code class="r">subset(
-    transform(
-        input(&quot;/tmp/mtcars&quot;),
-        carb.per.cyl = carb/cyl),
-    carb.per.cyl &gt;= 1)
+<pre><code class="r">x = 
+    input(&quot;/tmp/mtcars&quot;) %|%
+    bind.cols(carb.per.cyl = carb/cyl) %|%
+    where(carb.per.cyl &gt;= 1)
+as.data.frame(x)
 </code></pre>
 
 <pre><code>          model  mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
@@ -347,8 +316,8 @@ Even if <code>output</code> appears to return the data to be printed, that&#39;s
 
 <p>You may have noticed that the last example consists of a fairly complex expression, with function calls nested inside other function calls multiple times. The drawbacks of that are twofold. First, the order in which functions appear in the code, top to bottom, is the opposite of the order in which they are executed. Second, additional arguments to each function can be very far from the name of the function. This problem can be mitigated with proper indentation, but it still is a problem. One workaround is to rewrite complex expressions as chains of assignments:</p>
 
-<pre><code class="r">x = transform(mtcars, carb.per.cyl = carb/cyl) 
-subset(x, carb.per.cyl &gt;= 1)
+<pre><code class="r">x = bind.cols(mtcars, carb.per.cyl = carb/cyl) 
+where(x, carb.per.cyl &gt;= 1)
 </code></pre>
 
 <pre><code>           model  mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
@@ -359,8 +328,8 @@ subset(x, carb.per.cyl &gt;= 1)
 <p>The purists will find that introducing one variable for each intermediate step quite unsightly. To avoid this plyrmr offers a UNIX-style pipe operator, inspired by two R implementations, by <a href="https://github.com/crowding/vadr/blob/master/R/chain.R">@crowding</a> and <a href="https://github.com/hadley/dplyr/blob/master/R/chain.r">@hadley</a>.</p>
 
 <pre><code class="r">mtcars %|%
-    transform(carb.per.cyl = carb/cyl) %|%
-    subset(carb.per.cyl &gt;= 1)
+    bind.cols(carb.per.cyl = carb/cyl) %|%
+    where(carb.per.cyl &gt;= 1)
 </code></pre>
 
 <pre><code>           model  mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
@@ -370,12 +339,13 @@ subset(x, carb.per.cyl &gt;= 1)
 
 <p>What this does is providing the value of the leftmost expression as the first unnamed argument of the next function call, evaluate this combination and continue to the next operator. Actually, that&#39;s the default behavior, but you can specify any function argument in a complex expression to be the designated one with the special name <code>.</code>. Rather than arguing over which style is best, it&#39;s probably best to bask in the flexibility made possible by the R language and your indefatigable developers and pick the one that fits one&#39;s style or a specific situation. In particular, pipes can not express more complex data flows where two flows merge or one splits. In the following I will alternate between these three notations (nested, assignment chain and pipe operator) based on which seems the clearest. It should be safe to assume that each example can be translated into any of the three.</p>
 
-<h2>Why you should use <code>plyrmr</code>&#39;s <code>select</code> and <code>where</code></h2>
+<h2>Why you should use <code>plyrmr</code>&#39;s <code>bind.cols</code>, <code>transmute</code> and <code>where</code></h2>
 
-<p><code>subset</code> and <code>transform</code> work best interactively, at the prompt, but they have some problems when used in other functions or packages. These limitations are inherited from the <code>base</code> package functions, not peculiar to their <code>plyrmr</code> brethren. <code>plyrmr</code> makes an attempt to provide two functions that match the convenience of <code>transform</code> and <code>subset</code> without their pitfalls. While we were at it, we also tried to make them more general and give them a cleaner but still familiar (SQL-inspired) interface. Let me introduce <code>select</code> and <code>where</code>. These are <code>plyrmr</code> functions with methods for data frames and Hadoop data sets and they are appropriate for interactive and programming use. The previous examples become, using these functions:</p>
+<p>TODO: rewrite this part
+work best interactively, at the prompt, but they have some problems when used in other functions or packages. These limitations are inherited from the <code>base</code> package functions, not peculiar to their <code>plyrmr</code> brethren. <code>plyrmr</code> makes an attempt to provide two functions that match the convenience of <code>select</code> and <code>where</code> without their pitfalls. While we were at it, we also tried to make them more general and give them a cleaner but still familiar (SQL-inspired) interface. Let me introduce <code>select</code> and <code>where</code>. These are <code>plyrmr</code> functions with methods for data frames and Hadoop data sets and they are appropriate for interactive and programming use. The previous examples become, using these functions:</p>
 
 <pre><code class="r">mtcars %|%
-    select(carb.per.cyl = carb/cyl, .replace = FALSE) %|%
+    bind.cols(carb.per.cyl = carb/cyl) %|%
     where(carb.per.cyl &gt;= 1)
 </code></pre>
 
@@ -388,7 +358,7 @@ subset(x, carb.per.cyl &gt;= 1)
 
 <pre><code class="r">x = 
     input(&quot;/tmp/mtcars&quot;) %|%
-    select(carb.per.cyl = carb/cyl, .replace = FALSE) %|%
+    bind.cols(carb.per.cyl = carb/cyl) %|%
     where(carb.per.cyl &gt;= 1)
 as.data.frame(x)
 </code></pre>
@@ -398,10 +368,10 @@ as.data.frame(x)
 2 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 </code></pre>
 
-<p>Similar, but they work everywhere. For instance, if <code>subset</code> is called within some function, which is in its turn used in some other function, we can have the following situation:</p>
+<p>Similar, but they work everywhere. For instance, if <code>where</code> is called within some function, which is in its turn used in some other function, we can have the following situation:</p>
 
-<pre><code class="r">subset.mtcars.1 = function(...) subset(mtcars, ...)
-high.carb.cyl.1 = function(x) {subset.mtcars.1(carb/cyl &gt;= x) }
+<pre><code class="r">where.mtcars.1 = function(...) where(mtcars, ...)
+high.carb.cyl.1 = function(x) {where.mtcars.1(carb/cyl &gt;= x) }
 high.carb.cyl.1(1) 
 </code></pre>
 
@@ -410,8 +380,8 @@ high.carb.cyl.1(1)
 
 <p>Unfortunately, it doesn&#39;t work. With <code>where</code> instead:</p>
 
-<pre><code class="r">subset.mtcars.2 = function(...) where(mtcars, ..., .envir = parent.frame())
-high.carb.cyl.2 = function(x) {subset.mtcars.2(carb/cyl &gt;= x) }
+<pre><code class="r">where.mtcars.2 = function(...) where(mtcars, ..., .envir = parent.frame())
+high.carb.cyl.2 = function(x) {where.mtcars.2(carb/cyl &gt;= x) }
 high.carb.cyl.2(1)
 </code></pre>
 
@@ -420,7 +390,7 @@ high.carb.cyl.2(1)
 31 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8
 </code></pre>
 
-<p>The exact reason why <code>where</code> needs an additional argument in this scenario and what to provide are out of scope for this tutorial, but the message is that with <code>where</code> and <code>select</code> you can transition nicely from interactive R use to development. The R documentation recommends to use <code>[]</code> only when programming, but having to rewrite code in a different context, to a computer scientist, is just an admission of defeat. Therefore <code>plyrmr</code> provides methods for <code>transform</code>, <code>subset</code>, <code>mutate</code> and <code>summarize</code> because of their widespread use, but we recommend to check out <code>where</code> and <code>select</code> (many thanks to Hadley Wickham for valuable discussions on this issue).</p>
+<p>The exact reason why <code>where</code> needs an additional argument in this scenario and what to provide are out of scope for this tutorial, but the message is that with <code>where</code> and <code>select</code> you can transition nicely from interactive R use to development. The R documentation recommends to use <code>[]</code> only when programming, but having to rewrite code in a different context, to a computer scientist, is just an admission of defeat. Therefore <code>plyrmr</code> provides methods for <code>select</code>, <code>where</code>,  and <code>summarize</code> because of their widespread use, but we recommend to check out <code>where</code> and <code>select</code> (many thanks to Hadley Wickham for valuable discussions on this issue).</p>
 
 <h2>Custom operations</h2>
 
@@ -431,7 +401,7 @@ high.carb.cyl.2(1)
 
 <p>Wouldn&#39;t it be great if we could run this on a Hadoop data set? Well, we almost can:</p>
 
-<pre><code class="r">do(input(&quot;/tmp/mtcars&quot;), last.col)
+<pre><code class="r">as.data.frame(gapply(input(&quot;/tmp/mtcars&quot;), last.col))
 </code></pre>
 
 <pre><code>   carb
@@ -482,16 +452,16 @@ last.col(mtcars)
 
 <p>Until now we performed row by row operations, whereby each row in the results depends on a single row in the input. In this case we don&#39;t care if the data is grouped in one way or another. In most other cases, this distinction is important. For instance, if we wanted to compute the total number of carburetors, we could enter:</p>
 
-<pre><code class="r">summarize(mtcars, sum(carb))
+<pre><code class="r">transmute(mtcars, sum(carb))
 </code></pre>
 
-<pre><code>  sum(carb)
+<pre><code>  sum.carb.
 1        90
 </code></pre>
 
 <p>What happens if we do this on a Hadoop data set?</p>
 
-<pre><code class="r">summarize(input(&quot;/tmp/mtcars3&quot;, format = if3), sum(carb))
+<pre><code class="r">transmute(input(&quot;/tmp/mtcars3&quot;, format = if3), sum(carb))
 </code></pre>
 
 <pre><code>  sum.carb.
@@ -509,7 +479,7 @@ last.col(mtcars)
 
 <pre><code class="r">input(&quot;/tmp/mtcars3&quot;, format = if3) %|%
     gather() %|%
-    summarize(sum(carb), .mergeable = TRUE)
+    transmute(sum(carb), .mergeable = TRUE)
 </code></pre>
 
 <pre><code>  sum.carb.
@@ -518,11 +488,11 @@ last.col(mtcars)
 
 <p>You may have noticed the contradiction between the above statement that data is always in chunks with the availability of a <code>gather</code> function. Luckily, there is an advanced way of grouping recursively, in a tree like fashion, that works with associative and commutative operations such as the sum, which is the default for <code>gather</code>. Anyway, it will all be more clear as we cover other grouping functions.</p>
 
-<p>The <code>group</code> function takes an input and a number of arguments that are evaluated in the context of the data, exactly like <code>transform</code> and <code>mutate</code>. The result is a Hadoop data set grouped by the columns defined in those arguments. After this step, all rows that are identical on the columns defined in the <code>group</code> call will be loaded into memory at once and processed in the same call. Here is an example. Let&#39;s say we want to calculate the average mileage for cars with the same number of cylinders:</p>
+<p>The <code>group</code> function takes an input and a number of arguments that are evaluated in the context of the data, exactly like <code>select</code>. The result is a Hadoop data set grouped by the columns defined in those arguments. After this step, all rows that are identical on the columns defined in the <code>group</code> call will be loaded into memory at once and processed in the same call. Here is an example. Let&#39;s say we want to calculate the average mileage for cars with the same number of cylinders:</p>
 
 <pre><code class="r">input(&quot;/tmp/mtcars&quot;) %|%
     group(cyl) %|%
-    select(mean.mpg = mean(mpg))
+    transmute(mean.mpg = mean(mpg))
 </code></pre>
 
 <pre><code>  cyl mean.mpg
@@ -534,20 +504,6 @@ last.col(mtcars)
 <p>This is mostly a scalable programs, but there are some caveats: we need to be mindful of the size of the groups. If they are very big they will bust memory limits, so we need to reach for some advanced techniques to avoid this problem. If they are very small, like a handful of rows, we may run into some efficiency issues related to the current R and <code>rmr2</code> implementations rather than fundamental (so there is hope they will go away one day). </p>
 
 <p>When the definition of the grouping column is more complicated, we may need to reach for the uber-general <code>group.f</code>, the grouping relative of <code>do</code> (in fact, these two functions are the foundation for everything else in <code>plyrmr</code>). Let&#39;s go back to the <code>last.col</code> example. If we need to group by the last columns of a data frame, this is all we need to do:</p>
-
-<pre><code class="r">input(&quot;/tmp/mtcars&quot;) %|%
-    group.f(last.col) %|%
-    select(mean.mpg = mean(mpg)) 
-</code></pre>
-
-<pre><code>  carb mean.mpg
-1    4    15.79
-2    1    25.34
-3    2    22.40
-4    3    16.30
-5    6    19.70
-6    8    15.00
-</code></pre>
 
 <h2>Better than SQL</h2>
 
@@ -572,7 +528,7 @@ last.col(mtcars)
 <pre><code class="r">models = 
     input(&quot;/tmp/mtcars&quot;) %|%
     group(carb) %|%
-    select(model = list(lm(mpg~cyl+disp))) %|%
+    transmute(model = list(lm(mpg~cyl+disp))) %|%
     as.data.frame()
 models
 </code></pre>

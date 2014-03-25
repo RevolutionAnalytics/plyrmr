@@ -31,20 +31,20 @@ Let's start with a simple operation such as adding a column to a data frame. The
 ```{r mtcars}
 ```
 
-One may be interested in how many carburetors per cylinder each model uses, and that's a simple `transform` call away:
+One may be interested in how many carburetors per cylinder each model uses, and that's a simple `select` call away:
 
-```{r transform}
+```{r bind.cols}
 ```
 
-`transform` provides a model that is common to many functions in `plyr` and `plyrmr`. The function name gives only a general idea of what the function is going to do. The first argument is always the data set to be processed. The following arguments provide the details of what type of processing is going to take place, in the form of one or more expression, sometimes named ones. These expression can refer to the columns of the data frame as if they were additional variables.
-Now let's imagine that we have a huge data set with the same structure but instead of being stored in memory, it is stored in a HDFS file named "/mp/mt cars". It's way too big to be loaded with `read.table` or equivalent. With `plyrmr` one just needs to  enter:
+`bind.cols` is `plyrmr`'s own version of `transform` and provides a model that is common to many functions in `plyr` and `plyrmr`. The function name gives a general idea of what the function is for. The first argument is always the data set to be processed. The following arguments provide the details of what type of processing is going to take place, in the form of one or more optionally named expressions. These expressions can refer to the columns of the data frame as if they were additional variables, according to *non standard evaluation* rules.
+Now let's imagine that we have a huge data set with the same structure but instead of being stored in memory, it is stored in a HDFS file named "/tmp/mtcars". It's way too big to be loaded with `read.table` or equivalent. With `plyrmr` one just needs to  enter:
 
-```{r transform-input}
+```{r bind.cols-input}
 ```
 
 What we see are only a few arbitrary rows from the resulting data set. This is not only a consequence of the limited screen real estate, but also, in the case of large data sets, of the capacity gap between memory of a single machine and big data. In general, we can't expect to be able to load big data in memory. Sometimes, after summarization or filtering, the result of processing big data is small enough to fit into main memory. In this example, we know the data set is small so we can just go ahead and enter:
 
-```{r as.data.frame-transform-input}
+```{r as.data.frame-bind.cols-input}
 ```
 
 If we can't make this assumption, we may need to write the results of a computation out to a specific path, that is we need the `output` call:
@@ -53,24 +53,23 @@ If we can't make this assumption, we may need to write the results of a computat
 invisible(dfs.rmr("/tmp/mtcars.out"))
 ```
 
-```{r output-transform-input}
+```{r output-select-input}
 ```
 
 This is the real deal: we have performed a computation on the cluster, in parallel, and the data is never loaded into memory at once, but the syntax and semantics remain the familiar ones. The last run processed all of 32 rows, but on a large enough cluster it could run on 32 terabytes &mdash; in that case you can not use `as.data.frame`.
 Even if `output` appears to return the data to be printed, that's only a sampling. The main effect of the `output` call is to write out to the specified file.
 
-`transform` is one of several functions that `plyrmr` provides in a Hadoop-powered version:
+`select` is one of several functions that `plyrmr` provides in a Hadoop-powered version:
 
  * from `base`:
-   * `transform`: add new columns
-   * `subset`: select columns and rows
+   * `select`: add new columns
+   * `where`: select columns and rows
  * from `plyr`:
-   * `mutate`: similar to `transform`
-   * `summarize`: create summaries
+    * `summarize`: create summaries
  * from `reshape2`:
    * `melt` and `dcast`: convert between *long* and *wide* data frames
  * new in `plyrmr`:
-   * `select`: does everything that `transform` and `summarize` do in addition to selecting columns.
+   * `select`: does everything that `select` and `summarize` do in addition to selecting columns.
    * `where`: select rows
    * these are more suitable for programming then the functions they replace, as will be explained later.
  * summary:
@@ -87,12 +86,12 @@ Even if `output` appears to return the data to be printed, that's only a samplin
 
 What if none of the basic operations is sufficient to perform a needed data processing step? The first available tool is to combine different operations. Going back to the previous example, let's say we want to select cars with a carburetor per cylinder ratio greater than 1. Do such things even exist? On a data frame, there is a quick way to compute the answer, which is
 
-```{r subset-transform}
+```{r where-bind.cols}
 ```
 
 Wouldn't it be nice if we could do exactly the same on a Hadoop data set? In fact, we almost can:
 
-```{r subset-transform-input}
+```{r where-bind.cols-input}
 ```
 
 The main differences between the data frame version and the Hadoop data version are the input and the output. All there is in between, pretty much works the same. 
@@ -112,18 +111,19 @@ The purists will find that introducing one variable for each intermediate step q
 What this does is providing the value of the leftmost expression as the first unnamed argument of the next function call, evaluate this combination and continue to the next operator. Actually, that's the default behavior, but you can specify any function argument in a complex expression to be the designated one with the special name `.`. Rather than arguing over which style is best, it's probably best to bask in the flexibility made possible by the R language and your indefatigable developers and pick the one that fits one's style or a specific situation. In particular, pipes can not express more complex data flows where two flows merge or one splits. In the following I will alternate between these three notations (nested, assignment chain and pipe operator) based on which seems the clearest. It should be safe to assume that each example can be translated into any of the three.
 
 
-## Why you should use `plyrmr`'s `select` and `where`
-`subset` and `transform` work best interactively, at the prompt, but they have some problems when used in other functions or packages. These limitations are inherited from the `base` package functions, not peculiar to their `plyrmr` brethren. `plyrmr` makes an attempt to provide two functions that match the convenience of `transform` and `subset` without their pitfalls. While we were at it, we also tried to make them more general and give them a cleaner but still familiar (SQL-inspired) interface. Let me introduce `select` and `where`. These are `plyrmr` functions with methods for data frames and Hadoop data sets and they are appropriate for interactive and programming use. The previous examples become, using these functions:
+## Why you should use `plyrmr`'s `bind.cols`, `transmute` and `where`
+TODO: rewrite this part
+work best interactively, at the prompt, but they have some problems when used in other functions or packages. These limitations are inherited from the `base` package functions, not peculiar to their `plyrmr` brethren. `plyrmr` makes an attempt to provide two functions that match the convenience of `select` and `where` without their pitfalls. While we were at it, we also tried to make them more general and give them a cleaner but still familiar (SQL-inspired) interface. Let me introduce `select` and `where`. These are `plyrmr` functions with methods for data frames and Hadoop data sets and they are appropriate for interactive and programming use. The previous examples become, using these functions:
 
-```{r where-select}
+```{r where-bind.cols}
 ```
 
 and:
 
-```{r where-select-input}
+```{r where-bind.cols-input}
 ```
 
-Similar, but they work everywhere. For instance, if `subset` is called within some function, which is in its turn used in some other function, we can have the following situation:
+Similar, but they work everywhere. For instance, if `where` is called within some function, which is in its turn used in some other function, we can have the following situation:
 
 ```{r process.mtcars.1}
 ```
@@ -133,7 +133,7 @@ Unfortunately, it doesn't work. With `where` instead:
 ```{r process.mtcars.2}
 ```
 
-The exact reason why `where` needs an additional argument in this scenario and what to provide are out of scope for this tutorial, but the message is that with `where` and `select` you can transition nicely from interactive R use to development. The R documentation recommends to use `[]` only when programming, but having to rewrite code in a different context, to a computer scientist, is just an admission of defeat. Therefore `plyrmr` provides methods for `transform`, `subset`, `mutate` and `summarize` because of their widespread use, but we recommend to check out `where` and `select` (many thanks to Hadley Wickham for valuable discussions on this issue).
+The exact reason why `where` needs an additional argument in this scenario and what to provide are out of scope for this tutorial, but the message is that with `where` and `select` you can transition nicely from interactive R use to development. The R documentation recommends to use `[]` only when programming, but having to rewrite code in a different context, to a computer scientist, is just an admission of defeat. Therefore `plyrmr` provides methods for `select`, `where`,  and `summarize` because of their widespread use, but we recommend to check out `where` and `select` (many thanks to Hadley Wickham for valuable discussions on this issue).
 
 ## Custom operations
 Another way to extend the functionality of `plyrmr` built-in data manipulation functions is to take any function that accepts a data frame in input and returns a data frame and use the function `do` to give it Hadoop superpowers (`do` is named after the equivalent function in `dplyr`, but the idea is not new). For instance, you have a function that returns the rightmost column of a data frame. This is not simple to achieve with the functions explored so far, but it is a quick one liner:
@@ -144,7 +144,7 @@ Another way to extend the functionality of `plyrmr` built-in data manipulation f
 Wouldn't it be great if we could run this on a Hadoop data set? Well, we almost can:
 
 ```{r do-input}
-as.data.frame(do(input("/tmp/mtcars"), last.col))
+as.data.frame(gapply(input("/tmp/mtcars"), last.col))
 ```
 
 What `do` does is take any function that reads and writes data frames, execute it on a Hadoop data set in parallel on relatively small chunks of the data and pass the results to `as.data.frame` or `output` which send them to their final destination. Wouldn't it absolutely perfect if the `lastcol` function itself knew whether it's working on a Hadoop data set or a data frame and do the right thing? It actually is possible:
@@ -158,30 +158,30 @@ For people familiar with object oriented programming in R, this function takes a
 
 Until now we performed row by row operations, whereby each row in the results depends on a single row in the input. In this case we don't care if the data is grouped in one way or another. In most other cases, this distinction is important. For instance, if we wanted to compute the total number of carburetors, we could enter:
 
-```{r summarize}
+```{r transmute}
 ```
 
 What happens if we do this on a Hadoop data set?
 
-```{r summarize-input-setup, echo=FALSE}
+```{r transmute-input-setup, echo=FALSE}
 ```
 
-```{r summarize-input}
+```{r transmute-input}
 ```
 
 That's not what we wanted and that's the where the size of the data cannot be ignored or abstracted away. Think of data in Hadoop as always grouped, one way or another. It couldn't be otherwise: it is stored on multiple devices and, even if it weren't, we can only load it into memory in small chunks of it at a time. In this specific example, the data is small and to highlight this problem I created an input format that reads the data in unreasonably small chunks, but in Hadoop application this is the norm. So think of the data as always grouped, initially in arbitrary fashion and later in the way we determine using the functions `group`, `group.f` and `gather` and more. These were inspired by the notion of key in mapreduce, the SQL statement and the `dplyr` function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:
 
-```{r summarize-gather}
+```{r transmute-gather}
 ```
 
-```{r summarize-gather-cleanup, echo=FALSE}
+```{r transmute-gather-cleanup, echo=FALSE}
 ```
 
 You may have noticed the contradiction between the above statement that data is always in chunks with the availability of a `gather` function. Luckily, there is an advanced way of grouping recursively, in a tree like fashion, that works with associative and commutative operations such as the sum, which is the default for `gather`. Anyway, it will all be more clear as we cover other grouping functions.
 
-The `group` function takes an input and a number of arguments that are evaluated in the context of the data, exactly like `transform` and `mutate`. The result is a Hadoop data set grouped by the columns defined in those arguments. After this step, all rows that are identical on the columns defined in the `group` call will be loaded into memory at once and processed in the same call. Here is an example. Let's say we want to calculate the average mileage for cars with the same number of cylinders:
+The `group` function takes an input and a number of arguments that are evaluated in the context of the data, exactly like `select`. The result is a Hadoop data set grouped by the columns defined in those arguments. After this step, all rows that are identical on the columns defined in the `group` call will be loaded into memory at once and processed in the same call. Here is an example. Let's say we want to calculate the average mileage for cars with the same number of cylinders:
 
-```{r select-group}
+```{r transmute-group}
 ```
 
 This is mostly a scalable programs, but there are some caveats: we need to be mindful of the size of the groups. If they are very big they will bust memory limits, so we need to reach for some advanced techniques to avoid this problem. If they are very small, like a handful of rows, we may run into some efficiency issues related to the current R and `rmr2` implementations rather than fundamental (so there is hope they will go away one day). 

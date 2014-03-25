@@ -25,5 +25,5 @@ stopifnot(
 
 stopifnot(
 	all(
-		(function(){as.data.frame(select(input(mtcars), cyl))})() ==
+		(function(){as.data.frame(transmute(input(mtcars), cyl))})() ==
 			subset(mtcars, select = cyl)))

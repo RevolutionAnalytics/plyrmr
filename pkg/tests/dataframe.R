@@ -21,5 +21,5 @@ stopifnot(
 
 stopifnot(
 	all(
-		(function(){select(mtcars, cyl)})() ==
+		(function(){transmute(mtcars, cyl)})() ==
 			subset(mtcars, select = cyl)))

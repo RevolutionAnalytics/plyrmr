@@ -16,7 +16,7 @@ library(plyrmr)
 
 stopifnot(
 	all(
-		as.data.frame(do(input(mtcars), function(x) data.frame(cyl2 =x$cyl^2))) 
+		as.data.frame(gapply(input(mtcars), function(x) data.frame(cyl2 =x$cyl^2))) 
 		== 
 			mtcars$cyl^2))
 
@@ -26,7 +26,7 @@ stopifnot(
 			expo1 = 2;
 			envir = sys.frame(sys.nframe())
 			as.data.frame(
-				do(
+				gapply(
 					input(mtcars), 
 					function(x , ...) {
 						vars = plyrmr:::non.standard.eval(x, ..., .envir = envir)

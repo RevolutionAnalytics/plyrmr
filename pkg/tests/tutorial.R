@@ -9,93 +9,94 @@ row.names(mtcars) = NULL
 invisible(output(input(mtcars), "/tmp/mtcars"))
 ## @knitr mtcars
 mtcars
-## @knitr transform
-transform(mtcars, carb.per.cyl = carb/cyl)
-## @knitr transform-input
-transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
-## @knitr as.data.frame-transform-input
-as.data.frame(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl))
+## @knitr bind.cols
+bind.cols(mtcars, carb.per.cyl = carb/cyl)
+## @knitr select-input
+bind.cols(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
+## @knitr as.data.frame-bind.cols-input
+as.data.frame(bind.cols(input("/tmp/mtcars"), carb.per.cyl = carb/cyl))
 ## @knitr invisible-dfs.rmr
 invisible(dfs.rmr("/tmp/mtcars.out"))
-## @knitr output-transform-input
-output(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl), "/tmp/mtcars.out")
+## @knitr output-bind.cols-input
+output(bind.cols(input("/tmp/mtcars"), carb.per.cyl = carb/cyl), "/tmp/mtcars.out")
 ## @knitr mtcars-w-ratio
-mtcars.w.ratio = transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
+mtcars.w.ratio = bind.cols(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
 as.data.frame(mtcars.w.ratio)
-## @knitr subset-transform
-subset(
-	transform(
+## @knitr where-bind.cols
+where(
+	bind.cols(
 		mtcars, 
 		carb.per.cyl = carb/cyl), 
 	carb.per.cyl >= 1)
 ## @knitr assignment-chain
-x =	transform(mtcars, carb.per.cyl = carb/cyl) 
-subset(x, carb.per.cyl >= 1)
-## @knitr subset-transform-input
-subset(
-	transform(
+x =	bind.cols(mtcars, carb.per.cyl = carb/cyl) 
+where(x, carb.per.cyl >= 1)
+## @knitr where-bind.cols-input
+where(
+	transmute(
 		input("/tmp/mtcars"),
-		carb.per.cyl = carb/cyl),
+		carb.per.cyl = carb/cyl,
+		.cbind = TRUE ),
 	carb.per.cyl >= 1)
 ## @knitr pipe-operator
 mtcars %|%
-	transform(carb.per.cyl = carb/cyl) %|%
-	subset(carb.per.cyl >= 1)
-## @knitr where-select
-mtcars %|%
-	select(carb.per.cyl = carb/cyl, .replace = FALSE) %|%
+	bind.cols(carb.per.cyl = carb/cyl) %|%
 	where(carb.per.cyl >= 1)
-## @knitr where-select-input
+## @knitr where-bind.cols
+mtcars %|%
+	bind.cols(carb.per.cyl = carb/cyl) %|%
+	where(carb.per.cyl >= 1)
+## @knitr where-bind.cols-input
 x = 
 	input("/tmp/mtcars") %|%
-	select(carb.per.cyl = carb/cyl, .replace = FALSE) %|%
+	bind.cols(carb.per.cyl = carb/cyl) %|%
 	where(carb.per.cyl >= 1)
 as.data.frame(x)
 ## @knitr end
 if(FALSE) {
 ## @knitr process.mtcars.1
-subset.mtcars.1 = function(...) subset(mtcars, ...)
-high.carb.cyl.1 = function(x) {subset.mtcars.1(carb/cyl >= x) }
+where.mtcars.1 = function(...) where(mtcars, ...)
+high.carb.cyl.1 = function(x) {where.mtcars.1(carb/cyl >= x) }
 high.carb.cyl.1(1) 
 ## @knitr end
 }
 ## @knitr process.mtcars.2
-subset.mtcars.2 = function(...) where(mtcars, ..., .envir = parent.frame())
-high.carb.cyl.2 = function(x) {subset.mtcars.2(carb/cyl >= x) }
+where.mtcars.2 = function(...) where(mtcars, ..., .envir = parent.frame())
+high.carb.cyl.2 = function(x) {where.mtcars.2(carb/cyl >= x) }
 high.carb.cyl.2(1)
 ## @knitr last.col
 last.col = function(x) x[, ncol(x), drop = FALSE]
-## @knitr do-input
-do(input("/tmp/mtcars"), last.col)
+## @knitr gapply-input
+gapply(input("/tmp/mtcars"), last.col)
 ## @knitr magic.wand
 magic.wand(last.col)
 last.col(mtcars)
 last.col(input("/tmp/mtcars"))
-## @knitr summarize
-summarize(mtcars, sum(carb))
-## @knitr summarize-input-setup
+## @knitr transmute
+transmute(mtcars, sum(carb))
+## @knitr transmute-input-setup
 invisible({
 	rmr.options(backend = "hadoop")
 	if3 = make.input.format("native", read.size = 1000)
 	of3 = make.output.format("native", write.size = 1000)
 	if(dfs.exists("/tmp/mtcars3")) dfs.rmr("/tmp/mtcars3")
 	to.dfs(mtcars, format = of3, output = "/tmp/mtcars3")})
-## @knitr summarize-input
-summarize(input("/tmp/mtcars3", format = if3), sum(carb))
-## @knitr summarize-gather
+## @knitr transmute-input
+transmute(input("/tmp/mtcars3", format = if3), sum(carb))
+## @knitr transmute-gather
 input("/tmp/mtcars3", format = if3) %|%
 	gather() %|%
-	summarize(sum(carb), .mergeable = TRUE)
-## @knitr summarize-gather-cleanup
+	transmute(sum(carb), .mergeable = TRUE)
+## @knitr transmute-gather-cleanup
 invisible(suppressWarnings(rmr.options(backend = "local")))
-## @knitr select-group
+## @knitr transmute-group
 input("/tmp/mtcars") %|%
 	group(cyl) %|%
-	select(mean.mpg = mean(mpg))
-## @knitr select-group.f
+	transmute(mean.mpg = mean(mpg))
+## @knitr transmute-group.f
 input("/tmp/mtcars") %|%
 	group.f(last.col) %|%
-	select(mean.mpg = mean(mpg)) 
+	transmute(mean.mpg = mean(mpg)) 
 ## @knitr group-quantile
 input("/tmp/mtcars") %|%
 	group(carb) %|%
@@ -104,7 +105,7 @@ input("/tmp/mtcars") %|%
 models = 
 	input("/tmp/mtcars") %|%
 	group(carb) %|%
-	select(model = list(lm(mpg~cyl+disp))) %|%
+	transmute(model = list(lm(mpg~cyl+disp))) %|%
 	as.data.frame()
 models
 models[1,2]

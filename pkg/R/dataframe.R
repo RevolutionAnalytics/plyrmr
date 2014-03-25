@@ -28,9 +28,9 @@ where.data.frame =
 
 #(function(){x = 5; where(mtcars, cyl>x)})()
 
-select = function(.data, ...) UseMethod("select")
-select.data.frame =
-	function(.data, ..., .replace = TRUE, .columns = NULL, .envir = parent.frame()) {
+transmute = function(.data, ...) UseMethod("transmute")
+transmute.data.frame =
+	function(.data, ..., .cbind = FALSE, .columns = NULL, .envir = parent.frame()) {
 		force(.envir)
 		args = 
 			non.standard.eval(
@@ -46,10 +46,16 @@ select.data.frame =
 					.columns
 				else
 					safe.cbind(newcols, .columns )}}
-		if(.replace)  newcols
+		if(!.cbind)  newcols
 		else safe.cbind(.data, newcols)}
 
-#(function(){v = 5;  select(mtcars, cy32 = cyl^2, carb + 5)})()
+bind.cols = function(.data, ...) UseMethod("bind.cols")	
+bind.cols.data.frame =
+	function(.data, ..., .envir = parent.frame()) {
+		force(.envir)
+		transmute(.data, ..., .cbind = TRUE, .envir = .envir)}
+
+#(function(){v = 5;  transmute(mtcars, cy32 = cyl^2, carb + 5)})()
 
 sample = function(x, ...) UseMethod("sample")
 sample.default = base::sample

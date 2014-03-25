@@ -18,12 +18,19 @@ where.pipe =
 		.cond = substitute(.cond)
 		eval(
 			substitute(
-				do(.data, CurryHalfLazy(where, .envir = .envir), .cond),
+				gapply(.data, CurryHalfLazy(where, .envir = .envir), .cond),
 				list(.cond = .cond)))}
 
-select.pipe = 
-	function(.data, ..., .replace = TRUE, .mergeable = FALSE, .envir = parent.frame()) {
+transmute.pipe = 
+	function(.data, ..., .cbind = FALSE, .mergeable = FALSE, .envir = parent.frame()) {
 		.envir = copy.env(.envir)
-		fun = CurryHalfLazy(select, .replace = .replace, .envir = .envir)
+		fun = CurryHalfLazy(transmute, .cbind = .cbind, .envir = .envir)
 		if(.mergeable) fun = mergeable(fun)
-		do(.data, fun, ...)}
+		gapply(.data, fun, ...)}
+
+bind.cols.pipe =
+	function(.data, ..., .envir = parent.frame()) {
+		.envir = copy.env(.envir)
+		transmute(.data, ..., .cbind = TRUE, .mergeable = FALSE, .envir = .envir)}
+
+magic.wand(select)

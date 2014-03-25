@@ -25,7 +25,7 @@ For the usage forms above, respectively, \code{f(x)}, \code{f(x, \dots)}, \code{
 }
 \examples{
 4 \%|\% sqrt
-mtcars \%|\% select(carb, mpg) \%|\% where(mpg/carb > 10)
+mtcars \%|\% transmute(carb, mpg) \%|\% where(mpg/carb > 10)
 mtcars \%|\% names \%|\% grep ("c", ., value = TRUE)
-select(carb, mpg) \%!\% where(mpg/carb > 10)
+transmute(carb, mpg) \%!\% where(mpg/carb > 10)
 }

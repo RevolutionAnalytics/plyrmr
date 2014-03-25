@@ -112,7 +112,7 @@ is.vectorized =
 	function(f) 
 		default(attr(f, "vectorized", exact=TRUE), FALSE)
 
-do =  
+gapply =  
 	function(.data, .f, ...){
 		.f = freeze.env(.f)
 		f1 = make.f1(.f, ...)
@@ -140,7 +140,7 @@ group =
 			group.f(
 				.data, 
 				function(.y) 
-					do.call(CurryHalfLazy(select, .envir = .envir), c(list(.y), dot.args)))}
+					do.call(CurryHalfLazy(transmute, .envir = .envir), c(list(.y), dot.args)))}
 
 group.f = 
 	function(.data, .f, ...) {
@@ -275,5 +275,5 @@ magic.wand =
 			as.character(substitute(f)), 
 			"pipe", 
 			function(.data, ...) 
-				do(.data, f, ...),
-			envir=parent.frame())
+				gapply(.data, f, ...),
+			envir = parent.frame())

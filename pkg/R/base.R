@@ -12,20 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-subset.pipe =
-	function(x, ...) 
-		do(x, subset, ...)
 
-transform.pipe =  
-	function(`_data`, ...)
-		do(`_data`, transform, ...)
 
 names.pipe =
 	function(x, ...)
 		as.data.frame(
-			do(
+			gapply(
 				group(
-					do(
+					gapply(
 						x,  
 						names),
 					x),
@@ -44,11 +38,11 @@ sample.pipe =
 							do(x, sample.curried)),
 						mergeable(sample.curried))),
 			Bernoulli = 
-				do(x, sample.curried),
+				gapply(x, sample.curried),
 			hypergeometric = 
-				do(
+				gapply(
 					top.k(
-						do(
+						gapply(
 							x, 
 							function(x) 
 								cbind(

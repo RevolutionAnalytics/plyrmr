@@ -102,7 +102,7 @@ quantile.cols.pipe =
 				quantile.cols(
 					as.data.frame(.x)[,-ncol(.x)], 
 					...)
-		do(do(gather(do(x, map)), mergeable(combine)), reduce)}
+		gapply(gapply(gather(gapply(x, map)), mergeable(combine)), reduce)}
 
 select.numeric = 
 	function(x) 
@@ -158,9 +158,9 @@ merge.counts =
 
 count.cols.pipe = 
 	function(x, n = Inf)
-		do(
+		gapply(
 			gather(
-				do(
+				gapply(
 					x,
 					count.cols)),
 			mergeable(Curry(merge.counts, n = n)))
@@ -175,14 +175,14 @@ extreme.k=
 					.x[
 						do.call(
 							this.order,
-							select(.x, ..., .envir = .envir)),
+							transmute(.x, ..., .envir = .envir)),
 						,
 						drop = FALSE], 
 					.k)
 		ungroup(
-			do(
+			gapply(
 				gather(
-					do(.x, mr.fun)),
+					gapply(.x, mr.fun)),
 				mergeable(mr.fun)))}
 
 top.k = 
@@ -211,7 +211,7 @@ moving.window =
 						.part = c(partT, partF), 
 						rbind(x, x)))}
 		group(
-			do(
+			gapply(
 				x, 
 				partition), 
 			.part)}
@@ -221,16 +221,16 @@ unique.pipe =
 		uniquec = 
 			mergeable(
 				Curry(unique, incomparables = incomparables, fromLast = fromLast))
-		do(
+		gapply(
 			group.f(
-				do(x, uniquec),
+				gapply(x, uniquec),
 				identity),
 			uniquec)}
 
 rbind = function(...) UseMethod("rbind")
 rbind.default = base::rbind
 rbind.pipe = function(...)
-	do(input(lapply(list(...), output)), identity)
+	gapply(input(lapply(list(...), output)), identity)
 
 union = function(x,y) UseMethod("union")
 union.default = base::union
@@ -247,7 +247,7 @@ intersect.data.frame =
 # 	
 # arrange(
 # 	as.data.frame(
-# 		do(
+# 		gapply(
 # 			group.f(
 # 				input(uns), 
 # 				function(x) sapply(qu$x, function(t) c(r = sum(x$x > t)))), 

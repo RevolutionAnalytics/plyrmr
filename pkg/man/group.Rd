@@ -29,21 +29,21 @@ is.grouped(.data)
 
 \examples{
 as.data.frame(
-  select(
+  transmute(
     group(
       input(mtcars), 
       cyl), 
     mean(mpg)))
     
 as.data.frame(
-  select(
+  transmute(
     group.f(
       input(mtcars), 
       function(x) x$cyl), 
     mean(mpg)))
    
 as.data.frame(
-  do(
+  gapply(
     gather(
       input(mtcars)),
     mergeable(function(x) t(colSums(x)))))

@@ -31,7 +31,7 @@ S3method(print, big.data)
 S3method(as.data.frame, pipe)
 #pipes
 export(
-	do,
+	gapply,
 	magic.wand,
 	group,
 	group.f,
@@ -53,31 +53,24 @@ S3method(as.character, pipe)
 S3method(as.big.data, pipe)
 S3method(print, pipe)
 #base
-export(
-	transform,
-	subset,
-	sample)
-S3method(subset, pipe)
-S3method(transform, pipe)
+export(sample)
 S3method(sample, default)
 S3method(sample, data.frame)
 #S3method(names, pipe)
 S3method(sample, pipe)
 #plyr
-export(
-	mutate,
-	summarize)
-S3method(mutate, default)
-S3method(summarize, pipe)
-S3method(mutate, pipe)
-S3method(summarize, default)
 #sql-ish
 export(
+	transmute,
+	bind.cols,
 	select,
 	where,
 	merge)
 S3method(select, pipe)
-S3method(select, data.frame)
+S3method(transmute, pipe)
+S3method(transmute, data.frame)
+S3method(bind.cols, pipe)
+S3method(bind.cols, data.frame)
 S3method(where, pipe)
 S3method(where, data.frame)
 S3method(merge, pipe)
@@ -116,9 +109,12 @@ S3method(melt, pipe)
 
 #workaround  for R imports bug
 importFrom(Rcpp, Rcpp.package.skeleton) 
-importFrom(dplyr, dim_desc)
+importFrom(rmr2, rmr.options)
 #real imports
+importFrom(plyr, splat)
+importFrom(plyr, count)
+importFrom(plyr, ddply)
+importFrom(dplyr, select)
 importFrom(R.methodsS3, setMethodS3)
-importFrom(reshape2, dcast) 
-importFrom(reshape2, melt) 
 importFrom(Hmisc, wtd.quantile)
+import(functional)

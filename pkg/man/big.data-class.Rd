@@ -19,7 +19,7 @@ This class represents a data set stored on the file system. It encapsulates deta
 
 \examples{
 output(
-  select(
+  transmute(
     input(mtcars), 
     cyl > 4), 
   format = "csv")}

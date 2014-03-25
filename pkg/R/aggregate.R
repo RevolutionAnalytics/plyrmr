@@ -48,7 +48,7 @@ fast.summary =
 
 fast.summary.pipe = 
 	function(x, type)
-		do(
+		gapply(
 			x, 
 			function(y) 
 				.fast.summary.data.frame(

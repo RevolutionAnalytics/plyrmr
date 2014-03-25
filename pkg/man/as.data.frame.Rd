@@ -39,7 +39,7 @@ output(
     "/tmp/output")
     
 as.data.frame(
-  select(
+  transmute(
     input("/tmp/output"),
     mpg))    
 }

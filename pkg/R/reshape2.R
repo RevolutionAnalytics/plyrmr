@@ -23,7 +23,7 @@ dcast = function(data, formula, ...) UseMethod("dcast")
 dcast.pipe = 
 	function(data, formula, ...) {
 		id.vars = reshape2:::parse_formula(formula)[[1]][[1]]
-		do(
+		gapply(
 			group(
 				data, 
 				id.vars), 

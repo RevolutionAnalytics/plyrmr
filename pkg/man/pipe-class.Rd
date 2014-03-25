@@ -14,7 +14,8 @@ A pipe represents a data set by way of specifying the input and the computationa
 \code{\link{bottom.k}},
 \code{\link{count.cols}},
 \code{\link{dcast}},
-\code{\link{do}},
+\code{\link{gapply}},
+\code{\link{bind.cols}},
 \code{\link{gather}},
 \code{\link{group}},
 \code{\link{group.f}},
@@ -22,16 +23,12 @@ A pipe represents a data set by way of specifying the input and the computationa
 \code{\link{magic.wand}},
 \code{\link{merge}},
 \code{\link{moving.window}},
-\code{\link{mutate}},
 \code{\link{output}},
 \code{\link{quantile.cols}},
 \code{\link{rbind}},
 \code{\link{sample}},
 \code{\link{select}},
-\code{\link{subset}},
-\code{\link{summarize}},
 \code{\link{top.k}},
-\code{\link{transform}},
 \code{\link{ungroup}},
 \code{\link{union}},
 \code{\link{unique}},
@@ -40,9 +37,9 @@ A pipe represents a data set by way of specifying the input and the computationa
 
 \examples{
 #actual computation
-subset(mtcars)
+transmute(mtcars)
 #delayed computation, returns a pipe
-subset(input(mtcars))
+transmute(input(mtcars))
 #actual computation, returns a data frame
-as.data.frame(subset(input(mtcars)))
+as.data.frame(transmute(input(mtcars)))
 }

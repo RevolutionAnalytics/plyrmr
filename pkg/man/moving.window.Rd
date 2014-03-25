@@ -7,7 +7,7 @@ Group the data in a way that is compatible with computing a moving window statis
 Group the data so that records with consecutive values of index are grouped together and there is a window size overlap between groups, so as to make possible computing a moving window statistics.
 }
 \usage{
-moving.window(x, index, window, R = rmr.options("keyval.length"))
+moving.window(x, index, window, R)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

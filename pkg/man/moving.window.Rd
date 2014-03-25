@@ -24,7 +24,7 @@ A data set represented by pipe
 A pipe with the results of applying f to each window}
 \examples{
 as.data.frame(
-  do(
+  gapply(
     moving.window(
       input(data.frame(t= 1:20, x = rnorm(20))), 
       "t", 

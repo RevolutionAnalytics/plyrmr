@@ -32,11 +32,10 @@ sample.pipe =
 		switch(
 			method,
 			any = 
-				ungroup(
-					do(
-						gather(
-							do(x, sample.curried)),
-						mergeable(sample.curried))),
+				gapply(
+					gather(
+						gapply(x, sample.curried)),
+					mergeable(sample.curried)),
 			Bernoulli = 
 				gapply(x, sample.curried),
 			hypergeometric = 

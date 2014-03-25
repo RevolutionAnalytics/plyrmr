@@ -12,21 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-mutate =  function(.data, ...) UseMethod("mutate")
-
-setMethodS3(
-	"mutate", 
-	"pipe", 
-	function(.data, ...) 
-		do(.data, mutate, ...))
-
-setMethodS3("mutate", "default", plyr::mutate)
+library(plyrmr)
+magic.wand(mutate)
 
 
 summarize.fun = 
 	function(.data, ..., .mergeable = FALSE)
-		do(.data, if(.mergeable) mergeable(summarize) else summarize, ...)
+		gapply(.data, if(.mergeable) mergeable(summarize) else summarize, ...)
 
 summarize = function(.data, ...) UseMethod("summarize")
 setMethodS3("summarize", "pipe", summarize.fun)

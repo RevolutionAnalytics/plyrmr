@@ -92,7 +92,10 @@ copy.env =
 			list2env(
 				as.list(envx, all.names = TRUE), 
 				parent= {
-					if(identical(envx, globalenv()))
+					if(
+						identical(
+							parent.env(envx), 
+							parent.env(globalenv())))
 						parent.env(envx)
 					else
 						copy.env(parent.env(envx))})}}

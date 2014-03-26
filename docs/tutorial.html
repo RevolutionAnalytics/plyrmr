@@ -216,7 +216,7 @@ hljs.initHighlightingOnLoad();
 </code></pre>
 
 <p><code>bind.cols</code> is <code>plyrmr</code>&#39;s own version of <code>transform</code> and provides a model that is common to many functions in <code>plyr</code> and <code>plyrmr</code>. The function name gives a general idea of what the function is for. The first argument is always the data set to be processed. The following arguments provide the details of what type of processing is going to take place, in the form of one or more optionally named expressions. These expressions can refer to the columns of the data frame as if they were additional variables, according to <em>non standard evaluation</em> rules.
-Now let&#39;s imagine that we have a huge data set with the same structure but instead of being stored in memory, it is stored in a HDFS file named &ldquo;/tmp/mtcars&rdquo;. It&#39;s way too big to be loaded with <code>read.table</code> or equivalent. With <code>plyrmr</code> one just needs to  enter:</p>
+Now let&#39;s imagine that we have a huge data set with the same structure but instead of being stored in memory, it is stored in a HDFS file named &ldquo;/tmp/mtcars&rdquo;. It&#39;s way too big to be loaded with <code>read.table</code> or equivalent. With <code>plyrmr</code> one just needs to enter:</p>
 
 <p>What we see are only a few arbitrary rows from the resulting data set. This is not only a consequence of the limited screen real estate, but also, in the case of large data sets, of the capacity gap between memory of a single machine and big data. In general, we can&#39;t expect to be able to load big data in memory. Sometimes, after summarization or filtering, the result of processing big data is small enough to fit into main memory. In this example, we know the data set is small so we can just go ahead and enter:</p>
 
@@ -236,17 +236,32 @@ Now let&#39;s imagine that we have a huge data set with the same structure but i
 
 <p>If we can&#39;t make this assumption, we may need to write the results of a computation out to a specific path, that is we need the <code>output</code> call:</p>
 
+<pre><code class="r">output(bind.cols(input(&quot;/tmp/mtcars&quot;), carb.per.cyl = carb/cyl), &quot;/tmp/mtcars.out&quot;)
+</code></pre>
+
+<pre><code>                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+1            Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+2        Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+3           Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+4       Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+5    Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+6              Valiant 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+7           Duster 360 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
+....
+</code></pre>
+
 <p>This is the real deal: we have performed a computation on the cluster, in parallel, and the data is never loaded into memory at once, but the syntax and semantics remain the familiar ones. The last run processed all of 32 rows, but on a large enough cluster it could run on 32 terabytes &mdash; in that case you can not use <code>as.data.frame</code>.
 Even if <code>output</code> appears to return the data to be printed, that&#39;s only a sampling. The main effect of the <code>output</code> call is to write out to the specified file.</p>
 
-<p><code>select</code> is one of several functions that <code>plyrmr</code> provides in a Hadoop-powered version:</p>
+<p><code>bind.cols</code> is one of several functions that <code>plyrmr</code> provides in a Hadoop-powered version:</p>
 
 <ul>
-<li>from <code>base</code>:
+<li>data manip:
 
 <ul>
-<li><code>select</code>: add new columns</li>
-<li><code>where</code>: select columns and rows</li>
+<li><code>bind.cols</code>: add new columns</li>
+<li><code>select</code></li>
+<li><code>where</code>: select rows</li>
 </ul></li>
 <li>from <code>plyr</code>:
 
@@ -418,7 +433,12 @@ high.carb.cyl.2(1)
 <p>What <code>do</code> does is take any function that reads and writes data frames, execute it on a Hadoop data set in parallel on relatively small chunks of the data and pass the results to <code>as.data.frame</code> or <code>output</code> which send them to their final destination. Wouldn&#39;t it absolutely perfect if the <code>lastcol</code> function itself knew whether it&#39;s working on a Hadoop data set or a data frame and do the right thing? It actually is possible:</p>
 
 <pre><code class="r">magic.wand(last.col)
-last.col(mtcars)
+</code></pre>
+
+<pre><code>Error: could not find function &quot;appendVarArgs&quot;
+</code></pre>
+
+<pre><code class="r">last.col(mtcars)
 </code></pre>
 
 <pre><code>   carb

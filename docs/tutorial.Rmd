@@ -37,7 +37,7 @@ One may be interested in how many carburetors per cylinder each model uses, and 
 ```
 
 `bind.cols` is `plyrmr`'s own version of `transform` and provides a model that is common to many functions in `plyr` and `plyrmr`. The function name gives a general idea of what the function is for. The first argument is always the data set to be processed. The following arguments provide the details of what type of processing is going to take place, in the form of one or more optionally named expressions. These expressions can refer to the columns of the data frame as if they were additional variables, according to *non standard evaluation* rules.
-Now let's imagine that we have a huge data set with the same structure but instead of being stored in memory, it is stored in a HDFS file named "/tmp/mtcars". It's way too big to be loaded with `read.table` or equivalent. With `plyrmr` one just needs to  enter:
+Now let's imagine that we have a huge data set with the same structure but instead of being stored in memory, it is stored in a HDFS file named "/tmp/mtcars". It's way too big to be loaded with `read.table` or equivalent. With `plyrmr` one just needs to enter:
 
 ```{r bind.cols-input}
 ```
@@ -53,25 +53,21 @@ If we can't make this assumption, we may need to write the results of a computat
 invisible(dfs.rmr("/tmp/mtcars.out"))
 ```
 
-```{r output-select-input}
+```{r output-bind.cols-input}
 ```
 
 This is the real deal: we have performed a computation on the cluster, in parallel, and the data is never loaded into memory at once, but the syntax and semantics remain the familiar ones. The last run processed all of 32 rows, but on a large enough cluster it could run on 32 terabytes &mdash; in that case you can not use `as.data.frame`.
 Even if `output` appears to return the data to be printed, that's only a sampling. The main effect of the `output` call is to write out to the specified file.
 
-`select` is one of several functions that `plyrmr` provides in a Hadoop-powered version:
+`bind.cols` is one of several functions that `plyrmr` provides in a Hadoop-powered version:
 
- * from `base`:
-   * `select`: add new columns
-   * `where`: select columns and rows
- * from `plyr`:
-    * `summarize`: create summaries
+ * data manip:
+   * `bind.cols`: add new columns
+   * `select`: select columns
+   * `where`: select rows
+   * `transmute`: all of the above 
  * from `reshape2`:
    * `melt` and `dcast`: convert between *long* and *wide* data frames
- * new in `plyrmr`:
-   * `select`: does everything that `select` and `summarize` do in addition to selecting columns.
-   * `where`: select rows
-   * these are more suitable for programming then the functions they replace, as will be explained later.
  * summary:
    * `count.cols`
    * `quantile.cols`
@@ -79,9 +75,7 @@ Even if `output` appears to return the data to be printed, that's only a samplin
  * extract
    * top.k
    * bottom.k
- 
-`plyrmr` extends all these operations to Hadoop data sets, trying to maintain semantic equivalence, with limitations that will be made clear later. These functions are not intended as a minimal set of operations: there is a lot of functionality overlap. We just wanted to support existing usage to help users transitioning to Hadoop programming.
- 
+
 ## Combining Operations
 
 What if none of the basic operations is sufficient to perform a needed data processing step? The first available tool is to combine different operations. Going back to the previous example, let's say we want to select cars with a carburetor per cylinder ratio greater than 1. Do such things even exist? On a data frame, there is a quick way to compute the answer, which is

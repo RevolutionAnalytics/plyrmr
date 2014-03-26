@@ -52,7 +52,7 @@ bind.cols(mtcars, carb.per.cyl = carb/cyl)
 
 
 `bind.cols` is `plyrmr`'s own version of `transform` and provides a model that is common to many functions in `plyr` and `plyrmr`. The function name gives a general idea of what the function is for. The first argument is always the data set to be processed. The following arguments provide the details of what type of processing is going to take place, in the form of one or more optionally named expressions. These expressions can refer to the columns of the data frame as if they were additional variables, according to *non standard evaluation* rules.
-Now let's imagine that we have a huge data set with the same structure but instead of being stored in memory, it is stored in a HDFS file named "/tmp/mtcars". It's way too big to be loaded with `read.table` or equivalent. With `plyrmr` one just needs to  enter:
+Now let's imagine that we have a huge data set with the same structure but instead of being stored in memory, it is stored in a HDFS file named "/tmp/mtcars". It's way too big to be loaded with `read.table` or equivalent. With `plyrmr` one just needs to enter:
 
 
 
@@ -83,16 +83,32 @@ If we can't make this assumption, we may need to write the results of a computat
 
 
 
+```r
+output(bind.cols(input("/tmp/mtcars"), carb.per.cyl = carb/cyl), "/tmp/mtcars.out")
+```
+
+```
+                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+1            Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+2        Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+3           Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+4       Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+5    Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+6              Valiant 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+7           Duster 360 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
+....
+```
 
 
 This is the real deal: we have performed a computation on the cluster, in parallel, and the data is never loaded into memory at once, but the syntax and semantics remain the familiar ones. The last run processed all of 32 rows, but on a large enough cluster it could run on 32 terabytes &mdash; in that case you can not use `as.data.frame`.
 Even if `output` appears to return the data to be printed, that's only a sampling. The main effect of the `output` call is to write out to the specified file.
 
-`select` is one of several functions that `plyrmr` provides in a Hadoop-powered version:
+`bind.cols` is one of several functions that `plyrmr` provides in a Hadoop-powered version:
 
- * from `base`:
-   * `select`: add new columns
-   * `where`: select columns and rows
+ * data manip:
+   * `bind.cols`: add new columns
+   * `select`
+   * `where`: select rows
  * from `plyr`:
     * `summarize`: create summaries
  * from `reshape2`:
@@ -287,6 +303,13 @@ What `do` does is take any function that reads and writes data frames, execute i
 
 ```r
 magic.wand(last.col)
+```
+
+```
+Error: could not find function "appendVarArgs"
+```
+
+```r
 last.col(mtcars)
 ```
 

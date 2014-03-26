@@ -1,4 +1,4 @@
-# Copyright 2013 Revolution Analytics
+c# Copyright 2013 Revolution Analytics
 #    
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -187,13 +187,13 @@ mr.options =
 		.data }
 
 mrexec =
-	function(mr.args, input.format)
+	function(mr.args, input.format) #this is not the input format for the run but the one to encapsulate with the result to read it later
 		as.big.data(
 			do.call(mapreduce, mr.args),
 			format = input.format)
 
 run = 
-	function(.data, input.format, ...) {
+	function(.data, input.format, ...) { #this is not the input format for the run but the one to encapsulate with the result to read it later
 		pipe = .data
 		if(
 			all(
@@ -271,7 +271,13 @@ input = as.pipe
 
 magic.wand = 
 	function(f, non.standard.args = FALSE){
-		g = f
+		suppressPackageStartupMessages(library(R.methodsS3))
+		setMethodS3(
+			as.character(substitute(f)),
+			"data.frame",
+			f,
+			overwrite = FALSE,
+			envir = parent.frame())
 		setMethodS3(
 			as.character(substitute(f)), 
 			"pipe", 
@@ -283,9 +289,4 @@ magic.wand =
 			else
 				function(.data, ...)
 					gapply(.data, f, ...),
-			envir = parent.frame())
-		setMethodS3(
-			as.character(substitute(f)),
-			"data.frame",
-			g,
-		envir = parent.frame())} 
+			envir = parent.frame())} 

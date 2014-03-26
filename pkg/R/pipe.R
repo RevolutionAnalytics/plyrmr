@@ -1,4 +1,4 @@
-c# Copyright 2013 Revolution Analytics
+# Copyright 2013 Revolution Analytics
 #    
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -193,7 +193,13 @@ mrexec =
 			format = input.format)
 
 run = 
-	function(.data, input.format, ...) { #this is not the input format for the run but the one to encapsulate with the result to read it later
+	function(.data, input.format = NULL, ...) { #this is not the input format for the run but the one to encapsulate with the result to read it later
+		dof = default(.data[['output.format']], "native")
+		if(is.null(input.format)) {
+			if(is.character(dof))
+				input.format = dof
+			else
+				stop("need to specify input format corresponding to custom output format")}
 		pipe = .data
 		if(
 			all(
@@ -265,7 +271,7 @@ as.pipe.list = Compose(as.big.data, as.pipe)
 as.data.frame.pipe =
 	function(x, ...)
 		as.data.frame(
-			as.big.data(x, "native"))
+			as.big.data(x))
 
 input = as.pipe
 

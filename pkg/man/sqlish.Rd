@@ -2,6 +2,7 @@
 \alias{where}
 \alias{transmute}
 \alias{bind.cols}
+\alias{select}
 \title{
 Functions to perform sql-like operations.
 }

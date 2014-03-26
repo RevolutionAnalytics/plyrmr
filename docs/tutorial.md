@@ -107,16 +107,11 @@ Even if `output` appears to return the data to be printed, that's only a samplin
 
  * data manip:
    * `bind.cols`: add new columns
-   * `select`
+   * `select`: select columns
    * `where`: select rows
- * from `plyr`:
-    * `summarize`: create summaries
+   * `transmute`: all of the above 
  * from `reshape2`:
    * `melt` and `dcast`: convert between *long* and *wide* data frames
- * new in `plyrmr`:
-   * `select`: does everything that `select` and `summarize` do in addition to selecting columns.
-   * `where`: select rows
-   * these are more suitable for programming then the functions they replace, as will be explained later.
  * summary:
    * `count.cols`
    * `quantile.cols`
@@ -124,9 +119,7 @@ Even if `output` appears to return the data to be printed, that's only a samplin
  * extract
    * top.k
    * bottom.k
- 
-`plyrmr` extends all these operations to Hadoop data sets, trying to maintain semantic equivalence, with limitations that will be made clear later. These functions are not intended as a minimal set of operations: there is a lot of functionality overlap. We just wanted to support existing usage to help users transitioning to Hadoop programming.
- 
+
 ## Combining Operations
 
 What if none of the basic operations is sufficient to perform a needed data processing step? The first available tool is to combine different operations. Going back to the previous example, let's say we want to select cars with a carburetor per cylinder ratio greater than 1. Do such things even exist? On a data frame, there is a quick way to compute the answer, which is
@@ -306,7 +299,7 @@ magic.wand(last.col)
 ```
 
 ```
-Error: could not find function "appendVarArgs"
+NULL
 ```
 
 ```r

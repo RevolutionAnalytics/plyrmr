@@ -260,25 +260,14 @@ Even if <code>output</code> appears to return the data to be printed, that&#39;s
 
 <ul>
 <li><code>bind.cols</code>: add new columns</li>
-<li><code>select</code></li>
+<li><code>select</code>: select columns</li>
 <li><code>where</code>: select rows</li>
-</ul></li>
-<li>from <code>plyr</code>:
-
-<ul>
-<li><code>summarize</code>: create summaries</li>
+<li><code>transmute</code>: all of the above </li>
 </ul></li>
 <li>from <code>reshape2</code>:
 
 <ul>
 <li><code>melt</code> and <code>dcast</code>: convert between <em>long</em> and <em>wide</em> data frames</li>
-</ul></li>
-<li>new in <code>plyrmr</code>:
-
-<ul>
-<li><code>select</code>: does everything that <code>select</code> and <code>summarize</code> do in addition to selecting columns.</li>
-<li><code>where</code>: select rows</li>
-<li>these are more suitable for programming then the functions they replace, as will be explained later.</li>
 </ul></li>
 <li>summary:
 
@@ -294,8 +283,6 @@ Even if <code>output</code> appears to return the data to be printed, that&#39;s
 <li>bottom.k</li>
 </ul></li>
 </ul>
-
-<p><code>plyrmr</code> extends all these operations to Hadoop data sets, trying to maintain semantic equivalence, with limitations that will be made clear later. These functions are not intended as a minimal set of operations: there is a lot of functionality overlap. We just wanted to support existing usage to help users transitioning to Hadoop programming.</p>
 
 <h2>Combining Operations</h2>
 
@@ -435,7 +422,7 @@ high.carb.cyl.2(1)
 <pre><code class="r">magic.wand(last.col)
 </code></pre>
 
-<pre><code>Error: could not find function &quot;appendVarArgs&quot;
+<pre><code>NULL
 </code></pre>
 
 <pre><code class="r">last.col(mtcars)

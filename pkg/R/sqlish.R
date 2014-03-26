@@ -32,5 +32,3 @@ bind.cols.pipe =
 	function(.data, ..., .envir = parent.frame()) {
 		.envir = copy.env(.envir)
 		transmute(.data, ..., .cbind = TRUE, .mergeable = FALSE, .envir = .envir)}
-
-magic.wand(select)

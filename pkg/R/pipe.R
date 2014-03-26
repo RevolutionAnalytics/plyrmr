@@ -270,10 +270,22 @@ as.data.frame.pipe =
 input = as.pipe
 
 magic.wand = 
-	function(f) 
+	function(f, non.standard.args = FALSE){
+		g = f
 		setMethodS3(
 			as.character(substitute(f)), 
 			"pipe", 
-			function(.data, ...) 
-				gapply(.data, f, ...),
+			if(non.standard.args)
+				function(.data, ..., .envir = parent.frame()) {
+					.envir = copy.env(.envir)
+					curried.f = CurryHalfLazy(f, .envir = .envir)
+					gapply(.data, curried.f, ...)}
+			else
+				function(.data, ...)
+					gapply(.data, f, ...),
 			envir = parent.frame())
+		setMethodS3(
+			as.character(substitute(f)),
+			"data.frame",
+			g,
+		envir = parent.frame())} 

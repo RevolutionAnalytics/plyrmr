@@ -252,3 +252,16 @@ named_dots =
 		
 		names(args)[missing] <- defaults
 		args}
+
+#non standard eval
+#patch for broken verbs
+
+non.standard.eval.patch = 
+	function(f) 
+		function(.data, ..., .envir = parent.frame()) {
+			dotargs = dots(...)
+			dotargs = partial_eval(dotargs, env = .envir)
+			splat(f)(
+				c(
+					list(.data),
+					dotargs))}

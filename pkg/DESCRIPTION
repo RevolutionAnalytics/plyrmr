@@ -10,3 +10,4 @@ Depends: rmr2 (>= 3.1.0), reshape2, dplyr
 Imports: Rcpp (>= 0.10.4), plyr,  R.methodsS3, Hmisc, functional
 License: Apache License (== 2.0)
 LinkingTo: Rcpp
+Collate: RcppExports.R common.R  big.data.R pipe.R dataframe.R aggregate.R arrange-like.R base.R reshape2.R sqlish.R

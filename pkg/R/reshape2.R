@@ -13,7 +13,8 @@
 # limitations under the License.
 
 
-magic.wand(melt)
+melt = non.standard.eval.patch(reshape2::melt)
+magic.wand(melt, non.standard.args = TRUE)
 
 dcast = function(data, formula, ...) UseMethod("dcast")
 

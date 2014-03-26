@@ -39,11 +39,13 @@ mtcars = cbind(model = rownames(mtcars), mtcars)
 mmtcars = as.data.frame(melt(input(mtcars), c("model", param)))
 mmtcars
 rm(param)
-#(function(){param = "mpg"; as.data.frame(melt(input(mtcars), c("model", param)))})()
+(function(){param = "mpg"; as.data.frame(melt(input(mtcars), c("model", param)))})()
+# now works, used to end like:
 # Error in melt_check(data, id.vars, measure.vars) : 
 # 	object 'param' not found
-#dcast doesn't, formula evaluated normally 
+# dcast works, formula evaluated normally 
 param = formula(model ~ variable)
 as.data.frame(dcast(input(mmtcars), param))
 rm(param)
 (function(){param = formula(model ~ variable); as.data.frame(dcast(input(mmtcars), param))})()
+

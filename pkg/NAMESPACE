@@ -67,6 +67,7 @@ export(
 	where,
 	merge)
 S3method(select, pipe)
+S3method(select, data.frame)
 S3method(transmute, pipe)
 S3method(transmute, data.frame)
 S3method(bind.cols, pipe)
@@ -99,10 +100,11 @@ S3method(union, pipe)
 S3method(intersect, data.frame)
 S3method(intersect, pipe)
 #reshape2
-export(dcast)
+export(dcast, melt)
 S3method(dcast, pipe)
 S3method(dcast, default)
 S3method(melt, pipe)
+S3method(melt, data.frame)
 #fast summaries
 #export(fast.summary)
 #S3method(fast.summary, pipe)

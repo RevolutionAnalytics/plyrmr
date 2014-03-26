@@ -55,6 +55,9 @@ bind.cols.data.frame =
 		force(.envir)
 		transmute(.data, ..., .cbind = TRUE, .envir = .envir)}
 
+select = non.standard.eval.patch(dplyr::select)
+magic.wand(select, non.standard.args = TRUE)
+
 #(function(){v = 5;  transmute(mtcars, cy32 = cyl^2, carb + 5)})()
 
 sample = function(x, ...) UseMethod("sample")

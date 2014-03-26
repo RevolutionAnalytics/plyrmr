@@ -244,13 +244,3 @@ intersect.data.frame =
 	intersect.pipe = 
 	function(x,y)
 		unique(merge(x,y))
-# 	
-# arrange(
-# 	as.data.frame(
-# 		gapply(
-# 			group.f(
-# 				input(uns), 
-# 				function(x) sapply(qu$x, function(t) c(r = sum(x$x > t)))), 
-# 			#function(x) cbind(x, rank(x$x)))), 
-# 			identity)),
-# 	x)

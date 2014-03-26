@@ -2,7 +2,7 @@
 \alias{gapply}
 \alias{magic.wand}
 \alias{mergeable}
-\alise{vectorized}
+\alias{vectorized}
 \title{
 Apply a function f to each of the groups of a data set, or set up a method to do just that.
 }

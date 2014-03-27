@@ -47,7 +47,9 @@ transmute.data.frame =
 				else
 					safe.cbind(newcols, .columns )}}
 		if(!.cbind)  newcols
-		else safe.cbind(.data, newcols)}
+		else {
+			if(ncol(newcols) == 0) .data
+			else safe.cbind(.data, newcols)}}
 
 bind.cols = function(.data, ...) UseMethod("bind.cols")	
 bind.cols.data.frame =

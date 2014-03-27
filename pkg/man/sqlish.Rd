@@ -4,12 +4,11 @@
 \alias{bind.cols}
 \alias{select}
 \title{
-Functions to perform sql-like operations.
+Functions to perform generic data manipulation.
 }
 \description{
-These functions accept a data set, represented by a pipe or a data frame, and apply the operations specified by the \dots arguments, which are evaluated according to \link{non standard evaluation} rules.
-\code{where} allows to filter a subset of the rows. Additional arguments should evaluate to logical or numeric and are used as row indexes. In the case of logical, the element-wise logical and of the arguments is the computed filter. In the case of numeric, a single \dots arguments should be specified. Normal recycling rules apply. \code{transmute} allows to select or generate new columns from a data set. Additional arguments become columns of the new data set and normal recycling rules apply. In the method for pipes, for both functions, additional arguments are evaluated for each group of the pipe.
-}
+These functions implement common data manipulation tasks with methods for Hadoop data sets and data frames. They all accept the data as their first argument,
+followed by additional arguments that detail the manupulation to be performed.}
 \usage{
 where(.data, \dots)
 \method{where}{data.frame}(.data, .cond, .envir = parent.frame())
@@ -34,7 +33,12 @@ transmute(.data, \dots)
 	\item{.envir}{environment in which to evaluate the \dots arguments}
 }
 \details{
-\code{transmute} tries to merge the functionality of \code{base::transform}, \code{plyr::mutate}, \code{plyr::summarize} and the SQL statement by the same name. When argument \code{.cbind} is \code{FALSE}, the default, the first argument columns are discarded and the ones defined in the \dots arguments are used to form a new data frame. In this case the number of rows returned can be different from the number of rows in the \code{.data} argument, subsuming the capabilities of both Hive's UDTF and \code{plyr::summarize}, that is expansion or reduction of the output as compared to the input. When \code{.cbind} is \code{TRUE} the behavior is more like \code{transform} and the numbers of rows returned remains the same as in \code{.data}. Recycling rules are applied to the \dots arguments. Fractional recycling, when the longest argument length is not an integer multiple of the others, is allowed but triggers a warning. \code{bind.cols} is somewhat equivalent to \code{base::subset}, but focuses only on the selection of rows, not columns. Both functions have methods for data frames and pipes. \code{where} and \code{transmute} are more appropriate for programming then their \code{base} and \code{plyr} equivalent, \code{transform}, \code{subset}, \code{mutate} and \code{summarize}, because of the additional \code{.envir} argument which allows to specify an evaluation environment different from that of the caller. See \file{tests/non-standard-eval.R} for examples of \code{transmute} and \code{where} working in contexts where the other functions don't.
+\describe{
+\item{\code{transmute}}{tries to merge the functionality of \code{\link[base:transform]{base::transform}} and \code{\link[plyr:summarize]{plyr::summarize}}, to express general data transformation, including the common case of multi-row summaries, such as quantiles. When argument \code{.cbind} is \code{FALSE}, the default, the first argument columns are discarded and the ones defined in the \dots arguments are used to form a new data frame. In this case the number of rows returned can be different from the number of rows in the \code{.data} argument, subsuming the capabilities of both Hive's UDTF and \code{\link[plyr:summarize]{plyr::summarize}}, that is expansion or reduction of the output as compared to the input. When \code{.cbind} is \code{TRUE} the behavior is more like \code{transform} and the numbers of rows returned remains the same as in \code{.data}. Recycling rules are applied to the \dots arguments. Fractional recycling, when the longest argument length is not an integer multiple of the others, is allowed but triggers a warning.}
+\item{\code{bind.cols}}{is just a shortcut for \code{transmute} with \code{.cbind} set to TRUE, but it's an  important enough special case to deserve its own name.}
+\item{\code{select}}{is a direct big data equivalent of \code{\link[dplyr:select]{dplyr::select}}; see that function for details. The data frame method differs from it only in the \code{.envir} argument, see below why that's important.}
+\item{\code{where}}{focuses only on the selection of rows, not columns.}}
+All functions have methods for data frames and pipes. These function are more usable for programming than their equivalents in \link{base}, \link{plyr} and \link{dplyr} (at the time of writing, see \url{https://github.com/hadley/dplyr/issues/352}) because of the additional \code{.envir} argument which allows to specify an evaluation environment different from that of the caller. See \file{tests/non-standard-eval.R} for examples of \code{transmute} and \code{where} working in contexts where the other functions don't. For \code{transmute}, \code{bind.cols} and \code{where} the \dots and \code{.cond} arguments are evaluated accoding to \link{non standard evaluation} rules. \code{select} follows different rules that are specialized for selection, see \code{\link[dplyr:select]{dplyr::select}}
 }
 \value{
 The same type as the first argument, either a data frame or a pipe.

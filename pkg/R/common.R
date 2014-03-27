@@ -142,6 +142,21 @@ fract.recycling =
 		names(retval) = names(ll)
 		retval}
 
+readable.ops = 
+	function(x)
+		paste(
+			sapply(
+				strsplit(x,"")[[1]], 
+				function(x) 
+					switch(
+						x, 
+						`+` = "plus", 
+						`-` = "minus",
+						`*` = "times", 
+						`/` = "divided.by",
+						x)), 
+			collapse="")
+
 data.frame = 
 	function(..., row.names = NULL, check.rows = FALSE,
 					 check.names = TRUE, stringsAsFactors = default.stringsAsFactors()) {
@@ -161,6 +176,7 @@ data.frame =
 					if(length(row.names) > 0)
 						row.names[[1]]
 					else NULL }}
+			names(dot.args) = sapply(names(dot.args), readable.ops)
 			X =  				
 				base::data.frame(
 					fract.recycling(

@@ -276,13 +276,15 @@ as.data.frame.pipe =
 input = as.pipe
 
 magic.wand = 
-	function(f, non.standard.args = FALSE){
+	function(f, non.standard.args = FALSE, add.envir.arg = TRUE){
 		suppressPackageStartupMessages(library(R.methodsS3))
+		if(add.envir.arg)
+			g = non.standard.eval.patch(f)
 		setMethodS3(
 			as.character(substitute(f)),
 			"data.frame",
-			f,
-			overwrite = FALSE,
+			g,
+			overwrite = TRUE,
 			envir = parent.frame())
 		setMethodS3(
 			as.character(substitute(f)), 
@@ -290,8 +292,8 @@ magic.wand =
 			if(non.standard.args)
 				function(.data, ..., .envir = parent.frame()) {
 					.envir = copy.env(.envir)
-					curried.f = CurryHalfLazy(f, .envir = .envir)
-					gapply(.data, curried.f, ...)}
+					curried.g = CurryHalfLazy(g, .envir = .envir)
+					gapply(.data, curried.g, ...)}
 			else
 				function(.data, ...)
 					gapply(.data, f, ...),

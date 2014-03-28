@@ -275,19 +275,31 @@ as.data.frame.pipe =
 
 input = as.pipe
 
+is.generic = 
+	function(f) 
+		length(methods(f)) > 0
+
 magic.wand = 
-	function(f, non.standard.args = FALSE, add.envir.arg = TRUE){
+	function(f, non.standard.args = TRUE, add.envir.arg = non.standard.args, envir = parent.frame()){
 		suppressPackageStartupMessages(library(R.methodsS3))
-		if(add.envir.arg)
-			g = non.standard.eval.patch(f)
+		f.name = as.character(substitute(f))
+		f.data.frame = {
+			if(is.generic(f))
+				getMethodS3(f.name, "data.frame")
+			else f}
+		g = {
+			if(add.envir.arg)
+				non.standard.eval.patch(f.data.frame)
+			else
+				f.data.frame}
 		setMethodS3(
-			as.character(substitute(f)),
+			f.name,
 			"data.frame",
 			g,
-			overwrite = TRUE,
-			envir = parent.frame())
+			overwrite = FALSE,
+			envir = envir)
 		setMethodS3(
-			as.character(substitute(f)), 
+			f.name,
 			"pipe", 
 			if(non.standard.args)
 				function(.data, ..., .envir = parent.frame()) {
@@ -296,5 +308,5 @@ magic.wand =
 					gapply(.data, curried.g, ...)}
 			else
 				function(.data, ...)
-					gapply(.data, f, ...),
-			envir = parent.frame())} 
+					do.call(gapply, c(list(.data, g), list(...))),
+			envir = envir)} 

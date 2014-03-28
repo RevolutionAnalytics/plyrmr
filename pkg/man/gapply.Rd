@@ -11,7 +11,7 @@ Apply a function f to each of the groups of a data set, or set up a method to do
 }
 \usage{
 gapply(.data, .f, \dots)
-magic.wand(f)
+magic.wand(f, non.standard.args = TRUE, add.envir.arg = non.standard.args, envir = parent.frame())
 mergeable(f)
 vectorized(f)
 }
@@ -19,6 +19,8 @@ vectorized(f)
   \item{.data}{A pipe}
   \item{f,.f}{A function of a data frame returning a data frame (attempts are made to coerce a non data frame return value to a data frame, but your milage may vary; vectors become single column data frames)}
   \item{\dots}{Additional arguments to f}
+  \item{non.standard.args}{whether \code{f} accepts arguments to be evaluated using \link{non standard evaluation} rules, like \code{\link{transform}}}
+  \item{add.envir.arg}{whether \code{f} accepts the \code{.envir} argument for the correct implementation of \link{non standard evaluation}. Hopefully this argument will become a minor standard shared by plyrmr and dplyr.}
 }
 \details{
 \code{gapply} applies a function to each group of the \code{.data} pipe. If the pipe is ungrouped, \code{.f} is applied to arbitrary, reasonably sized chunks. \code{magic.wand} creates a generic named \code{f} with two methods, one for data.frames, which calls \code{f} itself and one for pipes which calls \code{gapply(.data, f, \dots)}. \code{mergeable} and \code{vectorized} return their only argument with an attribute set that guides certain optimizations. By calling \code{mergeable} the user is guaranteeing tha \code{f} as a function of each of the rows in .\code{.data} is associative and commutative. By calling \code{vectorized} the user is declaring that \code{f} can handle multiple groups. TODO requirements of a vectorized function. These two functions are normally used to modify  the \code{.f} argument to \code{gapply}. The potential performance gains associated to the proper use of these functions can be substantial and in the case of \code{mergeable} it may be the only way to complete a calculation successfully. On the other hand, if the function \code{f} doesn not truly fulfil the requirements of \emph{mergeability} or \emph{vectorization} the results of the computation performed by \code{gapply} are unpredictable, that is, it's a bug.

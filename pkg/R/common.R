@@ -176,7 +176,8 @@ data.frame =
 					if(length(row.names) > 0)
 						row.names[[1]]
 					else NULL }}
-			names(dot.args) = sapply(names(dot.args), readable.ops)
+			if(!is.null(names(dot.args)))
+				names(dot.args) = sapply(names(dot.args), readable.ops)
 			X =  				
 				base::data.frame(
 					fract.recycling(

@@ -13,8 +13,7 @@
 # limitations under the License.
 
 library(plyrmr)
-magic.wand(mutate)
-
+magic.wand(mutate, non.standard.args = TRUE)
 
 summarize.fun = 
 	function(.data, ..., .mergeable = FALSE)

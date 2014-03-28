@@ -262,7 +262,7 @@ Even if <code>output</code> appears to return the data to be printed, that&#39;s
 <li><code>bind.cols</code>: add new columns</li>
 <li><code>select</code>: select columns</li>
 <li><code>where</code>: select rows</li>
-<li><code>transmute</code>: all of the above </li>
+<li><code>transmute</code>: all of the above plus summaries</li>
 </ul></li>
 <li>from <code>reshape2</code>:
 
@@ -283,6 +283,10 @@ Even if <code>output</code> appears to return the data to be printed, that&#39;s
 <li>bottom.k</li>
 </ul></li>
 </ul>
+
+<h2>Why does <code>plyrmr</code> have <code>bind.cols</code>, <code>transmute</code> and <code>where</code> instead of <code>transform</code>, <code>summarize</code> and <code>subset</code></h2>
+
+<p>The main goal of plyrmr if providing big-data close equivalents of well known and useful data frame manipulations and in fact an early design did not define any new functions for data frames. So why try to reinvent the wheel with <code>bind.cols</code>, <code>transmute</code> and <code>where</code>? The main reason is that <code>transform</code>, <code>mutate</code> &amp; C. work best interactively, at the prompt, but they have some problems when used in other functions or packages. The evaluation of arguments can break, and the reason is very technical and covered in <a href="non-standard-eval.md">another document</a>. But most recently we&#39;ve been able to overcome this problem at least for <code>select</code>, so why not go the whole nine yards? First of all, we need multi-row summaries. These are not possible in either <code>plyr</code> or <code>dplyr</code> as of this writing (there is an issue open about this, so things may change). Multi-row summaries are extremely important in statistics (quantiles, sketches etc). Next is support for lis columns, which are needed for things like models, see the last section. Third, we can&#39;t swallow the naming of functions that pretend to do more than they actually can, like <code>transform</code>. It&#39;s a silly vocabulary land grab that doesn&#39;t help anyone. Finally, we hate grumpy defaults, like functions that silently drop unnamed arguments, such as  &mdash; you&#39;ve guessed it  &mdash; <code>transform</code>. Functions in <code>plyrmr</code> try a little harder to be helpful and, in that case, make up sensible names. It&#39;s possible that as <code>dplyr</code> matures we will buy into that API more extensively. Alredy today, you can use a <code>magic.wand</code> (see below) to give Hadoop powers to many functions in <code>dplyr</code>.</p>
 
 <h2>Combining Operations</h2>
 
@@ -341,62 +345,9 @@ where(x, carb.per.cyl &gt;= 1)
 
 <p>What this does is providing the value of the leftmost expression as the first unnamed argument of the next function call, evaluate this combination and continue to the next operator. Actually, that&#39;s the default behavior, but you can specify any function argument in a complex expression to be the designated one with the special name <code>.</code>. Rather than arguing over which style is best, it&#39;s probably best to bask in the flexibility made possible by the R language and your indefatigable developers and pick the one that fits one&#39;s style or a specific situation. In particular, pipes can not express more complex data flows where two flows merge or one splits. In the following I will alternate between these three notations (nested, assignment chain and pipe operator) based on which seems the clearest. It should be safe to assume that each example can be translated into any of the three.</p>
 
-<h2>Why you should use <code>plyrmr</code>&#39;s <code>bind.cols</code>, <code>transmute</code> and <code>where</code></h2>
-
-<p>TODO: rewrite this part
-work best interactively, at the prompt, but they have some problems when used in other functions or packages. These limitations are inherited from the <code>base</code> package functions, not peculiar to their <code>plyrmr</code> brethren. <code>plyrmr</code> makes an attempt to provide two functions that match the convenience of <code>select</code> and <code>where</code> without their pitfalls. While we were at it, we also tried to make them more general and give them a cleaner but still familiar (SQL-inspired) interface. Let me introduce <code>select</code> and <code>where</code>. These are <code>plyrmr</code> functions with methods for data frames and Hadoop data sets and they are appropriate for interactive and programming use. The previous examples become, using these functions:</p>
-
-<pre><code class="r">mtcars %|%
-    bind.cols(carb.per.cyl = carb/cyl) %|%
-    where(carb.per.cyl &gt;= 1)
-</code></pre>
-
-<pre><code>           model  mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-30  Ferrari Dino 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-31 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
-</code></pre>
-
-<p>and:</p>
-
-<pre><code class="r">x = 
-    input(&quot;/tmp/mtcars&quot;) %|%
-    bind.cols(carb.per.cyl = carb/cyl) %|%
-    where(carb.per.cyl &gt;= 1)
-as.data.frame(x)
-</code></pre>
-
-<pre><code>          model  mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-1  Ferrari Dino 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-2 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
-</code></pre>
-
-<p>Similar, but they work everywhere. For instance, if <code>where</code> is called within some function, which is in its turn used in some other function, we can have the following situation:</p>
-
-<pre><code class="r">where.mtcars.1 = function(...) where(mtcars, ...)
-high.carb.cyl.1 = function(x) {where.mtcars.1(carb/cyl &gt;= x) }
-high.carb.cyl.1(1) 
-</code></pre>
-
-<pre><code>Error: (list) object cannot be coerced to type &#39;double&#39;
-</code></pre>
-
-<p>Unfortunately, it doesn&#39;t work. With <code>where</code> instead:</p>
-
-<pre><code class="r">where.mtcars.2 = function(...) where(mtcars, ..., .envir = parent.frame())
-high.carb.cyl.2 = function(x) {where.mtcars.2(carb/cyl &gt;= x) }
-high.carb.cyl.2(1)
-</code></pre>
-
-<pre><code>           model  mpg cyl disp  hp drat   wt qsec vs am gear carb
-30  Ferrari Dino 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6
-31 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8
-</code></pre>
-
-<p>The exact reason why <code>where</code> needs an additional argument in this scenario and what to provide are out of scope for this tutorial, but the message is that with <code>where</code> and <code>select</code> you can transition nicely from interactive R use to development. The R documentation recommends to use <code>[]</code> only when programming, but having to rewrite code in a different context, to a computer scientist, is just an admission of defeat. Therefore <code>plyrmr</code> provides methods for <code>select</code>, <code>where</code>,  and <code>summarize</code> because of their widespread use, but we recommend to check out <code>where</code> and <code>select</code> (many thanks to Hadley Wickham for valuable discussions on this issue).</p>
-
 <h2>Custom operations</h2>
 
-<p>Another way to extend the functionality of <code>plyrmr</code> built-in data manipulation functions is to take any function that accepts a data frame in input and returns a data frame and use the function <code>do</code> to give it Hadoop superpowers (<code>do</code> is named after the equivalent function in <code>dplyr</code>, but the idea is not new). For instance, you have a function that returns the rightmost column of a data frame. This is not simple to achieve with the functions explored so far, but it is a quick one liner:</p>
+<p>Another way to extend the functionality of <code>plyrmr</code> built-in data manipulation functions is to take any function that accepts a data frame in input and returns a data frame and use the function <code>gapply</code> to give it Hadoop superpowers. For instance, you have a function that returns the rightmost column of a data frame. This is not simple to achieve with the functions explored so far, but it is a quick one liner:</p>
 
 <pre><code class="r">last.col = function(x) x[, ncol(x), drop = FALSE]
 </code></pre>
@@ -417,7 +368,7 @@ high.carb.cyl.2(1)
 ....
 </code></pre>
 
-<p>What <code>do</code> does is take any function that reads and writes data frames, execute it on a Hadoop data set in parallel on relatively small chunks of the data and pass the results to <code>as.data.frame</code> or <code>output</code> which send them to their final destination. Wouldn&#39;t it absolutely perfect if the <code>lastcol</code> function itself knew whether it&#39;s working on a Hadoop data set or a data frame and do the right thing? It actually is possible:</p>
+<p><code>gapply</code> takes any function that reads and writes data frames, executes it on a Hadoop data set in parallel on relatively small chunks of the data and pass the results to <code>as.data.frame</code> or <code>output</code> which send them to their final destination. Wouldn&#39;t it absolutely perfect if the <code>lastcol</code> function itself knew whether it&#39;s working on a Hadoop data set or a data frame and do the right thing? It actually is possible:</p>
 
 <pre><code class="r">magic.wand(last.col)
 </code></pre>
@@ -453,7 +404,7 @@ high.carb.cyl.2(1)
 ....
 </code></pre>
 
-<p>For people familiar with object oriented programming in R, this function takes an existing data frame function, meaning one with a data frame as its first argument and return value and creates a generic function by the same name, with a method for data frames equal to the original function and one for big data sets using do as shown above. The internal R dispatch machinery decides which of the methods to call based on the class of the first argument.</p>
+<p>For people familiar with object oriented programming in R, this function takes an existing data frame function, meaning one with a data frame as its first argument and return value, and creates a generic function by the same name, with a method for data frames equal to the original function and one for big data sets using do as shown above. The internal R dispatch machinery decides which of the methods to call based on the class of the first argument.</p>
 
 <h2>Grouping</h2>
 
@@ -482,7 +433,7 @@ high.carb.cyl.2(1)
 ....
 </code></pre>
 
-<p>That&#39;s not what we wanted and that&#39;s the where the size of the data cannot be ignored or abstracted away. Think of data in Hadoop as always grouped, one way or another. It couldn&#39;t be otherwise: it is stored on multiple devices and, even if it weren&#39;t, we can only load it into memory in small chunks of it at a time. In this specific example, the data is small and to highlight this problem I created an input format that reads the data in unreasonably small chunks, but in Hadoop application this is the norm. So think of the data as always grouped, initially in arbitrary fashion and later in the way we determine using the functions <code>group</code>, <code>group.f</code> and <code>gather</code> and more. These were inspired by the notion of key in mapreduce, the SQL statement and the <code>dplyr</code> function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:</p>
+<p>That&#39;s not what we wanted and that&#39;s the where the size of the data cannot be ignored or abstracted away. Think of data in Hadoop as always grouped, one way or another. It couldn&#39;t be otherwise: it is stored on multiple devices and, even if it weren&#39;t, we can only load it into memory in small chunks. In this specific example, the data is small and to highlight this problem I created an input format that reads the data in unreasonably small chunks, but in Hadoop application this is the norm. So think of the data as always grouped, initially in arbitrary fashion and later in the way we determine using the functions <code>group</code>, <code>group.f</code> and <code>gather</code> and more. These were inspired by the notion of key in mapreduce, the SQL statement and the <code>dplyr</code> function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:</p>
 
 <pre><code class="r">input(&quot;/tmp/mtcars3&quot;, format = if3) %|%
     gather() %|%
@@ -510,7 +461,7 @@ high.carb.cyl.2(1)
 
 <p>This is mostly a scalable programs, but there are some caveats: we need to be mindful of the size of the groups. If they are very big they will bust memory limits, so we need to reach for some advanced techniques to avoid this problem. If they are very small, like a handful of rows, we may run into some efficiency issues related to the current R and <code>rmr2</code> implementations rather than fundamental (so there is hope they will go away one day). </p>
 
-<p>When the definition of the grouping column is more complicated, we may need to reach for the uber-general <code>group.f</code>, the grouping relative of <code>do</code> (in fact, these two functions are the foundation for everything else in <code>plyrmr</code>). Let&#39;s go back to the <code>last.col</code> example. If we need to group by the last columns of a data frame, this is all we need to do:</p>
+<p>When the definition of the grouping column is more complicated, we may need to reach for the uber-general <code>group.f</code>, the grouping relative of <code>gapply</code> (in fact, these two functions are the foundation for everything else in <code>plyrmr</code>). Let&#39;s go back to the <code>last.col</code> example. If we need to group by the last columns of a data frame, this is all we need to do:</p>
 
 <h2>Better than SQL</h2>
 

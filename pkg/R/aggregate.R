@@ -24,7 +24,7 @@ fast.summary =
 		else
 			get(
 				paste("fast", type, class(xx[[1]]), sep = "."),
-				envir = environment(plyrmr::do))(xx)}
+				envir = environment(plyrmr::gapply))(xx)}
 
 .fast.summary.default = 
 	function(xx, type, index)

@@ -22,9 +22,9 @@ where.pipe =
 				list(.cond = .cond)))}
 
 transmute.pipe = 
-	function(.data, ..., .cbind = FALSE, .mergeable = FALSE, .envir = parent.frame()) {
+	function(.data, ..., .cbind = FALSE, .columns = NULL, .mergeable = FALSE, .envir = parent.frame()) {
 		.envir = copy.env(.envir)
-		fun = CurryHalfLazy(transmute, .cbind = .cbind, .envir = .envir)
+		fun = CurryHalfLazy(transmute, .cbind = .cbind, .columns = .columns, .envir = .envir)
 		if(.mergeable) fun = mergeable(fun)
 		gapply(.data, fun, ...)}
 

@@ -153,7 +153,7 @@ readable.ops =
 						`+` = "plus", 
 						`-` = "minus",
 						`*` = "times", 
-						`/` = "divided.by",
+						`/` = ".divided.by.",
 						x)), 
 			collapse="")
 

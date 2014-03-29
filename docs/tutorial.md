@@ -31,7 +31,7 @@ mtcars
 ```
 
 
-One may be interested in how many carburetors per cylinder each model uses, and that's a simple `select` call away:
+One may be interested in how many carburetors per cylinder each model uses, and that's a simple `bind.cols` call away:
 
 
 ```r
@@ -55,6 +55,21 @@ bind.cols(mtcars, carb.per.cyl = carb/cyl)
 Now let's imagine that we have a huge data set with the same structure but instead of being stored in memory, it is stored in a HDFS file named "/tmp/mtcars". It's way too big to be loaded with `read.table` or equivalent. With `plyrmr` one just needs to enter:
 
 
+```r
+bind.cols(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
+```
+
+```
+                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+1            Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+2        Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+3           Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+4       Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+5    Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+6              Valiant 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+7           Duster 360 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
+....
+```
 
 
 What we see are only a few arbitrary rows from the resulting data set. This is not only a consequence of the limited screen real estate, but also, in the case of large data sets, of the capacity gap between memory of a single machine and big data. In general, we can't expect to be able to load big data in memory. Sometimes, after summarization or filtering, the result of processing big data is small enough to fit into main memory. In this example, we know the data set is small so we can just go ahead and enter:
@@ -123,7 +138,7 @@ Even if `output` appears to return the data to be printed, that's only a samplin
 
 ## Why does `plyrmr` have `bind.cols`, `transmute` and `where` instead of `transform`, `summarize` and `subset`
 
-The main goal of plyrmr if providing big-data close equivalents of well known and useful data frame manipulations and in fact an early design did not define any new functions for data frames. So why try to reinvent the wheel with `bind.cols`, `transmute` and `where`? The main reason is that `transform`, `mutate` & C. work best interactively, at the prompt, but they have some problems when used in other functions or packages. The evaluation of arguments can break, and the reason is very technical and covered in [another document](non-standard-eval.md). But most recently we've been able to overcome this problem at least for `select`, so why not go the whole nine yards? First of all, we need multi-row summaries. These are not possible in either `plyr` or `dplyr` as of this writing (there is an issue open about this, so things may change). Multi-row summaries are extremely important in statistics (quantiles, sketches etc). Next is support for lis columns, which are needed for things like models, see the last section. Third, we can't swallow the naming of functions that pretend to do more than they actually can, like `transform`. It's a silly vocabulary land grab that doesn't help anyone. Finally, we hate grumpy defaults, like functions that silently drop unnamed arguments, such as  &mdash; you've guessed it  &mdash; `transform`. Functions in `plyrmr` try a little harder to be helpful and, in that case, make up sensible names. It's possible that as `dplyr` matures we will buy into that API more extensively. Alredy today, you can use a `magic.wand` (see below) to give Hadoop powers to many functions in `dplyr`.
+The main goal of plyrmr if providing big-data close equivalents of well known and useful data frame manipulations and in fact an early design did not define any new functions for data frames. So why try to reinvent the wheel with `bind.cols`, `transmute` and `where`? The main reason is that `transform`, `mutate` & C. work best interactively, at the prompt, but they have some problems when used in other functions or packages. The evaluation of arguments can break, and the reason is very technical and covered in [another document](non-standard-eval.md). But most recently we've been able to overcome this problem at least for `select`, so why not go the whole nine yards? First of all, we need multi-row summaries. These are not possible in either `plyr` or `dplyr` as of this writing (there is an issue open about this, so things may change). Multi-row summaries are extremely important in statistics (quantiles, sketches etc). Next is support for list columns, which are needed for things like models, see the last section. Third, we can't stand functions that pretend to do more than they actually can, like `transform`. It's a silly vocabulary land grab that doesn't help anyone. Finally, we hate grumpy defaults, like functions that silently drop unnamed arguments, such as  &mdash; you've guessed it  &mdash; `transform`. Functions in `plyrmr` try a little harder to be helpful and, in that case, make up sensible names. It's possible that as `dplyr` matures we will buy into that API more extensively. Alredy today, you can use a `magic.wand` (see below) to give Hadoop powers to many functions in `dplyr`.
 
 
 ## Combining Operations
@@ -132,9 +147,11 @@ What if none of the basic operations is sufficient to perform a needed data proc
 
 
 ```r
-mtcars %|%
-	bind.cols(carb.per.cyl = carb/cyl) %|%
-	where(carb.per.cyl >= 1)
+where(
+	bind.cols(
+		mtcars, 
+		carb.per.cyl = carb/cyl), 
+	carb.per.cyl >= 1)
 ```
 
 ```
@@ -148,11 +165,12 @@ Wouldn't it be nice if we could do exactly the same on a Hadoop data set? In fac
 
 
 ```r
-x = 
-	input("/tmp/mtcars") %|%
-	bind.cols(carb.per.cyl = carb/cyl) %|%
-	where(carb.per.cyl >= 1)
-as.data.frame(x)
+where(
+	transmute(
+		input("/tmp/mtcars"),
+		carb.per.cyl = carb/cyl,
+		.cbind = TRUE ),
+	carb.per.cyl >= 1)
 ```
 
 ```
@@ -333,7 +351,7 @@ input("/tmp/mtcars3", format = if3) %|%
 
 You may have noticed the contradiction between the above statement that data is always in chunks with the availability of a `gather` function. Luckily, there is an advanced way of grouping recursively, in a tree like fashion, that works with associative and commutative operations such as the sum, which is the default for `gather`. Anyway, it will all be more clear as we cover other grouping functions.
 
-The `group` function takes an input and a number of arguments that are evaluated in the context of the data, exactly like `select`. The result is a Hadoop data set grouped by the columns defined in those arguments. After this step, all rows that are identical on the columns defined in the `group` call will be loaded into memory at once and processed in the same call. Here is an example. Let's say we want to calculate the average mileage for cars with the same number of cylinders:
+The `group` function takes an input and a number of arguments that are evaluated in the context of the data, exactly like `bind.cols`. The result is a Hadoop data set grouped by the columns defined in those arguments. After this step, all rows that are identical on the columns defined in the `group` call will be loaded into memory at once and processed in the same call. Here is an example. Let's say we want to calculate the average mileage for cars with the same number of cylinders:
 
 
 ```r
@@ -359,7 +377,7 @@ When the definition of the grouping column is more complicated, we may need to r
 
 ## Better than SQL
 
-Despite the SQL-ish flavor and undeniable SQL inspiration for some of these operations, we want to highlight a few ways in which `plyrmr` is much more powerful than SQL. The first is that summaries or aggregation don't need to be limited to a single row. One form of aggregation are summaries and summaries can have many elements, even thousands. Momenta, quantiles, histograms, samples, they all have multiple entries. You could represent them as multiple columns up to a certain size, but removing the SQL limitation on aggregations is a good thing. Here how it works. Let's say you want to examine the quantiles of the gas mileage data in each group of cars with the same number of carburetors
+Despite the SQL-ish flavor and undeniable SQL inspiration for some of these operations, we want to highlight a few ways in which `plyrmr` is much more powerful than SQL. The first is that summaries or aggregation don't need to be limited to a single row. One form of aggregation are summaries and summaries can have many elements, even thousands. Momenta, quantiles, histograms, samples, they all have multiple entries. You could represent them as multiple columns up to a certain size, but removing the SQL limitation on aggregations is a good thing. Let's say you want to examine the quantiles of the gas mileage data in each group of cars with the same number of carburetors
 
 
 ```r
@@ -381,6 +399,8 @@ input("/tmp/mtcars") %|%
 ```
 
 
+
+And what to say about working in a real programming language, and one with an unmatched library of statistical methods for good measure? You know how many aggregate function ANSI SQL has? Less than 30 according to my references. What if you wanted to compute a linear model for each group? Forget it. Not so with `plyrmr`:
 
 
 ```r

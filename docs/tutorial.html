@@ -199,7 +199,7 @@ hljs.initHighlightingOnLoad();
 ....
 </code></pre>
 
-<p>One may be interested in how many carburetors per cylinder each model uses, and that&#39;s a simple <code>select</code> call away:</p>
+<p>One may be interested in how many carburetors per cylinder each model uses, and that&#39;s a simple <code>bind.cols</code> call away:</p>
 
 <pre><code class="r">bind.cols(mtcars, carb.per.cyl = carb/cyl)
 </code></pre>
@@ -217,6 +217,20 @@ hljs.initHighlightingOnLoad();
 
 <p><code>bind.cols</code> is <code>plyrmr</code>&#39;s own version of <code>transform</code> and provides a model that is common to many functions in <code>plyr</code> and <code>plyrmr</code>. The function name gives a general idea of what the function is for. The first argument is always the data set to be processed. The following arguments provide the details of what type of processing is going to take place, in the form of one or more optionally named expressions. These expressions can refer to the columns of the data frame as if they were additional variables, according to <em>non standard evaluation</em> rules.
 Now let&#39;s imagine that we have a huge data set with the same structure but instead of being stored in memory, it is stored in a HDFS file named &ldquo;/tmp/mtcars&rdquo;. It&#39;s way too big to be loaded with <code>read.table</code> or equivalent. With <code>plyrmr</code> one just needs to enter:</p>
+
+<pre><code class="r">bind.cols(input(&quot;/tmp/mtcars&quot;), carb.per.cyl = carb/cyl)
+</code></pre>
+
+<pre><code>                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+1            Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+2        Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+3           Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+4       Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+5    Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+6              Valiant 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+7           Duster 360 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
+....
+</code></pre>
 
 <p>What we see are only a few arbitrary rows from the resulting data set. This is not only a consequence of the limited screen real estate, but also, in the case of large data sets, of the capacity gap between memory of a single machine and big data. In general, we can&#39;t expect to be able to load big data in memory. Sometimes, after summarization or filtering, the result of processing big data is small enough to fit into main memory. In this example, we know the data set is small so we can just go ahead and enter:</p>
 
@@ -286,15 +300,17 @@ Even if <code>output</code> appears to return the data to be printed, that&#39;s
 
 <h2>Why does <code>plyrmr</code> have <code>bind.cols</code>, <code>transmute</code> and <code>where</code> instead of <code>transform</code>, <code>summarize</code> and <code>subset</code></h2>
 
-<p>The main goal of plyrmr if providing big-data close equivalents of well known and useful data frame manipulations and in fact an early design did not define any new functions for data frames. So why try to reinvent the wheel with <code>bind.cols</code>, <code>transmute</code> and <code>where</code>? The main reason is that <code>transform</code>, <code>mutate</code> &amp; C. work best interactively, at the prompt, but they have some problems when used in other functions or packages. The evaluation of arguments can break, and the reason is very technical and covered in <a href="non-standard-eval.md">another document</a>. But most recently we&#39;ve been able to overcome this problem at least for <code>select</code>, so why not go the whole nine yards? First of all, we need multi-row summaries. These are not possible in either <code>plyr</code> or <code>dplyr</code> as of this writing (there is an issue open about this, so things may change). Multi-row summaries are extremely important in statistics (quantiles, sketches etc). Next is support for lis columns, which are needed for things like models, see the last section. Third, we can&#39;t swallow the naming of functions that pretend to do more than they actually can, like <code>transform</code>. It&#39;s a silly vocabulary land grab that doesn&#39;t help anyone. Finally, we hate grumpy defaults, like functions that silently drop unnamed arguments, such as  &mdash; you&#39;ve guessed it  &mdash; <code>transform</code>. Functions in <code>plyrmr</code> try a little harder to be helpful and, in that case, make up sensible names. It&#39;s possible that as <code>dplyr</code> matures we will buy into that API more extensively. Alredy today, you can use a <code>magic.wand</code> (see below) to give Hadoop powers to many functions in <code>dplyr</code>.</p>
+<p>The main goal of plyrmr if providing big-data close equivalents of well known and useful data frame manipulations and in fact an early design did not define any new functions for data frames. So why try to reinvent the wheel with <code>bind.cols</code>, <code>transmute</code> and <code>where</code>? The main reason is that <code>transform</code>, <code>mutate</code> &amp; C. work best interactively, at the prompt, but they have some problems when used in other functions or packages. The evaluation of arguments can break, and the reason is very technical and covered in <a href="non-standard-eval.md">another document</a>. But most recently we&#39;ve been able to overcome this problem at least for <code>select</code>, so why not go the whole nine yards? First of all, we need multi-row summaries. These are not possible in either <code>plyr</code> or <code>dplyr</code> as of this writing (there is an issue open about this, so things may change). Multi-row summaries are extremely important in statistics (quantiles, sketches etc). Next is support for list columns, which are needed for things like models, see the last section. Third, we can&#39;t stand functions that pretend to do more than they actually can, like <code>transform</code>. It&#39;s a silly vocabulary land grab that doesn&#39;t help anyone. Finally, we hate grumpy defaults, like functions that silently drop unnamed arguments, such as  &mdash; you&#39;ve guessed it  &mdash; <code>transform</code>. Functions in <code>plyrmr</code> try a little harder to be helpful and, in that case, make up sensible names. It&#39;s possible that as <code>dplyr</code> matures we will buy into that API more extensively. Alredy today, you can use a <code>magic.wand</code> (see below) to give Hadoop powers to many functions in <code>dplyr</code>.</p>
 
 <h2>Combining Operations</h2>
 
 <p>What if none of the basic operations is sufficient to perform a needed data processing step? The first available tool is to combine different operations. Going back to the previous example, let&#39;s say we want to select cars with a carburetor per cylinder ratio greater than 1. Do such things even exist? On a data frame, there is a quick way to compute the answer, which is</p>
 
-<pre><code class="r">mtcars %|%
-    bind.cols(carb.per.cyl = carb/cyl) %|%
-    where(carb.per.cyl &gt;= 1)
+<pre><code class="r">where(
+    bind.cols(
+        mtcars, 
+        carb.per.cyl = carb/cyl), 
+    carb.per.cyl &gt;= 1)
 </code></pre>
 
 <pre><code>           model  mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
@@ -304,11 +320,12 @@ Even if <code>output</code> appears to return the data to be printed, that&#39;s
 
 <p>Wouldn&#39;t it be nice if we could do exactly the same on a Hadoop data set? In fact, we almost can:</p>
 
-<pre><code class="r">x = 
-    input(&quot;/tmp/mtcars&quot;) %|%
-    bind.cols(carb.per.cyl = carb/cyl) %|%
-    where(carb.per.cyl &gt;= 1)
-as.data.frame(x)
+<pre><code class="r">where(
+    transmute(
+        input(&quot;/tmp/mtcars&quot;),
+        carb.per.cyl = carb/cyl,
+        .cbind = TRUE ),
+    carb.per.cyl &gt;= 1)
 </code></pre>
 
 <pre><code>          model  mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
@@ -446,7 +463,7 @@ where(x, carb.per.cyl &gt;= 1)
 
 <p>You may have noticed the contradiction between the above statement that data is always in chunks with the availability of a <code>gather</code> function. Luckily, there is an advanced way of grouping recursively, in a tree like fashion, that works with associative and commutative operations such as the sum, which is the default for <code>gather</code>. Anyway, it will all be more clear as we cover other grouping functions.</p>
 
-<p>The <code>group</code> function takes an input and a number of arguments that are evaluated in the context of the data, exactly like <code>select</code>. The result is a Hadoop data set grouped by the columns defined in those arguments. After this step, all rows that are identical on the columns defined in the <code>group</code> call will be loaded into memory at once and processed in the same call. Here is an example. Let&#39;s say we want to calculate the average mileage for cars with the same number of cylinders:</p>
+<p>The <code>group</code> function takes an input and a number of arguments that are evaluated in the context of the data, exactly like <code>bind.cols</code>. The result is a Hadoop data set grouped by the columns defined in those arguments. After this step, all rows that are identical on the columns defined in the <code>group</code> call will be loaded into memory at once and processed in the same call. Here is an example. Let&#39;s say we want to calculate the average mileage for cars with the same number of cylinders:</p>
 
 <pre><code class="r">input(&quot;/tmp/mtcars&quot;) %|%
     group(cyl) %|%
@@ -465,7 +482,7 @@ where(x, carb.per.cyl &gt;= 1)
 
 <h2>Better than SQL</h2>
 
-<p>Despite the SQL-ish flavor and undeniable SQL inspiration for some of these operations, we want to highlight a few ways in which <code>plyrmr</code> is much more powerful than SQL. The first is that summaries or aggregation don&#39;t need to be limited to a single row. One form of aggregation are summaries and summaries can have many elements, even thousands. Momenta, quantiles, histograms, samples, they all have multiple entries. You could represent them as multiple columns up to a certain size, but removing the SQL limitation on aggregations is a good thing. Here how it works. Let&#39;s say you want to examine the quantiles of the gas mileage data in each group of cars with the same number of carburetors</p>
+<p>Despite the SQL-ish flavor and undeniable SQL inspiration for some of these operations, we want to highlight a few ways in which <code>plyrmr</code> is much more powerful than SQL. The first is that summaries or aggregation don&#39;t need to be limited to a single row. One form of aggregation are summaries and summaries can have many elements, even thousands. Momenta, quantiles, histograms, samples, they all have multiple entries. You could represent them as multiple columns up to a certain size, but removing the SQL limitation on aggregations is a good thing. Let&#39;s say you want to examine the quantiles of the gas mileage data in each group of cars with the same number of carburetors</p>
 
 <pre><code class="r">input(&quot;/tmp/mtcars&quot;) %|%
     group(carb) %|%
@@ -482,6 +499,8 @@ where(x, carb.per.cyl &gt;= 1)
 7     1 22.09 4.000  91.94  78.05 3.652 2.205 19.36 1.000000 0.4450 3.445
 ....
 </code></pre>
+
+<p>And what to say about working in a real programming language, and one with an unmatched library of statistical methods for good measure? You know how many aggregate function ANSI SQL has? Less than 30 according to my references. What if you wanted to compute a linear model for each group? Forget it. Not so with <code>plyrmr</code>:</p>
 
 <pre><code class="r">models = 
     input(&quot;/tmp/mtcars&quot;) %|%

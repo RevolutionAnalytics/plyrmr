@@ -11,7 +11,7 @@ invisible(output(input(mtcars), "/tmp/mtcars"))
 mtcars
 ## @knitr bind.cols
 bind.cols(mtcars, carb.per.cyl = carb/cyl)
-## @knitr select-input
+## @knitr bind.cols-input
 bind.cols(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
 ## @knitr as.data.frame-bind.cols-input
 as.data.frame(bind.cols(input("/tmp/mtcars"), carb.per.cyl = carb/cyl))
@@ -28,9 +28,6 @@ where(
 		mtcars, 
 		carb.per.cyl = carb/cyl), 
 	carb.per.cyl >= 1)
-## @knitr assignment-chain
-x =	bind.cols(mtcars, carb.per.cyl = carb/cyl) 
-where(x, carb.per.cyl >= 1)
 ## @knitr where-bind.cols-input
 where(
 	transmute(
@@ -38,20 +35,13 @@ where(
 		carb.per.cyl = carb/cyl,
 		.cbind = TRUE ),
 	carb.per.cyl >= 1)
+## @knitr assignment-chain
+x =	bind.cols(mtcars, carb.per.cyl = carb/cyl) 
+where(x, carb.per.cyl >= 1)
 ## @knitr pipe-operator
 mtcars %|%
 	bind.cols(carb.per.cyl = carb/cyl) %|%
 	where(carb.per.cyl >= 1)
-## @knitr where-bind.cols
-mtcars %|%
-	bind.cols(carb.per.cyl = carb/cyl) %|%
-	where(carb.per.cyl >= 1)
-## @knitr where-bind.cols-input
-x = 
-	input("/tmp/mtcars") %|%
-	bind.cols(carb.per.cyl = carb/cyl) %|%
-	where(carb.per.cyl >= 1)
-as.data.frame(x)
 ## @knitr end
 if(FALSE) {
 ## @knitr process.mtcars.1

@@ -40,21 +40,6 @@ transform
 ====
 title:false
 
-```r
-transform(mtcars, carb.per.cyl = carb/cyl)
-```
-
-```
-                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-1            Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-2        Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-3           Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-4       Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-5    Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
-6              Valiant 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-7           Duster 360 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
-....
-```
 
 
 transform-input
@@ -62,21 +47,6 @@ transform-input
 title:false
 
 
-```r
-transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
-```
-
-```
-                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-1            Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-2        Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-3           Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-4       Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-5    Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
-6              Valiant 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-7           Duster 360 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
-....
-```
 
 
 as.data.frame
@@ -84,21 +54,6 @@ as.data.frame
 title:false
 
 
-```r
-as.data.frame(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl))
-```
-
-```
-                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-1            Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-2        Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-3           Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-4       Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-5    Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
-6              Valiant 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-7           Duster 360 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
-....
-```
 
 
 
@@ -109,21 +64,6 @@ output
 title:false
 
 
-```r
-output(transform(input("/tmp/mtcars"), carb.per.cyl = carb/cyl), "/tmp/mtcars.out")
-```
-
-```
-                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-1            Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-2        Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-3           Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-4       Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-5    Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
-6              Valiant 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-7           Duster 360 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
-....
-```
 
 
 predefined-ops
@@ -141,19 +81,6 @@ subset-transform
 ====
 title:false
 
-```r
-subset(
-	transform(
-		mtcars, 
-		carb.per.cyl = carb/cyl), 
-	carb.per.cyl >= 1)
-```
-
-```
-           model  mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-30  Ferrari Dino 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-31 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
-```
 
 
 subset-transform-input
@@ -161,19 +88,6 @@ subset-transform-input
 title:false
 
 
-```r
-subset(
-	transform(
-		input("/tmp/mtcars"),
-		carb.per.cyl = carb/cyl),
-	carb.per.cyl >= 1)
-```
-
-```
-          model  mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-1  Ferrari Dino 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-2 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
-```
 
 
 assignment-chain
@@ -182,16 +96,16 @@ title:false
 
 
 ```r
-x =	transform(mtcars, carb.per.cyl = carb/cyl) 
-subset(x, carb.per.cyl >= 1)
+x =	bind.cols(mtcars, carb.per.cyl = carb/cyl) 
+where(x, carb.per.cyl >= 1)
 ```
 
 
 
 ```r
 mtcars %|%
-	transform(carb.per.cyl = carb/cyl) %|%
-	subset(carb.per.cyl >= 1)
+	bind.cols(carb.per.cyl = carb/cyl) %|%
+	where(carb.per.cyl >= 1)
 ```
 
 
@@ -200,17 +114,6 @@ where-select
 title:false
 
 
-```r
-mtcars %|%
-	select(carb.per.cyl = carb/cyl, .replace = FALSE) %|%
-	where(carb.per.cyl >= 1)
-```
-
-```
-           model  mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-30  Ferrari Dino 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-31 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
-```
 
 
 where-select-input
@@ -219,19 +122,6 @@ title:false
 
 
 
-```r
-x = 
-	input("/tmp/mtcars") %|%
-	select(carb.per.cyl = carb/cyl, .replace = FALSE) %|%
-	where(carb.per.cyl >= 1)
-as.data.frame(x)
-```
-
-```
-          model  mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-1  Ferrari Dino 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-2 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
-```
 
 
 process.mtcars
@@ -239,20 +129,20 @@ process.mtcars
 title:false
 
 ```r
-subset.mtcars.1 = function(...) subset(mtcars, ...)
-high.carb.cyl.1 = function(x) {subset.mtcars.1(carb/cyl >= x) }
+where.mtcars.1 = function(...) where(mtcars, ...)
+high.carb.cyl.1 = function(x) {where.mtcars.1(carb/cyl >= x) }
 high.carb.cyl.1(1) 
 ```
 
 ```
-Error: (list) object cannot be coerced to type 'double'
+Error: object 'x' not found
 ```
 
 
 
 ```r
-subset.mtcars.2 = function(...) where(mtcars, ..., .envir = parent.frame())
-high.carb.cyl.2 = function(x) {subset.mtcars.2(carb/cyl >= x) }
+where.mtcars.2 = function(...) where(mtcars, ..., .envir = parent.frame())
+high.carb.cyl.2 = function(x) {where.mtcars.2(carb/cyl >= x) }
 high.carb.cyl.2(1)
 ```
 
@@ -273,21 +163,6 @@ last.col = function(x) x[, ncol(x), drop = FALSE]
 
 
 
-```r
-do(input("/tmp/mtcars"), last.col)
-```
-
-```
-   carb
-1     4
-2     4
-3     1
-4     1
-5     2
-6     1
-7     4
-....
-```
 
 magic.wand
 ====
@@ -295,6 +170,13 @@ title:false
 
 ```r
 magic.wand(last.col)
+```
+
+```
+NULL
+```
+
+```r
 last.col(mtcars)
 ```
 
@@ -330,14 +212,6 @@ summarize
 ====
 title:false
 
-```r
-summarize(mtcars, sum(carb))
-```
-
-```
-  sum(carb)
-1        90
-```
 
 
 
@@ -347,37 +221,12 @@ summarize(mtcars, sum(carb))
 title:false
 
 
-```r
-summarize(input("/tmp/mtcars3", format = if3), sum(carb))
-```
-
-```
-  sum.carb.
-1        10
-2        14
-3        11
-4         5
-5        15
-6        16
-7         9
-....
-```
 
 ====
 title:false
 
 
 
-```r
-input("/tmp/mtcars3", format = if3) %|%
-	gather() %|%
-	summarize(sum(carb))
-```
-
-```
-  sum.carb.
-1        90
-```
 
 ====
 title:false
@@ -388,38 +237,11 @@ select-group
 ====
 title:false
 
-```r
-input("/tmp/mtcars") %|%
-	group(cyl) %|%
-	select(mean.mpg = mean(mpg))
-```
-
-```
-  cyl mean.mpg
-1   6    19.74
-2   4    26.66
-3   8    15.10
-```
 
 
 ====
 title:false
 
-```r
-input("/tmp/mtcars") %|%
-	group.f(last.col) %|%
-	select(mean.mpg = mean(mpg)) 
-```
-
-```
-  carb mean.mpg
-1    4    15.79
-2    1    25.34
-3    2    22.40
-4    3    16.30
-5    6    19.70
-6    8    15.00
-```
 
 
 group-quantile
@@ -455,7 +277,7 @@ title:false
 models = 
 	input("/tmp/mtcars") %|%
 	group(carb) %|%
-	select(model = list(lm(mpg~cyl+disp))) %|%
+	transmute(model = list(lm(mpg~cyl+disp))) %|%
 	as.data.frame()
 models
 ```

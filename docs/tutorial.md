@@ -215,11 +215,11 @@ mtcars %|%
 ```
 
 
-What this does is providing the value of the leftmost expression as the first unnamed argument of the next function call, evaluate this combination and continue to the next operator. Actually, that's the default behavior, but you can specify any function argument in a complex expression to be the designated one with the special name `.`. Rather than arguing over which style is best, it's probably best to bask in the flexibility made possible by the R language and your indefatigable developers and pick the one that fits one's style or a specific situation. In particular, pipes can not express more complex data flows where two flows merge or one splits. In the following I will alternate between these three notations (nested, assignment chain and pipe operator) based on which seems the clearest. It should be safe to assume that each example can be translated into any of the three.
+This operator provides the value of the leftmost expression as the first unnamed argument of the next function call and evaluates it. When multiple operators are chained, the associate to the left. If the first argument is not the right one, you can specify any function argument in a complex expression to be the designated one with the special name `.` as in `2 %|% sqrt(1/.)` Rather than arguing over which style is superior, it's probably best to bask in the flexibility made possible by the R language and your indefatigable developers and pick the one that fits your style or a specific situation. In particular, pipes can not express more complex data flows where two flows merge or one splits. In the following I will alternate between these three notations (nested, assignment chain and pipe operator) based on which seems the clearest. It should be safe to assume that each example can be translated into any of the three.
 
 
 ## Custom operations
-Another way to extend the functionality of `plyrmr` built-in data manipulation functions is to take any function that accepts a data frame in input and returns a data frame and use the function `gapply` to give it Hadoop superpowers. For instance, you have a function that returns the rightmost column of a data frame. This is not simple to achieve with the functions explored so far, but it is a quick one liner:
+Another way to extend the functionality of `plyrmr` built-in data manipulation functions is to take any function that accepts a data frame in input and returns a data frame and use the function `gapply` to give it Hadoop powers. For instance, you have a function that returns the rightmost column of a data frame. This is not simple to achieve with the functions explored so far, but it is a quick one liner:
 
 
 ```r
@@ -247,7 +247,7 @@ as.data.frame(gapply(input("/tmp/mtcars"), last.col))
 ```
 
 
-`gapply` takes any function that reads and writes data frames, executes it on a Hadoop data set in parallel on relatively small chunks of the data and pass the results to `as.data.frame` or `output` which send them to their final destination. Wouldn't it absolutely perfect if the `lastcol` function itself knew whether it's working on a Hadoop data set or a data frame and do the right thing? It actually is possible:
+`gapply` takes any function that accepts and returns data frames, executes it on a Hadoop data set in parallel on relatively small chunks of the data and passes the results to `as.data.frame` or `output` which send them to their final destination. Wouldn't it absolutely perfect if the `lastcol` function itself knew whether it's working on a Hadoop data set or a data frame and do the right thing? It actually is possible:
 
 
 ```r
@@ -291,7 +291,7 @@ last.col(input("/tmp/mtcars"))
 ```
 
 
-For people familiar with object oriented programming in R, this function takes an existing data frame function, meaning one with a data frame as its first argument and return value, and creates a generic function by the same name, with a method for data frames equal to the original function and one for big data sets using do as shown above. The internal R dispatch machinery decides which of the methods to call based on the class of the first argument.
+For people familiar with object oriented programming in R, this function takes an existing data frame function, meaning one with a data frame as its first argument and return value, and creates a generic function by the same name, with a method for data frames equal to the original function and one for big data sets using do as shown above. The internal R dispatch machinery decides which of the methods to call based on the class of the first argument. If `dplyr` is your style, you can keep using it on Hadoop data calling `magic.wand(mutate, TRUE)` or `magic.wand(filter, TRUE)`. The optional second and third arguments to `magic.wand` help the function process its argument's arguments in the way appropriate for that function, more details in `help(magic.wand)`.
 
 ## Grouping
 
@@ -331,7 +331,7 @@ transmute(input("/tmp/mtcars3", format = if3), sum(carb))
 ```
 
 
-That's not what we wanted and that's the where the size of the data cannot be ignored or abstracted away. Think of data in Hadoop as always grouped, one way or another. It couldn't be otherwise: it is stored on multiple devices and, even if it weren't, we can only load it into memory in small chunks. In this specific example, the data is small and to highlight this problem I created an input format that reads the data in unreasonably small chunks, but in Hadoop application this is the norm. So think of the data as always grouped, initially in arbitrary fashion and later in the way we determine using the functions `group`, `group.f` and `gather` and more. These were inspired by the notion of key in mapreduce, the SQL statement and the `dplyr` function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:
+That's not what we wanted and that's the where the size of the data cannot be ignored or abstracted away. Think of data in Hadoop as always grouped, one way or another. It couldn't be otherwise: it is stored on multiple devices and, even if it weren't, we can only load it into memory in small chunks. In this specific example, the data is small and to highlight this problem I created an input format that reads the data in unreasonably small chunks, but in Hadoop applications this is the norm. So think of the data as always grouped, initially in arbitrary fashion and later in the way we determine using the functions `group`, `group.f`, `gather` and more. These were inspired by the notion of key in mapreduce, the SQL statement and the `dplyr` function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:
 
 
 ```r
@@ -349,7 +349,7 @@ input("/tmp/mtcars3", format = if3) %|%
 
 
 
-You may have noticed the contradiction between the above statement that data is always in chunks with the availability of a `gather` function. Luckily, there is an advanced way of grouping recursively, in a tree like fashion, that works with associative and commutative operations such as the sum, which is the default for `gather`. Anyway, it will all be more clear as we cover other grouping functions.
+You may have noticed the contradiction between the above statement that data is always in chunks with the availability of a `gather` function. Luckily, there is an advanced way of grouping recursively, in a tree like fashion, that works with associative and commutative operations such as the sum, which is enabled by the `.mergeable` argument and makes `gather` possible. Anyway, it will all be more clear as we cover other grouping functions.
 
 The `group` function takes an input and a number of arguments that are evaluated in the context of the data, exactly like `bind.cols`. The result is a Hadoop data set grouped by the columns defined in those arguments. After this step, all rows that are identical on the columns defined in the `group` call will be loaded into memory at once and processed in the same call. Here is an example. Let's say we want to calculate the average mileage for cars with the same number of cylinders:
 
@@ -400,7 +400,7 @@ input("/tmp/mtcars") %|%
 
 
 
-And what to say about working in a real programming language, and one with an unmatched library of statistical methods for good measure? You know how many aggregate function ANSI SQL has? Less than 30 according to my references. What if you wanted to compute a linear model for each group? Forget it. Not so with `plyrmr`:
+And what to say about working in a real programming language, and one with an unmatched library of statistical methods for good measure? You know how many aggregate functions ANSI SQL 92 has? 5, according to my references. What if you wanted to compute a linear model for each group? Forget it, or write some extension against a DBMS-specific API in some vendor-selected language. Not so with `plyrmr`:
 
 
 ```r

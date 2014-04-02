@@ -1,7 +1,7 @@
 Package: plyrmr
 Type: Package
 Title: Data manipulation backed by rmr2 and Hadoop
-Version: 0.2.0
+Version: 0.3.0
 Date: 2014-03-31
 Author: Revolution Analytics
 Maintainer: Revolution Analytics <rhadoop@revolutionanalytics.com>
@@ -10,4 +10,4 @@ Depends: rmr2 (>= 3.1.0), reshape2, dplyr
 Imports: Rcpp (>= 0.10.4), plyr,  R.methodsS3, Hmisc, functional
 License: Apache License (== 2.0)
 LinkingTo: Rcpp
-Collate: RcppExports.R common.R  big.data.R pipe.R dataframe.R aggregate.R arrange-like.R base.R reshape2.R sqlish.R
+Collate: RcppExports.R common.R  big.data.R pipe.R dataframe.R aggregate.R arrange-like.R base.R reshape2.R sqlish.R extensions.R

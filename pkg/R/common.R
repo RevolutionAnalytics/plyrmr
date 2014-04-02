@@ -112,19 +112,23 @@ freeze.env =
 selective.I = function(x) if(is.list(x) && !is.data.frame(x)) I(x) else x
 
 safe.cbind  = 
-	function(...) {
+	function(..., rownames.from = 1) {
+		rn = rownames(list(...)[[rownames.from]])
 		ll = lapply(strip.null.args(...), selective.I)
 		shortest = min(rmr2:::sapply.rmr.length(ll))
 		if(shortest == 0)
 			data.frame()
 		else {
 			x = splat(data.frame)(c(ll, list(check.names = FALSE)))
-			x[, unique(names(x)), drop = FALSE]}}
+			x = x[, unique(names(x)), drop = FALSE]
+		  if(!is.null(rn))
+		  	rownames(x) = rep(rn, length.out = nrow(x))
+			x}}
 
 safe.cbind.kv = 
 	function(k, v) 
 		structure(
-			safe.cbind(k, v),
+			safe.cbind(k, v, rownames.from = 2),
 			keys = names(k))
 
 fract.recycling = 

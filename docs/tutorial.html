@@ -188,14 +188,14 @@ hljs.initHighlightingOnLoad();
 <pre><code class="r">mtcars
 </code></pre>
 
-<pre><code>                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb
-1            Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
-2        Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
-3           Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
-4       Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
-5    Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
-6              Valiant 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
-7           Duster 360 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+<pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
 ....
 </code></pre>
 
@@ -204,14 +204,14 @@ hljs.initHighlightingOnLoad();
 <pre><code class="r">bind.cols(mtcars, carb.per.cyl = carb/cyl)
 </code></pre>
 
-<pre><code>                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-1            Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-2        Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-3           Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-4       Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-5    Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
-6              Valiant 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-7           Duster 360 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
+<pre><code>    mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+1  21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+2  21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+3  22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+4  21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+5  18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+6  18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+7  14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
 ....
 </code></pre>
 
@@ -221,14 +221,14 @@ Now let&#39;s imagine that we have a huge data set with the same structure but i
 <pre><code class="r">bind.cols(input(&quot;/tmp/mtcars&quot;), carb.per.cyl = carb/cyl)
 </code></pre>
 
-<pre><code>                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-1            Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-2        Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-3           Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-4       Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-5    Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
-6              Valiant 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-7           Duster 360 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
+<pre><code>    mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+1  21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+2  21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+3  22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+4  21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+5  18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+6  18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+7  14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
 ....
 </code></pre>
 
@@ -237,14 +237,14 @@ Now let&#39;s imagine that we have a huge data set with the same structure but i
 <pre><code class="r">as.data.frame(bind.cols(input(&quot;/tmp/mtcars&quot;), carb.per.cyl = carb/cyl))
 </code></pre>
 
-<pre><code>                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-1            Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-2        Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-3           Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-4       Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-5    Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
-6              Valiant 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-7           Duster 360 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
+<pre><code>    mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+1  21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+2  21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+3  22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+4  21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+5  18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+6  18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+7  14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
 ....
 </code></pre>
 
@@ -253,14 +253,14 @@ Now let&#39;s imagine that we have a huge data set with the same structure but i
 <pre><code class="r">output(bind.cols(input(&quot;/tmp/mtcars&quot;), carb.per.cyl = carb/cyl), &quot;/tmp/mtcars.out&quot;)
 </code></pre>
 
-<pre><code>                 model  mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
-1            Mazda RX4 21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
-2        Mazda RX4 Wag 21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
-3           Datsun 710 22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
-4       Hornet 4 Drive 21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
-5    Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
-6              Valiant 18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
-7           Duster 360 14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
+<pre><code>    mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+1  21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+2  21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+3  22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+4  21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+5  18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+6  18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+7  14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
 ....
 </code></pre>
 
@@ -313,9 +313,9 @@ Even if <code>output</code> appears to return the data to be printed, that&#39;s
     carb.per.cyl &gt;= 1)
 </code></pre>
 
-<pre><code>           model  mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-30  Ferrari Dino 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-31 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+<pre><code>    mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+30 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+31 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 </code></pre>
 
 <p>Wouldn&#39;t it be nice if we could do exactly the same on a Hadoop data set? In fact, we almost can:</p>
@@ -328,9 +328,9 @@ Even if <code>output</code> appears to return the data to be printed, that&#39;s
     carb.per.cyl &gt;= 1)
 </code></pre>
 
-<pre><code>          model  mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-1  Ferrari Dino 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-2 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+<pre><code>   mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+1 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+2 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 </code></pre>
 
 <p>The main differences between the data frame version and the Hadoop data version are the input and the output. All there is in between, pretty much works the same. </p>
@@ -343,9 +343,9 @@ Even if <code>output</code> appears to return the data to be printed, that&#39;s
 where(x, carb.per.cyl &gt;= 1)
 </code></pre>
 
-<pre><code>           model  mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-30  Ferrari Dino 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-31 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+<pre><code>    mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+30 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+31 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 </code></pre>
 
 <p>The purists will find that introducing one variable for each intermediate step quite unsightly. To avoid this plyrmr offers a UNIX-style pipe operator, inspired by two R implementations, by <a href="https://github.com/crowding/vadr/blob/master/R/chain.R">@crowding</a> and <a href="https://github.com/hadley/dplyr/blob/master/R/chain.r">@hadley</a>.</p>
@@ -355,9 +355,9 @@ where(x, carb.per.cyl &gt;= 1)
     where(carb.per.cyl &gt;= 1)
 </code></pre>
 
-<pre><code>           model  mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
-30  Ferrari Dino 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
-31 Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
+<pre><code>    mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+30 19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+31 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 </code></pre>
 
 <p>This operator provides the value of the leftmost expression as the first unnamed argument of the next function call and evaluates it. When multiple operators are chained, the associate to the left. If the first argument is not the right one, you can specify any function argument in a complex expression to be the designated one with the special name <code>.</code> as in <code>2 %|% sqrt(1/.)</code> Rather than arguing over which style is superior, it&#39;s probably best to bask in the flexibility made possible by the R language and your indefatigable developers and pick the one that fits your style or a specific situation. In particular, pipes can not express more complex data flows where two flows merge or one splits. In the following I will alternate between these three notations (nested, assignment chain and pipe operator) based on which seems the clearest. It should be safe to assume that each example can be translated into any of the three.</p>
@@ -396,14 +396,14 @@ where(x, carb.per.cyl &gt;= 1)
 <pre><code class="r">last.col(mtcars)
 </code></pre>
 
-<pre><code>   carb
-1     4
-2     4
-3     1
-4     1
-5     2
-6     1
-7     4
+<pre><code>                    carb
+Mazda RX4              4
+Mazda RX4 Wag          4
+Datsun 710             1
+Hornet 4 Drive         1
+Hornet Sportabout      2
+Valiant                1
+Duster 360             4
 ....
 </code></pre>
 
@@ -440,13 +440,13 @@ where(x, carb.per.cyl &gt;= 1)
 </code></pre>
 
 <pre><code>  sum.carb.
-1        10
-2        14
-3        11
-4         5
-5        15
-6        16
-7         9
+1        20
+2        11
+3         6
+4        15
+5        17
+6        11
+7        10
 ....
 </code></pre>
 
@@ -470,10 +470,10 @@ where(x, carb.per.cyl &gt;= 1)
     transmute(mean.mpg = mean(mpg))
 </code></pre>
 
-<pre><code>  cyl mean.mpg
-1   6    19.74
-2   4    26.66
-3   8    15.10
+<pre><code>    cyl mean.mpg
+1     6    19.74
+1.1   4    26.66
+1.2   8    15.10
 </code></pre>
 
 <p>This is mostly a scalable programs, but there are some caveats: we need to be mindful of the size of the groups. If they are very big they will bust memory limits, so we need to reach for some advanced techniques to avoid this problem. If they are very small, like a handful of rows, we may run into some efficiency issues related to the current R and <code>rmr2</code> implementations rather than fundamental (so there is hope they will go away one day). </p>
@@ -489,14 +489,14 @@ where(x, carb.per.cyl &gt;= 1)
     quantile.cols() 
 </code></pre>
 
-<pre><code>   carb   mpg   cyl   disp     hp  drat    wt  qsec       vs     am  gear
-1     4 10.86 6.000 161.20 112.05 3.012 2.844 15.20 0.000000 0.0000 3.000
-2     4 13.92 6.195 185.39 131.01 3.271 3.326 16.25 0.000000 0.0000 3.002
-3     4 15.25 8.000 350.50 210.00 3.815 3.505 17.22 0.000000 0.0000 3.500
-4     4 18.19 8.000 392.87 234.85 3.908 4.408 17.85 0.000000 0.4219 3.998
-5     4 20.72 8.000 460.48 250.75 4.011 5.354 18.43 0.842500 1.0000 4.302
-6     1 21.18 4.000  78.21  65.93 3.151 1.968 18.96 1.000000 0.0000 3.000
-7     1 22.09 4.000  91.94  78.05 3.652 2.205 19.36 1.000000 0.4450 3.445
+<pre><code>    carb   mpg   cyl   disp     hp  drat    wt  qsec       vs     am  gear
+1      4 10.86 6.000 161.20 112.05 3.012 2.844 15.20 0.000000 0.0000 3.000
+2      4 13.92 6.195 185.39 131.01 3.271 3.326 16.25 0.000000 0.0000 3.002
+3      4 15.25 8.000 350.50 210.00 3.815 3.505 17.22 0.000000 0.0000 3.500
+4      4 18.19 8.000 392.87 234.85 3.908 4.408 17.85 0.000000 0.4219 3.998
+5      4 20.72 8.000 460.48 250.75 4.011 5.354 18.43 0.842500 1.0000 4.302
+1.1    1 21.18 4.000  78.21  65.93 3.151 1.968 18.96 1.000000 0.0000 3.000
+2.1    1 22.09 4.000  91.94  78.05 3.652 2.205 19.36 1.000000 0.4450 3.445
 ....
 </code></pre>
 
@@ -510,13 +510,13 @@ where(x, carb.per.cyl &gt;= 1)
 models
 </code></pre>
 
-<pre><code>  carb        model
-1    4 c(22.693....
-2    1 c(9.2859....
-3    2 c(32.723....
-4    3 c(16.3, ....
-5    6 c(19.7, ....
-6    8 c(15, NA....
+<pre><code>    carb        model
+1      4 c(22.693....
+1.1    1 c(9.2859....
+1.2    2 c(32.723....
+1.3    3 c(16.3, ....
+1.4    6 c(19.7, ....
+1.5    8 c(15, NA....
 </code></pre>
 
 <pre><code class="r">models[1,2]

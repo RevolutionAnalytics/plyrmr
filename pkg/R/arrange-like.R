@@ -111,11 +111,15 @@ select.numeric =
 quantile.cols.data.frame = 
 	function(x, ...) {
 		x = select.numeric(x)	
-		splat(data.frame)(
+		l = 
 			lapply(
 				x,
 				function(.y)
-					wtd.quantile(.y, ...)))}
+					wtd.quantile(.y, ...))
+		qn = names(l[[1]])
+		y = splat(data.frame)(l)
+		rownames(y) = qn
+		y}
 
 count.cols = function(x, ...) UseMethod("count.cols")
 
@@ -152,9 +156,9 @@ merge.counts =
 					x[,2] = x[,2] - x[n+1, 2]
 					x[x[,2] > 0, ]}}
 		splat(data.frame.fill) (
-				lapply(
-					select.cols(x),
-					function(i) prune(merge.one(x[,c(i - 1, i)]), n)))}
+			lapply(
+				select.cols(x),
+				function(i) prune(merge.one(x[,c(i - 1, i)]), n)))}
 
 count.cols.pipe = 
 	function(x, n = Inf)

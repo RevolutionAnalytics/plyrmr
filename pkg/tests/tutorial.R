@@ -1,11 +1,11 @@
 ## @knitr startup
 options(warn = -1)
-rm(mtcars)
+#rm(mtcars)
 suppressPackageStartupMessages(library("plyrmr"))
 invisible(rmr.options(backend="local"))
 invisible(dfs.rmr("/tmp/mtcars"))
-mtcars = cbind(model = row.names(mtcars), mtcars)
-row.names(mtcars) = NULL
+# mtcars = cbind(model = row.names(mtcars), mtcars)
+# row.names(mtcars) = NULL
 invisible(output(input(mtcars), "/tmp/mtcars"))
 ## @knitr mtcars
 mtcars

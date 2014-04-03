@@ -221,7 +221,15 @@ Now let&#39;s imagine that we have a huge data set with the same structure but i
 <pre><code class="r">bind.cols(input(&quot;/tmp/mtcars&quot;), carb.per.cyl = carb/cyl)
 </code></pre>
 
-<pre><code>Error: dim(X) must have a positive length
+<pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
+....
 </code></pre>
 
 <p>What we see are only a few arbitrary rows from the resulting data set. This is not only a consequence of the limited screen real estate, but also, in the case of large data sets, of the capacity gap between memory of a single machine and big data. In general, we can&#39;t expect to be able to load big data in memory. Sometimes, after summarization or filtering, the result of processing big data is small enough to fit into main memory. In this example, we know the data set is small so we can just go ahead and enter:</p>
@@ -245,7 +253,15 @@ Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.
 <pre><code class="r">output(bind.cols(input(&quot;/tmp/mtcars&quot;), carb.per.cyl = carb/cyl), &quot;/tmp/mtcars.out&quot;)
 </code></pre>
 
-<pre><code>Error: dim(X) must have a positive length
+<pre><code>                     mpg cyl  disp  hp drat    wt  qsec vs am gear carb carb.per.cyl
+Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4       0.6667
+Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4       0.6667
+Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1       0.2500
+Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1       0.1667
+Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2       0.2500
+Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1       0.1667
+Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4       0.5000
+....
 </code></pre>
 
 <p>This is the real deal: we have performed a computation on the cluster, in parallel, and the data is never loaded into memory at once, but the syntax and semantics remain the familiar ones. The last run processed all of 32 rows, but on a large enough cluster it could run on 32 terabytes &mdash; in that case you can not use <code>as.data.frame</code>.
@@ -312,7 +328,9 @@ Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
     carb.per.cyl &gt;= 1)
 </code></pre>
 
-<pre><code>Error: dim(X) must have a positive length
+<pre><code>               mpg cyl disp  hp drat   wt qsec vs am gear carb carb.per.cyl
+Ferrari Dino  19.7   6  145 175 3.62 2.77 15.5  0  1    5    6            1
+Maserati Bora 15.0   8  301 335 3.54 3.57 14.6  0  1    5    8            1
 </code></pre>
 
 <p>The main differences between the data frame version and the Hadoop data version are the input and the output. All there is in between, pretty much works the same. </p>
@@ -392,7 +410,15 @@ Duster 360             4
 <pre><code class="r">last.col(input(&quot;/tmp/mtcars&quot;))
 </code></pre>
 
-<pre><code>Error: dim(X) must have a positive length
+<pre><code>                    carb
+Mazda RX4              4
+Mazda RX4 Wag          4
+Datsun 710             1
+Hornet 4 Drive         1
+Hornet Sportabout      2
+Valiant                1
+Duster 360             4
+....
 </code></pre>
 
 <p>For people familiar with object oriented programming in R, this function takes an existing data frame function, meaning one with a data frame as its first argument and return value, and creates a generic function by the same name, with a method for data frames equal to the original function and one for big data sets using do as shown above. The internal R dispatch machinery decides which of the methods to call based on the class of the first argument. If <code>dplyr</code> is your style, you can keep using it on Hadoop data calling <code>magic.wand(mutate, TRUE)</code> or <code>magic.wand(filter, TRUE)</code>. The optional second and third arguments to <code>magic.wand</code> help the function process its argument&#39;s arguments in the way appropriate for that function, more details in <code>help(magic.wand)</code>.</p>
@@ -413,7 +439,15 @@ Duster 360             4
 <pre><code class="r">transmute(input(&quot;/tmp/mtcars3&quot;, format = if3), sum(carb))
 </code></pre>
 
-<pre><code>Error: hadoop streaming failed with error code 1
+<pre><code>    sum.carb.
+1          20
+1.1        11
+1.2         6
+1.3        15
+1.4        17
+1.5        11
+1.6        10
+....
 </code></pre>
 
 <p>That&#39;s not what we wanted and that&#39;s the where the size of the data cannot be ignored or abstracted away. Think of data in Hadoop as always grouped, one way or another. It couldn&#39;t be otherwise: it is stored on multiple devices and, even if it weren&#39;t, we can only load it into memory in small chunks. In this specific example, the data is small and to highlight this problem I created an input format that reads the data in unreasonably small chunks, but in Hadoop applications this is the norm. So think of the data as always grouped, initially in arbitrary fashion and later in the way we determine using the functions <code>group</code>, <code>group.f</code>, <code>gather</code> and more. These were inspired by the notion of key in mapreduce, the SQL statement and the <code>dplyr</code> function with similar names. In this case, we computed partial sums for each of the arbitrary groups &mdash; here set to a very small size to make the point. Instead we want to group everything together so we can enter:</p>
@@ -423,7 +457,8 @@ Duster 360             4
     transmute(sum(carb), .mergeable = TRUE)
 </code></pre>
 
-<pre><code>Error: hadoop streaming failed with error code 1
+<pre><code>  sum.carb.
+1        90
 </code></pre>
 
 <p>You may have noticed the contradiction between the above statement that data is always in chunks with the availability of a <code>gather</code> function. Luckily, there is an advanced way of grouping recursively, in a tree like fashion, that works with associative and commutative operations such as the sum, which is enabled by the <code>.mergeable</code> argument and makes <code>gather</code> possible. Anyway, it will all be more clear as we cover other grouping functions.</p>
@@ -435,7 +470,10 @@ Duster 360             4
     transmute(mean.mpg = mean(mpg))
 </code></pre>
 
-<pre><code>Error: dim(X) must have a positive length
+<pre><code>    cyl mean.mpg
+1     6    19.74
+1.1   4    26.66
+1.2   8    15.10
 </code></pre>
 
 <p>This is mostly a scalable programs, but there are some caveats: we need to be mindful of the size of the groups. If they are very big they will bust memory limits, so we need to reach for some advanced techniques to avoid this problem. If they are very small, like a handful of rows, we may run into some efficiency issues related to the current R and <code>rmr2</code> implementations rather than fundamental (so there is hope they will go away one day). </p>
@@ -451,7 +489,15 @@ Duster 360             4
     quantile.cols() 
 </code></pre>
 
-<pre><code>Error: dim(X) must have a positive length
+<pre><code>       carb   mpg   cyl   disp     hp  drat    wt  qsec       vs     am  gear
+0%        4 10.86 6.000 161.20 112.05 3.012 2.844 15.20 0.000000 0.0000 3.000
+25%       4 13.92 6.195 185.39 131.01 3.271 3.326 16.25 0.000000 0.0000 3.002
+50%       4 15.25 8.000 350.50 210.00 3.815 3.505 17.22 0.000000 0.0000 3.500
+75%       4 18.19 8.000 392.87 234.85 3.908 4.408 17.85 0.000000 0.4219 3.998
+100%      4 20.72 8.000 460.48 250.75 4.011 5.354 18.43 0.842500 1.0000 4.302
+0%.1      1 21.18 4.000  78.21  65.93 3.151 1.968 18.96 1.000000 0.0000 3.000
+25%.1     1 22.09 4.000  91.94  78.05 3.652 2.205 19.36 1.000000 0.4450 3.445
+....
 </code></pre>
 
 <p>And what to say about working in a real programming language, and one with an unmatched library of statistical methods for good measure? You know how many aggregate functions ANSI SQL 92 has? 5, according to my references. What if you wanted to compute a linear model for each group? Forget it, or write some extension against a DBMS-specific API in some vendor-selected language. Not so with <code>plyrmr</code>:</p>
@@ -461,21 +507,30 @@ Duster 360             4
     group(carb) %|%
     transmute(model = list(lm(mpg~cyl+disp))) %|%
     as.data.frame()
+models
 </code></pre>
 
-<pre><code>Error: dim(X) must have a positive length
-</code></pre>
-
-<pre><code class="r">models
-</code></pre>
-
-<pre><code>Error: object &#39;models&#39; not found
+<pre><code>    carb        model
+1      4 c(22.693....
+1.1    1 c(9.2859....
+1.2    2 c(32.723....
+1.3    3 c(16.3, ....
+1.4    6 c(19.7, ....
+1.5    8 c(15, NA....
 </code></pre>
 
 <pre><code class="r">models[1,2]
 </code></pre>
 
-<pre><code>Error: object &#39;models&#39; not found
+<pre><code>[[1]]
+
+Call:
+lm(formula = mpg ~ cyl + disp)
+
+Coefficients:
+(Intercept)          cyl         disp  
+     22.694        0.329       -0.030  
+....
 </code></pre>
 
 </body>

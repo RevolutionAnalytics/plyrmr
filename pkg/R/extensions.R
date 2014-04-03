@@ -19,8 +19,12 @@ extend =
 		switch(
 			pack,
 			base = {
-				magic.wand(transform, TRUE, TRUE, envir = envir)
-				magic.wand(subset, TRUE, TRUE, envir = envir)},
+				magic.wand(transform, non.standard.args = TRUE, envir = envir)
+				magic.wand(subset, non.standard.args = TRUE, envir = envir)},
 			dplyr = {
-				magic.wand(filter, TRUE, TRUE, envir = envir)
-				magic.wand(mutate, TRUE, TRUE, envir = envir)})}
+				magic.wand(filter, non.standard.args = TRUE, envir = envir)
+				magic.wand(mutate, non.standard.args = TRUE, envir = envir)
+				magic.wand(summarize, non.standard.args = TRUE, envir = envir)})}
+
+
+

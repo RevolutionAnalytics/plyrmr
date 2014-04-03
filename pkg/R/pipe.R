@@ -97,12 +97,12 @@ make.f1 =
 						data.frame(x = .y, stringsAsFactors = F)}}}
 
 mergeable = 
-	function(f) 
-		structure(f, mergeable = TRUE)
+	function(f, flag = TRUE) 
+		structure(f, mergeable = flag)
 
 vectorized = 
-	function(f) 
-		structure(f, vectorized = TRUE)
+	function(f, flag = TRUE) 
+		structure(f, vectorized = flag)
 
 is.mergeable = 
 	function(f) 
@@ -280,7 +280,7 @@ is.generic =
 		length(methods(f)) > 0
 
 magic.wand = 
-	function(f, non.standard.args = TRUE, add.envir.arg = non.standard.args, envir = parent.frame()){
+	function(f, non.standard.args = TRUE, add.envir.arg = non.standard.args, envir = parent.frame(), mergeable = FALSE, ...){
 		suppressPackageStartupMessages(library(R.methodsS3))
 		f.name = as.character(substitute(f))
 		f.data.frame = {
@@ -305,8 +305,8 @@ magic.wand =
 				function(.data, ..., .envir = parent.frame()) {
 					.envir = copy.env(.envir)
 					curried.g = CurryHalfLazy(g, .envir = .envir)
-					gapply(.data, curried.g, ...)}
+					gapply(.data, mergeable(curried.g, mergeable), ...)}
 			else
 				function(.data, ...)
-					do.call(gapply, c(list(.data, g), list(...))),
+					do.call(gapply, c(list(.data, mergeable(g, mergeable)), list(...))),
 			envir = envir)} 

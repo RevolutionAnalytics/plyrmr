@@ -133,12 +133,9 @@ count.cols.default =
 count.cols.data.frame =
 	function(x) 
 		splat(data.frame.fill)( 
-			strip.nulls(
-				lapply(
-					x,
-					function(z)
-						if(!is.numeric(z))
-							count.cols(z))))
+			lapply(
+				x,
+				count.cols))
 
 merge.counts = 
 	function(x, n) {
@@ -150,9 +147,9 @@ merge.counts =
 				ddply(x, 1, function(x) {y = sum(x[, 2]); names(y) = names(x)[2]; y})		
 		prune = 
 			function(x, n) {
+				x = x[order(x[,2], decreasing = TRUE, na.last = NA),]
 				if(is.null(n) || nrow(x) <= n) x
 				else {
-					x = x[order(x[,2], decreasing = TRUE),]
 					x[,2] = x[,2] - x[n+1, 2]
 					x[x[,2] > 0, ]}}
 		splat(data.frame.fill) (

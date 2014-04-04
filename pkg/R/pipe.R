@@ -24,7 +24,7 @@ comp =
 			do.call(Compose, funs)}
 
 make.task.fun = 																					# this function is a little complicated so some comments are in order
-	function(keyf, valf, ungroup, vectorized) {												# make a valid map function from two separate ones for keys and values
+	function(keyf, valf, ungroup, ungroup.args, vectorized) {												# make a valid map function from two separate ones for keys and values
 		if(is.null(valf))                                   # the value function defaults to identity
 			valf = identity 
 		function(k, v) {                                    # this is the signature of a correct map function
@@ -33,27 +33,33 @@ make.task.fun = 																					# this function is a little complicated so 
 				w = valf(safe.cbind.kv(k, v))
 				k = w[, names(k)]}
 			else
-				w = safe.cbind(k,	valf(safe.cbind.kv(k, v)))         # pass both keys and values to val function as a single data frame, then make sure we keep keys for the next step
+				w = valf(safe.cbind.kv(k, v))         # pass both keys and values to val function as a single data frame, then make sure we keep keys for the next step
+			if (ungroup) 					# if ungroup called select or reset keys, otherwise accumulate
+				k = {
+					if(length(ungroup.args) == 0) 
+						NULL            
+					else
+						do.call(select, c(list(k), lapply(ungroup.args, function(a) as.call(list(as.name("-"), a)))))}
+			w = safe.cbind(k,	w)
 			dummy.col = which(names(w) == ".dummy")						# dummy col used by gather always has a constant, no need to keep it
 			if (length(dummy.col) > 0)
 				w = w[, -dummy.col, drop = FALSE]
-			if (ungroup) k = NULL                             # if ungroup called reset keys, otherwise accumulate
 			k = {	
 				if(is.null(keyf)) k 														# by default keep grouping whatever it is
 				else safe.cbind(k, keyf(w))}										# but if you have a key function, use it and cbind old and new keys
 			if(!is.null(w) && nrow(w) > 0) keyval(k, w)}}     # special care for empty cases
 
 make.map.fun = 
-	function(keyf, valf, ungroup)
-		make.task.fun(keyf, valf, ungroup, vectorized = FALSE)
+	function(keyf, valf)
+		make.task.fun(keyf, valf, ungroup = FALSE, ungroup.args = NULL, vectorized = FALSE)
 
 make.reduce.fun = 
-	function(valf, ungroup, vectorized) 
-		make.task.fun(NULL, valf, ungroup, vectorized)
+	function(valf, ungroup, ungroup.args, vectorized) 
+		make.task.fun(NULL, valf, ungroup, ungroup.args, vectorized)
 
 make.combine.fun = 
 	function(valf, vectorized) {
-		cf  = make.task.fun(NULL, valf, ungroup = FALSE, vectorized = vectorized)
+		cf  = make.task.fun(NULL, valf, ungroup = FALSE, ungroup.args = NULL, vectorized = vectorized)
 		function(k, v) {
 			retval  = cf(k, v)
 			nm = sapply(names(v), function(col) grep(paste0(col), names(retval$val), value=T))
@@ -136,11 +142,10 @@ group =
 	function(.data, ..., .envir = parent.frame()) {
 		force(.envir)
 		dot.args = dots(...)
-		gbf = 
-			group.f(
-				.data, 
-				function(.y) 
-					do.call(CurryHalfLazy(transmute, .envir = .envir), c(list(.y), dot.args)))}
+		group.f(
+			.data, 
+			function(.y) 
+				do.call(CurryHalfLazy(transmute, .envir = .envir), c(list(.y), dot.args)))}
 
 group.f = 
 	function(.data, .f, ...) {
@@ -160,10 +165,15 @@ group.f =
 		.data}
 
 ungroup = 
-	function(.data) {
+	function(.data, ...) {
 		if(is.grouped(.data)) {
 			.data$ungroup = TRUE
-			input(run(.data, input.format = "native"))}
+			.data$ungroup.args = named_dots(...)
+			phase1 = input(run(.data, input.format = "native"))
+			if(length(.data$ungroup.args) == 0)
+				phase1
+			else
+		    group.f(phase1, function(x) data.frame(.dummy = 1))}
 		else
 			.data}
 
@@ -221,14 +231,14 @@ run =
 			mr.args$map = 
 				make.map.fun(
 					keyf = pipe$group, 
-					valf = pipe$map,
-					pipe$ungroup)
-			if(!is.null(pipe$reduce) &&
-				 	!is.null(pipe$group)) {
+					valf = pipe$map)
+			if(!is.null(pipe$reduce)) {
+				stopifnot(!is.null(pipe$group))
 				mr.args$reduce = 
 					make.reduce.fun(
 						valf = pipe$reduce, 
 						ungroup = default(pipe$ungroup, FALSE),
+						ungroup.args = pipe$ungroup.args,
 						vectorized = default(pipe$vectorized, FALSE))
 				mr.args$vectorized.reduce = pipe$vectorized}
 			if(!is.null(pipe$recursive.group) &&

@@ -470,15 +470,29 @@ where(x, carb.per.cyl &gt;= 1)
     transmute(mean.mpg = mean(mpg))
 </code></pre>
 
-<pre><code>  cyl mean.mpg
-1   6    19.74
-2   4    26.66
-3   8    15.10
+<pre><code>    cyl mean.mpg
+1     6    19.74
+1.1   4    26.66
+1.2   8    15.10
 </code></pre>
 
 <p>This is mostly a scalable programs, but there are some caveats: we need to be mindful of the size of the groups. If they are very big they will bust memory limits, so we need to reach for some advanced techniques to avoid this problem. If they are very small, like a handful of rows, we may run into some efficiency issues related to the current R and <code>rmr2</code> implementations rather than fundamental (so there is hope they will go away one day). </p>
 
 <p>When the definition of the grouping column is more complicated, we may need to reach for the uber-general <code>group.f</code>, the grouping relative of <code>gapply</code> (in fact, these two functions are the foundation for everything else in <code>plyrmr</code>). Let&#39;s go back to the <code>last.col</code> example. If we need to group by the last columns of a data frame, this is all we need to do:</p>
+
+<pre><code class="r">input(&quot;/tmp/mtcars&quot;) %|%
+    group.f(last.col) %|%
+    transmute(mean.mpg = mean(mpg)) 
+</code></pre>
+
+<pre><code>    carb mean.mpg
+1      4    15.79
+1.1    1    25.34
+1.2    2    22.40
+1.3    3    16.30
+1.4    6    19.70
+1.5    8    15.00
+</code></pre>
 
 <h2>Better than SQL</h2>
 
@@ -489,14 +503,14 @@ where(x, carb.per.cyl &gt;= 1)
     quantile.cols() 
 </code></pre>
 
-<pre><code>   carb   mpg   cyl   disp     hp  drat    wt  qsec       vs     am  gear
-1     4 10.86 6.000 161.20 112.05 3.012 2.844 15.20 0.000000 0.0000 3.000
-2     4 13.92 6.195 185.39 131.01 3.271 3.326 16.25 0.000000 0.0000 3.002
-3     4 15.25 8.000 350.50 210.00 3.815 3.505 17.22 0.000000 0.0000 3.500
-4     4 18.19 8.000 392.87 234.85 3.908 4.408 17.85 0.000000 0.4219 3.998
-5     4 20.72 8.000 460.48 250.75 4.011 5.354 18.43 0.842500 1.0000 4.302
-6     1 21.18 4.000  78.21  65.93 3.151 1.968 18.96 1.000000 0.0000 3.000
-7     1 22.09 4.000  91.94  78.05 3.652 2.205 19.36 1.000000 0.4450 3.445
+<pre><code>    carb   mpg   cyl   disp     hp  drat    wt  qsec       vs     am  gear
+1      4 10.86 6.000 161.20 112.05 3.012 2.844 15.20 0.000000 0.0000 3.000
+2      4 13.92 6.195 185.39 131.01 3.271 3.326 16.25 0.000000 0.0000 3.002
+3      4 15.25 8.000 350.50 210.00 3.815 3.505 17.22 0.000000 0.0000 3.500
+4      4 18.19 8.000 392.87 234.85 3.908 4.408 17.85 0.000000 0.4219 3.998
+5      4 20.72 8.000 460.48 250.75 4.011 5.354 18.43 0.842500 1.0000 4.302
+1.1    1 21.18 4.000  78.21  65.93 3.151 1.968 18.96 1.000000 0.0000 3.000
+2.1    1 22.09 4.000  91.94  78.05 3.652 2.205 19.36 1.000000 0.4450 3.445
 ....
 </code></pre>
 
@@ -510,13 +524,13 @@ where(x, carb.per.cyl &gt;= 1)
 models
 </code></pre>
 
-<pre><code>  carb        model
-1    4 c(22.693....
-2    1 c(9.2859....
-3    2 c(32.723....
-4    3 c(16.3, ....
-5    6 c(19.7, ....
-6    8 c(15, NA....
+<pre><code>    carb        model
+1      4 c(22.693....
+1.1    1 c(9.2859....
+1.2    2 c(32.723....
+1.3    3 c(16.3, ....
+1.4    6 c(19.7, ....
+1.5    8 c(15, NA....
 </code></pre>
 
 <pre><code class="r">models[1,2]

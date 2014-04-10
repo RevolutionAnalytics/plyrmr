@@ -16,20 +16,25 @@ library(plyr)
 library(quickcheck)
 library(plyrmr)
 
-
 cmp.df = 
 	function(A, B) {
 		ord = splat(order)
 		all(A[ord(A),] == B[ord(B),])}
 
+for(be in c("local", "hadoop")) {
+	rmr.options(backend = be)
+
+	unit.test(
+		function(A, B, x) {
+			xa = x[1:min(length(x), nrow(A))]
+			xb = x[1:min(length(x), nrow(B))]
+			A = splat(cbind)(plyrmr:::fract.recycling(list(x = xa, A)))
+			B = splat(cbind)(plyrmr:::fract.recycling(list(x = xb, B)))
+			cmp.df(
+				as.data.frame(
+					merge(input(A), input(B), by = "x")),
+				merge(A, B, by = "x"))},
+		list(tdgg.data.frame(), tdgg.data.frame(), tdgg.logical()))
+}
+
 unit.test(
-	function(A, B, x) {
-		xa = x[1:min(length(x), nrow(A))]
-		xb = x[1:min(length(x), nrow(B))]
-		A = splat(cbind)(plyrmr:::fract.recycling(list(x = xa, A)))
-		B = splat(cbind)(plyrmr:::fract.recycling(list(x = xb, B)))
-		cmp.df(
-			as.data.frame(
-				merge(input(A), input(B), by = "x")),
-			merge(A, B, by = "x"))},
-	list(tdgg.data.frame(), tdgg.data.frame(), tdgg.logical()))

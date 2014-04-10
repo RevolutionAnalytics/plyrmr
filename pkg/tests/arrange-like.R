@@ -38,3 +38,15 @@ for(be in c("local", "hadoop")) {
 }
 
 unit.test(
+	function(df){
+		all(
+			data.frame(
+				rmr2:::purge.nulls(
+					lapply(
+						df, 
+						function(x) 
+							if(is.numeric(x)) 
+								quantile(x)))) == 
+				quantile.cols(df))},
+	list(tdgg.data.frame()),
+	precondition = function(x) sum(sapply(x, is.numeric)) > 0)

@@ -214,6 +214,11 @@ data.frame.fill =
 				function(i) length(argl[[i]]) <<- maxlen)
 			splat(data.frame)(argl)}}
 
+cmp.df = 
+	function(A, B) {
+		ord = splat(order)
+		all(A[ord(A),] == B[ord(B),])}
+
 #lists
 
 strip.nulls = 

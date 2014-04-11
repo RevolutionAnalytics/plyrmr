@@ -187,11 +187,10 @@ extreme.k=
 						,
 						drop = FALSE],
 					.k)
-		ungroup(
 			gapply(
 				gather(
 					gapply(.x, mr.fun)),
-				mergeable(mr.fun)))}
+				mergeable(mr.fun))}
 
 top.k = 
 	function(.x, .k = 1, ..., .envir = parent.frame()) {

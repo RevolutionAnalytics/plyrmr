@@ -52,12 +52,12 @@ unit.test(
 	list(tdgg.data.frame()),
 	precondition = function(x) sum(sapply(x, is.numeric)) > 0)
 
-#quantile.cols.pipe
-# at this size doesn't really test approximation
 
 for(be in c("local", "hadoop")) {
 	rmr.options(backend = be)
 	
+	#quantile.cols.pipe
+	# at this size doesn't really test approximation
 	unit.test	(
 		function(df)
 			cmp.df(
@@ -67,7 +67,9 @@ for(be in c("local", "hadoop")) {
 		list(tdgg.data.frame()),
 		precondition = function(x) sum(sapply(x, is.numeric)) > 0)
 	
-	unit.test	(
+	#counts
+	
+	unit.test(
 		function(df){
 			A = count.cols(df)
 			B = as.data.frame(count.cols(input(df)))
@@ -80,4 +82,31 @@ for(be in c("local", "hadoop")) {
 							A[,(i - 1):i],
 							B[,(i - 1):i])}))},
 		list(tdgg.data.frame()))
+	
+	#top/bottom k
+	
+	unit.test(
+		function(df){
+			cols = sample(names(df))
+			cmp.df(
+				head(df[splat(order)(df[, cols]),]),
+				as.data.frame(
+					splat(bottom.k)(
+						c(
+							list(input(df), .k = 6), 
+							lapply(cols, as.symbol)))))},
+		list(tdgg.data.frame()))
+	
+	unit.test(
+		function(df){
+			cols = sample(names(df))
+			cmp.df(
+				tail(df[splat(order)(df[, cols]),]),
+				as.data.frame(
+					splat(top.k)(
+						c(
+							list(input(df), .k = 6), 
+							lapply(cols, as.symbol)))))},
+		list(tdgg.data.frame()))
+
 }

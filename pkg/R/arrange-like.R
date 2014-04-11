@@ -174,7 +174,7 @@ count.cols.pipe =
 			mergeable(Curry(merge.counts, n = n)))
 
 extreme.k= 
-	function(.x, .k , ..., .decreasing, .envir = parent.frame()) {
+	function(.x, ..., .k , .decreasing, .envir = parent.frame()) {
 		force(.envir)
 		this.order = Curry(order, decreasing = .decreasing)
 		mr.fun = 
@@ -193,12 +193,12 @@ extreme.k=
 				mergeable(mr.fun))}
 
 top.k = 
-	function(.x, .k = 1, ..., .envir = parent.frame()) {
+	function(.x, ..., .k = 1, .envir = parent.frame()) {
 		force(.envir)
 		extreme.k(.x, .k = .k, ..., .decreasing = TRUE, .envir = .envir)}
 
 bottom.k = 
-	function(.x, .k = 1, ..., .envir = parent.frame()) {
+	function(.x, ..., .k = 1, .envir = parent.frame()) {
 		force(.envir)
 		extreme.k(.x, .k = .k, ..., .decreasing = FALSE, .envir = .envir)}
 

@@ -53,6 +53,7 @@ unit.test(
 	precondition = function(x) sum(sapply(x, is.numeric)) > 0)
 
 #quantile.cols.pipe
+# at this size doesn't really test approximation
 
 for(be in c("local", "hadoop")) {
 	rmr.options(backend = be)
@@ -65,4 +66,18 @@ for(be in c("local", "hadoop")) {
 					quantile.cols(input(df)))),
 		list(tdgg.data.frame()),
 		precondition = function(x) sum(sapply(x, is.numeric)) > 0)
+	
+	unit.test	(
+		function(df){
+			A = count.cols(df)
+			B = as.data.frame(count.cols(input(df)))
+			all(
+				sapply(
+					1:((max(ncol(A), ncol(B)))/2),
+					function(i){
+						i = 2*i
+						cmp.df(
+							A[,(i - 1):i],
+							B[,(i - 1):i])}))},
+		list(tdgg.data.frame()))
 }

@@ -7,22 +7,22 @@
 #      http://www.apache.org/licenses/LICENSE-2.0
 # 
 # Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS, 
+# distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
 merge.pipe = 
 	function(
-		x, 
-		y, 
-		by = NULL, 
-		by.x = by, 
-		by.y = by, 
-		all = FALSE, 
-		all.x = all, 
-		all.y = all, 
-		suffixes = c(".x", ".y"), 
+		x,
+		y,
+		by = NULL,
+		by.x = by,
+		by.y = by,
+		all = FALSE,
+		all.x = all,
+		all.y = all,
+		suffixes = c(".x", ".y"),
 		incomparables = NULL,
 		...) {
 		stopifnot((all.x && all.y) == all)
@@ -31,15 +31,15 @@ merge.pipe =
 		stopifnot(ox$format == oy$format)
 		map =
 			function(by.what)
-				function(k,v) 
+				function(k, v) 
 					keyval(
-						if(is.null(by.what)) v else	v[, by.what], 
+						if(is.null(by.what)) v else	v[, by.what],
 						v)
 		map.x = map(by.x)
 		map.y =	map(by.y)
 		input(
 			equijoin(
-				ox$data, 
+				ox$data,
 				oy$data,
 				input.format = ox$format,
 				outer = 
@@ -59,13 +59,13 @@ merge.pipe =
 							if(is.null(by.y)) by
 							else by.y}
 						merge(
-							x, 
-							y, 
-							by = by, 
+							x,
+							y,
+							by = by,
 							by.x = by.x,
 							by.y = by.y,
-							all = all, 
-							all.x = all.x, 
+							all = all,
+							all.x = all.x,
 							all.y = all.y,
 							suffixes = suffixes,
 							incomparables = incomparables)
@@ -89,7 +89,7 @@ quantile.cols.pipe =
 					args$weights = rep(1, nrow(.x))
 					args$probs = midprobs(N)
 					cbind(
-						do.call(quantile.cols, args), 
+						do.call(quantile.cols, args),
 						.weight = nrow(.x)/N)}}
 		combine = 
 			function(.x) {
@@ -97,11 +97,11 @@ quantile.cols.pipe =
 					.x
 				else {
 				args = c(list(.x[,-ncol(.x)]), list(...))
-				args$weights = .x$.weight
-				args$probs = midprobs(N) 
-				cbind(
-					do.call(quantile.cols, args), 
-					.weight = sum(args$weights)/N)}}
+					args$weights = .x$.weight
+					args$probs = midprobs(N) 
+					cbind(
+						do.call(quantile.cols, args),
+						.weight = sum(args$weights)/N)}}
 		reduce = 
 			function(.x) 
 				quantile.cols(
@@ -134,7 +134,7 @@ count.cols = function(x, ...) UseMethod("count.cols")
 count.cols.default = 
 	function(x)
 		arrange(
-			count(data.frame(x=x)), 
+			count(data.frame(x=x)),
 			freq)
 
 
@@ -149,21 +149,21 @@ merge.counts =
 	function(x, n) {
 		select.cols = 
 			function(x)
-				grep(names(x),pattern=".freq$")
+				grep(names(x), pattern=".freq$")
 		merge.one =
 			function(x)
 				ddply(x, 1, function(x) {y = sum(x[, 2]); names(y) = names(x)[2]; y})		
 		prune = 
 			function(x, n) {
-				x = x[order(x[,2], decreasing = TRUE, na.last = NA),]
+				x = x[order(x[, 2], decreasing = TRUE, na.last = NA), ]
 				if(is.null(n) || nrow(x) <= n) x
 				else {
-					x[,2] = x[,2] - x[n+1, 2]
-					x[x[,2] > 0, ]}}
+					x[, 2] = x[, 2] - x[n+1, 2]
+					x[x[, 2] > 0, ]}}
 		splat(data.frame.fill) (
 			lapply(
 				select.cols(x),
-				function(i) prune(merge.one(x[,c(i - 1, i)]), n)))}
+				function(i) prune(merge.one(x[, c(i - 1, i)]), n)))}
 
 count.cols.pipe = 
 	function(x, n = Inf)
@@ -175,7 +175,7 @@ count.cols.pipe =
 			mergeable(Curry(merge.counts, n = n)))
 
 extreme.k= 
-	function(.x, .k , ...,  .decreasing, .envir = parent.frame()) {
+	function(.x, .k , ..., .decreasing, .envir = parent.frame()) {
 		force(.envir)
 		this.order = Curry(order, decreasing = .decreasing)
 		mr.fun = 
@@ -186,7 +186,7 @@ extreme.k=
 							this.order,
 							transmute(.x, ..., .envir = .envir)),
 						,
-						drop = FALSE], 
+						drop = FALSE],
 					.k)
 		ungroup(
 			gapply(
@@ -195,7 +195,7 @@ extreme.k=
 				mergeable(mr.fun)))}
 
 top.k = 
-	function(.x, .k = 1, ...,  .envir = parent.frame()) {
+	function(.x, .k = 1, ..., .envir = parent.frame()) {
 		force(.envir)
 		extreme.k(.x, .k = .k, ..., .decreasing = TRUE, .envir = .envir)}
 
@@ -217,12 +217,12 @@ moving.window =
 				partF = part(index, F)
 				unique(
 					cbind(
-						.part = c(partT, partF), 
+						.part = c(partT, partF),
 						rbind(x, x)))}
 		group(
 			gapply(
-				x, 
-				partition), 
+				x,
+				partition),
 			.part)}
 
 unique.pipe = 
@@ -241,15 +241,15 @@ rbind.default = base::rbind
 rbind.pipe = function(...)
 	gapply(input(lapply(list(...), output)), identity)
 
-union = function(x,y) UseMethod("union")
+union = function(x, y) UseMethod("union")
 union.default = base::union
 union.pipe = 
 	union.data.frame = 
-	function(x, y) unique(rbind(x,y))
+	function(x, y) unique(rbind(x, y))
 
-intersect = function(x,y) UseMethod("intersect")
+intersect = function(x, y) UseMethod("intersect")
 intersect.default = base::intersect
 intersect.data.frame = 
 	intersect.pipe = 
-	function(x,y)
-		unique(merge(x,y))
+	function(x, y)
+		unique(merge(x, y))

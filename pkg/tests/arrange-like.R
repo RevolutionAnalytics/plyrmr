@@ -16,14 +16,13 @@ library(plyr)
 library(quickcheck)
 library(plyrmr)
 
-cmp.df = 
-	function(A, B) {
-		ord = splat(order)
-		all(A[ord(A),] == B[ord(B),])}
+cmp.df = plyrmr:::cmp.df
+
+#merge
 
 for(be in c("local", "hadoop")) {
 	rmr.options(backend = be)
-
+	
 	unit.test(
 		function(A, B, x) {
 			xa = x[1:min(length(x), nrow(A))]
@@ -37,16 +36,33 @@ for(be in c("local", "hadoop")) {
 		list(tdgg.data.frame(), tdgg.data.frame(), tdgg.logical()))
 }
 
+#quantile.cols.data.frame
+
 unit.test(
-	function(df){
-		all(
+	function(df)
+		cmp.df(
 			data.frame(
 				rmr2:::purge.nulls(
 					lapply(
 						df, 
 						function(x) 
 							if(is.numeric(x)) 
-								quantile(x)))) == 
-				quantile.cols(df))},
+								quantile(x)))), 
+			quantile.cols(df)),
 	list(tdgg.data.frame()),
 	precondition = function(x) sum(sapply(x, is.numeric)) > 0)
+
+#quantile.cols.pipe
+
+for(be in c("local", "hadoop")) {
+	rmr.options(backend = be)
+	
+	unit.test	(
+		function(df)
+			cmp.df(
+				quantile.cols(df),
+				as.data.frame(
+					quantile.cols(input(df)))),
+		list(tdgg.data.frame()),
+		precondition = function(x) sum(sapply(x, is.numeric)) > 0)
+}

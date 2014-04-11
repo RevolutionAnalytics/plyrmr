@@ -108,5 +108,19 @@ for(be in c("local", "hadoop")) {
 							list(input(df), .k = 6), 
 							lapply(cols, as.symbol)))))},
 		list(tdgg.data.frame()))
+	
+	#test for moving window delayed until sematics more clear
+	
+	#unique
+	
+	unit.test(
+		function(df){
+			df = df[sample(1:nrow(df), 2*nrow(df), replace = TRUE), ]
+			cmp.df(
+				unique(df),
+				as.data.frame(unique(input(df))))},
+		list(tdgg.data.frame()))
+		}
+		  cmp.df())
 
 }

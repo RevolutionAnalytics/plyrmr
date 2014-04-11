@@ -81,7 +81,6 @@ quantile.cols.pipe =
 		map = 
 			function(.x) {
 				.x = select.numeric(.x)
-				rmr.str(.x)
 				if(N >= nrow(.x))
 					cbind(.x, .weight = 1)
 				else {
@@ -105,7 +104,7 @@ quantile.cols.pipe =
 		reduce = 
 			function(.x) 
 				quantile.cols(
-					rmr.str(.x)[,-ncol(.x)], 
+					.x[, -ncol(.x), drop = FALSE],
 					...)
 		gapply(gapply(gather(gapply(x, map)), mergeable(combine)), reduce)}
 

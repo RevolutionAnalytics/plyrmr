@@ -95,7 +95,7 @@ quantile.cols.pipe =
 				if(N >= nrow(.x))
 					.x
 				else {
-				args = c(list(.x[,-ncol(.x)]), list(...))
+					args = c(list(.x[, -ncol(.x), drop = FALSE]), list(...))
 					args$weights = .x$.weight
 					args$probs = midprobs(N) 
 					cbind(

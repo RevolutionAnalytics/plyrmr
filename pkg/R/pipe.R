@@ -23,6 +23,14 @@ comp =
 		else		
 			do.call(Compose, funs)}
 
+drop.gather = 
+	function(x){
+		if(is.element(".gather", names(x))) {
+			x = x[, !(names(x) == ".gather"), drop = FALSE]
+			if (ncol(x) * nrow(x) == 0) NULL else x}
+		else
+			x}
+
 make.task.fun = 																					# this function is a little complicated so some comments are in order
 	function(keyf, valf, ungroup, vectorized) {												# make a valid map function from two separate ones for keys and values
 		if(is.null(valf))                                   # the value function defaults to identity
@@ -30,18 +38,15 @@ make.task.fun = 																					# this function is a little complicated so 
 		function(k, v) {                                    # this is the signature of a correct map function
 			rownames(k) = NULL                                # wipe row names unless you want them to count in the grouping (Hadoop only sees serialization)
 			if(vectorized) {
-				w = valf(safe.cbind.kv(k, v))
+				w = valf(drop.gather(safe.cbind.kv(k, v)))
 				k = w[, names(k)]}
 			else
-				w = safe.cbind.kv(k,	valf(safe.cbind.kv(k, v)))         # pass both keys and values to val function as a single data frame, then make sure we keep keys for the next step
-			dummy.col = which(names(w) == ".dummy")						# dummy col used by gather always has a constant, no need to keep it
-			if (length(dummy.col) > 0)
-				w = w[, -dummy.col, drop = FALSE]
+				w = safe.cbind.kv(k,	valf(drop.gather(safe.cbind.kv(k, v))))       # pass both keys and values to val function as a single data frame, then make sure we keep keys for the next step
 			if (ungroup) k = NULL                             # if ungroup called reset keys, otherwise accumulate
 			k = {	
 				if(is.null(keyf)) k 														# by default keep grouping whatever it is
-				else safe.cbind(k, keyf(w))}										# but if you have a key function, use it and cbind old and new keys
-			if(!is.null(w) && nrow(w) > 0) keyval(k, w)}}     # special care for empty cases
+				else safe.cbind(k, keyf(drop.gather(w)))}										# but if you have a key function, use it and cbind old and new keys
+			if(!is.null(w) && nrow(w) > 0) keyval(k, drop.gather(w))}}     # special care for empty cases
 
 make.map.fun = 
 	function(keyf, valf, ungroup)
@@ -172,7 +177,7 @@ gather =
 		if(is.grouped(.data)) 
 			.data
 		else {
-			pipe = group(.data, .dummy = 1)
+			pipe = group(.data, .gather = 1)
 			pipe$recursive.group = TRUE
 			pipe}}
 

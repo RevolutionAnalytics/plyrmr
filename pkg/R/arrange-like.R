@@ -74,33 +74,38 @@ merge.pipe =
 quantile.cols = function(x, ...) UseMethod("quantile.cols")
 
 quantile.cols.pipe = 
-	function(x, ...) {
-		N = max(10, rmr.options("keyval.length")/10)
+	function(x, N = 10^5, ...) {
 		midprobs  = 
-			function() {
-				probs = seq(0, 1, 1/N)
-				(probs[-1] + probs[-length(probs)])/2}
+			function(N) 
+				seq(0, 1, length.out = N + 1)[-1] - 1/(2*N)
 		map = 
 			function(.x) {
 				.x = select.numeric(.x)
-				args = c(list(.x), list(...))
-				args$weights = rep(1, nrow(.x))
-				args$probs = midprobs()
-				cbind(
-					do.call(quantile.cols, args), 
-					.weight = nrow(.x)/N)}
+				rmr.str(.x)
+				if(N >= nrow(.x))
+					cbind(.x, .weight = 1)
+				else {
+					args = c(list(.x), list(...))
+					args$weights = rep(1, nrow(.x))
+					args$probs = midprobs(N)
+					cbind(
+						do.call(quantile.cols, args), 
+						.weight = nrow(.x)/N)}}
 		combine = 
 			function(.x) {
+				if(N >= nrow(.x))
+					.x
+				else {
 				args = c(list(.x[,-ncol(.x)]), list(...))
 				args$weights = .x$.weight
-				args$probs = midprobs() 
+				args$probs = midprobs(N) 
 				cbind(
 					do.call(quantile.cols, args), 
-					.weight = sum(args$weights)/N)}
+					.weight = sum(args$weights)/N)}}
 		reduce = 
 			function(.x) 
 				quantile.cols(
-					as.data.frame(.x)[,-ncol(.x)], 
+					rmr.str(.x)[,-ncol(.x)], 
 					...)
 		gapply(gapply(gather(gapply(x, map)), mergeable(combine)), reduce)}
 
@@ -118,7 +123,10 @@ quantile.cols.data.frame =
 					wtd.quantile(.y, ...))
 		qn = names(l[[1]])
 		y = splat(data.frame)(l)
-		rownames(y) = qn
+		rownames(y) = {
+			if(any(duplicated(qn)))
+				make.names(qn, unique = TRUE) 
+			else qn}
 		y}
 
 count.cols = function(x, ...) UseMethod("count.cols")

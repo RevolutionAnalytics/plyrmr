@@ -120,7 +120,26 @@ for(be in c("local", "hadoop")) {
 				unique(df),
 				as.data.frame(unique(input(df))))},
 		list(tdgg.data.frame()))
-		}
-		  cmp.df())
-
+	
+	#union 
+	
+	unit.test(
+		function(df){
+			df1 = df[sample(1:nrow(df), floor(nrow(df)/2)),] 
+			df2 = df[sample(1:nrow(df), floor(nrow(df)/2)),] 
+			cmp.df(
+				union(df1, df2),
+				as.data.frame(union(input(df1), input(df2))))},
+		list(tdgg.data.frame()))
+	
+	#intersection 
+	
+	unit.test(
+		function(df){
+			df1 = df[sample(1:nrow(df), floor(nrow(df)/2)),] 
+			df2 = df[sample(1:nrow(df), floor(nrow(df)/2)),] 
+			cmp.df(
+				intersect(df1, df2),
+				as.data.frame(intersect(input(df1), input(df2))))},
+		list(tdgg.data.frame()))
 }

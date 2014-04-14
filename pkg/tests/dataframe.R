@@ -62,7 +62,7 @@ args =
 		Bernoulli = list(p = Curry(rdouble, lambda = 0, min =0, max = 1)),
 		hypergeometric = list(n = Curry(rinteger, len.lambda = 0)))
 
-for(method in c("any", "Bernoulli", "hypergeometric")) {
+for(method in names(args)) {
 	method.args = args[[method]] 
 	unit.test(
 		function(df, ...) 

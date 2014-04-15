@@ -25,16 +25,19 @@ args =
 		Bernoulli = list(p = Curry(rdouble, lambda = 0, min =0, max = 1)),
 		hypergeometric = list(n = Curry(rinteger, len.lambda = 0)))
 
+
 for(method in names(args)) {
 	method.args = args[[method]] 
-	unit.test(
-		function(df, ...) 
-			cmp.df(
-				df,
-				as.data.frame(union(do.call(sample, c(list(input(df), method = method), list(...))), input(df)))),
-		c(list(rdata.frame), method.args),
-		precondition = 
-			function(df, ...) {
-				if(is.element(method, c("any", "hypergeometric")))
-					list(...)$n <= nrow(df)
-				else TRUE})}
+	for(be in c("local", "hadoop")) {
+		rmr.options(backend = be)
+		unit.test(
+			function(df, ...) 
+				cmp.df(
+					df,
+					as.data.frame(union(do.call(sample, c(list(input(df), method = method), list(...))), input(df)))),
+			c(list(rdata.frame), method.args),
+			precondition = 
+				function(df, ...) {
+					if(is.element(method, c("any", "hypergeometric")))
+						list(...)$n <= nrow(df)
+					else TRUE})}}

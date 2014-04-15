@@ -117,11 +117,14 @@ strip.zerocol.df =
 
 safe.cbind  = 
 	function(..., rownames.from = NULL) {
+		lengths = sapply(list(...), rmr2:::rmr.length)
+		if(!is.null(rownames.from))
+			rn = rownames(list(...)[[rownames.from]])
+		else {
+			rownames.from = which.max(lengths)
+			rn = rownames(list(...)[[rownames.from]])}
 		ll = lapply(strip.nulls(strip.zerocol.df(...)), selective.I)
 		lengths = rmr2:::sapply.rmr.length(ll)
-		if(is.null(rownames.from))
-			rownames.from = which.max(lengths)
-		rn = rownames(list(...)[[rownames.from]])
 		shortest = min(lengths)
 		if(shortest == 0)
 			data.frame()
@@ -133,7 +136,7 @@ safe.cbind  =
 			x}}
 
 safe.cbind.kv = 
-	function(k, v) 
+	function(k, v, rownames.from = 2) 
 		structure(
 			safe.cbind(k, v),
 			keys = names(k))

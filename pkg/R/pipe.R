@@ -166,11 +166,16 @@ group.f =
 
 ungroup = 
 	function(.data) {
-		if(is.grouped(.data)) {
+		if(is.grouped(.data) && !is.null(.data$reduce)) {
 			.data$ungroup = TRUE
 			input(run(.data, input.format = "native"))}
+		else {
+			if (is.grouped(.data)) {
+				.data$group = NULL
+				.data$ungroup = FALSE
+			  .data}
 		else
-			.data}
+			.data}}
 
 gather = 
 	function(.data) {

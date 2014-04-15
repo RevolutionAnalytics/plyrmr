@@ -12,26 +12,50 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 library(plyrmr)
+library(quickcheck)
+library(dplyr)
 
-stopifnot(
-	all(
-		as.data.frame(gapply(input(mtcars), function(x) data.frame(cyl2 =x$cyl^2))) 
-		== 
-			mtcars$cyl^2))
+cmp.df = plyrmr:::cmp.df
 
-stopifnot(
-	all(
-		(function() {
-			expo1 = 2;
-			envir = sys.frame(sys.nframe())
-			as.data.frame(
-				gapply(
-					input(mtcars), 
-					function(x , ...) {
-						vars = plyrmr:::non.standard.eval(x, ..., .envir = envir)
-						data.frame(cyl2 =x$cyl^vars[['expo2']])},
-					expo2 = expo1))})()		
-		 == 
-		 	mtcars$cyl^2))
+for(be in c("local", "hadoop")) {
+	rmr.options(backend = be)
+	
+	#gapply
+	
+	unit.test(
+		function(df)
+			cmp.df(
+				df,
+				as.data.frame(gapply(input(df), identity))),
+		list(rdata.frame))
+	
+	#group
+	unit.test(
+		function(df)
+			cmp.df(
+				summarize(group_by(df, col.1), mean(col.2)),
+				as.data.frame(transmute(group(input(df), col.1), mean(as.numeric(col.2))))),
+		list(rdata.frame),
+		precondition = function(df) ncol(df) >=2)	
+
+	#group.f is tested implicitly in the above and has no direct equivalent in dplyr
+	
+	#ungroup what is a good test for ungroup?
+	 
+	#gather
+	unit.test(
+		function(df)
+			nrow(as.data.frame(transmute(gather(input(df)), mean(as.numeric(col.1)), .mergeable = TRUE))) == 1,
+		list(rdata.frame))
+	
+	#as.data.frame and input
+	unit.test(
+		function(df)
+			cmp.df(
+				df,
+				as.data.frame(input(df))),
+		list(rdata.frame))
+	
 	

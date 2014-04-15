@@ -116,10 +116,13 @@ strip.zerocol.df =
 		lapply(list(...), function(x) if(!is.data.frame(x) || ncol(x) > 0) x)
 
 safe.cbind  = 
-	function(..., rownames.from = 1) {
-		rn = rownames(list(...)[[rownames.from]])
+	function(..., rownames.from = NULL) {
 		ll = lapply(strip.nulls(strip.zerocol.df(...)), selective.I)
-		shortest = min(rmr2:::sapply.rmr.length(ll))
+		lengths = rmr2:::sapply.rmr.length(ll)
+		if(is.null(rownames.from))
+			rownames.from = which.max(lengths)
+		rn = rownames(list(...)[[rownames.from]])
+		shortest = min(lengths)
 		if(shortest == 0)
 			data.frame()
 		else {
@@ -132,7 +135,7 @@ safe.cbind  =
 safe.cbind.kv = 
 	function(k, v) 
 		structure(
-			safe.cbind(k, v, rownames.from = 2),
+			safe.cbind(k, v),
 			keys = names(k))
 
 fract.recycling = 

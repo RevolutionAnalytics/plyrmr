@@ -29,3 +29,5 @@ Rprof.out
 *.so
 
 plyrmr-Ex.pdf
+
+quickcheck*

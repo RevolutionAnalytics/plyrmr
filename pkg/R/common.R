@@ -111,18 +111,32 @@ freeze.env =
 
 selective.I = function(x) if(is.list(x) && !is.data.frame(x)) I(x) else x
 
+strip.zerocol.df = 
+	function(...)
+		lapply(list(...), function(x) if(!is.data.frame(x) || ncol(x) > 0) x)
+
 safe.cbind  = 
-	function(...) {
-		ll = lapply(strip.null.args(...), selective.I)
-		shortest = min(rmr2:::sapply.rmr.length(ll))
+	function(..., rownames.from = NULL) {
+		lengths = sapply(list(...), rmr2:::rmr.length)
+		if(!is.null(rownames.from))
+			rn = rownames(list(...)[[rownames.from]])
+		else {
+			rownames.from = which.max(lengths)
+			rn = rownames(list(...)[[rownames.from]])}
+		ll = lapply(strip.nulls(strip.zerocol.df(...)), selective.I)
+		lengths = rmr2:::sapply.rmr.length(ll)
+		shortest = min(lengths)
 		if(shortest == 0)
 			data.frame()
 		else {
 			x = splat(data.frame)(c(ll, list(check.names = FALSE)))
-			x[, unique(names(x)), drop = FALSE]}}
+			x = x[, unique(names(x)), drop = FALSE]
+		  if(!is.null(rn))
+		  	rownames(x) = rep(rn, length.out = nrow(x))
+			x}}
 
 safe.cbind.kv = 
-	function(k, v) 
+	function(k, v, rownames.from = 2) 
 		structure(
 			safe.cbind(k, v),
 			keys = names(k))
@@ -209,6 +223,11 @@ data.frame.fill =
 				seq_along(argl), 
 				function(i) length(argl[[i]]) <<- maxlen)
 			splat(data.frame)(argl)}}
+
+cmp.df = 
+	function(A, B) {
+		ord = splat(order)
+		all(A[ord(A),] == B[ord(B),])}
 
 #lists
 

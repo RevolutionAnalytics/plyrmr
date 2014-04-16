@@ -31,7 +31,7 @@ fast.summary =
 		.fast.summary.list(split(xx, index, drop = TRUE), type)
 
 .fast.summary.data.frame = 
-	function(xxx, type, index = data.frame(.dummy = TRUE)) {
+	function(xxx, type, index = data.frame(.gather = TRUE)) {
 		if(!is.data.frame(index))
 			index = data.frame(keycol = index)
 		keycol = names(index)
@@ -57,5 +57,5 @@ fast.summary.pipe =
 					index = 
 						rmr2:::default(
 							y[, attributes(y)$keys, drop = FALSE], 
-							data.frame(.dummy = TRUE), 
+							data.frame(.gather = TRUE), 
 							function(x) ncol(x) == 0)))

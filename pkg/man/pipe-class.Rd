@@ -39,7 +39,7 @@ A pipe represents a data set by way of specifying the input and the computationa
 #actual computation
 transmute(mtcars)
 #delayed computation, returns a pipe
-transmute(input(mtcars))
+z = transmute(input(mtcars))
 #actual computation, returns a data frame
-as.data.frame(transmute(input(mtcars)))
+as.data.frame(z)
 }

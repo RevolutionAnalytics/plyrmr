@@ -33,7 +33,7 @@ for(be in c("local", "hadoop")) {
 				as.data.frame(
 					merge(input(A), input(B), by = "x")),
 				merge(A, B, by = "x"))},
-		list(tdgg.data.frame(), tdgg.data.frame(), tdgg.logical()))
+		list(rdata.frame, rdata.frame, rlogical))
 }
 
 #quantile.cols.data.frame
@@ -49,7 +49,7 @@ unit.test(
 							if(is.numeric(x)) 
 								quantile(x)))), 
 			quantile.cols(df)),
-	list(tdgg.data.frame()),
+	list(rdata.frame),
 	precondition = function(x) sum(sapply(x, is.numeric)) > 0)
 
 
@@ -64,7 +64,7 @@ for(be in c("local", "hadoop")) {
 				quantile.cols(df),
 				as.data.frame(
 					quantile.cols(input(df)))),
-		list(tdgg.data.frame()),
+		list(rdata.frame),
 		precondition = function(x) sum(sapply(x, is.numeric)) > 0)
 	
 	#counts
@@ -81,7 +81,7 @@ for(be in c("local", "hadoop")) {
 						cmp.df(
 							A[,(i - 1):i],
 							B[,(i - 1):i])}))},
-		list(tdgg.data.frame()))
+		list(rdata.frame))
 	
 	#top/bottom k
 	
@@ -95,7 +95,7 @@ for(be in c("local", "hadoop")) {
 						c(
 							list(input(df), .k = 6), 
 							lapply(cols, as.symbol)))))},
-		list(tdgg.data.frame()))
+		list(rdata.frame))
 	
 	unit.test(
 		function(df){
@@ -107,7 +107,7 @@ for(be in c("local", "hadoop")) {
 						c(
 							list(input(df), .k = 6), 
 							lapply(cols, as.symbol)))))},
-		list(tdgg.data.frame()))
+		list(rdata.frame))
 	
 	#test for moving window delayed until sematics more clear
 	
@@ -119,7 +119,7 @@ for(be in c("local", "hadoop")) {
 			cmp.df(
 				unique(df),
 				as.data.frame(unique(input(df))))},
-		list(tdgg.data.frame()))
+		list(rdata.frame))
 	
 	#union 
 	
@@ -130,7 +130,7 @@ for(be in c("local", "hadoop")) {
 			cmp.df(
 				union(df1, df2),
 				as.data.frame(union(input(df1), input(df2))))},
-		list(tdgg.data.frame()))
+		list(rdata.frame))
 	
 	#intersection 
 	
@@ -141,5 +141,5 @@ for(be in c("local", "hadoop")) {
 			cmp.df(
 				intersect(df1, df2),
 				as.data.frame(intersect(input(df1), input(df2))))},
-		list(tdgg.data.frame()))
+		list(rdata.frame))
 }

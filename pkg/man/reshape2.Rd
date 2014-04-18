@@ -10,11 +10,11 @@ Modeled after, and actually implemented on top of, equally named functions in th
 \usage{
 dcast(data, formula, \dots)
 \method{dcast}{pipe}(data, formula, \dots)
-\method{melt}{pipe}(data, \dots)
+\method{melt}{pipe}(.data, \dots)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{data}{A data set represented by a pipe or a data frame}
+  \item{data, .data}{A data set represented by a pipe or a data frame}
   \item{formula}{Casting formula}
   \item{\dots}{Additional arguments}
 }

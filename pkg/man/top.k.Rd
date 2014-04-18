@@ -7,8 +7,8 @@ Select top and bottom rows according to some order}
 Select top and bottom rows according to order specified by the \dots arguments.
 }
 \usage{
-top.k(.x, .k = 1, \dots, .envir = parent.frame())
-bottom.k(.x, .k = 1, \dots, .envir = parent.frame())
+top.k(.x, \dots, .k = 1, .envir = parent.frame())
+bottom.k(.x, \dots, .k = 1, .envir = parent.frame())
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

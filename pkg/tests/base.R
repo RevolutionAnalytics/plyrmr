@@ -14,6 +14,7 @@
 
 library(plyrmr)
 library(quickcheck)
+library(functional)
 
 cmp.df = plyrmr:::cmp.df
 

@@ -125,8 +125,8 @@ for(be in c("local", "hadoop")) {
 	
 	unit.test(
 		function(df){
-			df1 = df[sample(1:nrow(df), floor(nrow(df)/2)),] 
-			df2 = df[sample(1:nrow(df), floor(nrow(df)/2)),] 
+			df1 = df[sample(1:nrow(df), floor(nrow(df)/2)), , drop = FALSE] 
+			df2 = df[sample(1:nrow(df), floor(nrow(df)/2)), , drop = FALSE] 
 			cmp.df(
 				union(df1, df2),
 				as.data.frame(union(input(df1), input(df2))))},
@@ -136,8 +136,8 @@ for(be in c("local", "hadoop")) {
 	
 	unit.test(
 		function(df){
-			df1 = df[sample(1:nrow(df), floor(nrow(df)/2)),] 
-			df2 = df[sample(1:nrow(df), floor(nrow(df)/2)),] 
+			df1 = df[sample(1:nrow(df), floor(nrow(df)/2)), , drop = FALSE] 
+			df2 = df[sample(1:nrow(df), floor(nrow(df)/2)), , drop = FALSE] 
 			cmp.df(
 				intersect(df1, df2),
 				as.data.frame(intersect(input(df1), input(df2))))},

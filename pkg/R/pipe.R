@@ -1,5 +1,5 @@
 # Copyright 2013 Revolution Analytics
-#    
+#  
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -58,9 +58,9 @@ make.reduce.fun =
 
 make.combine.fun = 
 	function(valf, vectorized) {
-		cf  = make.task.fun(NULL, valf, ungroup = FALSE, vectorized = vectorized)
+		cf = make.task.fun(NULL, valf, ungroup = FALSE, vectorized = vectorized)
 		function(k, v) {
-			retval  = cf(k, v)
+			retval = cf(k, v)
 			nm = sapply(names(v), function(col) grep(paste0(col), names(retval$val), value=T))
 			mn = names(nm)
 			names(mn) = nm
@@ -117,7 +117,7 @@ is.vectorized =
 	function(f) 
 		default(attr(f, "vectorized", exact=TRUE), FALSE)
 
-gapply =  
+gapply =
 	function(.data, .f, ...){
 		.f = freeze.env(.f)
 		f1 = make.f1(.f, ...)
@@ -173,9 +173,9 @@ ungroup =
 			if (is.grouped(.data)) {
 				.data$group = NULL
 				.data$ungroup = FALSE
-			  .data}
-		else
-			.data}}
+				.data}
+			else
+				.data}}
 
 gather = 
 	function(.data) {

@@ -34,8 +34,14 @@ for(method in names(args)) {
 		unit.test(
 			function(df, ...) 
 				cmp.df(
-					df,
-					as.data.frame(union(do.call(sample, c(list(input(df), method = method), list(...))), input(df)))),
+					unique(df),
+					as.data.frame(
+						union(
+							do.call(
+								sample, 
+								c(
+									list(input(df), method = method), 
+									list(...))), input(df)))),
 			c(list(rdata.frame), method.args),
 			precondition = 
 				function(df, ...) {

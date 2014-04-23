@@ -480,6 +480,20 @@ Duster 360             4
 
 <p>When the definition of the grouping column is more complicated, we may need to reach for the uber-general <code>group.f</code>, the grouping relative of <code>gapply</code> (in fact, these two functions are the foundation for everything else in <code>plyrmr</code>). Let&#39;s go back to the <code>last.col</code> example. If we need to group by the last columns of a data frame, this is all we need to do:</p>
 
+<pre><code class="r">input(&quot;/tmp/mtcars&quot;) %|%
+    group.f(last.col) %|%
+    transmute(mean.mpg = mean(mpg)) 
+</code></pre>
+
+<pre><code>    carb mean.mpg
+1      4    15.79
+1.1    1    25.34
+1.2    2    22.40
+1.3    3    16.30
+1.4    6    19.70
+1.5    8    15.00
+</code></pre>
+
 <h2>Better than SQL</h2>
 
 <p>Despite the SQL-ish flavor and undeniable SQL inspiration for some of these operations, we want to highlight a few ways in which <code>plyrmr</code> is much more powerful than SQL. The first is that summaries or aggregation don&#39;t need to be limited to a single row. One form of aggregation are summaries and summaries can have many elements, even thousands. Momenta, quantiles, histograms, samples, they all have multiple entries. You could represent them as multiple columns up to a certain size, but removing the SQL limitation on aggregations is a good thing. Let&#39;s say you want to examine the quantiles of the gas mileage data in each group of cars with the same number of carburetors</p>

@@ -136,10 +136,12 @@ safe.cbind  =
 			x}}
 
 safe.cbind.kv = 
-	function(k, v, rownames.from = 2) 
-		structure(
-			safe.cbind(k, v),
-			keys = names(k))
+	function(k, v) {
+		if(rmr2:::rmr.length(v) == 0) NULL
+		else 
+			structure(
+				safe.cbind(k, v, rownames.from = 2),
+				keys = names(k))}
 
 fract.recycling = 
 	function(ll) {
@@ -227,7 +229,7 @@ data.frame.fill =
 cmp.df = 
 	function(A, B) {
 		ord = splat(order)
-		all(A[ord(A),] == B[ord(B),])}
+		all(A[ord(A),] == B[ord(B),], na.rm = TRUE)}
 
 #lists
 

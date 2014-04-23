@@ -4,7 +4,7 @@
 \description{Find the quantiles of each numerical column of a data set, represented by a pipe or a data.frame}
 \usage{
 \method{quantile.cols}{data.frame}(x, \dots)
-\method{quantile.cols}{pipe}(x, \dots)
+\method{quantile.cols}{pipe}(x, N = 10^5, \dots)
 }
 \arguments{
   \item{x}{

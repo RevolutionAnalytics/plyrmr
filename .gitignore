@@ -31,3 +31,5 @@ Rprof.out
 plyrmr-Ex.pdf
 
 quickcheck*
+
+pkg.Rcheck/*

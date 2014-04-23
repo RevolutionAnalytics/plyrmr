@@ -58,4 +58,4 @@ for(be in c("local", "hadoop")) {
 				as.data.frame(input(df))),
 		list(rdata.frame))
 	
-	
+}

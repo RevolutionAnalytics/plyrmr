@@ -1,5 +1,5 @@
 # Copyright 2013 Revolution Analytics
-#    
+#  
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -41,17 +41,17 @@ make.task.fun = 																					# this function is a little complicated so 
 				w = valf(drop.gather(safe.cbind.kv(k, v)))
 				k = w[, names(k)]}
 			else
-				w = valf(drop.gather(safe.cbind.kv(k, v)))        # pass both keys and values to val function as a single data frame, then make sure we keep keys for the next step
-			if (ungroup) 					# if ungroup called select or reset keys, otherwise accumulate
-				k = {
+				w = safe.cbind.kv(k,	valf(drop.gather(safe.cbind.kv(k, v))))       # pass both keys and values to val function as a single data frame, then make sure we keep keys for the next step
+      stopifnot(!(ungroup && is.null(keyf)))
+			k = {
+				if (ungroup) { 					# if ungroup called select or reset keys, otherwise accumulate
 					if(length(ungroup.args) == 0) 
 						NULL            
 					else
 						do.call(select, c(list(k), lapply(ungroup.args, function(a) as.call(list(as.name("-"), a)))))}
-			w = safe.cbind(k,	w)
-			k = {	
-				if(is.null(keyf)) k 														# by default keep grouping whatever it is
-				else safe.cbind(k, keyf(drop.gather(w)))}										# but if you have a key function, use it and cbind old and new keys
+				else {	
+					if(is.null(keyf)) k 														# by default keep grouping whatever it is
+					else safe.cbind(k, keyf(drop.gather(w)))}}										# but if you have a key function, use it and cbind old and new keys
 			if(!is.null(w) && nrow(w) > 0) keyval(k, drop.gather(w))}}     # special care for empty cases
 
 make.map.fun = 
@@ -66,7 +66,7 @@ make.combine.fun =
 	function(valf, vectorized) {
 		cf  = make.task.fun(NULL, valf, ungroup = FALSE, ungroup.args = NULL, vectorized = vectorized)
 		function(k, v) {
-			retval  = cf(k, v)
+			retval = cf(k, v)
 			nm = sapply(names(v), function(col) grep(paste0(col), names(retval$val), value=T))
 			mn = names(nm)
 			names(mn) = nm
@@ -123,7 +123,7 @@ is.vectorized =
 	function(f) 
 		default(attr(f, "vectorized", exact=TRUE), FALSE)
 
-gapply =  
+gapply =
 	function(.data, .f, ...){
 		.f = freeze.env(.f)
 		f1 = make.f1(.f, ...)

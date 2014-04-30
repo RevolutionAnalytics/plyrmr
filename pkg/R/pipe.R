@@ -12,21 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# function manip
+#options
+
 .options = new.env()
 .options$context = sparkR.init()
 
 set.context =
-	function()
-		.options$context = sparkR.init()
+	function(sc = sparkR.init())
+		.options$context = sc
 
-
-#pipes
-
-print.pipe =
-	function(x, ...) {
-		print(as.data.frame(sample(x, method = "any", n = 100)))
-		invisible(x)}
+#function manip
 
 make.f1 = 
 	function(f, ...) {
@@ -39,6 +34,14 @@ make.f1 =
 						as.data.frame(.y, stringsAsFactors = F)
 					else 
 						data.frame(x = .y, stringsAsFactors = F)}}}
+
+#pipe defs
+
+print.pipe =
+	function(x, ...) {
+		print(as.data.frame(sample(x, method = "any", n = 100)))
+		invisible(x)}
+
 
 mergeable = 
 	function(f, flag = TRUE) 
@@ -55,6 +58,9 @@ is.mergeable =
 is.vectorized = 
 	function(f) 
 		default(attr(f, "vectorized", exact=TRUE), FALSE)
+
+
+# this is a new keyval light, breaking deps with rmr2 and using a different representation
 
 keycols = 
 	function(kv)
@@ -97,6 +103,8 @@ recycle.keyval =
 				else {
 					as.data.frame(do.call(cbind, c(k, v)))}}}}
 
+# conversion from and to rdd list representation (row first)
+
 rdd.list2kv =
 	function(ll) 
 		do.call(
@@ -124,6 +132,7 @@ kv2rdd.list =
 				split(kv, k, drop = TRUE), 
 				SIMPLIFY = FALSE)}
 
+# core pipes, apply functions and grouping
 
 gapply = 
 	function(.data, .f, ...) 
@@ -151,7 +160,7 @@ group.f =
 		as.pipe(
 			groupByKey(
 				lapplyPartition(
-					rdd(.data),
+					as.RDD(.data),
 					function(x) {
 						kv = rdd.list2kv(x)
 						k = keys(kv)
@@ -159,8 +168,9 @@ group.f =
 						kv2rdd.list(
 							keyval(
 								safe.cbind(k, new.keys), 
-								safe.cbind(v, v[, setdiff(names(x), new.keys)])))}),
-			10L))} #TODO: review constant here
+								safe.cbind(kv, kv[, setdiff(names(kv), new.keys)])))}),
+				10L),
+			grouped = TRUE)} #TODO: review constant here
 
 ungroup = 
 	function(.data, ...) {
@@ -190,7 +200,7 @@ gather =
 
 is.grouped = 
 	function(.data)
-		!is.null(.data[["group"]])
+		!is.null(attributes(.data)$grouped)
 
 output = 
 	function(.data, path = NULL, format = "native", input.format = format) {
@@ -202,30 +212,37 @@ output =
 
 
 as.pipe = function(x, ...) UseMethod("as.pipe")
+as.RDD = function(x,...) UseMethod("as.RDD")
 
 as.pipe.RDD = 
 	function(x, ...) 
 		structure(
 			list(rdd = x),
-			class = "pipe")
+			class = "pipe",
+			...)
 
-rdd = 
-	function(x) 
+as.RDD.pipe= 
+	function(x, ...) 
 		x[["rdd"]]
 
 as.pipe.data.frame = 
-	function(x, ...) 
-		as.pipe(
-			parallelize(
-				.options$context, 
-				kv2rdd.list(
-					keyval(x))))
-
+	function(x, ...)
+		as.pipe(as.RDD(x))
 
 as.data.frame.pipe =
 	function(x, ...)
-		as.data.frame(
-			SparkR::collect(rdd(x)))
+		as.data.frame(as.RDD(x))
+
+as.data.frame.RDD = 
+	function(x, ...)
+		rdd.list2kv(SparkR::collect(x))
+
+as.RDD.data.frame = 
+	function(x, ...) 
+		parallelize(
+			.options$context, 
+			kv2rdd.list(
+				keyval(x)))
 
 input = as.pipe
 

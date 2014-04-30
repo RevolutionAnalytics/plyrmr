@@ -139,14 +139,14 @@ gapply =
 		as.pipe(
 			lapplyPartition(
 				as.RDD(.data), 
-				function(x) {
-					kv = rdd.list2kv(x)
+				function(part) {
+					kv = rdd.list2kv(part)
 					k = keys(kv)
 					f1 = make.f1(.f, ...)
-					if(ncol(k) == 0)
-						kv = f1(kv)
-					else
-						kv2rdd.list(
+					kv2rdd.list(
+						if(ncol(k) == 0)
+							f1(kv)
+						else
 							do.call(
 								rbind, 
 								lapply(
@@ -172,8 +172,8 @@ group.f =
 			groupByKey(
 				lapplyPartition(
 					as.RDD(.data),
-					function(x) {
-						kv = rdd.list2kv(x)
+					function(part) {
+						kv = rdd.list2kv(part)
 						k = keys(kv)
 						new.keys = f1(kv)
 						kv2rdd.list(
@@ -185,20 +185,26 @@ group.f =
 
 ungroup = 
 	function(.data, ...) {
-		if(is.grouped(.data) && !is.null(.data$reduce)) {
-			.data$ungroup = TRUE
-			.data$ungroup.args = named_dots(...)
-			phase1 = input(run(.data, input.format = "native"))
-			if(length(.data$ungroup.args) == 0)
-				phase1
-			else 
-				group.f(phase1, function(x) data.frame(.gather = 1))}
-		else {
-			if (is.grouped(.data)) {
-				.data$group = NULL
-				.data$ungroup = FALSE #what happens to ungroup.vars here
-				.data}
-			.data}}
+		ungroup.args = dots(...)
+		reset.grouping = length(ungroup.args) == 0
+		as.pipe({
+			rdd = 	
+				lapplyPartition(
+					as.RDD(.data),
+					function(part) {
+						kv  = rdd.list2kv(part)
+						k = keys(kv)
+						kv2rdd.list(
+							keyval(
+								if(reset.grouping)
+									NULL
+								else
+									k[, setdiff(names(k), as.character(ungroup.args)), drop = FALSE], 
+								kv))})
+			if(reset.grouping)
+				rdd
+			else
+				groupByKey(rdd, 10L)})} #TODO: review constant here						
 
 gather = 
 	function(.data) {

@@ -137,8 +137,13 @@ kv2rdd.list =
 
 # core pipes, apply functions and grouping
 
+include.packages =
+	function(which = names(sessionInfo()$other))
+		sapply(which, Curry(includePackage, sc = .options$context))
+
 gapply = 
 	function(.data, .f, ...) 
+		include.packages()
 		as.pipe(
 			lapplyPartition(
 				as.RDD(.data), 
@@ -170,6 +175,7 @@ group =
 
 group.f =
 	function(.data, .f, ...) {
+		include.packages()
 		f1 = make.f1(.f, ...)
 		as.pipe(
 			groupByKey(
@@ -188,6 +194,7 @@ group.f =
 
 ungroup = 
 	function(.data, ...) {
+		include.packages()
 		ungroup.args = dots(...)
 		reset.grouping = length(ungroup.args) == 0
 		as.pipe({

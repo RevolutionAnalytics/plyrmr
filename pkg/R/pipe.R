@@ -227,27 +227,15 @@ ungroup =
 			grouped = !reset.grouping)} #TODO: review constant here						
 
 gather = 
-	function(.data) {
-		if(is.grouped(.data)) 
-			.data
-		else {
-			pipe = group(.data, .gather = 1)
-			pipe$recursive.group = TRUE
-			pipe}}
-
-is.grouped = 
-	function(.data) {
-		ga = attributes(.data)$grouped
-		!is.null(ga) && ga}
+	function(.data) 
+		gapply(
+			group(.data, .gather = 1),
+			function(x)
+				select(x, -.gather))
 
 output = 
 	function(.data, path = NULL, format = "native", input.format = format) {
-		if(missing(input.format) && !is.character(format))
-			stop("need to specify a custom input format for a custom output")
-		.data[["output.format"]] = format
-		.data[["output"]] = path
-		as.big.data(.data, input.format)}
-
+		stop('not implemented yet')}
 
 as.pipe = function(x, ...) UseMethod("as.pipe")
 as.RDD = function(x,...) UseMethod("as.RDD")

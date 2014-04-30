@@ -174,12 +174,12 @@ gapply =
 			if(is.grouped(.data)) {
 				if(is.mergeable(.f))
 					lapplyPartition(reduceByKey(rdd, f, 10L), f)
-			  else
-			  	lapplyPartition(groupByKey(rdd, 10L), f)}
+				else
+					lapplyPartition(groupByKey(rdd, 10L), f)}
 			else
 				lapplyPartition(rdd, f),
 			grouped = is.grouped(.data))}
-		
+
 group = 
 	function(.data, ..., .envir = parent.frame()) {
 		force(.envir)

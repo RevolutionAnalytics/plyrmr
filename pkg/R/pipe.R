@@ -96,12 +96,14 @@ recycle.keyval =
 			v
 		else {
 			if ((nrow(k) == nrow(v)) || is.null(k)) 
-				cbind(k, v)
+				safe.cbind.kv(k, v)
 			else {
 				if (nrow(v) == 0) 
 					NULL
 				else {
-					as.data.frame(do.call(cbind, c(k, v)))}}}}
+					safe.cbind(
+						as.data.frame(
+							do.call(cbind, c(k, v))))}}}}
 
 # conversion from and to rdd list representation (row first)
 

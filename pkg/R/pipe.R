@@ -144,28 +144,36 @@ include.packages =
 		sapply(which, Curry(includePackage, sc = .options$context))
 
 gapply = 
-	function(.data, .f, ...) 
+	function(.data, .f, ...) {
 		include.packages()
+		f = 
+			function(part) {
+				kv = rdd.list2kv(part)
+				k = keys(kv)
+				f1 = make.f1(.f, ...)
+				kv2rdd.list(
+					if(ncol(k) == 0)
+						f1(kv)
+					else
+						do.call(
+							rbind, 
+							lapply(
+								split(kv, k, drop = TRUE), 
+								function(x) 
+									safe.cbind.kv(
+										unique(keys(x)), 
+										f1(x)))))}
+		rdd = as.RDD(.data)
 		as.pipe(
-			lapplyPartition(
-				as.RDD(.data), 
-				function(part) {
-					kv = rdd.list2kv(part)
-					k = keys(kv)
-					f1 = make.f1(.f, ...)
-					kv2rdd.list(
-						if(ncol(k) == 0)
-							f1(kv)
-						else
-							do.call(
-								rbind, 
-								lapply(
-									split(kv, k, drop = TRUE), 
-									function(x) 
-										safe.cbind.kv(
-											unique(keys(x)), 
-											f1(x)))))}))
-
+			if(is.grouped(.data)) {
+				if(is.mergeable(.f))
+					lapplyPartition(reduceByKey(rdd, f, 10L), f)
+			  else
+			  	lapplyPartition(groupByKey(rdd, 10L), f)}
+			else
+				lapplyPartition(rdd, f),
+			grouped = is.grouped(.data))}
+		
 group = 
 	function(.data, ..., .envir = parent.frame()) {
 		force(.envir)
@@ -180,43 +188,37 @@ group.f =
 		include.packages()
 		f1 = make.f1(.f, ...)
 		as.pipe(
-			groupByKey(
-				lapplyPartition(
-					as.RDD(.data),
-					function(part) {
-						kv = rdd.list2kv(part)
-						k = keys(kv)
-						new.keys = f1(kv)
-						kv2rdd.list(
-							keyval(
-								safe.cbind(k, new.keys), 
-								safe.cbind(kv, kv[, setdiff(names(kv), new.keys)])))}),
-				10L),
-			grouped = TRUE)} #TODO: review constant here
+			lapplyPartition(
+				as.RDD(.data),
+				function(part) {
+					kv = rdd.list2kv(part)
+					k = keys(kv)
+					new.keys = f1(kv)
+					kv2rdd.list(
+						keyval(
+							safe.cbind(k, new.keys), 
+							safe.cbind(new.keys, kv)))}),
+			grouped = TRUE)} 
 
 ungroup = 
 	function(.data, ...) {
 		include.packages()
 		ungroup.args = dots(...)
 		reset.grouping = length(ungroup.args) == 0
-		as.pipe({
-			rdd = 	
-				lapplyPartition(
-					as.RDD(.data),
-					function(part) {
-						kv  = rdd.list2kv(part)
-						k = keys(kv)
-						kv2rdd.list(
-							keyval(
-								if(reset.grouping)
-									NULL
-								else
-									k[, setdiff(names(k), as.character(ungroup.args)), drop = FALSE], 
-								kv))})
-			if(reset.grouping)
-				rdd
-			else
-				groupByKey(rdd, 10L)})} #TODO: review constant here						
+		as.pipe(	
+			lapplyPartition(
+				as.RDD(.data),
+				function(part) {
+					kv  = rdd.list2kv(part)
+					k = keys(kv)
+					kv2rdd.list(
+						keyval(
+							if(reset.grouping)
+								NULL
+							else
+								k[, setdiff(names(k), as.character(ungroup.args)), drop = FALSE], 
+							kv))}),
+			grouped = !reset.grouping)} #TODO: review constant here						
 
 gather = 
 	function(.data) {
@@ -228,8 +230,9 @@ gather =
 			pipe}}
 
 is.grouped = 
-	function(.data)
-		!is.null(attributes(.data)$grouped)
+	function(.data) {
+		ga = attributes(.data)$grouped
+		!is.null(ga) && ga}
 
 output = 
 	function(.data, path = NULL, format = "native", input.format = format) {

@@ -149,6 +149,12 @@ include.packages =
 	function(which = names(sessionInfo()$other))
 		sapply(which, Curry(includePackage, sc = .options$context))
 
+drop.gather = 
+	function(x) {
+		if(is.element(".gather", names(x)))
+			rm.keycols(select(x, -.gather), ".gather")
+		else x }
+
 gapply = 
 	function(.data, .f, ...) {
 		include.packages()
@@ -168,7 +174,7 @@ gapply =
 								function(x) 
 									safe.cbind.kv(
 										unique(keys(x)), 
-										f1(x)))))}
+										f1(drop.gather(x))))))}
 		rdd = as.RDD(.data)
 		as.pipe(
 			if(is.grouped(.data)) {
@@ -228,10 +234,7 @@ ungroup =
 
 gather = 
 	function(.data) 
-		gapply(
-			group(.data, .gather = 1),
-			function(x)
-				select(x, -.gather))
+			group(.data, .gather = 1)
 
 output = 
 	function(.data, path = NULL, format = "native", input.format = format) {
@@ -261,7 +264,7 @@ as.data.frame.pipe =
 
 as.data.frame.RDD = 
 	function(x, ...)
-		rdd.list2kv(SparkR::collect(x))
+		drop.gather(rdd.list2kv(SparkR::collect(x)))
 
 as.RDD.data.frame = 
 	function(x, ...) 

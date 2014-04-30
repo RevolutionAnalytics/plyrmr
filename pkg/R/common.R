@@ -132,7 +132,7 @@ safe.cbind  =
 			x = splat(data.frame)(c(ll, list(check.names = FALSE)))
 			x = x[, unique(names(x)), drop = FALSE]
 		  if(!is.null(rn))
-		  	rownames(x) = rep(rn, length.out = nrow(x))
+		  	rownames(x) = make.unique(rep(rn, length.out = nrow(x)))
 			x}}
 
 safe.cbind.kv = 

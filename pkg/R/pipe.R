@@ -128,7 +128,10 @@ kv2rdd.list =
 			mapply(
 				function(x, y) list(k = x, v = y), 
 				lapply(
-					split(k, k, drop = TRUE), function(x) digest(unique(x))), 
+					split(k, k, drop = TRUE), 
+					function(x) {
+						row.names(x) = NULL
+						digest(unique(x))}), 
 				split(kv, k, drop = TRUE), 
 				SIMPLIFY = FALSE)}
 

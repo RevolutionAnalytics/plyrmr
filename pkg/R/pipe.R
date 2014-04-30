@@ -138,12 +138,23 @@ gapply =
 	function(.data, .f, ...) 
 		as.pipe(
 			lapplyPartition(
-				rdd(.data), 
+				as.RDD(.data), 
 				function(x) {
 					kv = rdd.list2kv(x)
 					k = keys(kv)
-					kv = make.f1(.f, ...)(kv)
-					kv2rdd.list(safe.cbind.kv(k, kv))}))
+					f1 = make.f1(.f, ...)
+					if(ncol(k) == 0)
+						kv = f1(kv)
+					else
+						kv2rdd.list(
+							do.call(
+								rbind, 
+								lapply(
+									split(kv, k, drop = TRUE), 
+									function(x) 
+										safe.cbind.kv(
+											unique(keys(x)), 
+											f1(x)))))}))
 
 group = 
 	function(.data, ..., .envir = parent.frame()) {

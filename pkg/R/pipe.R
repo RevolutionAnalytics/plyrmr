@@ -51,14 +51,20 @@ vectorized =
 	function(f, flag = TRUE) 
 		structure(f, vectorized = flag)
 
+has.property = function (x, name)
+	default(attr(x, name, exact = TRUE), FALSE)
+
 is.mergeable = 
 	function(f) 
-		default(attr(f, "mergeable", exact=TRUE), FALSE)
+		has.property(f, "mergeable")
 
 is.vectorized = 
 	function(f) 
-		default(attr(f, "vectorized", exact=TRUE), FALSE)
+		has.property(f, "vectorized")
 
+is.grouped = 
+	function(.data) 
+		has.property(.data, "grouped")
 
 # this is a new keyval light, breaking deps with rmr2 and using a different representation
 

@@ -116,15 +116,16 @@ rdd.list2kv =
 	function(ll) 
 		do.call(
 			rbind, 
-			lapply(
-				ll,
-				function(l) {
-					if(is.data.frame(l)) l 
-					else {
-						if(is.data.frame(l[[2]]))
-							l[[2]]
-						else
-							do.call(rbind, l[[2]])}}))
+			unname(
+				lapply(
+					ll,
+					function(l) {
+						if(is.data.frame(l)) l 
+						else {
+							if(is.data.frame(l[[2]]))
+								l[[2]]
+							else
+								do.call(rbind, l[[2]])}})))
 
 kv2rdd.list = 
 	function(kv) {
@@ -135,11 +136,11 @@ kv2rdd.list =
 			mapply(
 				function(x, y) list(k = x, v = y), 
 				lapply(
-					split(k, k, drop = TRUE), 
+					unname(split(k, k, drop = TRUE)), 
 					function(x) {
 						row.names(x) = NULL
 						digest(unique(x))}), 
-				split(kv, k, drop = TRUE), 
+				unname(split(kv, k, drop = TRUE)), 
 				SIMPLIFY = FALSE)}
 
 # core pipes, apply functions and grouping
@@ -169,7 +170,7 @@ gapply =
 						do.call(
 							rbind, 
 							lapply(
-								split(kv, k, drop = TRUE), 
+								unname(split(kv, k, drop = TRUE)), 
 								function(x) 
 									safe.cbind.kv(
 										unique(keys(x)), 

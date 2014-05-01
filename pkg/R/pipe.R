@@ -42,7 +42,6 @@ print.pipe =
 		print(as.data.frame(sample(x, method = "any", n = 100)))
 		invisible(x)}
 
-
 mergeable = 
 	function(f, flag = TRUE) 
 		structure(f, mergeable = flag)

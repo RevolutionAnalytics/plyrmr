@@ -34,6 +34,7 @@ export(
 	vectorized)
 S3method(as.data.frame, pipe)
 S3method(as.pipe, data.frame)
+S3method(as.pipe, character)
 S3method(print, pipe)
 #base
 export(sample)

@@ -260,7 +260,7 @@ as.pipe.data.frame =
 
 as.data.frame.pipe =
 	function(x, ...)
-		as.data.frame(as.RDD(x))
+		as.data.frame(as.RDD(x), ...)
 
 as.data.frame.RDD = 
 	function(x, ...)
@@ -272,6 +272,14 @@ as.RDD.data.frame =
 			.options$context, 
 			kv2rdd.list(
 				keyval(x)))
+
+as.pipe.character =
+	function(x, ...)
+		as.pipe(
+		lapplyPartition(
+			textFile(.options$context, x, minSplits = NULL),
+			function(x)
+				list(read.table(textConnection(unlist(x)), header= FALSE, ...))))
 
 input = as.pipe
 

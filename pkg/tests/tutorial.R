@@ -2,25 +2,30 @@
 options(warn = -1)
 #rm(mtcars)
 suppressPackageStartupMessages(library("plyrmr"))
-invisible(rmr.options(backend="local"))
-invisible(dfs.rmr("/tmp/mtcars"))
+plyrmr:::set.context()
+#invisible(rmr.options(backend="local"))
+#invisible(dfs.rmr("/tmp/mtcars"))
+file.remove("/tmp/mtcars")
 # mtcars = cbind(model = row.names(mtcars), mtcars)
 # row.names(mtcars) = NULL
-invisible(output(input(mtcars), "/tmp/mtcars"))
+#invisible(output(input(mtcars), "/tmp/mtcars"))
+#workaround for lack of output features in SparkR
+#will work only in local mode
+write.table(mtcars, file = "/tmp/mtcars", row.names = F, col.names = FALSE)
 ## @knitr mtcars
 mtcars
 ## @knitr bind.cols
 bind.cols(mtcars, carb.per.cyl = carb/cyl)
 ## @knitr bind.cols-input
-bind.cols(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
+bind.cols(input(mtcars), carb.per.cyl = carb/cyl)
 ## @knitr as.data.frame-bind.cols-input
-as.data.frame(bind.cols(input("/tmp/mtcars"), carb.per.cyl = carb/cyl))
+as.data.frame(bind.cols(input(mtcars), carb.per.cyl = carb/cyl))
 ## @knitr invisible-dfs.rmr
-invisible(dfs.rmr("/tmp/mtcars.out"))
+#invisible(dfs.rmr("/tmp/mtcars.out"))
 ## @knitr output-bind.cols-input
-output(bind.cols(input("/tmp/mtcars"), carb.per.cyl = carb/cyl), "/tmp/mtcars.out")
+#output(bind.cols(input(mtcars), carb.per.cyl = carb/cyl), "/tmp/mtcars.out")
 ## @knitr mtcars-w-ratio
-mtcars.w.ratio = bind.cols(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
+mtcars.w.ratio = bind.cols(input(mtcars), carb.per.cyl = carb/cyl)
 as.data.frame(mtcars.w.ratio)
 ## @knitr where-bind.cols
 where(
@@ -31,7 +36,7 @@ where(
 ## @knitr where-bind.cols-input
 where(
 	transmute(
-		input("/tmp/mtcars"),
+		input(mtcars),
 		carb.per.cyl = carb/cyl,
 		.cbind = TRUE ),
 	carb.per.cyl >= 1)
@@ -57,11 +62,11 @@ high.carb.cyl.2(1)
 ## @knitr last.col
 last.col = function(x) x[, ncol(x), drop = FALSE]
 ## @knitr gapply-input
-gapply(input("/tmp/mtcars"), last.col)
+gapply(input(mtcars), last.col)
 ## @knitr magic.wand
 magic.wand(last.col)
 last.col(mtcars)
-last.col(input("/tmp/mtcars"))
+last.col(input(mtcars))
 ## @knitr transmute
 transmute(mtcars, sum(carb))
 ## @knitr transmute-input-setup
@@ -80,20 +85,20 @@ input("/tmp/mtcars3", format = if3) %|%
 ## @knitr transmute-gather-cleanup
 invisible(suppressWarnings(rmr.options(backend = "local")))
 ## @knitr transmute-group
-input("/tmp/mtcars") %|%
+input(mtcars) %|%
 	group(cyl) %|%
 	transmute(mean.mpg = mean(mpg))
 ## @knitr transmute-group.f
-input("/tmp/mtcars") %|%
+input(mtcars) %|%
 	group.f(last.col) %|%
 	transmute(mean.mpg = mean(mpg)) 
 ## @knitr group-quantile
-input("/tmp/mtcars") %|%
+input(mtcars) %|%
 	group(carb) %|%
 	quantile.cols() 
 ## @knitr group-lm
 models = 
-	input("/tmp/mtcars") %|%
+	input(mtcars) %|%
 	group(carb) %|%
 	transmute(model = list(lm(mpg~cyl+disp))) %|%
 	as.data.frame()

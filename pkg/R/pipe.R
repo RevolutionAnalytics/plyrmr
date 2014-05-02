@@ -106,9 +106,12 @@ recycle.keyval =
 				if (nrow(v) == 0) 
 					NULL
 				else {
-					safe.cbind(
-						as.data.frame(
-							do.call(cbind, c(k, v))))}}}}
+					x =
+						safe.cbind(
+							as.data.frame(
+								do.call(cbind, c(k, v))))
+					rownames(x) = make.unique(cbind(rownames(v), 1:nrow(x))[,1])
+					x}}}}
 
 # conversion from and to rdd list representation (row first)
 

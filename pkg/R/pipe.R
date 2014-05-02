@@ -106,10 +106,7 @@ recycle.keyval =
 				if (nrow(v) == 0) 
 					NULL
 				else {
-					x =
-						safe.cbind(
-							as.data.frame(
-								do.call(cbind, c(k, v))))
+					x = safe.cbind.kv(k, v)
 					rownames(x) = make.unique(cbind(rownames(v), 1:nrow(x))[,1])
 					x}}}}
 

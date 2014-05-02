@@ -29,22 +29,20 @@ args =
 
 for(method in names(args)) {
 	method.args = args[[method]] 
-	for(be in c("local", "hadoop")) {
-		rmr.options(backend = be)
-		unit.test(
-			function(df, ...) 
-				cmp.df(
-					unique(df),
-					as.data.frame(
-						union(
-							do.call(
-								sample, 
-								c(
-									list(input(df), method = method), 
-									list(...))), input(df)))),
-			c(list(rdata.frame), method.args),
-			precondition = 
-				function(df, ...) {
-					if(is.element(method, c("any", "hypergeometric")))
-						list(...)$n <= nrow(df)
-					else TRUE})}}
+	unit.test(
+		function(df, ...) 
+			cmp.df(
+				unique(df),
+				as.data.frame(
+					union(
+						do.call(
+							sample, 
+							c(
+								list(input(df), method = method), 
+								list(...))), input(df)))),
+		c(list(rdata.frame), method.args),
+		precondition = 
+			function(df, ...) {
+				if(is.element(method, c("any", "hypergeometric")))
+					list(...)$n <= nrow(df)
+				else TRUE})}

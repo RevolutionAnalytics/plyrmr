@@ -1,4 +1,4 @@
-# Copyright 2013 Revolution Analytics
+# Copyright 2014 Revolution Analytics
 #    
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,18 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-library(plyrmr)
-magic.wand(mutate, non.standard.args = TRUE)
 
-summarize.fun = 
-	function(.data, ..., .mergeable = FALSE)
-		gapply(.data, if(.mergeable) mergeable(summarize) else summarize, ...)
+extend = 
+	function(pack = c("base", "dplyr"), envir = parent.frame()) {
+		pack = match.arg(pack)
+		switch(
+			pack,
+			base = {
+				magic.wand(transform, non.standard.args = TRUE, envir = envir)
+				magic.wand(subset, non.standard.args = TRUE, envir = envir)},
+			dplyr = {
+				magic.wand(filter, non.standard.args = TRUE, envir = envir)
+				magic.wand(mutate, non.standard.args = TRUE, envir = envir)
+				magic.wand(summarize, non.standard.args = TRUE, envir = envir)})}
 
-summarize = function(.data, ...) UseMethod("summarize")
-setMethodS3("summarize", "pipe", summarize.fun)
-setMethodS3("summarize", "default", plyr::summarize)
 
 
-
-
-		

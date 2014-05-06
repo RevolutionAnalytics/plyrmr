@@ -164,7 +164,7 @@ This is mostly a scalable programs, but there are some caveats: we need to be mi
 
 When the definition of the grouping column is more complicated, we may need to reach for the uber-general `group.f`, the grouping relative of `gapply` (in fact, these two functions are the foundation for everything else in `plyrmr`). Let's go back to the `last.col` example. If we need to group by the last columns of a data frame, this is all we need to do:
 
-```{r select-group.f}
+```{r transmute-group.f}
 ```
 
 ## Better than SQL

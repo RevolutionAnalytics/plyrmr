@@ -32,9 +32,10 @@ drop.gather =
 			x}
 
 make.task.fun = 																					# this function is a little complicated so some comments are in order
-	function(keyf, valf, ungroup, vectorized) {												# make a valid map function from two separate ones for keys and values
+	function(keyf, valf, ungroup, ungroup.args, vectorized) {												# make a valid map function from two separate ones for keys and values
 		if(is.null(valf))                                   # the value function defaults to identity
 			valf = identity 
+		stopifnot((!ungroup) || is.null(keyf))
 		function(k, v) {                                    # this is the signature of a correct map function
 			rownames(k) = NULL                                # wipe row names unless you want them to count in the grouping (Hadoop only sees serialization)
 			if(vectorized) {
@@ -42,23 +43,28 @@ make.task.fun = 																					# this function is a little complicated so 
 				k = w[, names(k)]}
 			else
 				w = safe.cbind.kv(k,	valf(drop.gather(safe.cbind.kv(k, v))))       # pass both keys and values to val function as a single data frame, then make sure we keep keys for the next step
-			if (ungroup) k = NULL                             # if ungroup called reset keys, otherwise accumulate
-			k = {	
-				if(is.null(keyf)) k 														# by default keep grouping whatever it is
-				else safe.cbind(k, keyf(drop.gather(w)))}										# but if you have a key function, use it and cbind old and new keys
+			k = {
+				if (ungroup) { 					# if ungroup called select or reset keys, otherwise accumulate
+					if(length(ungroup.args) == 0) 
+						NULL            
+					else
+						do.call(select, c(list(k), lapply(ungroup.args, function(a) as.call(list(as.name("-"), a)))))}
+				else {	
+					if(is.null(keyf)) k 														# by default keep grouping whatever it is
+					else safe.cbind(k, keyf(drop.gather(w)))}}										# but if you have a key function, use it and cbind old and new keys
 			if(!is.null(w) && nrow(w) > 0) keyval(k, drop.gather(w))}}     # special care for empty cases
 
 make.map.fun = 
-	function(keyf, valf, ungroup)
-		make.task.fun(keyf, valf, ungroup, vectorized = FALSE)
+	function(keyf, valf)
+		make.task.fun(keyf, valf, ungroup = FALSE, ungroup.args = NULL, vectorized = FALSE)
 
 make.reduce.fun = 
-	function(valf, ungroup, vectorized) 
-		make.task.fun(NULL, valf, ungroup, vectorized)
+	function(valf, ungroup, ungroup.args, vectorized) 
+		make.task.fun(NULL, valf, ungroup, ungroup.args, vectorized)
 
 make.combine.fun = 
 	function(valf, vectorized) {
-		cf = make.task.fun(NULL, valf, ungroup = FALSE, vectorized = vectorized)
+		cf  = make.task.fun(NULL, valf, ungroup = FALSE, ungroup.args = NULL, vectorized = vectorized)
 		function(k, v) {
 			retval = cf(k, v)
 			nm = sapply(names(v), function(col) grep(paste0(col), names(retval$val), value=T))
@@ -102,12 +108,12 @@ make.f1 =
 						data.frame(x = .y, stringsAsFactors = F)}}}
 
 mergeable = 
-	function(f) 
-		structure(f, mergeable = TRUE)
+	function(f, flag = TRUE) 
+		structure(f, mergeable = flag)
 
 vectorized = 
-	function(f) 
-		structure(f, vectorized = TRUE)
+	function(f, flag = TRUE) 
+		structure(f, vectorized = flag)
 
 is.mergeable = 
 	function(f) 
@@ -141,11 +147,10 @@ group =
 	function(.data, ..., .envir = parent.frame()) {
 		force(.envir)
 		dot.args = dots(...)
-		gbf = 
-			group.f(
-				.data, 
-				function(.y) 
-					do.call(CurryHalfLazy(transmute, .envir = .envir), c(list(.y), dot.args)))}
+		group.f(
+			.data, 
+			function(.y) 
+				do.call(CurryHalfLazy(transmute, .envir = .envir), c(list(.y), dot.args)))}
 
 group.f = 
 	function(.data, .f, ...) {
@@ -165,17 +170,28 @@ group.f =
 		.data}
 
 ungroup = 
-	function(.data) {
+	function(.data, ...) {
+		.data$ungroup.args = named_dots(...)
 		if(is.grouped(.data) && !is.null(.data$reduce)) {
 			.data$ungroup = TRUE
-			input(run(.data, input.format = "native"))}
+			phase1 = input(run(.data, input.format = "native"))
+			if(length(.data$ungroup.args) == 0)
+				phase1
+			else 
+				group.f(phase1, function(x) data.frame(.gather = 1))}
 		else {
-			if (is.grouped(.data)) {
+			if(is.grouped(.data) && length(named_dots(...)) == 0) {
 				.data$group = NULL
-				.data$ungroup = FALSE
+				.data$ungroup = FALSE #what happens to ungroup.vars here
 				.data}
-			else
-				.data}}
+			else{
+				prev.group = .data$group
+				.data$group = 
+				function(v) {
+					pg = prev.group(v)
+					pg[, setdiff(names(pg), as.character(.data$ungroup.args)), drop = FALSE]}
+				.data}
+			.data}}
 
 gather = 
 	function(.data) {
@@ -231,14 +247,14 @@ run =
 			mr.args$map = 
 				make.map.fun(
 					keyf = pipe$group, 
-					valf = pipe$map,
-					pipe$ungroup)
-			if(!is.null(pipe$reduce) &&
-				 	!is.null(pipe$group)) {
+					valf = pipe$map)
+			if(!is.null(pipe$reduce)) {
+				stopifnot(!is.null(pipe$group))
 				mr.args$reduce = 
 					make.reduce.fun(
 						valf = pipe$reduce, 
 						ungroup = default(pipe$ungroup, FALSE),
+						ungroup.args = pipe$ungroup.args,
 						vectorized = default(pipe$vectorized, FALSE))
 				mr.args$vectorized.reduce = pipe$vectorized}
 			if(!is.null(pipe$recursive.group) &&
@@ -290,7 +306,7 @@ is.generic =
 		length(methods(f)) > 0
 
 magic.wand = 
-	function(f, non.standard.args = TRUE, add.envir.arg = non.standard.args, envir = parent.frame()){
+	function(f, non.standard.args = TRUE, add.envir.arg = non.standard.args, envir = parent.frame(), mergeable = FALSE, ...){
 		suppressPackageStartupMessages(library(R.methodsS3))
 		f.name = as.character(substitute(f))
 		f.data.frame = {
@@ -315,8 +331,8 @@ magic.wand =
 				function(.data, ..., .envir = parent.frame()) {
 					.envir = copy.env(.envir)
 					curried.g = CurryHalfLazy(g, .envir = .envir)
-					gapply(.data, curried.g, ...)}
+					gapply(.data, mergeable(curried.g, mergeable), ...)}
 			else
 				function(.data, ...)
-					do.call(gapply, c(list(.data, g), list(...))),
+					do.call(gapply, c(list(.data, mergeable(g, mergeable)), list(...))),
 			envir = envir)} 

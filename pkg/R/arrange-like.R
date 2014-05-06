@@ -203,7 +203,8 @@ bottom.k =
 		extreme.k(.x, .k = .k, ..., .decreasing = FALSE, .envir = .envir)}
 
 moving.window = 
-	function(x, index, window, R) {
+	function(x, index, window, R = 10^4) {
+		stopifnot(R >= window)
 		partition = 
 			function(x) {
 				part = 

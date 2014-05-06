@@ -373,6 +373,21 @@ This is mostly a scalable programs, but there are some caveats: we need to be mi
 When the definition of the grouping column is more complicated, we may need to reach for the uber-general `group.f`, the grouping relative of `gapply` (in fact, these two functions are the foundation for everything else in `plyrmr`). Let's go back to the `last.col` example. If we need to group by the last columns of a data frame, this is all we need to do:
 
 
+```r
+input("/tmp/mtcars") %|%
+	group.f(last.col) %|%
+	transmute(mean.mpg = mean(mpg)) 
+```
+
+```
+    carb mean.mpg
+1      4    15.79
+1.1    1    25.34
+1.2    2    22.40
+1.3    3    16.30
+1.4    6    19.70
+1.5    8    15.00
+```
 
 
 ## Better than SQL

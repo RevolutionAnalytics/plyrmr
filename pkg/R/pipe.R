@@ -35,6 +35,7 @@ make.task.fun = 																					# this function is a little complicated so 
 	function(keyf, valf, ungroup, ungroup.args, vectorized) {												# make a valid map function from two separate ones for keys and values
 		if(is.null(valf))                                   # the value function defaults to identity
 			valf = identity 
+		stopifnot((!ungroup) || is.null(keyf))
 		function(k, v) {                                    # this is the signature of a correct map function
 			rownames(k) = NULL                                # wipe row names unless you want them to count in the grouping (Hadoop only sees serialization)
 			if(vectorized) {
@@ -42,7 +43,6 @@ make.task.fun = 																					# this function is a little complicated so 
 				k = w[, names(k)]}
 			else
 				w = safe.cbind.kv(k,	valf(drop.gather(safe.cbind.kv(k, v))))       # pass both keys and values to val function as a single data frame, then make sure we keep keys for the next step
-      stopifnot(!(ungroup && is.null(keyf)))
 			k = {
 				if (ungroup) { 					# if ungroup called select or reset keys, otherwise accumulate
 					if(length(ungroup.args) == 0) 
@@ -171,18 +171,25 @@ group.f =
 
 ungroup = 
 	function(.data, ...) {
+		.data$ungroup.args = named_dots(...)
 		if(is.grouped(.data) && !is.null(.data$reduce)) {
 			.data$ungroup = TRUE
-			.data$ungroup.args = named_dots(...)
 			phase1 = input(run(.data, input.format = "native"))
 			if(length(.data$ungroup.args) == 0)
 				phase1
 			else 
 				group.f(phase1, function(x) data.frame(.gather = 1))}
 		else {
-			if (is.grouped(.data)) {
+			if(is.grouped(.data) && length(named_dots(...)) == 0) {
 				.data$group = NULL
 				.data$ungroup = FALSE #what happens to ungroup.vars here
+				.data}
+			else{
+				prev.group = .data$group
+				.data$group = 
+				function(v) {
+					pg = prev.group(v)
+					pg[, setdiff(names(pg), as.character(.data$ungroup.args)), drop = FALSE]}
 				.data}
 			.data}}
 

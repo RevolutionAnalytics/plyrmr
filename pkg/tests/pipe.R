@@ -13,8 +13,8 @@
 # limitations under the License.
 
 
-library(plyrmr)
 library(quickcheck)
+library(plyrmr)
 library(dplyr)
 
 cmp.df = plyrmr:::cmp.df
@@ -35,7 +35,7 @@ for(be in c("local", "hadoop")) {
 	unit.test(
 		function(df)
 			cmp.df(
-				summarize(group_by(df, col.1), mean(col.2)),
+				summarize(group_by(df, col.1), mean(as.numeric(col.2))),
 				as.data.frame(transmute(group(input(df), col.1), mean(as.numeric(col.2))))),
 		list(rdata.frame),
 		precondition = function(df) ncol(df) >=2)	
@@ -43,6 +43,15 @@ for(be in c("local", "hadoop")) {
 	#group.f is tested implicitly in the above and has no direct equivalent in dplyr
 	
 	#ungroup what is a good test for ungroup?
+	
+	unit.test(
+		function(df)
+			cmp.df(
+				summarize(group_by(df, col.1), mean(as.numeric(col.2))),
+				as.data.frame(transmute(ungroup(group(input(df), col.1, col.2), col.2), mean(as.numeric(col.2))))),
+		list(rdata.frame),
+		precondition = function(df) ncol(df) >=2)	
+	
 	 
 	#gather
 	unit.test(

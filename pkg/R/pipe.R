@@ -306,8 +306,7 @@ is.generic =
 		length(methods(f)) > 0
 
 magic.wand = 
-	function(f, non.standard.args = TRUE, add.envir.arg = non.standard.args, envir = parent.frame(), mergeable = FALSE, ...){
-		suppressPackageStartupMessages(library(R.methodsS3))
+	function(f, non.standard.args = TRUE, add.envir.arg = non.standard.args, envir = parent.frame()){
 		f.name = as.character(substitute(f))
 		f.data.frame = {
 			if(is.generic(f))
@@ -331,8 +330,8 @@ magic.wand =
 				function(.data, ..., .envir = parent.frame()) {
 					.envir = copy.env(.envir)
 					curried.g = CurryHalfLazy(g, .envir = .envir)
-					gapply(.data, mergeable(curried.g, mergeable), ...)}
+					gapply(.data, mergeable(curried.g, is.mergeable(f)), ...)}
 			else
 				function(.data, ...)
-					do.call(gapply, c(list(.data, mergeable(g, mergeable)), list(...))),
+					do.call(gapply, c(list(.data, mergeable(g, is.mergeable(f))), list(...))),
 			envir = envir)} 

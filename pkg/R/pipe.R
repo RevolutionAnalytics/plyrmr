@@ -72,14 +72,6 @@ group =
 
 as.pipe = function(x, ...) UseMethod("as.pipe")
 
-as.pipe.character =
-	function(x, ...)
-		as.pipe(
-		lapplyPartition(
-			textFile(.options$context, x, minSplits = NULL),
-			function(x)
-				list(read.table(textConnection(unlist(x)), header= FALSE, ...))))
-
 input = as.pipe
 
 is.generic = 

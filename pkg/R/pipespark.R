@@ -170,6 +170,14 @@ ungroup =
 							kv))}),
 			grouped = !reset.grouping)} #TODO: review constant here						
 
+is.grouped = 
+	function(.data) 
+		has.property(.data, "grouped")
+
+gather = 
+	function(.data) 
+		group(.data, .gather = 1)
+
 output = 
 	function(.data, path = NULL, format = "native", input.format = format) {
 		stop('not implemented yet')}

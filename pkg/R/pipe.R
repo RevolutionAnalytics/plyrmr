@@ -61,15 +61,6 @@ is.vectorized =
 	function(f) 
 		has.property(f, "vectorized")
 
-is.grouped = 
-	function(.data) 
-		has.property(.data, "grouped")
-
-
-
-
-
-
 group = 
 	function(.data, ..., .envir = parent.frame()) {
 		force(.envir)
@@ -79,16 +70,7 @@ group =
 			function(.y) 
 				do.call(CurryHalfLazy(transmute, .envir = .envir), c(list(.y), dot.args)))}
 
-
-gather = 
-	function(.data) 
-			group(.data, .gather = 1)
-
-
-
 as.pipe = function(x, ...) UseMethod("as.pipe")
-
-
 
 as.pipe.character =
 	function(x, ...)

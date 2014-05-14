@@ -23,7 +23,7 @@ comp =
 		else		
 			do.call(Compose, funs)}
 
-drop.gather = 
+drop.gather.rmr = 
 	function(x){
 		if(is.element(".gather", names(x))) {
 			x = x[, !(names(x) == ".gather"), drop = FALSE]
@@ -39,10 +39,10 @@ make.task.fun = 																					# this function is a little complicated so 
 		function(k, v) {                                    # this is the signature of a correct map function
 			rownames(k) = NULL                                # wipe row names unless you want them to count in the grouping (Hadoop only sees serialization)
 			if(vectorized) {
-				w = valf(drop.gather(safe.cbind.kv(k, v)))
+				w = valf(drop.gather.rmr(safe.cbind.kv(k, v)))
 				k = w[, names(k)]}
 			else
-				w = safe.cbind.kv(k,	valf(drop.gather(safe.cbind.kv(k, v))))       # pass both keys and values to val function as a single data frame, then make sure we keep keys for the next step
+				w = safe.cbind.kv(k,	valf(drop.gather.rmr(safe.cbind.kv(k, v))))       # pass both keys and values to val function as a single data frame, then make sure we keep keys for the next step
 			k = {
 				if (ungroup) { 					# if ungroup called select or reset keys, otherwise accumulate
 					if(length(ungroup.args) == 0) 
@@ -51,8 +51,8 @@ make.task.fun = 																					# this function is a little complicated so 
 						do.call(select, c(list(k), lapply(ungroup.args, function(a) as.call(list(as.name("-"), a)))))}
 				else {	
 					if(is.null(keyf)) k 														# by default keep grouping whatever it is
-					else safe.cbind(k, keyf(drop.gather(w)))}}										# but if you have a key function, use it and cbind old and new keys
-			if(!is.null(w) && nrow(w) > 0) keyval(k, drop.gather(w))}}     # special care for empty cases
+					else safe.cbind(k, keyf(drop.gather.rmr(w)))}}										# but if you have a key function, use it and cbind old and new keys
+			if(!is.null(w) && nrow(w) > 0) keyval(k, drop.gather.rmr(w))}}     # special care for empty cases
 
 make.map.fun = 
 	function(keyf, valf)
@@ -75,7 +75,7 @@ make.combine.fun =
 			names(retval$val)[mask] = new.names[mask]
 			retval}}
 
-gapply =
+gapply.pipermr =
 	function(.data, .f, ...){
 		.f = freeze.env(.f)
 		f1 = make.f1(.f, ...)
@@ -95,7 +95,7 @@ gapply =
 				is.vectorized(.f)}
 		.data}
 
-group.f = 
+group.f.pipermr = 
 	function(.data, .f, ...) {
 		.f = freeze.env(.f)
 		f1 = make.f1(.f, ...)
@@ -112,7 +112,7 @@ group.f =
 					f1)}
 		.data}
 
-ungroup = 
+ungroup.pipermr = 
 	function(.data, ...) {
 		.data$ungroup.args = named_dots(...)
 		if(is.grouped(.data) && !is.null(.data$reduce)) {
@@ -137,11 +137,11 @@ ungroup =
 			.data}}
 
 
-is.grouped = 
+is.grouped.pipermr = 
 	function(.data)
 		!is.null(.data[["group"]])
 
-gather = 
+gather.pipermr = 
 	function(.data) {
 		if(is.grouped(.data)) 
 			.data
@@ -207,7 +207,7 @@ run =
 					make.combine.fun(pipe$combine, default(pipe$vectorized, FALSE))}
 			mrexec(mr.args, input.format)}}
 
-output = 
+output.pipermr = 
 	function(.data, path = NULL, format = "native", input.format = format) {
 		if(missing(input.format) && !is.character(format))
 			stop("need to specify a custom input format for a custom output")
@@ -223,7 +223,7 @@ as.pipe.big.data =
 			strip.null.args(
 				input = x,
 				ungroup = FALSE),
-			class = "pipe")
+			class = c("pipermr", "pipe"))
 
 as.pipe.data.frame = 
 	function(x, ...) 

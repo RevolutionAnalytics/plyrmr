@@ -15,7 +15,7 @@
 #options
 
 .options = new.env()
-.options$context = sparkR.init()
+.options$context = NULL
 
 set.context =
 	function(sc = sparkR.init())
@@ -60,6 +60,27 @@ is.mergeable =
 is.vectorized = 
 	function(f) 
 		has.property(f, "vectorized")
+
+
+gapply = 
+	function(.data, .f, ...)
+		UseMethod("gapply")
+
+group.f =
+	function(.data, .f, ...)
+		UseMethod("group.f")
+
+gather =
+	function(.data)
+		UseMethod("gather")
+
+is.grouped = 
+	function(.data)
+		UseMethod("is.grouped")
+	
+output = 
+	function(.data, path = NULL, format = "native", input.format = format) 
+		UseMethod("output")
 
 group = 
 	function(.data, ..., .envir = parent.frame()) {

@@ -33,16 +33,16 @@ rm.keycols =
 		attr(kv, 'keys') = setdiff(keycols(kv), keycols)
 		kv}
 
-keys = function(kv) kv[, keycols(kv), drop = FALSE]
-values = function(kv) kv[, setdiff(names(kv), keycols(kv))]
+keys.spark = function(kv) kv[, keycols(kv), drop = FALSE]
+values.spark = function(kv) kv[, setdiff(names(kv), keycols(kv))]
 
-keyval = 
+keyval.spark = 
 	function (key, val = NULL) {
 		if (missing(val)) 
-			keyval(key = NULL, val = key)
-		else set.keycols(recycle.keyval(key, val), names(key))}
+			keyval.spark(key = NULL, val = key)
+		else set.keycols(recycle.keyval.spark(key, val), names(key))}
 
-recycle.keyval = 
+recycle.keyval.spark = 
 	function (k, v) {
 		if(is.null(k))
 			v
@@ -76,7 +76,7 @@ rdd.list2kv =
 
 kv2rdd.list = 
 	function(kv) {
-		k = keys(kv)
+		k = keys.spark(kv)
 		if(ncol(k) == 0)
 			list(kv)
 		else
@@ -96,19 +96,19 @@ include.packages =
 	function(which = names(sessionInfo()$other))
 		sapply(which, Curry(includePackage, sc = .options$context))
 
-drop.gather = 
+drop.gather.spark = 
 	function(x) {
 		if(is.element(".gather", names(x)))
 			rm.keycols(select(x, -.gather), ".gather")
 		else x }
 
-gapply = 
+gapply.pipespark = 
 	function(.data, .f, ...) {
 		include.packages()
 		f = 
 			function(part) {
 				kv = rdd.list2kv(part)
-				k = keys(kv)
+				k = keys.spark(kv)
 				f1 = make.f1(.f, ...)
 				kv2rdd.list(
 					if(ncol(k) == 0)
@@ -120,8 +120,8 @@ gapply =
 								unname(split(kv, k, drop = TRUE)), 
 								function(x) 
 									safe.cbind.kv(
-										unique(keys(x)), 
-										f1(drop.gather(x))))))}
+										unique(keys.spark(x)), 
+										f1(drop.gather.spark(x))))))}
 		rdd = as.RDD(.data)
 		as.pipe(
 			if(is.grouped(.data)) {
@@ -133,7 +133,7 @@ gapply =
 				lapplyPartition(rdd, f),
 			grouped = is.grouped(.data))}
 
-group.f =
+group.f.pipespark =
 	function(.data, .f, ...) {
 		include.packages()
 		f1 = make.f1(.f, ...)
@@ -142,15 +142,15 @@ group.f =
 				as.RDD(.data),
 				function(part) {
 					kv = rdd.list2kv(part)
-					k = keys(kv)
+					k = keys.spark(kv)
 					new.keys = f1(kv)
 					kv2rdd.list(
-						keyval(
+						keyval.spark(
 							safe.cbind(k, new.keys), 
 							safe.cbind(new.keys, kv)))}),
 			grouped = TRUE)} 
 
-ungroup = 
+ungroup.pipespark = 
 	function(.data, ...) {
 		include.packages()
 		ungroup.args = dots(...)
@@ -160,9 +160,9 @@ ungroup =
 				as.RDD(.data),
 				function(part) {
 					kv  = rdd.list2kv(part)
-					k = keys(kv)
+					k = keys.spark(kv)
 					kv2rdd.list(
-						keyval(
+						keyval.spark(
 							if(reset.grouping)
 								NULL
 							else
@@ -170,15 +170,15 @@ ungroup =
 							kv))}),
 			grouped = !reset.grouping)} #TODO: review constant here						
 
-is.grouped = 
+is.grouped.pipespark = 
 	function(.data) 
 		has.property(.data, "grouped")
 
-gather = 
+gather.pipespark = 
 	function(.data) 
 		group(.data, .gather = 1)
 
-output = 
+output.pipespark = 
 	function(.data, path = NULL, format = "native", input.format = format) {
 		stop('not implemented yet')}
 
@@ -188,35 +188,35 @@ as.pipe.RDD =
 	function(x, ...) 
 		structure(
 			list(rdd = x),
-			class = "pipe",
+			class = c("pipespark", "pipe"),
 			...)
 
-as.RDD.pipe= 
+as.RDD.pipespark= 
 	function(x, ...) 
 		x[["rdd"]]
 
-as.pipe.data.frame = 
+as.pipespark.data.frame = 
 	function(x, ...)
-		as.pipe(as.RDD(x))
+		as.pipespark(as.RDD(x))
 
-as.data.frame.pipe =
+as.data.frame.pipespark =
 	function(x, ...)
 		as.data.frame(as.RDD(x), ...)
 
 as.data.frame.RDD = 
 	function(x, ...)
-		drop.gather(rdd.list2kv(SparkR::collect(x)))
+		drop.gather.spark(rdd.list2kv(SparkR::collect(x)))
 
 as.RDD.data.frame = 
 	function(x, ...) 
 		parallelize(
 			.options$context, 
 			kv2rdd.list(
-				keyval(x)))
+				keyval.spark(x)))
 
-as.pipe.character =
+as.pipespark.character =
 	function(x, ...)
-		as.pipe(
+		as.pipespark(
 			lapplyPartition(
 				textFile(.options$context, x, minSplits = NULL),
 				function(x)

@@ -10,4 +10,4 @@ Depends: SparkR, reshape2, dplyr
 Imports: Rcpp (>= 0.10.4), plyr,  R.methodsS3, Hmisc, functional, digest
 License: Apache License (== 2.0)
 LinkingTo: Rcpp
-Collate: RcppExports.R common.R pipe.R pipespark.R dataframe.R aggregate.R arrange-like.R base.R reshape2.R sqlish.R extensions.R
+Collate: RcppExports.R common.R pipe.R pipespark.R pipermr.R dataframe.R aggregate.R arrange-like.R base.R reshape2.R sqlish.R extensions.R

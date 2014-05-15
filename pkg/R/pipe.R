@@ -14,7 +14,24 @@
 
 #options
 
+plyrmr.options = 
+	function(...) {
+		args = dots(...)
+		if(is.element("backend", names(args))) {
+			.options$backend = arg[[i]]
+			switch(
+				args[[i]],
+				local =  {library(rmr2); rmr.options(backend = "local")},
+				hadoop = {library(rmr2); rmr.options(backend = "hadoop")},
+				spark = {library(SparkR); set.context()})}
+		if(.options$backend == "spark") {
+			do.call(spark.options, args[-i])}
+		else 
+			if(is.element(.options$backend, c("local", "hadoop")))
+				do.call(rmr.options, args[-i])}					
+
 .options = new.env()
+
 .options$context = NULL
 
 set.context =
@@ -61,7 +78,6 @@ is.vectorized =
 	function(f) 
 		has.property(f, "vectorized")
 
-
 gapply = 
 	function(.data, .f, ...)
 		UseMethod("gapply")
@@ -77,7 +93,7 @@ gather =
 is.grouped = 
 	function(.data)
 		UseMethod("is.grouped")
-	
+
 output = 
 	function(.data, path = NULL, format = "native", input.format = format) 
 		UseMethod("output")
@@ -91,7 +107,12 @@ group =
 			function(.y) 
 				do.call(CurryHalfLazy(transmute, .envir = .envir), c(list(.y), dot.args)))}
 
-as.pipe = function(x, ...) UseMethod("as.pipe")
+as.pipe = 
+	function(x, ...) {
+		if(plyrmr.options("backend") == "spark")
+			UseMethod("as.pipespark")
+		else 
+			UseMethod("as.pipermr")}
 
 input = as.pipe
 

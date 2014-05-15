@@ -217,7 +217,10 @@ output.pipermr =
 
 as.big.data.pipe = run
 
-as.pipe.big.data = 
+as.pipermr = 
+	function(x, ...) UseMethod("as.pipermr")
+
+as.pipermr.big.data = 
 	function(x, ...) 
 		structure(
 			strip.null.args(
@@ -225,16 +228,16 @@ as.pipe.big.data =
 				ungroup = FALSE),
 			class = c("pipermr", "pipe"))
 
-as.pipe.data.frame = 
+as.pipermr.data.frame = 
 	function(x, ...) 
-		as.pipe(as.big.data(x, "native"))
+		as.pipermr(as.big.data(x, "native"))
 
-as.pipe.character = 
-	as.pipe.function = 
+as.pipermr.character = 
+	as.pipermr.function = 
 	function(x, format = "native", ...) 
-		as.pipe(as.big.data(x, format))
+		as.pipermr(as.big.data(x, format))
 
-as.pipe.list = Compose(as.big.data, as.pipe)
+as.pipermr.list = Compose(as.big.data, as.pipermr)
 
 as.data.frame.pipe =
 	function(x, ...)

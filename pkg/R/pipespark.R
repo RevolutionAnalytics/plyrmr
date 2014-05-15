@@ -123,7 +123,7 @@ gapply.pipespark =
 										unique(keys.spark(x)), 
 										f1(drop.gather.spark(x))))))}
 		rdd = as.RDD(.data)
-		as.pipe(
+		as.pipespark(
 			if(is.grouped(.data)) {
 				if(is.mergeable(.f))
 					lapplyPartition(reduceByKey(rdd, f, 10L), f)
@@ -137,7 +137,7 @@ group.f.pipespark =
 	function(.data, .f, ...) {
 		include.packages()
 		f1 = make.f1(.f, ...)
-		as.pipe(
+		as.pipespark(
 			lapplyPartition(
 				as.RDD(.data),
 				function(part) {
@@ -155,7 +155,7 @@ ungroup.pipespark =
 		include.packages()
 		ungroup.args = dots(...)
 		reset.grouping = length(ungroup.args) == 0
-		as.pipe(	
+		as.pipespark(	
 			lapplyPartition(
 				as.RDD(.data),
 				function(part) {
@@ -184,7 +184,11 @@ output.pipespark =
 
 as.RDD = function(x,...) UseMethod("as.RDD")
 
-as.pipe.RDD = 
+as.pipespark = 
+	function(x, ...)
+		UseMethod("as.pipespark")
+
+as.pipespark.RDD = 
 	function(x, ...) 
 		structure(
 			list(rdd = x),

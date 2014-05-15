@@ -12,6 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+.spark.options = new.env()
+
+spark.options =
+	function(..., context = sparkR.init())
+		if(!missing(context) || is.null(.spark.options$context))
+		.spark.options$context = context
+
 # this is a new keyval light, breaking deps with rmr2 and using a different representation
 
 keycols = 
@@ -94,7 +101,7 @@ kv2rdd.list =
 
 include.packages =
 	function(which = names(sessionInfo()$other))
-		sapply(which, Curry(includePackage, sc = .options$context))
+		sapply(which, Curry(includePackage, sc = .spark.options$context))
 
 drop.gather.spark = 
 	function(x) {
@@ -214,7 +221,7 @@ as.data.frame.RDD =
 as.RDD.data.frame = 
 	function(x, ...) 
 		parallelize(
-			.options$context, 
+			.spark.options$context, 
 			kv2rdd.list(
 				keyval.spark(x)))
 
@@ -222,6 +229,6 @@ as.pipespark.character =
 	function(x, ...)
 		as.pipespark(
 			lapplyPartition(
-				textFile(.options$context, x, minSplits = NULL),
+				textFile(.spark.options$context, x, minSplits = NULL),
 				function(x)
 					list(read.table(textConnection(unlist(x)), header= FALSE, ...))))

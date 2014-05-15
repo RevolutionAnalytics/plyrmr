@@ -2,7 +2,7 @@
 options(warn = -1)
 #rm(mtcars)
 suppressPackageStartupMessages(library("plyrmr"))
-plyrmr:::set.context()
+plyrmr.options(backend = "spark")
 #invisible(rmr.options(backend="local"))
 #invisible(dfs.rmr("/tmp/mtcars"))
 file.remove("/tmp/mtcars")

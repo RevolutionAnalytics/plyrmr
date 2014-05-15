@@ -16,27 +16,36 @@
 
 plyrmr.options = 
 	function(...) {
+		retval = list()
 		args = dots(...)
+		unnamed.args = {
+			if(is.null(names(args)))
+				args
+			else
+				args[names(args) == ""]}
+		if(is.element("backend", unnamed.args))
+			retval = c(retval, .options$backend)
 		if(is.element("backend", names(args))) {
-			.options$backend = arg[[i]]
+			.options$backend = args[["backend"]]
 			switch(
-				args[[i]],
+				args[["backend"]],
 				local =  {library(rmr2); rmr.options(backend = "local")},
 				hadoop = {library(rmr2); rmr.options(backend = "hadoop")},
-				spark = {library(SparkR); set.context()})}
+				spark = {library(SparkR); spark.options()})}
 		if(.options$backend == "spark") {
-			do.call(spark.options, args[-i])}
+			retval = c(retval, do.call(spark.options, args))}
 		else 
 			if(is.element(.options$backend, c("local", "hadoop")))
-				do.call(rmr.options, args[-i])}					
+				retval = c(retval, do.call(rmr.options, args))
+	retval}
 
 .options = new.env()
 
-.options$context = NULL
+.options$backend = "local"
 
-set.context =
-	function(sc = sparkR.init())
-		.options$context = sc
+# these two lines don't do what is expected of them
+#library(rmr2)
+#rmr.options(backend = "local")
 
 #function manip
 

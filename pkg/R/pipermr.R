@@ -239,7 +239,7 @@ as.pipermr.character =
 
 as.pipermr.list = Compose(as.big.data, as.pipermr)
 
-as.data.frame.pipe =
+as.data.frame.pipermr =
 	function(x, ...)
 		as.data.frame(
 			as.big.data(x))

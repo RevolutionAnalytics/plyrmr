@@ -2,11 +2,11 @@ Package: plyrmr
 Type: Package
 Title: Data manipulation backed by rmr2 and Hadoop
 Version: 0.3.0
-Date: 2014-03-31
+Date: 2014-05-19
 Author: Revolution Analytics
 Maintainer: Revolution Analytics <rhadoop@revolutionanalytics.com>
 Description: Implement basic data manipulation functions inspired by plyr; map them to Hadoop jobs through delayed evaluation and rmr2
-Depends: rmr2 (>= 3.1.0), reshape2, dplyr
+Depends: rmr2 (>= 3.1.1), reshape2, dplyr
 Imports: Rcpp (>= 0.10.4), plyr,  R.methodsS3, Hmisc, functional
 Suggests: quickcheck (>= 2.0.0)
 License: Apache License (== 2.0)

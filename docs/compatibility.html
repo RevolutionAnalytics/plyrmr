@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <meta http-equiv="x-ua-compatible" content="IE=9" >
 
-<title>What&#39;s new in <code>plyrmr</code> 0.3.0</title>
+<title>Compatibility testing for plyrmr 0.3.0</title>
 
 <style type="text/css">
 body, td {
@@ -142,27 +142,19 @@ hr {
 </head>
 
 <body>
-<h1>What&#39;s new in <code>plyrmr</code> 0.3.0</h1>
+<h1>Compatibility testing for plyrmr 0.3.0</h1>
 
-<p>This is mostly a stability release and the main addition is behind the scenes, a set of unit tests that cover the most important functions in plyrmr. This is a more usable plyrmr and closer to a 1.0 release. But there are also some visible changes.</p>
+<p>Please contribute with additional reports. To claim compatibility you need to run <code>R CMD  check path-to-plyrmr</code> successfully.
+If you are interested in the compatibility chart for other releases, choose one from the drop down menu on the top left, under tags and find this document again (under docs; this is the only compatibility-tested release as of this writing). Not every release gets a complete round of testing, so typically a bug fix release (change in the third number only) is equally or more compatible than the previous release, even if we don&#39;t have the resources to test it directly. </p>
 
-<h1>Features</h1>
-
-<ul>
-<li>partial <code>ungroup</code>: before it could only reset the current grouping and start from scratch. Now it can remove columns from the current grouping, or, otherwise stated, make the grouping coarser. For instance, <code>input(mtcars) %|% group(car, cyl) %|% ungroup(cyl)</code> is equivalent to <code>input(mtcars) %|% group(carb)</code>. </li>
-<li>extension packs: version 0.2.0 cut down on API redundancy, but reduced user choice. So we brought back at least some of the most loved legacy functions like <code>transform</code> as extension packs. They are not part of &ldquo;core plyrmr&rdquo; but can be defined with <code>extend(pack)</code>, where <code>pack</code> is one of <code>base</code> (for <code>transform</code> and <code>subset</code>) or <code>dplyr</code> (for <code>mutate</code>, <code>summarize</code> or <code>filter</code>).</li>
-<li><code>quantile.cols</code> returns exact results for smaller data sets (or large date sets that are grouped into smaller ones).</li>
-<li><code>count.cols</code> doesn&#39;t drop numeric columns anymore </li>
-</ul>
-
-<h1>Bugs</h1>
-
-<ul>
-<li>support for row names reinstated #36</li>
-<li>argument order in <code>top.k</code> and <code>bottom.k</code> corrected</li>
-<li><code>top.k</code> and <code>bottom.k</code> don&#39;t reset grouping anymore</li>
-<li>handling of ungroup on ungrouped pipes</li>
-</ul>
+<table>
+<thead>
+<tr><th>Hadoop</th><th>R</th><th>OS</th><th>Notes</th><th>Reporter</th></tr>
+</thead>
+<tbody>
+<tr><td>CDH4.6</td><td>R 3.0.2 (Revolution R 7.0)</td><td>CentOS 6.3</td><td>mr2</td><td><a href=mailto:rhadoop@revolutionanalytics.com>Revolution</a></td></tr>
+</tbody>
+</table>
 
 </body>
 

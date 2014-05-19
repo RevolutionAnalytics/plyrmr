@@ -7,11 +7,9 @@
 \method{quantile.cols}{pipe}(x, N = 10^5, \dots)
 }
 \arguments{
-  \item{x}{
-A data set represented by a pipe or a data frame.
-}
-\item{\dots}{
-Additional arguments, see stats::quantile for details}
+  \item{x}{ A data set represented by a pipe or a data frame.}
+  \item{N}{ The maximum number of quantiles to be stored in memory at once. A higher value results in more accurate results.}
+  \item{\dots}{Additional arguments, see stats::quantile for details}
 }
 \details{
 The methods for pipes uses an approximation methods whose exact properties need to be studied in more detail. The interaction with the algorithm selection operated by the type argument have not been explored.

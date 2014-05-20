@@ -99,6 +99,10 @@ gather =
 	function(.data)
 		UseMethod("gather")
 
+ungroup = 
+	function(.data, ...)
+		UseMethod("ungroup")
+
 is.grouped = 
 	function(.data)
 		UseMethod("is.grouped")

@@ -48,6 +48,8 @@ S3method(ungroup, pipermr)
 S3method(ungroup, pipespark)
 S3method(gather, pipermr)
 S3method(gather, pipespark)
+S3method(output, pipermr)
+S3method(output, pipespark)
 #base
 export(sample)
 S3method(sample, default)

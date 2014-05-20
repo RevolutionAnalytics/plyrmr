@@ -118,7 +118,7 @@ group =
 
 as.pipe = 
 	function(x, ...) {
-		if(plyrmr.options("backend") == "spark")
+		if(plyrmr.options("backend")[[1]] == "spark")
 			UseMethod("as.pipespark")
 		else 
 			UseMethod("as.pipermr")}

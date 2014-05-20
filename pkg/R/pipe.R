@@ -26,9 +26,9 @@ plyrmr.options =
 		if(is.element("backend", unnamed.args))
 			retval = c(retval, .options$backend)
 		if(is.element("backend", names(args))) {
-			.options$backend = args[["backend"]]
+			.options$backend = eval(args[["backend"]])
 			switch(
-				args[["backend"]],
+				.options$backend,
 				local =  {library(rmr2); rmr.options(backend = "local")},
 				hadoop = {library(rmr2); rmr.options(backend = "hadoop")},
 				spark = {library(SparkR); spark.options()})}

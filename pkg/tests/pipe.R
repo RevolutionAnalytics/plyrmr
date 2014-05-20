@@ -19,8 +19,8 @@ library(dplyr)
 
 cmp.df = plyrmr:::cmp.df
 
-for(be in c("local", "hadoop")) {
-	rmr.options(backend = be)
+for(be in c("local", "hadoop", "spark")) {
+	plyrmr.options(backend = be)
 	
 	#gapply
 	

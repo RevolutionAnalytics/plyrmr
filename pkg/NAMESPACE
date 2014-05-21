@@ -39,7 +39,12 @@ S3method(as.pipespark, data.frame)
 S3method(as.pipespark, character)
 S3method(as.pipermr, data.frame)
 S3method(as.pipermr, character)
+S3method(as.pipermr, big.data)
+S3method(as.pipermr, list)
+S3method(as.big.data, list)
+S3method(as.big.data, big.data)
 S3method(print, pipe)
+S3method(print, big.data)
 S3method(gapply, pipermr)
 S3method(gapply, pipespark)
 S3method(group.f, pipermr)
@@ -63,7 +68,9 @@ export(
 	bind.cols,
 	select,
 	where,
-	merge)
+	merge,
+	get.format,
+	to.rmr)
 S3method(select, pipe)
 S3method(select, data.frame)
 S3method(transmute, pipe)

@@ -18,31 +18,37 @@ library(functional)
 
 cmp.df = plyrmr:::cmp.df
 
-#sample
-
-args = 	
-	list(
-		any = list(n = Curry(rinteger, len.lambda = 0)),
-		Bernoulli = list(p = Curry(rdouble, lambda = 0, min =0, max = 1)),
-		hypergeometric = list(n = Curry(rinteger, len.lambda = 0)))
-
-
-for(method in names(args)) {
-	method.args = args[[method]] 
-	unit.test(
-		function(df, ...) 
-			cmp.df(
-				unique(df),
-				as.data.frame(
-					union(
-						do.call(
-							sample, 
-							c(
-								list(input(df), method = method), 
-								list(...))), input(df)))),
-		c(list(rdata.frame), method.args),
-		precondition = 
-			function(df, ...) {
-				if(is.element(method, c("any", "hypergeometric")))
-					list(...)$n <= nrow(df)
-				else TRUE})}
+plyrmr:::all.backends({
+	#sample
+	
+	args = 	
+		list(
+			any = list(n = Curry(rinteger, len.lambda = 0)),
+			Bernoulli = list(p = Curry(rdouble, lambda = 0, min =0, max = 1)),
+			hypergeometric = list(n = Curry(rinteger, len.lambda = 0)))
+	
+	
+	for(method in names(args)) {
+		method.args = args[[method]] 
+		unit.test(
+			function(df, ...) 
+				cmp.df(
+					unique(df),
+					unique(
+						rbind(
+							as.data.frame(				
+								do.call(
+									sample, 
+									c(
+										list(
+											input(df), 
+											method = method), 
+										list(...))), 
+								input(df))))),
+			c(list(rdata.frame), method.args),
+			precondition = 
+				function(df, ...) {
+					if(is.element(method, c("any", "hypergeometric")))
+						list(...)$n <= nrow(df)
+					else TRUE})}
+})

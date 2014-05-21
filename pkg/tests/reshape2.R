@@ -14,7 +14,24 @@
 
 library(plyrmr)
 
-stopifnot(
-	all(
-		arrange(as.data.frame(melt(input(mtcars))), variable, value) == 
-			arrange(melt(mtcars), variable, value)))
+plyrmr:::all.backends({
+	unit.test(
+		function(df) 
+			plyrmr:::cmp.df(
+				as.data.frame(melt(input(df))),
+				melt(df)),
+		list(rdata.frame))
+	
+	unit.test(
+		function(df) {
+			df = cbind(id = 1:nrow(df), df)
+			plyrmr:::cmp.df(
+				df,
+				as.data.frame(
+					dcast(
+						melt(
+							input(df), 
+							id.vars = "id"), 
+						id ~ variable)))},
+		list(rdata.frame))
+}

@@ -233,6 +233,11 @@ cmp.df =
 			A[ord(A),sort(names(A))] == 
 				B[ord(B),sort(names(B))], na.rm = TRUE)}
 
+skip.spark =
+	function(block) 
+		if(plyrmr.options("backend")[[1]] != "spark")
+			block
+
 #lists
 
 strip.nulls = 

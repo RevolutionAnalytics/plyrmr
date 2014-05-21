@@ -19,11 +19,14 @@ dcast = function(data, formula, ...) UseMethod("dcast")
 
 dcast.pipe = 
 	function(data, formula, ...) {
-		id.vars = reshape2:::parse_formula(formula)[[1]][[1]]
+		id.vars = reshape2:::parse_formula(formula)[[1]]
 		gapply(
-			group(
-				data, 
-				id.vars), 
+			do.call(
+				group,
+				c(
+					list(
+						data), 
+					id.vars)), 
 			Curry(dcast, formula = formula),
 			...)}
 

@@ -14,6 +14,17 @@
 
 #options
 
+backends = c("local", "hadoop", "spark")
+
+all.backends = 
+	function(block) {
+		block = substitute(block) 
+		lapply(
+			backends,
+			function(be) {
+			plyrmr.options(backend = be) 
+			eval(block, envir = parent.frame())})}
+
 plyrmr.options = 
 	function(...) {
 		retval = list()

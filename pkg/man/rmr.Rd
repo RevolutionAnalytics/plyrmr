@@ -19,7 +19,7 @@ to.rmr(x)
 \code{get.format} returns a format specification that can be passed to \code{\link[rmr2]{mapreduce}}, \code{input.format} argument. \code{to.rmr} returns an object that can be used as input to \code{\link[rmr2]{mapreduce}}.
 }
 \examples{
-x = output(transform(input(mtcars)))
+x = output(bind.cols(input(mtcars)))
 get.format(x)
 to.rmr(x)
 }

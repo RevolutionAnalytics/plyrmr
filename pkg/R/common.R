@@ -229,7 +229,9 @@ data.frame.fill =
 cmp.df = 
 	function(A, B) {
 		ord = splat(order)
-		all(A[ord(A),] == B[ord(B),], na.rm = TRUE)}
+		all(
+			A[ord(A),sort(names(A))] == 
+				B[ord(B),sort(names(B))], na.rm = TRUE)}
 
 #lists
 

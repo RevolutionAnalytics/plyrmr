@@ -14,7 +14,8 @@
 
 library(plyrmr)
 
-plyrmr:::all.backends({
+for (be in c("local", "hadoop")) {
+	rmr.options(backend = be)
 	unit.test(
 		function(df) 
 			plyrmr:::cmp.df(

@@ -37,7 +37,7 @@ plyrmr.options =
 		if(is.element("backend", unnamed.args))
 			retval = c(retval, .options$backend)
 		if(is.element("backend", names(args))) {
-			.options$backend = eval(args[["backend"]])
+			.options$backend = eval(args[["backend"]], envir = parent.frame())
 			switch(
 				.options$backend,
 				local =  {library(rmr2); rmr.options(backend = "local")},
@@ -47,7 +47,7 @@ plyrmr.options =
 			retval = c(retval, do.call(spark.options, args))}
 		else 
 			if(is.element(.options$backend, c("local", "hadoop")))
-				retval = c(retval, do.call(rmr.options, args))
+				retval = c(retval, do.call(rmr.options, lapply(args, eval, envir = parent.frame())))
 	retval}
 
 .options = new.env()

@@ -27,10 +27,12 @@ unit.test(
 			data.frame(
 				rmr2:::purge.nulls(
 					lapply(
-						df, 
-						function(x) 
-							if(is.numeric(x)) 
-								quantile(x)))), 
+						seq_along(df), 
+						function(i) 
+							if(is.numeric(df[[i]])) 
+								structure(
+									list(quantile(df[[i]])),
+									names = names(df)[[i]])))), 
 			quantile.cols(df)),
 	list(rdata.frame),
 	precondition = function(x) sum(sapply(x, is.numeric)) > 0)

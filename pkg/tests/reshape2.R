@@ -13,6 +13,7 @@
 # limitations under the License.
 
 library(plyrmr)
+library(quickcheck)
 
 plyrmr:::all.backends({
 	unit.test(

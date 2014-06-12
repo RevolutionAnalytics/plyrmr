@@ -236,7 +236,7 @@ cmp.df =
 skip.spark =
 	function(block) 
 		if(plyrmr.options("backend")[[1]] != "spark")
-			block
+			eval(block, envir = parent.frame())
 
 #lists
 

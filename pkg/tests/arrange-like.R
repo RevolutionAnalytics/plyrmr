@@ -125,8 +125,8 @@ plyrmr:::all.backends({
 				df1 = df[sample(1:nrow(df), floor(nrow(df)/2)), , drop = FALSE] 
 				df2 = df[sample(1:nrow(df), floor(nrow(df)/2)), , drop = FALSE] 
 				cmp.df(
-					union(df1, df2),
-					as.data.frame(union(input(df1), input(df2))))},
+					plyrmr::union(df1, df2),
+					as.data.frame(plyrmr::union(input(df1), input(df2))))},
 			list(rdata.frame)))
 	
 	#intersection 
@@ -137,7 +137,7 @@ plyrmr:::all.backends({
 				df1 = df[sample(1:nrow(df), floor(nrow(df)/2)), , drop = FALSE] 
 				df2 = df[sample(1:nrow(df), floor(nrow(df)/2)), , drop = FALSE] 
 				cmp.df(
-					intersect(df1, df2),
-					as.data.frame(intersect(input(df1), input(df2))))},
+					plyrmr::intersect(df1, df2),
+					as.data.frame(plyrmr::intersect(input(df1), input(df2))))},
 			list(rdata.frame)))
 })

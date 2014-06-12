@@ -35,4 +35,4 @@ plyrmr:::all.backends({
 							id.vars = "id"), 
 						id ~ variable)))},
 		list(rdata.frame))
-}
+})

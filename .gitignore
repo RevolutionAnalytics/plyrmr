@@ -4,9 +4,10 @@
 .RData
 *.Rproj
 #build
-src/*.o
-src/*.so
-src/*.dll
+pkg/src/*.o
+pkg/src/*.so
+pkg/src/*.dll
+pkg/src/symbols.rds
 #check
 plyrmr.Rcheck/*
 #rmr2 files

@@ -1,0 +1,145 @@
+---
+title: "Plyrmr"
+author: "Antonio Piccolboni, Revolution Analytics"
+output:
+  ioslides_presentation:
+    incremental: no
+    transition: 0.01
+---
+
+`r library(knitr)`
+`r read_chunk('../pkg/tests/tutorial.R')`
+`r opts_chunk$set(echo=TRUE, tidy=FALSE, comment="", cache=FALSE)`
+`r opts_knit$set(stop_on_error=0)`
+`r options(width = 120)`
+
+```{r setup, echo=FALSE}
+# the default output hook
+hook_output = knit_hooks$get('output')
+knit_hooks$set(output = function(x, options) {
+	if (!is.null(n <- options$out.lines)) {
+		x = unlist(stringr::str_split(x, '\n'))
+		if (length(x) > n) {
+			# truncate the output
+			x = c(head(x, n), '....\n')
+		}
+		x = paste(x, collapse = '\n') # paste first n lines together
+	}
+	hook_output(x, options)
+})
+opts_chunk$set(out.lines = 8)
+
+```
+
+```{r startup, echo=FALSE}
+```
+
+## {.flexbox .vcenter}
+
+<div class="centered">
+<img src="../../rmr2/docs/resources/rhadoop.png" height=200px>
+</div>
+
+<div class="notes">
+```
+ RHadoop project
+ rmr
+ simplify rmr
+   structured data
+   lesser role for user defined functions
+   SQL like grouping
+   delayed evaluation
+```
+</div>
+
+## {.build}
+
+```{r mtcars}
+```
+
+## {.build}
+
+```{r bind.cols}
+```
+
+## {.build}
+
+
+```{r bind.cols-input}
+```
+
+## {.build}
+
+
+```{r as.data.frame-bind.cols-input}
+```
+
+
+## {.build}
+
+```{r output-bind.cols-input}
+```
+```{r invisible-dfs.rmr, echo=FALSE}
+```
+
+## 
+
+> * plyrmr 
+    * bind.cols, transmute,  where, count.cols, quantile.cols, top.k, bottom.k
+> * dplyr 
+    * select
+> * base 
+    * sample, union, intersect, rbind, unique, merge
+> * reshape2 
+    * melt, dcast
+
+
+## {.build}
+
+```{r where-bind.cols-input}
+```
+
+## {.build}
+
+```{r assignment-chain, eval=FALSE}
+```
+
+```{r pipe-operator, eval=FALSE}
+```
+
+## {.build}
+ 
+```{r last.col}
+```
+
+```{r gapply-input}
+```
+
+## {.build}
+
+```{r transmute-group}
+```
+
+## {.build}
+
+```{r group-quantile}
+```	
+
+## {.build}
+
+```{r group-lm}
+```	
+
+## {.build}
+
+```{r group-lm-1}
+```	
+
+## {.flexbox .vcenter}
+
+<div class="centered">
+### Come meet us at our booth 
+<img src="../../rmr2/docs/resources/revolution.jpeg" height=80px>
+</div>
+
+

@@ -1,3 +1,4 @@
+`r library(knitr)`
 `r read_chunk('../pkg/tests/tutorial.R')`
 `r opts_chunk$set(echo=TRUE, tidy=FALSE, comment="", cache=FALSE)`
 
@@ -119,7 +120,7 @@ Another way to extend the functionality of `plyrmr` built-in data manipulation f
 
 Wouldn't it be great if we could run this on a Hadoop data set? Well, we almost can:
 
-```{r do-input}
+```{r gapply-input}
 as.data.frame(gapply(input("/tmp/mtcars"), last.col))
 ```
 

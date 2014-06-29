@@ -6,6 +6,7 @@ invisible(rmr.options(backend="local"))
 invisible(dfs.rmr("/tmp/mtcars"))
 # mtcars = cbind(model = row.names(mtcars), mtcars)
 # row.names(mtcars) = NULL
+mtcars  = select(mtcars, -am, -drat, -wt, -qsec )
 invisible(output(input(mtcars), "/tmp/mtcars"))
 ## @knitr mtcars
 mtcars
@@ -18,9 +19,14 @@ as.data.frame(bind.cols(input("/tmp/mtcars"), carb.per.cyl = carb/cyl))
 ## @knitr invisible-dfs.rmr
 invisible(dfs.rmr("/tmp/mtcars.out"))
 ## @knitr output-bind.cols-input
-output(bind.cols(input("/tmp/mtcars"), carb.per.cyl = carb/cyl), "/tmp/mtcars.out")
+output(
+	bind.cols(
+		input("/tmp/mtcars"), 
+		carb.per.cyl = carb/cyl), 
+	"/tmp/mtcars.out")
 ## @knitr mtcars-w-ratio
-mtcars.w.ratio = bind.cols(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
+mtcars.w.ratio = 
+	bind.cols(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
 as.data.frame(mtcars.w.ratio)
 ## @knitr where-bind.cols
 where(
@@ -30,10 +36,9 @@ where(
 	carb.per.cyl >= 1)
 ## @knitr where-bind.cols-input
 where(
-	transmute(
+	bind.cols(
 		input("/tmp/mtcars"),
-		carb.per.cyl = carb/cyl,
-		.cbind = TRUE ),
+		carb.per.cyl = carb/cyl),
 	carb.per.cyl >= 1)
 ## @knitr assignment-chain
 x =	bind.cols(mtcars, carb.per.cyl = carb/cyl) 
@@ -51,7 +56,8 @@ high.carb.cyl.1(1)
 ## @knitr end
 }
 ## @knitr process.mtcars.2
-where.mtcars.2 = function(...) where(mtcars, ..., .envir = parent.frame())
+where.mtcars.2 = 
+	function(...) where(mtcars, ..., .envir = parent.frame())
 high.carb.cyl.2 = function(x) {where.mtcars.2(carb/cyl >= x) }
 high.carb.cyl.2(1)
 ## @knitr last.col
@@ -63,7 +69,7 @@ magic.wand(last.col)
 last.col(mtcars)
 last.col(input("/tmp/mtcars"))
 ## @knitr transmute
-transmute(mtcars, sum(carb))
+mtcars %|% transmute(sum(carb))
 ## @knitr transmute-input-setup
 invisible({
 	rmr.options(backend = "hadoop")
@@ -72,7 +78,8 @@ invisible({
 	if(dfs.exists("/tmp/mtcars3")) dfs.rmr("/tmp/mtcars3")
 	to.dfs(mtcars, format = of3, output = "/tmp/mtcars3")})
 ## @knitr transmute-input
-transmute(input("/tmp/mtcars3", format = if3), sum(carb))
+input("/tmp/mtcars3", format = if3) %|%
+	transmute(sum(carb)) 
 ## @knitr transmute-gather
 input("/tmp/mtcars3", format = if3) %|%
 	gather() %|%
@@ -98,4 +105,5 @@ models =
 	transmute(model = list(lm(mpg~cyl+disp))) %|%
 	as.data.frame()
 models
+## @knitr group-lm-1
 models[1,2]

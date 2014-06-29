@@ -37,24 +37,24 @@ mtcars
 title:false
 ```{r mtcars}
 ```
-transform
+bind.cols
 ====
 title:false
-```{r transform}
+```{r bind.cols}
 ```
 
-transform-input
+bind.cols-input
 ====
 title:false
 
-```{r transform-input}
+```{r bind.cols-input}
 ```
 
 as.data.frame
 ===
 title:false
 
-```{r as.data.frame-transform-input}
+```{r as.data.frame-bind.cols-input}
 ```
 
 ```{r invisible-dfs.rmr, echo=FALSE}
@@ -64,7 +64,7 @@ output
 ====
 title:false
 
-```{r output-transform-input}
+```{r output-bind.cols-input}
 ```
 
 predefined-ops
@@ -73,22 +73,22 @@ title:false
 
 |package| functions|
 |-------|-----|
-|base| transform, subset, sample, union, intersect, rbind, unique, merge|
-|plyr| mutate, summarize|
+|base| sample, union, intersect, rbind, unique, merge|
+|plyr| mutate, transmute|
 |reshape2| melt, dcast|
-|plyrmr| select, where, count.cols, quantile.cols, top.k, bottom.k|
+|plyrmr| bind.cols, transmute, select, where, count.cols, quantile.cols, top.k, bottom.k|
 
-subset-transform
+where-bind.cols
 ====
 title:false
-```{r subset-transform}
+```{r where-bind.cols}
 ```
 
-subset-transform-input
+where-bind.cols-input
 ====
 title:false
 
-```{r subset-transform-input}
+```{r where-bind.cols-input}
 ```
 
 assignment-chain
@@ -101,77 +101,54 @@ title:false
 ```{r pipe-operator, eval=FALSE}
 ```
 
-where-select
-===
-title:false
-
-```{r where-select}
-```
-
-where-select-input
-====
-title:false
-
-
-```{r where-select-input}
-```
-
-process.mtcars
-====
-title:false
-```{r process.mtcars.1}
-```
-
-```{r process.mtcars.2}
-```
-
 do
 ====
 title:false
 ```{r last.col}
 ```
 
-```{r do-input}
+```{r gapply-input}
 ```
 magic.wand
 ====
 title:false
 ```{r magic.wand}
 ```
-summarize
+transmute
 ====
 title:false
-```{r summarize}
+```{r transmute}
 ```
 
 
-```{r summarize-input-setup, echo=FALSE}
+```{r transmute-input-setup, echo=FALSE}
 ```
+
+transmute-input
 ====
 title:false
 
-```{r summarize-input}
-```
-====
-title:false
-
-
-```{r summarize-gather}
-```
-====
-title:false
-
-```{r summarize-gather-cleanup, echo=FALSE}
-```
-select-group
-====
-title:false
-```{r select-group}
+```{r transmute-input}
 ```
 
+
+```{r transmute-gather}
+```
+
+
+```{r transmute-gather-cleanup, echo=FALSE}
+```
+
+transmute-group
 ====
 title:false
-```{r select-group.f}
+```{r transmute-group}
+```
+
+transmute-group.f
+====
+title:false
+```{r transmute-group.f}
 ```
 
 group-quantile

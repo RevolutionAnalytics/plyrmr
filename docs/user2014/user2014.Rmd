@@ -8,8 +8,8 @@ output:
 ---
 
 `r library(knitr)`
-`r read_chunk('../pkg/tests/tutorial.R')`
-`r opts_chunk$set(echo=TRUE, tidy=FALSE, comment="", cache=FALSE)`
+`r read_chunk('../../pkg/tests/tutorial.R')`
+`r opts_chunk$set(echo=TRUE, tidy=FALSE, cache=FALSE)`
 `r opts_knit$set(stop_on_error=0)`
 `r options(width = 120)`
 

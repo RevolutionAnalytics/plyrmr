@@ -33,3 +33,5 @@ plyrmr-Ex.pdf
 quickcheck*
 
 pkg.Rcheck/*
+
+*.html

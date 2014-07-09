@@ -9,7 +9,7 @@ output:
 
 `r library(knitr)`
 `r read_chunk('../../pkg/tests/tutorial.R')`
-`r opts_chunk$set(echo=TRUE, tidy=FALSE, cache=FALSE)`
+`r opts_chunk$set(echo=TRUE, eval = FALSE, tidy=FALSE, cache=FALSE)`
 `r options(width = 120)`
 
 ```{r setup, echo=FALSE}
@@ -56,7 +56,7 @@ A first step would be to define a new column that holds the ratio of two other c
 ```
 
 We can see the pattern of classic base functions transform and subset, extended into a complete DSL and popularized by `plyr`: a function name that identifies a broad but related set of data transformations, a data argument and then a number of R expressions, evaluated in an environment expanded with the columns of the data.
-This is an in memory, small-data, sequential operation. How quaint! What if we wanted to perform exactly the same operation on a Hadoop-sized data set? The data is in a HDFS directory, hosted on multiple disks and machines. Processing it on a single processor would be unbearably slow. We sure need to become experts in parallel, distributed programming to take a stab at this, right? Wrong. Hadoop changes that and we get all of the Hadoop goodness in `plyrmr`, without much Hadoop jargon at all.
+This is an in memory, small-data, sequential operation. How quaint! What if we wanted to perform exactly the same operation on a Hadoop-sized data set? The data is in a HDFS directory, hosted on multiple disks and machines. Processing it on a single processor would be unbearably slow. We sure need to become experts in parallel, distributed programming to take a stab at this, right? Wrong. Hadoop changes that and we get most of the Hadoop goodness with `plyrmr`, without much Hadoop jargon at all.
 
 ```{r bind.cols-input}
 ```

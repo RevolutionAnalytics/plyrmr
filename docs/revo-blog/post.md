@@ -30,18 +30,6 @@ Since code is worth a thousand words, let's get introduced to `plyrmr` through s
 mtcars
 ```
 
-```
-##                      mpg cyl  disp  hp vs gear carb
-## Mazda RX4           21.0   6 160.0 110  0    4    4
-## Mazda RX4 Wag       21.0   6 160.0 110  0    4    4
-## Datsun 710          22.8   4 108.0  93  1    4    1
-## Hornet 4 Drive      21.4   6 258.0 110  1    3    1
-## Hornet Sportabout   18.7   8 360.0 175  0    3    2
-## Valiant             18.1   6 225.0 105  1    3    1
-## Duster 360          14.3   8 360.0 245  0    3    4
-....
-```
-
 A first step would be to define a new column that holds the ratio of two other columns. We can accomplish that using the function `bind.cols`, which is a variant of base::transform and `plyr::mutate`, but has advanced features that are useful for programming and a more reasonable name.
 
 
@@ -49,36 +37,12 @@ A first step would be to define a new column that holds the ratio of two other c
 bind.cols(mtcars, carb.per.cyl = carb/cyl)
 ```
 
-```
-##                      mpg cyl  disp  hp vs gear carb carb.per.cyl
-## Mazda RX4           21.0   6 160.0 110  0    4    4       0.6667
-## Mazda RX4 Wag       21.0   6 160.0 110  0    4    4       0.6667
-## Datsun 710          22.8   4 108.0  93  1    4    1       0.2500
-## Hornet 4 Drive      21.4   6 258.0 110  1    3    1       0.1667
-## Hornet Sportabout   18.7   8 360.0 175  0    3    2       0.2500
-## Valiant             18.1   6 225.0 105  1    3    1       0.1667
-## Duster 360          14.3   8 360.0 245  0    3    4       0.5000
-....
-```
-
 We can see the pattern of classic base functions transform and subset, extended into a complete DSL and popularized by `plyr`: a function name that identifies a broad but related set of data transformations, a data argument and then a number of R expressions, evaluated in an environment expanded with the columns of the data.
-This is an in memory, small-data, sequential operation. How quaint! What if we wanted to perform exactly the same operation on a Hadoop-sized data set? The data is in a HDFS directory, hosted on multiple disks and machines. Processing it on a single processor would be unbearably slow. We sure need to become experts in parallel, distributed programming to take a stab at this, right? Wrong. Hadoop changes that and we get all of the Hadoop goodness in `plyrmr`, without much Hadoop jargon at all.
+This is an in memory, small-data, sequential operation. How quaint! What if we wanted to perform exactly the same operation on a Hadoop-sized data set? The data is in a HDFS directory, hosted on multiple disks and machines. Processing it on a single processor would be unbearably slow. We sure need to become experts in parallel, distributed programming to take a stab at this, right? Wrong. Hadoop changes that and we get most of the Hadoop goodness with `plyrmr`, without much Hadoop jargon at all.
 
 
 ```r
 bind.cols(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
-```
-
-```
-##                      mpg cyl  disp  hp vs gear carb carb.per.cyl
-## Mazda RX4           21.0   6 160.0 110  0    4    4       0.6667
-## Mazda RX4 Wag       21.0   6 160.0 110  0    4    4       0.6667
-## Datsun 710          22.8   4 108.0  93  1    4    1       0.2500
-## Hornet 4 Drive      21.4   6 258.0 110  1    3    1       0.1667
-## Hornet Sportabout   18.7   8 360.0 175  0    3    2       0.2500
-## Valiant             18.1   6 225.0 105  1    3    1       0.1667
-## Duster 360          14.3   8 360.0 245  0    3    4       0.5000
-....
 ```
 
 Let's review what happened. We passed an HDFS path to the function `input`. This returns an object that represents the whole data set, but doesn't hold it in memory, not even a fraction of it. This type of object can be used as the data argument to any `plyrmr` function. After that, we call `bind.cols` as usual. What happens behind the scenes is that the operation is performed in parallel in the hadoop cluster, by calling the `bind.cols` data frame function on reasonably-sized chunks of data. What we see on the screen is only a sampling of the rows, the result of running the print method on a data object. If we wanted to bring all the data in memory as a regular data.frame, we can just call `as.data.frame` as follows:
@@ -86,18 +50,6 @@ Let's review what happened. We passed an HDFS path to the function `input`. This
 
 ```r
 as.data.frame(bind.cols(input("/tmp/mtcars"), carb.per.cyl = carb/cyl))
-```
-
-```
-##                      mpg cyl  disp  hp vs gear carb carb.per.cyl
-## Mazda RX4           21.0   6 160.0 110  0    4    4       0.6667
-## Mazda RX4 Wag       21.0   6 160.0 110  0    4    4       0.6667
-## Datsun 710          22.8   4 108.0  93  1    4    1       0.2500
-## Hornet 4 Drive      21.4   6 258.0 110  1    3    1       0.1667
-## Hornet Sportabout   18.7   8 360.0 175  0    3    2       0.2500
-## Valiant             18.1   6 225.0 105  1    3    1       0.1667
-## Duster 360          14.3   8 360.0 245  0    3    4       0.5000
-....
 ```
 
 This expression is not scalable and will fail for large data sets. You would call something like this after one or more steps of filtering and summarization have reduced the data size to something that can fit in memory. We may then use the returned data frame in the usual way, for instance to produce a plot.
@@ -110,18 +62,6 @@ output(
 		input("/tmp/mtcars"), 
 		carb.per.cyl = carb/cyl), 
 	"/tmp/mtcars.out")
-```
-
-```
-##                      mpg cyl  disp  hp vs gear carb carb.per.cyl
-## Mazda RX4           21.0   6 160.0 110  0    4    4       0.6667
-## Mazda RX4 Wag       21.0   6 160.0 110  0    4    4       0.6667
-## Datsun 710          22.8   4 108.0  93  1    4    1       0.2500
-## Hornet 4 Drive      21.4   6 258.0 110  1    3    1       0.1667
-## Hornet Sportabout   18.7   8 360.0 175  0    3    2       0.2500
-## Valiant             18.1   6 225.0 105  1    3    1       0.1667
-## Duster 360          14.3   8 360.0 245  0    3    4       0.5000
-....
 ```
 
 
@@ -150,12 +90,6 @@ where(
 		input("/tmp/mtcars"),
 		carb.per.cyl = carb/cyl),
 	carb.per.cyl >= 1)
-```
-
-```
-##                mpg cyl disp  hp vs gear carb carb.per.cyl
-## Ferrari Dino  19.7   6  145 175  0    5    6            1
-## Maserati Bora 15.0   8  301 335  0    5    8            1
 ```
 
 The bonus feature is that each call, run in isolation, requires a mapreduce job, that is a complete pass of the data. Combined, they still require one. This is the kinds of optimizations allowed by delayed evaluation.
@@ -195,18 +129,6 @@ Enter the function `gapply`. The "g" stand for "group", and we will talk more ab
 gapply(input("/tmp/mtcars"), last.col)
 ```
 
-```
-##                     carb
-## Mazda RX4              4
-## Mazda RX4 Wag          4
-## Datsun 710             1
-## Hornet 4 Drive         1
-## Hornet Sportabout      2
-## Valiant                1
-## Duster 360             4
-....
-```
-
 It will do exactly what you expect for simple functions that can be applied to each chunk of data independently. For instance, selecting a certain column fits this profile, as does filtering rows based on the content of each row only. But if, for instance, you wanted to extract the first few rows of a data set with `head`, and combined that with `gapply`, you would end up with a fairly arbitrary selection of rows. That's where the art of mapreduce programming kicks in.
 
 ## Grouping
@@ -218,13 +140,6 @@ If all processing must happen in groups, we need to be able to define and modify
 input("/tmp/mtcars") %|%
 	group(cyl) %|%
 	transmute(mean.mpg = mean(mpg))
-```
-
-```
-##     cyl mean.mpg
-## 1     6    19.74
-## 1.1   4    26.66
-## 1.2   8    15.10
 ```
 
 Of course, it's not all roses. Groups need to be sized so as to fit main memory, unless the summary operation has some favorable properties so that it can be applied even without loading a group in full. Very small groups, say a few rows each, would make for a very inefficient program as an R function needs to be called for each group. We are working on ways to chip away at these limitations without introducing too much complexity for the user.
@@ -241,18 +156,6 @@ input("/tmp/mtcars") %|%
 	quantile.cols() 
 ```
 
-```
-##        carb   mpg cyl   disp    hp  vs gear
-## 0%        4 10.40   6 160.00 110.0 0.0  3.0
-## 25%       4 13.55   6 167.60 123.0 0.0  3.0
-## 50%       4 15.25   8 350.50 210.0 0.0  3.5
-## 75%       4 18.85   8 420.00 241.2 0.0  4.0
-## 100%      4 21.00   8 472.00 264.0 1.0  5.0
-## 0%.1      1 18.10   4  71.10  65.0 1.0  3.0
-## 25%.1     1 21.45   4  78.85  66.0 1.0  3.0
-....
-```
-
 And finally, an excursion into modeling. `plyrmr` is not specifically for modeling, but there's nothing preventing you from combining the trove of R modeling functions with it. You just pretend a model is a summary like any other, which may or may not stretch your definition of a summary. The only technicality is to wrap the `lm` call in a list call, so as to produce a value of length one; otherwise `plyrmr` will create a row for each element of a linear model, which gets confusing pretty quickly.
 
 
@@ -265,33 +168,11 @@ models =
 models
 ```
 
-```
-##     carb        model
-## 1      4 c(22.693....
-## 1.1    1 c(9.2859....
-## 1.2    2 c(32.723....
-## 1.3    3 c(16.3, ....
-## 1.4    6 c(19.7, ....
-## 1.5    8 c(15, NA....
-```
-
 If this output looks a little cryptic, fear not, it's just how data frames with list columns are printed. If we inspect a single element, we will find a very familiar linear model.
 
 
 ```r
 models[1,2]
-```
-
-```
-## [[1]]
-## 
-## Call:
-## lm(formula = mpg ~ cyl + disp)
-## 
-## Coefficients:
-## (Intercept)          cyl         disp  
-##      22.694        0.329       -0.030
-....
 ```
 
 There is no free lunch here: data for each group needs to be loaded in memory before `lm` is called and this will limit the applicability of this program to large groups. A true scalable `lm` is a different endeavor. But to compute thousands or even million of reasonably-sized linear models, that's quite a simple one-liner!

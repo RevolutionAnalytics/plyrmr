@@ -16,21 +16,10 @@
 useDynLib(plyrmr)
 importFrom("reshape2", melt)
 
-#big.data
-export(
-	to.rmr,
-	get.format)
-S3method(as.character, big.data)
-S3method(as.big.data, character)
-S3method(as.big.data, "function")
-S3method(as.big.data, data.frame)
-S3method(as.big.data, "list")
-S3method(as.data.frame, big.data)
-S3method(as.big.data, big.data)
-S3method(print, big.data)
-S3method(as.data.frame, pipe)
+
 #pipes
 export(
+	plyrmr.options,
 	gapply,
 	magic.wand,
 	group,
@@ -44,14 +33,28 @@ export(
 	"%!%",
 	mergeable,
 	vectorized)
-S3method(as.pipe, big.data)
-S3method(as.pipe, data.frame)
-S3method(as.pipe, character)
-S3method(as.pipe, "function")
-S3method(as.pipe, "list")
-S3method(as.character, pipe)
-S3method(as.big.data, pipe)
+S3method(as.data.frame, pipermr)
+S3method(as.data.frame, pipespark)
+S3method(as.pipespark, data.frame)
+S3method(as.pipespark, character)
+S3method(as.pipermr, data.frame)
+S3method(as.pipermr, character)
+S3method(as.pipermr, big.data)
+S3method(as.pipermr, list)
+S3method(as.big.data, list)
+S3method(as.big.data, big.data)
 S3method(print, pipe)
+S3method(print, big.data)
+S3method(gapply, pipermr)
+S3method(gapply, pipespark)
+S3method(group.f, pipermr)
+S3method(group.f, pipespark)
+S3method(ungroup, pipermr)
+S3method(ungroup, pipespark)
+S3method(gather, pipermr)
+S3method(gather, pipespark)
+S3method(output, pipermr)
+S3method(output, pipespark)
 #base
 export(sample)
 S3method(sample, default)
@@ -65,7 +68,9 @@ export(
 	bind.cols,
 	select,
 	where,
-	merge)
+	merge,
+	get.format,
+	to.rmr)
 S3method(select, pipe)
 S3method(select, data.frame)
 S3method(transmute, pipe)
@@ -123,4 +128,5 @@ importFrom(R.methodsS3, setMethodS3)
 importFrom(R.methodsS3, getMethodS3)
 importFrom(R.methodsS3, appendVarArgs)
 importFrom(Hmisc, wtd.quantile)
+importFrom(digest, digest)
 import(functional)

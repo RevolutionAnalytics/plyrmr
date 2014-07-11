@@ -34,7 +34,7 @@
 ### List of sorting related algorithms
 
 2. Duplicate elimination. DONE
-3. Intersections TODO
+3. Intersections DONE
 3. Unions DONE
 4. Grouping DONE
 5. Joins DONE

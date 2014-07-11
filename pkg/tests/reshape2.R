@@ -15,8 +15,7 @@
 library(plyrmr)
 library(quickcheck)
 
-for (be in c("local", "hadoop")) {
-	rmr.options(backend = be)
+plyrmr:::all.backends({
 	unit.test(
 		function(df) 
 			plyrmr:::cmp.df(
@@ -36,4 +35,4 @@ for (be in c("local", "hadoop")) {
 							id.vars = "id"), 
 						id ~ variable)))},
 		list(rdata.frame))
-}
+})

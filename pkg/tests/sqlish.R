@@ -14,6 +14,7 @@
 
 library(plyrmr)
 
+plyrmr:::all.backends({
 stopifnot(
 	all(
 		(
@@ -27,3 +28,4 @@ stopifnot(
 	all(
 		(function(){as.data.frame(transmute(input(mtcars), cyl))})() ==
 			subset(mtcars, select = cyl)))
+})

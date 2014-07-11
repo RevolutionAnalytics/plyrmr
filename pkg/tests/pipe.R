@@ -19,8 +19,8 @@ library(dplyr)
 
 cmp.df = plyrmr:::cmp.df
 
-for(be in c("local", "hadoop")) {
-	rmr.options(backend = be)
+plyrmr:::all.backends({
+	plyrmr.options(backend = be)
 	
 	#gapply
 	
@@ -39,7 +39,7 @@ for(be in c("local", "hadoop")) {
 				as.data.frame(transmute(group(input(df), col.1), mean(as.numeric(col.2))))),
 		list(rdata.frame),
 		precondition = function(df) ncol(df) >=2)	
-
+	
 	#group.f is tested implicitly in the above and has no direct equivalent in dplyr
 	
 	#ungroup what is a good test for ungroup?
@@ -52,7 +52,7 @@ for(be in c("local", "hadoop")) {
 		list(rdata.frame),
 		precondition = function(df) ncol(df) >=2)	
 	
-	 
+	
 	#gather
 	unit.test(
 		function(df)
@@ -66,5 +66,4 @@ for(be in c("local", "hadoop")) {
 				df,
 				as.data.frame(input(df))),
 		list(rdata.frame))
-	
-}
+})

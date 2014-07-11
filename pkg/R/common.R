@@ -1,5 +1,5 @@
 # Copyright 2013 Revolution Analytics
-#    
+# 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -40,8 +40,8 @@ to.function =
 			f}
 
 chain.call.q = 
-  function(f, g, envir)
-  	Compose(to.function(f, envir), to.function(g, envir))
+	function(f, g, envir)
+		Compose(to.function(f, envir), to.function(g, envir))
 
 chain.call = 
 	function(f, g, envir = parent.frame()) {
@@ -115,7 +115,7 @@ strip.zerocol.df =
 	function(...)
 		lapply(list(...), function(x) if(!is.data.frame(x) || ncol(x) > 0) x)
 
-safe.cbind  = 
+safe.cbind = 
 	function(..., rownames.from = NULL) {
 		lengths = sapply(list(...), rmr2:::rmr.length)
 		if(!is.null(rownames.from))
@@ -131,8 +131,8 @@ safe.cbind  =
 		else {
 			x = splat(data.frame)(c(ll, list(check.names = FALSE)))
 			x = x[, unique(names(x)), drop = FALSE]
-		  if(!is.null(rn))
-		  	rownames(x) = rep(rn, length.out = nrow(x))
+			if(!is.null(rn))
+				rownames(x) = make.unique(rep(rn, length.out = nrow(x)))
 			x}}
 
 safe.cbind.kv = 
@@ -194,7 +194,7 @@ data.frame =
 					else NULL }}
 			if(!is.null(names(dot.args)))
 				names(dot.args) = sapply(names(dot.args), readable.ops)
-			X =  				
+			X =
 				base::data.frame(
 					fract.recycling(
 						lapply(
@@ -204,12 +204,12 @@ data.frame =
 					check.rows = check.rows,
 					check.names = check.names,
 					stringsAsFactors = stringsAsFactors)
-# 			if (!is.null(row.names)) {
-# 				row.names(X) = 
-# 					make.names(
-# 						fract.recycling(
-# 							list(row.names, 1:nrow(X)))[[1]],
-# 						unique = TRUE)}
+			# if (!is.null(row.names)) {
+			# row.names(X) = 
+			# make.names(
+			# fract.recycling(
+			# list(row.names, 1:nrow(X)))[[1]],
+			# unique = TRUE)}
 			X }}
 
 as.data.frame.data.frame = splat(data.frame)
@@ -233,6 +233,11 @@ cmp.df =
 			A[ord(A),sort(names(A))] == 
 				B[ord(B),sort(names(B))], na.rm = TRUE)}
 
+skip.spark =
+	function(block) 
+		if(plyrmr.options("backend")[[1]] != "spark")
+			eval(block, envir = parent.frame())
+
 #lists
 
 strip.nulls = 
@@ -250,7 +255,7 @@ strip.zero.col =
 #dynamic scoping
 
 non.standard.eval = 
-	function(.data,  ..., .named = TRUE,  .envir = stop("Why wasn't .envir specified? Why?")) {
+	function(.data, ..., .named = TRUE, .envir = stop("Why wasn't .envir specified? Why?")) {
 		force(.envir)
 		dotlist = {
 			if(.named)
@@ -261,7 +266,7 @@ non.standard.eval =
 		lapply(dotlist, function(x) eval(eval(x, env), env))}
 
 non.standard.eval.single = 
-	function(.data,  .arg, .named = TRUE,  .envir = stop("Why wasn't .envir specified? Why?")) {
+	function(.data, .arg, .named = TRUE, .envir = stop("Why wasn't .envir specified? Why?")) {
 		force(.envir)
 		env = list2env(c(.data, list(.data = .data)), parent = .envir)
 		eval(eval(.arg, env), env)}

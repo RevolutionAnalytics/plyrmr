@@ -17,24 +17,7 @@ library(quickcheck)
 library(plyrmr)
 
 cmp.df = plyrmr:::cmp.df
-
-#merge
-
-for(be in c("local", "hadoop")) {
-	rmr.options(backend = be)
-	
-	unit.test(
-		function(A, B, x) {
-			xa = x[1:min(length(x), nrow(A))]
-			xb = x[1:min(length(x), nrow(B))]
-			A = splat(cbind)(plyrmr:::fract.recycling(list(x = xa, A)))
-			B = splat(cbind)(plyrmr:::fract.recycling(list(x = xb, B)))
-			cmp.df(
-				as.data.frame(
-					merge(input(A), input(B), by = "x")),
-				merge(A, B, by = "x"))},
-		list(rdata.frame, rdata.frame, rlogical))
-}
+skip.spark = plyrmr:::skip.spark
 
 #quantile.cols.data.frame
 
@@ -54,13 +37,24 @@ unit.test(
 	list(rdata.frame),
 	precondition = function(x) sum(sapply(x, is.numeric)) > 0)
 
-
-for(be in c("local", "hadoop")) {
-	rmr.options(backend = be)
+plyrmr:::all.backends({
+	#merge
+	skip.spark(
+		unit.test(
+			function(A, B, x) {
+				xa = x[1:min(length(x), nrow(A))]
+				xb = x[1:min(length(x), nrow(B))]
+				A = splat(cbind)(plyrmr:::fract.recycling(list(x = xa, A)))
+				B = splat(cbind)(plyrmr:::fract.recycling(list(x = xb, B)))
+				cmp.df(
+					as.data.frame(
+						merge(input(A), input(B), by = "x")),
+					merge(A, B, by = "x"))},
+			list(rdata.frame, rdata.frame, rlogical)))
 	
 	#quantile.cols.pipe
 	# at this size doesn't really test approximation
-	unit.test	(
+	unit.test(
 		function(df)
 			cmp.df(
 				quantile.cols(df),
@@ -117,7 +111,7 @@ for(be in c("local", "hadoop")) {
 	
 	unit.test(
 		function(df){
-			df = df[sample(1:nrow(df), 2*nrow(df), replace = TRUE), ]
+			df = df[sample(1:nrow(df), 2*nrow(df), replace = TRUE), , drop = FALSE]
 			cmp.df(
 				unique(df),
 				as.data.frame(unique(input(df))))},
@@ -125,23 +119,25 @@ for(be in c("local", "hadoop")) {
 	
 	#union 
 	
-	unit.test(
-		function(df){
-			df1 = df[sample(1:nrow(df), floor(nrow(df)/2)), , drop = FALSE] 
-			df2 = df[sample(1:nrow(df), floor(nrow(df)/2)), , drop = FALSE] 
-			cmp.df(
-				union(df1, df2),
-				as.data.frame(union(input(df1), input(df2))))},
-		list(rdata.frame))
+	skip.spark(
+		unit.test(
+			function(df){
+				df1 = df[sample(1:nrow(df), floor(nrow(df)/2)), , drop = FALSE] 
+				df2 = df[sample(1:nrow(df), floor(nrow(df)/2)), , drop = FALSE] 
+				cmp.df(
+					plyrmr::union(df1, df2),
+					as.data.frame(plyrmr::union(input(df1), input(df2))))},
+			list(rdata.frame)))
 	
 	#intersection 
 	
-	unit.test(
-		function(df){
-			df1 = df[sample(1:nrow(df), floor(nrow(df)/2)), , drop = FALSE] 
-			df2 = df[sample(1:nrow(df), floor(nrow(df)/2)), , drop = FALSE] 
-			cmp.df(
-				intersect(df1, df2),
-				as.data.frame(intersect(input(df1), input(df2))))},
-		list(rdata.frame))
-}
+	skip.spark(
+		unit.test(
+			function(df){
+				df1 = df[sample(1:nrow(df), floor(nrow(df)/2)), , drop = FALSE] 
+				df2 = df[sample(1:nrow(df), floor(nrow(df)/2)), , drop = FALSE] 
+				cmp.df(
+					plyrmr::intersect(df1, df2),
+					as.data.frame(plyrmr::intersect(input(df1), input(df2))))},
+			list(rdata.frame)))
+})

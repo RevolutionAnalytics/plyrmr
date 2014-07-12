@@ -44,8 +44,8 @@ where(
 x =	bind.cols(mtcars, carb.per.cyl = carb/cyl) 
 where(x, carb.per.cyl >= 1)
 ## @knitr pipe-operator
-mtcars %|%
-	bind.cols(carb.per.cyl = carb/cyl) %|%
+mtcars %>%
+	bind.cols(carb.per.cyl = carb/cyl) %>%
 	where(carb.per.cyl >= 1)
 ## @knitr end
 if(FALSE) {
@@ -69,7 +69,7 @@ magic.wand(last.col)
 last.col(mtcars)
 last.col(input("/tmp/mtcars"))
 ## @knitr transmute
-mtcars %|% transmute(sum(carb))
+mtcars %>% transmute(sum(carb))
 ## @knitr transmute-input-setup
 invisible({
 	rmr.options(backend = "hadoop")
@@ -78,31 +78,31 @@ invisible({
 	if(dfs.exists("/tmp/mtcars3")) dfs.rmr("/tmp/mtcars3")
 	to.dfs(mtcars, format = of3, output = "/tmp/mtcars3")})
 ## @knitr transmute-input
-input("/tmp/mtcars3", format = if3) %|%
+input("/tmp/mtcars3", format = if3) %>%
 	transmute(sum(carb)) 
 ## @knitr transmute-gather
-input("/tmp/mtcars3", format = if3) %|%
-	gather() %|%
+input("/tmp/mtcars3", format = if3) %>%
+	gather() %>%
 	transmute(sum(carb), .mergeable = TRUE)
 ## @knitr transmute-gather-cleanup
 invisible(suppressWarnings(rmr.options(backend = "local")))
 ## @knitr transmute-group
-input("/tmp/mtcars") %|%
-	group(cyl) %|%
+input("/tmp/mtcars") %>%
+	group(cyl) %>%
 	transmute(mean.mpg = mean(mpg))
 ## @knitr transmute-group.f
-input("/tmp/mtcars") %|%
-	group.f(last.col) %|%
+input("/tmp/mtcars") %>%
+	group.f(last.col) %>%
 	transmute(mean.mpg = mean(mpg)) 
 ## @knitr group-quantile
-input("/tmp/mtcars") %|%
-	group(carb) %|%
+input("/tmp/mtcars") %>%
+	group(carb) %>%
 	quantile.cols() 
 ## @knitr group-lm
 models = 
-	input("/tmp/mtcars") %|%
-	group(carb) %|%
-	transmute(model = list(lm(mpg~cyl+disp))) %|%
+	input("/tmp/mtcars") %>%
+	group(carb) %>%
+	transmute(model = list(lm(mpg~cyl+disp))) %>%
 	as.data.frame()
 models
 ## @knitr group-lm-1

@@ -29,8 +29,6 @@ export(
 	ungroup,
 	output,
 	input,
-	"%|%",
-	"%!%",
 	mergeable,
 	vectorized)
 S3method(as.data.frame, pipermr)

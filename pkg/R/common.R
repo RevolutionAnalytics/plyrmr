@@ -23,60 +23,6 @@ constant =
 	function(x)
 		function(...) x
 
-callapply = 
-	function(x, f) {
-		x = substitute(x)
-		callapply.q(x, f)}
-
-callapply.q = 
-	function(x, f)
-		as.call(lapply(x, function(y) if(is.call(y)) callapply.q(y, f) else f(y)))
-
-to.function = 
-	function(f, envir) {
-		if(!is.function(f))
-			function(x) chain.value.q(x, f, envir)
-		else 
-			f}
-
-chain.call.q = 
-	function(f, g, envir)
-		Compose(to.function(f, envir), to.function(g, envir))
-
-chain.call = 
-	function(f, g, envir = parent.frame()) {
-		f = substitute(f)
-		g = substitute(g)
-		chain.call.q(f, g, envir = envir)}
-
-chain.value.q = 
-	function(x, f, envir) {
-		ff = { 
-			if(is.symbol(f))
-				list(f, x)
-			else {
-				if(f[[1]] == "(")
-					list(f[[2]], x)
-				else {
-					if(f[[1]] == "%!%")
-						list(f, x)
-					else {
-						use.default.arg = TRUE
-						f = callapply.q(f, function(y) if(is.symbol(y) && y == ".") {use.default.arg <<- FALSE; x} else y)
-						if(use.default.arg) 
-							c(list(f[[1]], x), as.list(f[-1]))
-						else f}}}}
-		eval(as.call(ff), envir = envir)}
-
-chain.value =
-	function(x, f, envir = parent.frame()) {
-		x = substitute(x)
-		f = substitute(f)
-		chain.value.q(x, f, envir = envir)}
-
-`%|%` = chain.value
-`%!%` = chain.call
-
 #curried arguments are eager, the rest lazy
 CurryHalfLazy = 
 	function(FUN, ...) {

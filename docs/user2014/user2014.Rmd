@@ -5,6 +5,7 @@ output:
   ioslides_presentation:
     incremental: no
     transition: 0.01
+    keep_md: true
 ---
 
 `r library(knitr)`

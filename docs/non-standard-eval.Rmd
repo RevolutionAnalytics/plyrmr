@@ -1,3 +1,11 @@
+---
+title: "Non-standard-evaluation"
+output: 
+  html_document:
+    keep_md: true
+---
+
+`r library(knitr)`
 `r read_chunk('../pkg/tests/tutorial.R')`
 `r opts_chunk$set(echo=TRUE, tidy=FALSE, comment="", cache=FALSE)`
 
@@ -34,7 +42,7 @@ and:
 
 Similar, but they work everywhere. For instance, if `where` is called within some function, which is in its turn used in some other function, we can have the following situation:
 	
-```{r process.mtcars.1}
+```{r process.mtcars.1, error=TRUE}
 ```
 
 Unfortunately, it doesn't work. With `where` instead:

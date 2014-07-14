@@ -1,4 +1,10 @@
-# Plyrmr
+---
+title: "`plyrmr` design notes"
+output: 
+  html_document:
+    keep_md: true
+---
+
 
 ### Overarching goal
 **Capture important subsets of rmr2 use cases while making it easier to use**.

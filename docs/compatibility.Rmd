@@ -1,4 +1,10 @@
-# Compatibility testing for plyrmr 0.3.0
+---
+title: "Compatibility testing for plyrmr 0.3.0"
+output: 
+  html_document:
+    keep_md: true
+---
+
 Please contribute with additional reports. To claim compatibility you need to run `R CMD  check path-to-plyrmr` successfully.
 If you are interested in the compatibility chart for other releases, choose one from the drop down menu on the top left, under tags and find this document again (under docs; this is the only compatibility-tested release as of this writing). Not every release gets a complete round of testing, so typically a bug fix release (change in the third number only) is equally or more compatible than the previous release, even if we don't have the resources to test it directly. 
 

@@ -1,4 +1,5 @@
-# Plyrmr
+# `plyrmr` design notes
+
 
 ### Overarching goal
 **Capture important subsets of rmr2 use cases while making it easier to use**.

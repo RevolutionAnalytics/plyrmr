@@ -20,7 +20,6 @@ library(dplyr)
 cmp.df = plyrmr:::cmp.df
 
 plyrmr:::all.backends({
-	plyrmr.options(backend = be)
 	
 	#gapply
 	

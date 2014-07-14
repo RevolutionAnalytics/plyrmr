@@ -33,7 +33,6 @@ plyrmr:::all.backends({
 		unit.test(
 			function(df, ...) 
 				cmp.df(
-					unique(df),
 					unique(
 						rbind(
 							as.data.frame(				
@@ -43,8 +42,9 @@ plyrmr:::all.backends({
 										list(
 											input(df), 
 											method = method), 
-										list(...))), 
-								input(df))))),
+										list(...)))),
+								df)), 
+					unique(df)),
 			c(list(rdata.frame), method.args),
 			precondition = 
 				function(df, ...) {

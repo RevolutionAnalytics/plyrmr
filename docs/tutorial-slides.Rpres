@@ -101,7 +101,7 @@ title:false
 ```{r pipe-operator, eval=FALSE}
 ```
 
-do
+gapply
 ====
 title:false
 ```{r last.col}

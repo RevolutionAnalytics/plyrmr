@@ -21,7 +21,9 @@ plyrmr:::all.backends({
 			plyrmr:::cmp.df(
 				as.data.frame(melt(input(df))),
 				melt(df)),
-		list(rdata.frame))
+		list(rdata.frame),
+		precondition = function(df) sum(sapply(df, is.numeric)) >= 1)
+	# precondition is workaround for reshape2 bug https://github.com/hadley/reshape/issues/46
 	
 	unit.test(
 		function(df) {

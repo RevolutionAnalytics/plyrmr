@@ -38,11 +38,11 @@ make.task.fun = 																					# this function is a little complicated so 
 		stopifnot((!ungroup) || is.null(keyf))
 		function(k, v) {                                    # this is the signature of a correct map function
 			rownames(k) = NULL                                # wipe row names unless you want them to count in the grouping (Hadoop only sees serialization)
+			w = valf(drop.gather.rmr(safe.cbind.kv(k, v)))
 			if(vectorized) {
-				w = valf(drop.gather.rmr(safe.cbind.kv(k, v)))
-				k = w[, names(k)]}
+				k = w[, names(k)]}             # here we count on a vectorized grouping fun to keep the keys
 			else
-				w = safe.cbind.kv(k,	valf(drop.gather.rmr(safe.cbind.kv(k, v))))       # pass both keys and values to val function as a single data frame, then make sure we keep keys for the next step
+				w = safe.cbind.kv(k,	w)       # pass both keys and values to val function as a single data frame, then make sure we keep keys for the next step
 			k = {
 				if (ungroup) { 					# if ungroup called select or reset keys, otherwise accumulate
 					if(length(ungroup.args) == 0) 

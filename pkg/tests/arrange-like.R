@@ -17,7 +17,6 @@ library(quickcheck)
 library(plyrmr)
 
 cmp.df = plyrmr:::cmp.df
-skip.spark = plyrmr:::skip.spark
 
 #quantile.cols.data.frame
 
@@ -37,23 +36,24 @@ unit.test(
 	list(rdata.frame),
 	precondition = function(x) sum(sapply(x, is.numeric)) > 0)
 
+#merge
+plyrmr:::all.backends(
+	skip = "spark", 
+	unit.test(
+		function(A, B, x) {
+			xa = x[1:min(length(x), nrow(A))]
+			xb = x[1:min(length(x), nrow(B))]
+			A = splat(cbind)(plyrmr:::fract.recycling(list(x = xa, A)))
+			B = splat(cbind)(plyrmr:::fract.recycling(list(x = xb, B)))
+			cmp.df(
+				as.data.frame(
+					merge(input(A), input(B), by = "x")),
+				merge(A, B, by = "x"))},
+		list(rdata.frame, rdata.frame, rlogical)))
+
+#quantile.cols.pipe
+# at this size doesn't really test approximation
 plyrmr:::all.backends({
-	#merge
-	skip.spark(
-		unit.test(
-			function(A, B, x) {
-				xa = x[1:min(length(x), nrow(A))]
-				xb = x[1:min(length(x), nrow(B))]
-				A = splat(cbind)(plyrmr:::fract.recycling(list(x = xa, A)))
-				B = splat(cbind)(plyrmr:::fract.recycling(list(x = xb, B)))
-				cmp.df(
-					as.data.frame(
-						merge(input(A), input(B), by = "x")),
-					merge(A, B, by = "x"))},
-			list(rdata.frame, rdata.frame, rlogical)))
-	
-	#quantile.cols.pipe
-	# at this size doesn't really test approximation
 	unit.test(
 		function(df)
 			cmp.df(
@@ -115,11 +115,11 @@ plyrmr:::all.backends({
 			cmp.df(
 				unique(df),
 				as.data.frame(unique(input(df))))},
-		list(rdata.frame))
-	
-	#union 
-	
-	skip.spark(
+		list(rdata.frame))})
+
+plyrmr:::all.backends(
+	skip = "spark", {
+		#union 
 		unit.test(
 			function(df){
 				df1 = df[sample(1:nrow(df), floor(nrow(df)/2)), , drop = FALSE] 
@@ -127,11 +127,9 @@ plyrmr:::all.backends({
 				cmp.df(
 					plyrmr::union(df1, df2),
 					as.data.frame(plyrmr::union(input(df1), input(df2))))},
-			list(rdata.frame)))
-	
-	#intersection 
-	
-	skip.spark(
+			list(rdata.frame))
+		
+		#intersection 		
 		unit.test(
 			function(df){
 				df1 = df[sample(1:nrow(df), floor(nrow(df)/2)), , drop = FALSE] 
@@ -139,5 +137,4 @@ plyrmr:::all.backends({
 				cmp.df(
 					plyrmr::intersect(df1, df2),
 					as.data.frame(plyrmr::intersect(input(df1), input(df2))))},
-			list(rdata.frame)))
-})
+			list(rdata.frame))})

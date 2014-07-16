@@ -17,11 +17,11 @@
 backends = c("local", "hadoop", "spark")
 
 all.backends = 
-	function(block) {
+	function(block, skip = c()) {
 		pf = parent.frame()
 		block = substitute(block) 
 		lapply(
-			backends,
+			setdiff(backends, skip),
 			function(be) {
 			plyrmr.options(backend = be) 
 			eval(block, envir = pf)})}

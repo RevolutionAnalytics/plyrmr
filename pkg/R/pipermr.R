@@ -31,28 +31,28 @@ drop.gather.rmr =
 		else
 			x}
 
-make.task.fun = 																					# this function is a little complicated so some comments are in order
-	function(keyf, valf, ungroup, ungroup.args, vectorized) {												# make a valid map function from two separate ones for keys and values
-		if(is.null(valf))                                   # the value function defaults to identity
+make.task.fun = 																				     	# this function is a little complicated so some comments are in order
+	function(keyf, valf, ungroup, ungroup.args, vectorized) {	  # make a valid map function from two separate ones for keys and values
+		if(is.null(valf))                                         # the value function defaults to identity
 			valf = identity 
 		stopifnot((!ungroup) || is.null(keyf))
-		function(k, v) {                                    # this is the signature of a correct map function
-			rownames(k) = NULL                                # wipe row names unless you want them to count in the grouping (Hadoop only sees serialization)
+		function(k, v) {                                          # this is the signature of a correct map function
+			rownames(k) = NULL                                      # wipe row names unless you want them to count in the grouping (Hadoop only sees serialization)
 			w = valf(drop.gather.rmr(safe.cbind.kv(k, v)))
 			if(vectorized) {
 				k = w[, names(k)]}             # here we count on a vectorized grouping fun to keep the keys
 			else
 				w = safe.cbind.kv(k,	w)       # pass both keys and values to val function as a single data frame, then make sure we keep keys for the next step
 			k = {
-				if (ungroup) { 					# if ungroup called select or reset keys, otherwise accumulate
+				if (ungroup) { 					                              # if ungroup called select or reset keys, otherwise accumulate
 					if(length(ungroup.args) == 0) 
 						NULL            
 					else
 						do.call(select, c(list(k), lapply(ungroup.args, function(a) as.call(list(as.name("-"), a)))))}
 				else {	
-					if(is.null(keyf)) k 														# by default keep grouping whatever it is
-					else safe.cbind(k, keyf(drop.gather.rmr(w)))}}										# but if you have a key function, use it and cbind old and new keys
-			if(!is.null(w) && nrow(w) > 0) keyval(k, drop.gather.rmr(w))}}     # special care for empty cases
+					if(is.null(keyf)) k 														   # by default keep grouping whatever it is
+					else safe.cbind(k, keyf(drop.gather.rmr(w)))}}		# but if you have a key function, use it and cbind old and new keys
+			if(!is.null(w) && nrow(w) > 0) keyval(k, drop.gather.rmr(w))}}             # special care for empty cases
 
 make.map.fun = 
 	function(keyf, valf)

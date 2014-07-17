@@ -146,7 +146,13 @@ is.generic =
 		length(methods(f)) > 0
 
 magic.wand = 
-	function(f, non.standard.args = TRUE, add.envir.arg = non.standard.args, envir = parent.frame(), mergeable = FALSE, ...){
+	function(
+		f, 
+		non.standard.args = TRUE, 
+		add.envir.arg = non.standard.args, 
+		envir = parent.frame(), 
+		mergeable = FALSE, 
+		vectorized = FALSE, ...){
 		suppressPackageStartupMessages(library(R.methodsS3))
 		f.name = as.character(substitute(f))
 		f.data.frame = {

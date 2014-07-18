@@ -31,7 +31,7 @@ drop.gather.rmr =
 		else
 			x}
 
-make.task.fun = 																				     	# this function is a little complicated so some comments are in order
+make.task.fun =   																			     	# this function is a little complicated so some comments are in order
 	function(keyf, valf, ungroup, ungroup.args, vectorized) {	  # make a valid map function from two separate ones for keys and values
 		if(is.null(valf))                                         # the value function defaults to identity
 			valf = identity 
@@ -40,13 +40,14 @@ make.task.fun = 																				     	# this function is a little complicate
 			rownames(k) = NULL                                      # wipe row names unless you want them to count in the grouping (Hadoop only sees serialization)
 			if(vectorized) {
 				w = 
-					valf(
-						do.call(
-							group_by, 
-							c(
-								list(
-									drop.gather.rmr(safe.cbind.kv(k, v)), 
-									names(k)))))
+					as.data.frame(
+						valf(
+							do.call(
+								group_by, 
+								c(
+									list(
+										drop.gather.rmr(safe.cbind.kv(k, v)), 
+										names(k))))))
 				k = w[, names(k)]}             # here we count on a vectorized grouping fun to keep the keys
 			else {
 				w = valf(drop.gather.rmr(safe.cbind.kv(k, v)))

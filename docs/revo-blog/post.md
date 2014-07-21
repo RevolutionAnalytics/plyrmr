@@ -19,16 +19,11 @@ You may already be familiar with the RHadoop project, an open source project whi
 * The requirement that such functions always accept and return two data structures, one containing the data itself and one defining how it should be grouped &mdash; key and value in mapreduce jargon; in `plyrmr`, any user-supplied functions accept a data frame and return a data frame
 * The adoption of a SQL-like primitive `group` to replace the mapreduce notion of key-value pairs; it should be familiar to most and stays out of the way when grouping is unimportant or not being acted upon; grouping can be refined, coarsened, reset or just left alone.
 * The adoption of delayed evaluation of `plyrmr` expressions allows for the implementation of optimization techniques that reduce the cost of abstraction and encourages reuse of `plyrmr`-based functions.
-* While `rmr` is a foundational package with a minimal API, the `plyrmr` API is more in the camp of so-called [humane API], with common use cases captured by separate function calls, even when the implementation is little more than a one-liner.
+* While `rmr` is a foundational package with a minimal API, the `plyrmr` API is more in the camp of so-called [humane API](http://martinfowler.com/bliki/HumaneInterface.html), with common use cases captured by separate function calls, even when the implementation is little more than a one-liner.
 
 ## First steps
 
-Since code is worth a thousand words, let's get introduced to `plyrmr` through simple examples. We will work with a well known data set, mtcars, which certainly doesn't have the size to justify the use of Hadoop but is comes handy for an introduction (`plyrmr` inherits from `rmr` a local backend whereby you can try and learn almost all features without even installing hadoop). Here are a few rows from it.
-
-
-```r
-mtcars
-```
+Since code is worth a thousand words, let's get introduced to `plyrmr` through simple examples. We will work with a well known data set, `mtcars`, which certainly doesn't have the size to justify the use of Hadoop but is comes handy for an introduction (`plyrmr` inherits from `rmr` a local backend whereby you can try and learn almost all features without even installing hadoop). 
 
 A first step would be to define a new column that holds the ratio of two other columns. We can accomplish that using the function `bind.cols`, which is a variant of base::transform and `plyr::mutate`, but has advanced features that are useful for programming and a more reasonable name.
 
@@ -37,7 +32,7 @@ A first step would be to define a new column that holds the ratio of two other c
 bind.cols(mtcars, carb.per.cyl = carb/cyl)
 ```
 
-We can see the pattern of classic base functions transform and subset, extended into a complete DSL and popularized by `plyr`: a function name that identifies a broad but related set of data transformations, a data argument and then a number of R expressions, evaluated in an environment expanded with the columns of the data.
+We can see the pattern of classic base functions `transform` and `subset`, extended into a complete DSL and popularized by `plyr`: a function name that identifies a broad but related set of data transformations, a data argument and then a number of R expressions, evaluated in an environment expanded with the columns of the data.
 This is an in memory, small-data, sequential operation. How quaint! What if we wanted to perform exactly the same operation on a Hadoop-sized data set? The data is in a HDFS directory, hosted on multiple disks and machines. Processing it on a single processor would be unbearably slow. We sure need to become experts in parallel, distributed programming to take a stab at this, right? Wrong. Hadoop changes that and we get most of the Hadoop goodness with `plyrmr`, without much Hadoop jargon at all.
 
 
@@ -45,7 +40,7 @@ This is an in memory, small-data, sequential operation. How quaint! What if we w
 bind.cols(input("/tmp/mtcars"), carb.per.cyl = carb/cyl)
 ```
 
-Let's review what happened. We passed an HDFS path to the function `input`. This returns an object that represents the whole data set, but doesn't hold it in memory, not even a fraction of it. This type of object can be used as the data argument to any `plyrmr` function. After that, we call `bind.cols` as usual. What happens behind the scenes is that the operation is performed in parallel in the hadoop cluster, by calling the `bind.cols` data frame function on reasonably-sized chunks of data. What we see on the screen is only a sampling of the rows, the result of running the print method on a data object. If we wanted to bring all the data in memory as a regular data.frame, we can just call `as.data.frame` as follows:
+Let's review what this does. We passed an HDFS path to the function `input`. This returns an object that represents the whole data set, but doesn't hold it in memory, not even a fraction of it. This type of object can be used as the data argument to any `plyrmr` function. After that, we call `bind.cols` as usual. What happens behind the scenes is that the operation is performed in parallel in the hadoop cluster, by calling the `bind.cols` data frame function on reasonably-sized chunks of data. What we see on the screen is only a sampling of the rows, the result of running the print method on a data object. If we wanted to bring all the data in memory as a regular data.frame, we can just call `as.data.frame` as follows:
 
 
 ```r
@@ -102,12 +97,12 @@ x =	bind.cols(mtcars, carb.per.cyl = carb/cyl)
 where(x, carb.per.cyl >= 1)
 ```
 
-The second latches onto a recent trend of introducing a Unix-like pipe operator in R (see packages vadr, dpyr and magrittr)
+The second latches onto a recent trend of introducing a Unix-like pipe operator in R (see packages `vadr`, `dplyr` and `magrittr`). 
 
 
 ```r
-mtcars %|%
-	bind.cols(carb.per.cyl = carb/cyl) %|%
+mtcars %>%
+	bind.cols(carb.per.cyl = carb/cyl) %>%
 	where(carb.per.cyl >= 1)
 ```
 
@@ -115,7 +110,7 @@ Whatever the syntax, the resulting computations is the same &mdash; choose the s
 
 ##  Custom operations
 
-What if the built in functions and their combination doesn't cover what you are trying to do? There is another possibility, which is to take a regular data frame function, meaning one that accepts and returns a data frame, and promote to a Hadoop-capable function. For instance, let's say we need to grab the last column of a general data frame, that is we don't know the name or position of the column in advance. That's easy to do sequentially and in-memory with 
+What if the built in functions and their combination doesn't cover what you are trying to do? There is another possibility, which is to take a regular data frame function, meaning one that accepts and returns a data frame, and promote it to a Hadoop-capable function. For instance, let's say we need to grab the last column of a general data frame, that is we don't know the name or position of the column in advance. That's easy to do sequentially and in-memory with 
 
 
 ```r
@@ -137,8 +132,8 @@ If all processing must happen in groups, we need to be able to define and modify
 
 
 ```r
-input("/tmp/mtcars") %|%
-	group(cyl) %|%
+input("/tmp/mtcars") %>%
+	group(cyl) %>%
 	transmute(mean.mpg = mean(mpg))
 ```
 
@@ -151,8 +146,8 @@ To cap this introduction, a couple of examples that point at more advanced appli
 
 
 ```r
-input("/tmp/mtcars") %|%
-	group(carb) %|%
+input("/tmp/mtcars") %>%
+	group(carb) %>%
 	quantile.cols() 
 ```
 
@@ -161,19 +156,11 @@ And finally, an excursion into modeling. `plyrmr` is not specifically for modeli
 
 ```r
 models = 
-	input("/tmp/mtcars") %|%
-	group(carb) %|%
-	transmute(model = list(lm(mpg~cyl+disp))) %|%
+	input("/tmp/mtcars") %>%
+	group(carb) %>%
+	transmute(model = list(lm(mpg~cyl+disp))) %>%
 	as.data.frame()
 models
 ```
 
-If this output looks a little cryptic, fear not, it's just how data frames with list columns are printed. If we inspect a single element, we will find a very familiar linear model.
-
-
-```r
-models[1,2]
-```
-
-There is no free lunch here: data for each group needs to be loaded in memory before `lm` is called and this will limit the applicability of this program to large groups. A true scalable `lm` is a different endeavor. But to compute thousands or even million of reasonably-sized linear models, that's quite a simple one-liner!
-
+This was just a sampler: please see the full [tutorial](https://github.com/RevolutionAnalytics/plyrmr/blob/master/docs/tutorial.md) and other documentation on the [wiki](https://github.com/RevolutionAnalytics/RHadoop/wiki/user-plyrmr-Home). We also have a [forum](https://groups.google.com/forum/#!forum/rhadoop) where you can ask questions. Talk to you soon!

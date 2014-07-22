@@ -22,9 +22,10 @@ extend =
 				magic.wand(transform, non.standard.args = TRUE, envir = envir)
 				magic.wand(subset, non.standard.args = TRUE, envir = envir)},
 			dplyr = {
-				magic.wand(filter, non.standard.args = TRUE, envir = envir)
-				magic.wand(mutate, non.standard.args = TRUE, envir = envir)
-				magic.wand(summarize, non.standard.args = TRUE, envir = envir)})}
+				magic.wand(filter, non.standard.args = TRUE, envir = envir, vectorized = TRUE)
+				magic.wand(mutate, non.standard.args = TRUE, envir = envir, vectorized = TRUE)
+				magic.wand(summarize, non.standard.args = TRUE, envir = envir, vectorized = TRUE)
+				magic.wand(summarise, non.standard.args = TRUE, envir = envir, vectorized = TRUE)})}
 
 
 

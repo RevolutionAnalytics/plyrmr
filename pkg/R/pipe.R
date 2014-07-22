@@ -146,14 +146,20 @@ is.generic =
 		length(methods(f)) > 0
 
 magic.wand = 
-	function(f, non.standard.args = TRUE, add.envir.arg = non.standard.args, envir = parent.frame(), mergeable = FALSE, ...){
+	function(
+		f, 
+		non.standard.args = TRUE, 
+		add.envir.arg = non.standard.args, 
+		envir = parent.frame(), 
+		mergeable = FALSE, 
+		vectorized = FALSE, ...){
 		suppressPackageStartupMessages(library(R.methodsS3))
 		f.name = as.character(substitute(f))
 		f.data.frame = {
 			if(is.generic(f))
 				getMethodS3(f.name, "data.frame")
 			else f}
-		g = {
+	  f.data.frame.eval.patch = {
 			if(add.envir.arg)
 				non.standard.eval.patch(f.data.frame)
 			else
@@ -161,7 +167,7 @@ magic.wand =
 		setMethodS3(
 			f.name,
 			"data.frame",
-			g,
+			f.data.frame.eval.patch,
 			overwrite = FALSE,
 			envir = envir)
 		setMethodS3(
@@ -170,9 +176,9 @@ magic.wand =
 			if(non.standard.args)
 				function(.data, ..., .envir = parent.frame()) {
 					.envir = copy.env(.envir)
-					curried.g = CurryHalfLazy(g, .envir = .envir)
-					gapply(.data, mergeable(curried.g, mergeable), ...)}
+					curried.f = CurryHalfLazy(if(add.envir.arg) non.standard.eval.patch(f) else f, .envir = .envir)
+					gapply(.data, vectorized(mergeable(curried.f, mergeable), vectorized), ...)}
 			else
 				function(.data, ...)
-					do.call(gapply, c(list(.data, mergeable(g, mergeable)), list(...))),
+					do.call(gapply, c(list(.data, vectorized(mergeable(f, mergeable), vectorized)), list(...))),
 			envir = envir)} 

@@ -1,7 +1,6 @@
 ---
 title: "Introducing `plyrmr`"
 author: "Antonio Piccolboni"
-date: "July 8, 2014"
 output: 
   html_document:
     keep_md: true
@@ -58,7 +57,7 @@ This is an in memory, small-data, sequential operation. How quaint! What if we w
 ```{r bind.cols-input}
 ```
 
-Let's review what this does. We passed an HDFS path to the function `input`. This returns an object that represents the whole data set, but doesn't hold it in memory, not even a fraction of it. This type of object can be used as the data argument to any `plyrmr` function. After that, we call `bind.cols` as usual. What happens behind the scenes is that the operation is performed in parallel in the hadoop cluster, by calling the `bind.cols` data frame function on reasonably-sized chunks of data. What we see on the screen is only a sampling of the rows, the result of running the print method on a data object. If we wanted to bring all the data in memory as a regular data.frame, we can just call `as.data.frame` as follows:
+Let's review what this does. We passed an HDFS path to the function `input`. This returns an object that represents the whole data set, but doesn't hold it in memory, not even a fraction of it. This type of object can be used as the data argument to any `plyrmr` function. After that, we call `bind.cols` as usual. What happens behind the scenes is that the operation is performed in parallel in the hadoop cluster, by calling the `bind.cols` data frame function on reasonably-sized chunks of data. What gets printed as a result is only a sampling of the rows, the output of the print method on a data object. If we want to bring all the data in memory as a regular data frame, we can just call `as.data.frame` as follows:
 
 ```{r as.data.frame-bind.cols-input}
 ```
@@ -92,7 +91,7 @@ Any good API provides basic elements, ways to modify them and ways to combine th
 ```{r where-bind.cols-input}
 ```
 
-The bonus feature is that each call, run in isolation, requires a mapreduce job, that is a complete pass of the data. Combined, they still require one. This is the kinds of optimizations allowed by delayed evaluation.
+The bonus feature is that each call, run in isolation, requires a mapreduce job, that is a complete pass of the data. Combined, they require only one. This is the kinds of optimizations allowed by delayed evaluation.
 
 Deeply nested expressions can become hard to read since the name of the functions can be arbitrarily far from all but one of its arguments. Some sort of "syntax locality" principle is violated. To address that we can adopt two alternate styles. The first involved assigning intermediate results to temporary variables, as in
 

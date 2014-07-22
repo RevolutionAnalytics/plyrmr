@@ -105,19 +105,14 @@ fract.recycling =
 		retval}
 
 readable.ops = 
-	function(x)
-		paste(
-			sapply(
-				strsplit(x,"")[[1]], 
-				function(x) 
-					switch(
-						x, 
-						`+` = "plus", 
-						`-` = "minus",
-						`*` = "times", 
-						`/` = ".divided.by.",
-						x)), 
-			collapse="")
+	function(x) {
+		x %>%
+			gsub("\\+", "plus", .) %>%
+			gsub("-", "minus", .) %>%
+			gsub("\\*", "times", .) %>%
+			gsub("/", ".divided.by.", .) %>%
+			gsub("%%", ".mod.", .) %>%
+			gsub("\\^", ".to.pow.", .)}
 
 data.frame = 
 	function(..., row.names = NULL, check.rows = FALSE,

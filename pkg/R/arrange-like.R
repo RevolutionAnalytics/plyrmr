@@ -71,9 +71,7 @@ merge.pipe =
 							incomparables = incomparables)
 					}))}
 
-quantile.cols = function(x, ...) UseMethod("quantile.cols")
-
-quantile.cols.pipe = 
+quantile.pipe = 
 	function(x, N = 10^5, ...) {
 		midprobs  = 
 			function(N) 
@@ -88,7 +86,7 @@ quantile.cols.pipe =
 					args$weights = rep(1, nrow(.x))
 					args$probs = midprobs(N)
 					cbind(
-						do.call(quantile.cols, args),
+						do.call(quantile, args),
 						.weight = nrow(.x)/N)}}
 		combine = 
 			function(.x) {
@@ -99,11 +97,11 @@ quantile.cols.pipe =
 					args$weights = .x$.weight
 					args$probs = midprobs(N) 
 					cbind(
-						do.call(quantile.cols, args),
+						do.call(quantile, args),
 						.weight = sum(args$weights)/N)}}
 		reduce = 
 			function(.x) 
-				quantile.cols(
+				quantile(
 					.x[, -ncol(.x), drop = FALSE],
 					...)
 		gapply(gapply(gather(gapply(x, map)), mergeable(combine)), reduce)}
@@ -112,7 +110,7 @@ select.numeric =
 	function(x) 
 		subset(x, select = sapply(x, is.numeric))
 
-quantile.cols.data.frame = 
+quantile.data.frame = 
 	function(x, ...) {
 		x = select.numeric(x)	
 		l = 
@@ -128,9 +126,9 @@ quantile.cols.data.frame =
 			else qn}
 		y}
 
-count.cols = function(x, ...) UseMethod("count.cols")
+count = function(x, ...) UseMethod("count")
 
-count.cols.default = 
+count.default = 
 	function(x)
 		arrange(
 			count(data.frame(x=x)),

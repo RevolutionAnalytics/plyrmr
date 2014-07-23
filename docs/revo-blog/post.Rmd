@@ -78,7 +78,7 @@ As previously mentioned, `plyrmr` aims to provide a wide palette of predefined o
 |group|function|
 |----|----|
 |data manipulation| `bind.cols`, `transmute`, `where`, `select`, `rbind`|
-|summaries| `transmute`, `sample`, `count.cols`, `quantile.cols`, `top.k`, `bottom.k`|
+|summaries| `transmute`, `sample`, `count`, `quantile`, `top.k`, `bottom.k`|
 |set operations|`union`, `intersect`, `unique`, `merge`|
 |`reshape2`| `melt`, `dcast`|
 
@@ -131,7 +131,7 @@ Of course, it's not all roses. Groups need to be sized so as to fit main memory,
 
 ## From data manipulation to statistics
 
-To cap this introduction, a couple of examples that point at more advanced applications of this library. As mentioned before, multiple row summaries are possible in `plyrmr`, unlike, for instance, SQL or `plyr`. This fits very well with the notion of statistical summary, such as a series of quantiles. The quantile.cols computes empirical quantiles of the distribution of each numeric column. It will act on each group of the data set, or on the whole data set if it isn't grouped. It will work on very large groups as well, switching to an approximate mode. Its implementation uses  other `plyrmr` functions such as `gapply` and gather (a special case of group) and is also intended as an example of how to build on top of `plyrmr` and extend it. 
+To cap this introduction, a couple of examples that point at more advanced applications of this library. As mentioned before, multiple row summaries are possible in `plyrmr`, unlike, for instance, SQL or `plyr`. This fits very well with the notion of statistical summary, such as a series of quantiles. The quantile function computes empirical quantiles of the distribution of each numeric column. It will act on each group of the data set, or on the whole data set if it isn't grouped. It will work on very large groups as well, switching to an approximate mode. Its implementation uses  other `plyrmr` functions such as `gapply` and gather (a special case of group) and is also intended as an example of how to build on top of `plyrmr` and extend it. 
 
 ```{r group-quantile}
 ```	

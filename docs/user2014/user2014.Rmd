@@ -86,7 +86,7 @@ opts_chunk$set(out.lines = 8)
 ## 
 
 > * plyrmr 
-    * bind.cols, transmute,  where, count.cols, quantile.cols, top.k, bottom.k
+    * bind.cols, transmute,  where, count, quantile, top.k, bottom.k
 > * dplyr 
     * select
 > * base 

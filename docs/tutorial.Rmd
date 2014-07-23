@@ -77,8 +77,8 @@ Even if `output` appears to return the data to be printed, that's only a samplin
  * from `reshape2`:
    * `melt` and `dcast`: convert between *long* and *wide* data frames
  * summary:
-   * `count.cols`
-   * `quantile.cols`
+   * `count`
+   * `quantile`
    * `sample`
  * extract
    * top.k

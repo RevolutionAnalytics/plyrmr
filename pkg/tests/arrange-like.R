@@ -18,7 +18,7 @@ library(plyrmr)
 
 cmp.df = plyrmr:::cmp.df
 
-#quantile.cols.data.frame
+#quantile.data.frame
 
 unit.test(
 	function(df)
@@ -32,7 +32,7 @@ unit.test(
 								structure(
 									list(quantile(df[[i]])),
 									names = names(df)[[i]])))), 
-			quantile.cols(df)),
+			quantile(df)),
 	list(rdata.frame),
 	precondition = function(x) sum(sapply(x, is.numeric)) > 0)
 
@@ -51,15 +51,15 @@ plyrmr:::all.backends(
 				merge(A, B, by = "x"))},
 		list(rdata.frame, rdata.frame, rlogical)))
 
-#quantile.cols.pipe
+#quantile.pipe
 # at this size doesn't really test approximation
 plyrmr:::all.backends({
 	unit.test(
 		function(df)
 			cmp.df(
-				quantile.cols(df),
+				quantile(df),
 				as.data.frame(
-					quantile.cols(input(df)))),
+					quantile(input(df)))),
 		list(rdata.frame),
 		precondition = function(x) sum(sapply(x, is.numeric)) > 0)
 	
@@ -67,8 +67,8 @@ plyrmr:::all.backends({
 	
 	unit.test(
 		function(df){
-			A = count.cols(df)
-			B = as.data.frame(count.cols(input(df)))
+			A = count(df)
+			B = as.data.frame(count(input(df)))
 			all(
 				sapply(
 					1:((max(ncol(A), ncol(B)))/2),

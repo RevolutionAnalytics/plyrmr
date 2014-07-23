@@ -97,7 +97,7 @@ input("/tmp/mtcars") %>%
 ## @knitr group-quantile
 input("/tmp/mtcars") %>%
 	group(carb) %>%
-	quantile.cols() 
+	quantile 
 ## @knitr group-lm
 models = 
 	input("/tmp/mtcars") %>%

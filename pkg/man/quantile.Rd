@@ -1,10 +1,10 @@
-\name{quantile.cols}
-\alias{quantile.cols}
+\name{quantile}
+\alias{quantile}
 \title{Compute the quantiles of a data set}
 \description{Find the quantiles of each numerical column of a data set, represented by a pipe or a data.frame}
 \usage{
-\method{quantile.cols}{data.frame}(x, \dots)
-\method{quantile.cols}{pipe}(x, N = 10^5, \dots)
+\method{quantile}{data.frame}(x, \dots)
+\method{quantile}{pipe}(x, N = 10^5, \dots)
 }
 \arguments{
   \item{x}{ A data set represented by a pipe or a data frame.}
@@ -19,6 +19,6 @@ The methods for pipes uses an approximation methods whose exact properties need 
 A pipe or a data frame, depending on the class of the first argument}
 
 \examples{
-quantile.cols(mtcars)
-as.data.frame(quantile.cols(input(mtcars)))
+quantile(mtcars)
+as.data.frame(quantile(input(mtcars)))
 }

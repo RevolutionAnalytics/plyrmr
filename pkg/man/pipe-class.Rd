@@ -12,7 +12,7 @@ A pipe represents a data set by way of specifying the input and the computationa
 \section{Methods}{
 \code{\link{as.data.frame}},
 \code{\link{bottom.k}},
-\code{\link{count.cols}},
+\code{\link{count}},
 \code{\link{dcast}},
 \code{\link{gapply}},
 \code{\link{bind.cols}},
@@ -24,7 +24,7 @@ A pipe represents a data set by way of specifying the input and the computationa
 \code{\link{merge}},
 \code{\link{moving.window}},
 \code{\link{output}},
-\code{\link{quantile.cols}},
+\code{\link{quantile}},
 \code{\link{rbind}},
 \code{\link{sample}},
 \code{\link{select}},

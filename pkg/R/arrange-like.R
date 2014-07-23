@@ -131,44 +131,59 @@ count = function(x, ...) UseMethod("count")
 count.default = 
 	function(x)
 		arrange(
-			count(data.frame(x=x)),
+			plyr::count(x),
 			freq)
 
 
-count.cols.data.frame =
-	function(x) 
+count.data.frame =
+	function(x, ...) 
 		splat(data.frame.fill)( 
 			lapply(
-				x,
-				count.cols))
+				dots(...),
+				function(df)
+					plyr::count(x, df)))
 
 merge.counts = 
 	function(x, n) {
-		select.cols = 
-			function(x)
-				grep(names(x), pattern=".freq$")
+		last.col = function(x) x[, ncol(x)]
+		`last.col<-` = function(x, value) {x[,ncol(x)] = value; x}
+		split.cols = 
+			function(x) {
+				end.cols = grep(names(x), pattern="^freq")
+				n = length(names(x))
+				rev(
+					split(
+						1:n, 
+						apply(outer(X = 1:n, Y = end.cols, `<=`), 1, sum)))}
 		merge.one =
 			function(x)
-				ddply(x, 1, function(x) {y = sum(x[, 2]); names(y) = names(x)[2]; y})		
+				ddply(
+					x, 
+					1:(ncol(x)-1), 
+					function(x)
+						structure(
+							sum(last.col(x)),
+							names = names(x)[ncol(x)]))		
 		prune = 
 			function(x, n) {
-				x = x[order(x[, 2], decreasing = TRUE, na.last = NA), ]
+				x = x[order(x[, ncol(x)], decreasing = TRUE, na.last = NA), ]
 				if(is.null(n) || nrow(x) <= n) x
 				else {
-					x[, 2] = x[, 2] - x[n+1, 2]
-					x[x[, 2] > 0, ]}}
+					last.col(x) = last.col(x)- last.col(x)[n+1]
+					x[last.col(x) > 0, ]}}
 		splat(data.frame.fill) (
 			lapply(
-				select.cols(x),
-				function(i) prune(merge.one(x[, c(i - 1, i)]), n)))}
+				split.cols(x),
+				function(i) prune(merge.one(x[, i]), n)))}
 
-count.cols.pipe = 
-	function(x, n = Inf)
+count.pipe = 
+	function(x, ..., n = Inf)
 		gapply(
 			gather(
 				gapply(
 					x,
-					count.cols)),
+					count,
+					...)),
 			mergeable(Curry(merge.counts, n = n)))
 
 extreme.k= 
@@ -185,10 +200,10 @@ extreme.k=
 						,
 						drop = FALSE],
 					.k)
-			gapply(
-				gather(
-					gapply(.x, mr.fun)),
-				mergeable(mr.fun))}
+		gapply(
+			gather(
+				gapply(.x, mr.fun)),
+			mergeable(mr.fun))}
 
 top.k = 
 	function(.x, ..., .k = 1, .envir = parent.frame()) {

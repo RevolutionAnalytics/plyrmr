@@ -15,6 +15,7 @@
 
 useDynLib(plyrmr)
 importFrom("reshape2", melt)
+importFrom("stats", quantile)
 
 
 #pipes

@@ -25,8 +25,7 @@ transmute.pipe =
 	function(.data, ..., .cbind = FALSE, .columns = NULL, .mergeable = FALSE, .envir = parent.frame()) {
 		.envir = copy.env(.envir)
 		fun = CurryHalfLazy(transmute, .cbind = .cbind, .columns = .columns, .envir = .envir)
-		if(.mergeable) fun = mergeable(fun)
-		gapply(.data, fun, ...)}
+		gapply(.data, mergeable(fun, .mergeable), ...)}
 
 bind.cols.pipe =
 	function(.data, ..., .envir = parent.frame()) {

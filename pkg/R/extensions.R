@@ -25,7 +25,21 @@ extend =
 				magic.wand(filter, non.standard.args = TRUE, envir = envir, vectorized = TRUE)
 				magic.wand(mutate, non.standard.args = TRUE, envir = envir, vectorized = TRUE)
 				magic.wand(summarize, non.standard.args = TRUE, envir = envir, vectorized = TRUE)
-				magic.wand(summarise, non.standard.args = TRUE, envir = envir, vectorized = TRUE)})}
+				magic.wand(summarise, non.standard.args = TRUE, envir = envir, vectorized = TRUE)				
+				assign("summarize_mergeable", dplyr::summarise, envir = envir)
+				assign("summarise_mergeable", dplyr::summarise, envir = envir)
+				magic.wand(
+					summarize_mergeable, 
+					non.standard.args = TRUE, 
+					envir = envir, 
+					vectorized = TRUE, 
+					mergeable = TRUE)
+				magic.wand(
+					summarise_mergeable, 
+					non.standard.args = TRUE, 
+					envir = envir, 
+					vectorized = TRUE, 
+					mergeable = TRUE)})}
 
 
 

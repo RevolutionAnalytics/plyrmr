@@ -38,7 +38,7 @@ opts_chunk$set(out.lines = 8)
 ## {.flexbox .vcenter}
 
 <div class="centered">
-<img src="../../rmr2/docs/resources/rhadoop.png" height=200px>
+<img src="../../../rmr2/docs/resources/rhadoop.png" height=200px>
 </div>
 
 <div class="notes">

@@ -26,6 +26,9 @@ all.backends =
 			plyrmr.options(backend = be) 
 			eval(block, envir = pf)})}
 
+.options = new.env()
+.options$backend = "hadoop"
+
 plyrmr.options = 
 	function(...) {
 		retval = list()
@@ -35,8 +38,9 @@ plyrmr.options =
 				args
 			else
 				args[names(args) == ""]}
-		if(is.element("backend", unnamed.args))
+		if(is.element("backend", unnamed.args)) {
 			retval = c(retval, .options$backend)
+			args = setdiff(args, "backend")}
 		if(is.element("backend", names(args))) {
 			.options$backend = eval(args[["backend"]], envir = parent.frame())
 			switch(
@@ -54,13 +58,6 @@ plyrmr.options =
 				retval = c(retval, do.call(rmr.options, lapply(args, eval, envir = parent.frame())))
 	retval}
 
-.options = new.env()
-
-.options$backend = "local"
-
-# these two lines don't do what is expected of them
-#library(rmr2)
-#rmr.options(backend = "local")
 
 #function manip
 

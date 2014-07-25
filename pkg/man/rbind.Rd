@@ -10,8 +10,6 @@ Like its data frame counterpart, the pipe method ensures that the result will ha
 \arguments{
   \item{\dots}{Data sets to concatenate}
 }
-\details{
-}
 \value{
 A pipe.
 }

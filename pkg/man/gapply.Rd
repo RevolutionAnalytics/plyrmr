@@ -1,6 +1,5 @@
 \name{gapply}
 \alias{gapply}
-\alias{magic.wand}
 \alias{mergeable}
 \alias{vectorized}
 \title{

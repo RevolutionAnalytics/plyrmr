@@ -1,14 +1,14 @@
 \name{extend}
 \alias{extend}
+\alias{magic.wand}
 \title{The extend function}
 \description{
   Allows to extend the package with big data versions of data frame functions from packages base and dplyr
 }
 \usage{
 	extend(pack=c("base", "dplyr"), envir = parent.frame())
-	magic.wand(f, non.standard.args = TRUE, add.envir.arg =
-                 non.standard.args, envir = parent.frame())
-}
+  magic.wand(f, non.standard.args = TRUE, add.envir.arg = non.standard.args, envir = parent.frame(), 
+		mergeable = FALSE, vectorized = FALSE)}
 \arguments{
 	\item{pack}{The package from which the functions to be converted should be taken}
   \item{envir}{The environment to which new functions should be added}

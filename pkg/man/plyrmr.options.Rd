@@ -6,7 +6,7 @@ Set package options}
 Allows to choose the backend and to set backend-specific options.
 }
 \usage{
-plyrmr.options(backend = c("local", "hadoop"), ...}
+plyrmr.options(backend = c("local", "hadoop"), ...)}
 \arguments{
 \item{backend}{The system supporting the execution of plyrmr programs}
 \item{...}{Other options are simply forwarded to the current backend}}

@@ -16,8 +16,7 @@ Union and intersection of large data sets represented by pipes
 \arguments{
   \item{x,y}{Two data sets represented by pipes}
 }
-\details{
-}
+
 \value{
 An object of the same type of the arguments, representing the union or intersection of the two data sets.
 }

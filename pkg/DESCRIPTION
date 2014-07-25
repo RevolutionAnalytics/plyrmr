@@ -11,4 +11,4 @@ Imports: Rcpp (>= 0.10.4), plyr,  R.methodsS3, Hmisc, functional, digest, stats
 Suggests: quickcheck (>= 2.0.0), SparkR
 License: Apache License (== 2.0)
 LinkingTo: Rcpp
-Collate: RcppExports.R common.R pipespark.R big.data.R pipermr.R  pipe.R dataframe.R aggregate.R arrange-like.R base.R reshape2.R sqlish.R extensions.R
+Collate: RcppExports.R common.R extensions.R pipespark.R big.data.R pipermr.R  pipe.R dataframe.R aggregate.R arrange-like.R base.R reshape2.R sqlish.R 

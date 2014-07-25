@@ -41,9 +41,12 @@ plyrmr.options =
 			.options$backend = eval(args[["backend"]], envir = parent.frame())
 			switch(
 				.options$backend,
-				local =  {library(rmr2); rmr.options(backend = "local")},
-				hadoop = {library(rmr2); rmr.options(backend = "hadoop")},
-				spark = {library(SparkR); warning("Spark backend only partially implemented");spark.options()})}
+				local =  rmr.options(backend = "local"),
+				hadoop = rmr.options(backend = "hadoop"),
+				spark = {
+					library(SparkR)
+					warning("Spark backend only partially implemented")
+					spark.options()})}
 		if(.options$backend == "spark") {
 			retval = c(retval, do.call(spark.options, args))}
 		else 

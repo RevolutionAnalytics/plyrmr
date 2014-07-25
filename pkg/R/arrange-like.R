@@ -136,7 +136,7 @@ count.default =
 
 
 count.data.frame =
-	function(x, ...) {
+	function(x) {
 		ll = 
 			lapply(
 				dots(...),

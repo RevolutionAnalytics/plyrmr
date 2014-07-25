@@ -136,12 +136,15 @@ count.default =
 
 
 count.data.frame =
-	function(x, ...) 
-		splat(data.frame.fill)( 
+	function(x, ...) {
+		ll = 
 			lapply(
 				dots(...),
 				function(df)
-					plyr::count(x, df)))
+					plyr::count(x, df))
+		names(ll) = 
+			gsub("\\.", "_", make.names(as.character(dots(...))))
+		splat(data.frame.fill)(ll)}
 
 merge.counts = 
 	function(x, n) {
@@ -172,9 +175,10 @@ merge.counts =
 					last.col(x) = last.col(x)- last.col(x)[n+1]
 					x[last.col(x) > 0, ]}}
 		splat(data.frame.fill) (
-			lapply(
-				split.cols(x),
-				function(i) prune(merge.one(x[, i]), n)))}
+			unname(
+				lapply(
+					split.cols(x),
+					function(i) prune(merge.one(x[, i]), n))))}
 
 count.pipe = 
 	function(x, ..., n = Inf)

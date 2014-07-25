@@ -26,8 +26,6 @@ where.data.frame =
 				.envir = .envir)
 		.data[cond, , drop = FALSE]}
 
-#(function(){x = 5; where(mtcars, cyl>x)})()
-
 transmute = function(.data, ...) UseMethod("transmute")
 transmute.data.frame =
 	function(.data, ..., .cbind = FALSE, .columns = NULL, .envir = parent.frame()) {
@@ -60,7 +58,6 @@ bind.cols.data.frame =
 select = non.standard.eval.patch(dplyr::select)
 magic.wand(select, non.standard.args = TRUE)
 
-#(function(){v = 5;  transmute(mtcars, cy32 = cyl^2, carb + 5)})()
 
 sample = function(x, ...) UseMethod("sample")
 sample.default = base::sample

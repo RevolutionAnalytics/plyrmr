@@ -22,5 +22,5 @@ Approximate or exact (n = Inf) counting is applied to each column or combination
 A data frame with a set of columns for each of the additonal arguments. Each set has a column for each variable named in one argument and one column for the count, named "freq" or "freq." followed by TODO and as many rows as there are distinct combination of values or up to a maximum of \code{n}. T
 }
 \examples{
-as.data.frame(count(input(data.frame(a = sample(LETTERS[1:5], 10, replace = TRUE), b = sample(LETTERS[1:10], 10, replace = TRUE)))))
+as.data.frame(count(input(data.frame(a = sample(LETTERS[1:5], 10, replace = TRUE), b = sample(LETTERS[1:10], 10, replace = TRUE))), a, a:b))
 }

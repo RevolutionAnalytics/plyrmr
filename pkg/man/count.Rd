@@ -7,7 +7,7 @@ This function works separately on each column, computing the frequency of each e
 }
 \usage{
 count(x, ...)
-\method{count}{data.frame}(x)
+\method{count}{data.frame}(x, ...)
 \method{count}{pipe}(x, ..., n = Inf)
 }
 \arguments{

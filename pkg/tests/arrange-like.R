@@ -67,16 +67,22 @@ plyrmr:::all.backends({
 	
 	unit.test(
 		function(df){
-			A = count(df)
-			B = as.data.frame(count(input(df)))
+			args = 
+				sapply(
+					1:3, 
+					function(i) 
+						Reduce(
+							x = lapply(sample(names(df), rpois(1,3) + 1, replace = TRUE), as.name),
+							function(l,r) call(":", l, r)))
+			A = do.call(count, c(list(df), args))
+			B = as.data.frame(do.call(count, c(list(input(df)), args)))
 			all(
 				sapply(
-					1:((max(ncol(A), ncol(B)))/2),
-					function(i){
-						i = 2*i
+					plyrmr:::split.cols(A),
+					function(i) 
 						cmp.df(
-							A[,(i - 1):i],
-							B[,(i - 1):i])}))},
+							A[, i, drop = FALSE], 
+							B[, i, drop = FALSE])))},
 		list(rdata.frame))
 	
 	#top/bottom k

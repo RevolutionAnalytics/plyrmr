@@ -134,6 +134,11 @@ count.default =
 			plyr::count(x),
 			freq)
 
+as.quoted.rec = 
+	function(x) {
+		if(is.symbol(x)) list(x)
+		else
+      do.call(c, lapply(plyr:::as.quoted(x), as.quoted.rec))}
 
 count.data.frame =
 	function(x, ...) {
@@ -141,23 +146,25 @@ count.data.frame =
 			lapply(
 				dots(...),
 				function(df)
-					plyr::count(x, df))
+					plyr::count(x, unique(as.character(as.quoted.rec(df)))))
 		names(ll) = 
 			gsub("\\.", "_", make.names(as.character(dots(...))))
 		splat(data.frame.fill)(ll)}
+
+split.cols = 
+	function(x) {
+		end.cols = grep(names(x), pattern="\\.freq$")
+		n = length(names(x))
+		rev(
+			split(
+				1:n, 
+				apply(outer(X = 1:n, Y = end.cols, `<=`), 1, sum)))}
 
 merge.counts = 
 	function(x, n) {
 		last.col = function(x) x[, ncol(x)]
 		`last.col<-` = function(x, value) {x[,ncol(x)] = value; x}
-		split.cols = 
-			function(x) {
-				end.cols = grep(names(x), pattern="^freq")
-				n = length(names(x))
-				rev(
-					split(
-						1:n, 
-						apply(outer(X = 1:n, Y = end.cols, `<=`), 1, sum)))}
+		
 		merge.one =
 			function(x)
 				ddply(

@@ -18,7 +18,7 @@ library(plyrmr)
 
 cmp.df = plyrmr:::cmp.df
 
-#quantile.data.frame
+ #quantile.data.frame
 
 unit.test(
 	function(df)

@@ -30,12 +30,13 @@ transmute = function(.data, ...) UseMethod("transmute")
 transmute.data.frame =
 	function(.data, ..., .cbind = FALSE, .columns = NULL, .envir = parent.frame()) {
 		force(.envir)
-		args = 
-			non.standard.eval(
-			.data, 
-			...,
-			.named = TRUE,
-			.envir = .envir)
+		args =
+			as.data.frame(
+				non.standard.eval(
+					.data, 
+					...,
+					.named = TRUE,
+					.envir = .envir))
 		newcols = splat(data.frame)(c(args, list(stringsAsFactors = FALSE)))
 		if(!is.null(.columns)) {
 			.columns = .data[,.columns, drop = FALSE]

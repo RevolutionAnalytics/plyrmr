@@ -12,13 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-library(plyr)
 library(quickcheck)
 library(plyrmr)
 
 cmp.df = plyrmr:::cmp.df
 
- #quantile.data.frame
+#quantile.data.frame
 
 unit.test(
 	function(df)
@@ -43,8 +42,8 @@ plyrmr:::all.backends(
 		function(A, B, x) {
 			xa = x[1:min(length(x), nrow(A))]
 			xb = x[1:min(length(x), nrow(B))]
-			A = splat(cbind)(plyrmr:::fract.recycling(list(x = xa, A)))
-			B = splat(cbind)(plyrmr:::fract.recycling(list(x = xb, B)))
+			A = plyr::splat(cbind)(plyrmr:::fract.recycling(list(x = xa, A)))
+			B = plyr::splat(cbind)(plyrmr:::fract.recycling(list(x = xb, B)))
 			cmp.df(
 				as.data.frame(
 					merge(input(A), input(B), by = "x")),
@@ -87,13 +86,14 @@ plyrmr:::all.backends({
 	
 	#top/bottom k
 	
+	
 	unit.test(
 		function(df){
 			cols = sample(names(df))
 			cmp.df(
-				head(df[splat(order)(df[, cols]),]),
+				head(df[plyr::splat(order)(df[, cols]),]),
 				as.data.frame(
-					splat(bottom.k)(
+					plyr::splat(bottom.k)(
 						c(
 							list(input(df), .k = 6), 
 							lapply(cols, as.symbol)))))},
@@ -103,9 +103,9 @@ plyrmr:::all.backends({
 		function(df){
 			cols = sample(names(df))
 			cmp.df(
-				tail(df[splat(order)(df[, cols]),]),
+				tail(df[plyr::splat(order)(df[, cols]),]),
 				as.data.frame(
-					splat(top.k)(
+					plyr::splat(top.k)(
 						c(
 							list(input(df), .k = 6), 
 							lapply(cols, as.symbol)))))},

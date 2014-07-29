@@ -48,7 +48,7 @@ plyrmr.options =
 				local =  rmr.options(backend = "local"),
 				hadoop = rmr.options(backend = "hadoop"),
 				spark = {
-					library(SparkR)
+					library(SparkR, pos = "package:base")
 					warning("Spark backend only partially implemented")
 					spark.options()})}
 		if(.options$backend == "spark") {

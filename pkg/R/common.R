@@ -171,8 +171,8 @@ cmp.df =
 	function(A, B) {
 		ord = splat(order)
 		all(
-			A[ord(A),sort(names(A))] == 
-				B[ord(B),sort(names(B))], na.rm = TRUE)}
+			rmr2:::delevel(A[ord(A),sort(names(A))]) == 
+				rmr2:::delevel(B[ord(B),sort(names(B))]), na.rm = TRUE)}
 
 #lists
 

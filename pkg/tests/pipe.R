@@ -34,10 +34,10 @@ plyrmr:::all.backends({
 	unit.test(
 		function(df)
 			cmp.df(
-				summarize(group_by(df, col.1), mean(as.numeric(col.2))),
-				as.data.frame(transmute(group(input(df), col.1), mean(as.numeric(col.2))))),
+				summarize(group_by(df, col.1), mean(col.2)),
+				as.data.frame(transmute(group(input(df), col.1), mean(col.2)))),
 		list(rdata.frame),
-		precondition = function(df) ncol(df) >=2)	
+		precondition = function(df) ncol(df) >=2 && is.numeric(df$col.2))	
 	
 	#group.f is tested implicitly in the above and has no direct equivalent in dplyr
 	
@@ -46,17 +46,18 @@ plyrmr:::all.backends({
 	unit.test(
 		function(df)
 			cmp.df(
-				summarize(group_by(df, col.1), mean(as.numeric(col.2))),
-				as.data.frame(transmute(ungroup(group(input(df), col.1, col.2), col.2), mean(as.numeric(col.2))))),
+				summarize(group_by(df, col.1), mean(col.2)),
+				as.data.frame(transmute(ungroup(group(input(df), col.1, col.2), col.2), mean(col.2)))),
 		list(rdata.frame),
-		precondition = function(df) ncol(df) >=2)	
+		precondition = function(df) ncol(df) >=2 && is.numeric(df$col.2))	
 	
 	
 	#gather
 	unit.test(
 		function(df)
-			nrow(as.data.frame(transmute(gather(input(df)), mean(as.numeric(col.1)), .mergeable = TRUE))) == 1,
-		list(rdata.frame))
+			nrow(as.data.frame(transmute(gather(input(df)), mean(col.1), .mergeable = TRUE))) == 1,
+		list(rdata.frame), 
+		precondition = function(df) is.numeric(df$col.1))
 	
 	#as.data.frame and input
 	unit.test(

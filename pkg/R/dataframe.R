@@ -31,7 +31,7 @@ transmute.data.frame =
 	function(.data, ..., .cbind = FALSE, .columns = NULL, .envir = parent.frame()) {
 		force(.envir)
 		args =
-			as.data.frame(
+			splat(data.frame)(
 				non.standard.eval(
 					.data, 
 					...,

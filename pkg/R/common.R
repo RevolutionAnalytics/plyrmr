@@ -220,7 +220,7 @@ non.standard.eval.single =
 # next four functions borrowed from pryr pending CRAN submission, with
 # Hadley's permission
 
-"%||%" <- function(x, y) if (is.null(x)) y else x
+"%||%" = function(x, y) if (is.null(x)) y else x
 
 alist = 
 	function (...) 
@@ -231,16 +231,16 @@ dots =
 
 named_dots =
 	function(...) {
-		args <- dots(...)
+		args = dots(...)
 		
-		nms <- names(args) %||% rep("", length(args))
-		missing <- nms == ""
+		nms = names(args) %||% rep("", length(args))
+		missing = nms == ""
 		if (all(!missing)) return(args)
 		
-		deparse2 <- function(x) paste(deparse(x, 500L), collapse = "")
-		defaults <- vapply(args[missing], deparse2, character(1), USE.NAMES = FALSE)
+		deparse2 = function(x) paste(deparse(x, 500L), collapse = "")
+		defaults = vapply(args[missing], deparse2, character(1), USE.NAMES = FALSE)
 		
-		names(args)[missing] <- defaults
+		names(args)[missing] = defaults
 		args}
 
 #non standard eval

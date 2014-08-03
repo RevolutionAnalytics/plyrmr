@@ -254,31 +254,41 @@ non.standard.eval.patch =
 			splat(f)(
 				c(
 					list(.data),
-					dotargs))}#pipes
+					dotargs))}
+
+#pipes
 
 `%|%` = 
 	function(x, f) {
-		call = match.call()
-		if(is.name(call$f)) {
+		this.call = match.call()
+		if(is.name(this.call$f)) {
 			f(x)} 
-		else 
-			if(is.call(call$f)) {
-				env = new.env(parent = parent.frame())
-				env$`._` = x
-				eval(call$f, envir = env)} 
 		else {
-				stop("Error in pipe operator")}}
+			if(is.call(this.call$f) && !find..(this.call$f)){
+				f.list = as.list(this.call$f)
+				do.call(
+					as.character(f.list[[1]]), 
+					c(
+						list(this.call$x), 
+						f.list[-1]), 
+					envir = parent.frame())}
+			else {
+				if(is.call(this.call$f)) {
+					env = new.env(parent = parent.frame())
+					env$`..` = x
+					eval(this.call$f, envir = env)} 
+				else {
+					stop("Error in pipe operator")}}}}
 
-find._ = 
-	function(x, sub = TRUE) {
-		if (sub) x = substitute(x)
+find.. = 
+	function(x) 
 		any(
 			sapply(
 				as.list(x), 
 				function(y) {
 					if(is.name(y)) 
-						identical(y, as.name("._"))
+						identical(y, as.name(".."))
 					else {
 						if(is.call(y))
-							find._(y, sub = FALSE)
-						else FALSE}}))}
+							find..(y)
+						else FALSE}}))

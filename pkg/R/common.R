@@ -259,36 +259,28 @@ non.standard.eval.patch =
 #pipes
 
 `%|%` = 
-	function(x, f) {
-		this.call = match.call()
-		if(is.name(this.call$f)) {
-			f(x)} 
+	function(x, a.call) {
+		sub.x = substitute(x)
+		sub.a.call = substitute(a.call)
+		if(is.name(sub.a.call)) {
+			a.call(x)} 
 		else {
-			if(is.call(this.call$f) && !find..(this.call$f)){
-				f.list = as.list(this.call$f)
+			if(is.call(sub.a.call) && !find..(sub.a.call)){
+				call.list = as.list(sub.a.call)
 				do.call(
-					as.character(f.list[[1]]), 
+					as.character(call.list[[1]]), 
 					c(
-						list(this.call$x), 
-						f.list[-1]), 
+						list(sub.x), 
+						call.list[-1]), 
 					envir = parent.frame())}
 			else {
-				if(is.call(this.call$f)) {
+				if(is.call(sub.a.call)) {
 					env = new.env(parent = parent.frame())
 					env$`..` = x
-					eval(this.call$f, envir = env)} 
+					eval(sub.a.call, envir = env)} 
 				else {
 					stop("Error in pipe operator")}}}}
 
 find.. = 
 	function(x) 
-		any(
-			sapply(
-				as.list(x), 
-				function(y) {
-					if(is.name(y)) 
-						identical(y, as.name(".."))
-					else {
-						if(is.call(y))
-							find..(y)
-						else FALSE}}))
+		is.element("..", all.vars(x)) 

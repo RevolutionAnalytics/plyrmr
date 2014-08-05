@@ -31,6 +31,4 @@ as.data.frame(
   gapply(
     input(mtcars), 
     function(x) x[, -ncol(x)]))
-#extend row.names to work on pipes
-magic.wand(row.names)
 }

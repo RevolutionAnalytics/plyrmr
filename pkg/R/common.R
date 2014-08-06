@@ -220,7 +220,7 @@ non.standard.eval.single =
 # next four functions borrowed from pryr pending CRAN submission, with
 # Hadley's permission
 
-"%||%" <- function(x, y) if (is.null(x)) y else x
+"%||%" = function(x, y) if (is.null(x)) y else x
 
 alist = 
 	function (...) 
@@ -231,16 +231,16 @@ dots =
 
 named_dots =
 	function(...) {
-		args <- dots(...)
+		args = dots(...)
 		
-		nms <- names(args) %||% rep("", length(args))
-		missing <- nms == ""
+		nms = names(args) %||% rep("", length(args))
+		missing = nms == ""
 		if (all(!missing)) return(args)
 		
-		deparse2 <- function(x) paste(deparse(x, 500L), collapse = "")
-		defaults <- vapply(args[missing], deparse2, character(1), USE.NAMES = FALSE)
+		deparse2 = function(x) paste(deparse(x, 500L), collapse = "")
+		defaults = vapply(args[missing], deparse2, character(1), USE.NAMES = FALSE)
 		
-		names(args)[missing] <- defaults
+		names(args)[missing] = defaults
 		args}
 
 #non standard eval
@@ -255,3 +255,32 @@ non.standard.eval.patch =
 				c(
 					list(.data),
 					dotargs))}
+
+#pipes
+
+`%|%` = 
+	function(x, a.call) {
+		sub.x = substitute(x)
+		sub.a.call = substitute(a.call)
+		if(is.name(sub.a.call)) {
+			a.call(x)} 
+		else {
+			if(is.call(sub.a.call) && !find..(sub.a.call)){
+				call.list = as.list(sub.a.call)
+				do.call(
+					as.character(call.list[[1]]), 
+					c(
+						list(sub.x), 
+						call.list[-1]), 
+					envir = parent.frame())}
+			else {
+				if(is.call(sub.a.call)) {
+					env = new.env(parent = parent.frame())
+					env$`..` = x
+					eval(sub.a.call, envir = env)} 
+				else {
+					stop("Error in pipe operator")}}}}
+
+find.. = 
+	function(x) 
+		is.element("..", all.vars(x)) 

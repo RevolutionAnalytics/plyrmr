@@ -108,6 +108,7 @@ S3method(melt, pipe)
 S3method(melt, data.frame)
 #other
 export(extend)
+export(`%|%`)
 #fast summaries
 #export(fast.summary)
 #S3method(fast.summary, pipe)
@@ -126,4 +127,3 @@ importFrom(R.methodsS3, appendVarArgs)
 importFrom(Hmisc, wtd.quantile)
 importFrom(digest, digest)
 import(functional)
-import(magrittr)

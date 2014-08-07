@@ -19,7 +19,7 @@ count(x, ...)
 Approximate or exact (n = Inf) counting is applied to each column or combination thereof supplied in the additional arguments. "Combination" means that a row is counted together with another row  if and only if they are equal in each of the columns named in one of the additional arguments (separate count for each argument).
 }
 \value{
-A data frame with a set of columns for each of the additonal arguments. Each set has a column for each variable named in one argument and one column for the count, named "freq" or "freq." followed by TODO and as many rows as there are distinct combination of values or up to a maximum of \code{n}. T
+A data frame with a set of columns for each of the additonal arguments. Each set has a column for each variable named in one argument and one column for the count, with the "freq" suffix and as many rows as there are distinct combination of values or up to a maximum of \code{n}. The  names of the columns have two or three "." separated parts, the first idenitfying the ser with a "_" separated list of variables, the second being the name of the variable corresponding to that column and the optional third the "freq" suffix, if present. 
 }
 \examples{
 as.data.frame(

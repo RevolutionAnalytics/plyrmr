@@ -127,8 +127,8 @@ Even if `output` appears to return the data to be printed, that's only a samplin
  * from `reshape2`:
    * `melt` and `dcast`: convert between *long* and *wide* data frames
  * summary:
-   * `count.cols`
-   * `quantile.cols`
+   * `count`
+   * `quantile`
    * `sample`
  * extract
    * top.k
@@ -198,8 +198,8 @@ The purists will find that introducing one variable for each intermediate step q
 
 
 ```r
-mtcars %>%
-	bind.cols(carb.per.cyl = carb/cyl) %>%
+mtcars %|%
+	bind.cols(carb.per.cyl = carb/cyl) %|%
 	where(carb.per.cyl >= 1)
 ```
 
@@ -290,7 +290,7 @@ Until now we performed row by row operations, whereby each row in the results de
 
 
 ```r
-mtcars %>% transmute(sum(carb))
+mtcars %|% transmute(sum(carb))
 ```
 
 ```
@@ -304,7 +304,7 @@ What happens if we do this on a Hadoop data set?
 
 
 ```r
-input("/tmp/mtcars3", format = if3) %>%
+input("/tmp/mtcars3", format = if3) %|%
 	transmute(sum(carb)) 
 ```
 
@@ -321,8 +321,8 @@ That's not what we wanted and that's the where the size of the data cannot be ig
 
 
 ```r
-input("/tmp/mtcars3", format = if3) %>%
-	gather() %>%
+input("/tmp/mtcars3", format = if3) %|%
+	gather %|%
 	transmute(sum(carb), .mergeable = TRUE)
 ```
 
@@ -339,8 +339,8 @@ The `group` function takes an input and a number of arguments that are evaluated
 
 
 ```r
-input("/tmp/mtcars") %>%
-	group(cyl) %>%
+input("/tmp/mtcars") %|%
+	group(cyl) %|%
 	transmute(mean.mpg = mean(mpg))
 ```
 
@@ -357,8 +357,8 @@ When the definition of the grouping column is more complicated, we may need to r
 
 
 ```r
-input("/tmp/mtcars") %>%
-	group.f(last.col) %>%
+input("/tmp/mtcars") %|%
+	group.f(last.col) %|%
 	transmute(mean.mpg = mean(mpg)) 
 ```
 
@@ -378,9 +378,9 @@ Despite the SQL-ish flavor and undeniable SQL inspiration for some of these oper
 
 
 ```r
-input("/tmp/mtcars") %>%
-	group(carb) %>%
-	quantile.cols() 
+input("/tmp/mtcars") %|%
+	group(carb) %|%
+	quantile 
 ```
 
 ```
@@ -401,10 +401,10 @@ And what to say about working in a real programming language, and one with an un
 
 ```r
 models = 
-	input("/tmp/mtcars") %>%
-	group(carb) %>%
-	transmute(model = list(lm(mpg~cyl+disp))) %>%
-	as.data.frame()
+	input("/tmp/mtcars") %|%
+	group(carb) %|%
+	transmute(model = list(lm(mpg~cyl+disp))) %|%
+	as.data.frame
 models
 ```
 

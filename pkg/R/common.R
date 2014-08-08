@@ -282,8 +282,21 @@ non.standard.eval.patch =
 					stop("Error in pipe operator")}}}}
 
 find.. = 
-	function(x) 
-		is.element("..", all.vars(x)) 
+	function(x) {
+		x = as.list(x)
+		if(identical(x[[1]], as.name("%|%")))
+			find..(x[[2]])
+		else
+			any(
+				sapply(
+					x, 
+					function(y) {
+						if(is.name(y)) 
+							identical(y, as.name(".."))
+						else {
+							if(is.call(y))
+								find..(y)
+							else FALSE}}))}	
 
 `%!%` = 
 	function(left, right) {

@@ -109,6 +109,7 @@ S3method(melt, data.frame)
 #other
 export(extend)
 export(`%|%`)
+export(`%!%`)
 #fast summaries
 #export(fast.summary)
 #S3method(fast.summary, pipe)

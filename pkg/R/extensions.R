@@ -23,7 +23,7 @@ magic.wand =
 		add.envir.arg = non.standard.args, 
 		envir = parent.frame(), 
 		mergeable = FALSE, 
-		vectorized = FALSE, ...){
+		vectorized = FALSE){
 		f.name = as.character(substitute(f))
 		f.data.frame = {
 			if(is.generic(f))

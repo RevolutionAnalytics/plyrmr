@@ -106,17 +106,17 @@ fract.recycling =
 
 readable.ops = 
 	function(x) {
-		x %>%
-			gsub("\\+", "plus", .) %>%
-			gsub("-", "minus", .) %>%
-			gsub("\\*", "times", .) %>%
-			gsub("/", ".divided.by.", .) %>%
-			gsub("%%", ".mod.", .) %>%
-			gsub("\\^", ".to.pow.", .)}
+		x %|%
+			gsub("\\+", "plus", ..) %|%
+			gsub("-", "minus", ..) %|%
+			gsub("\\*", "times", ..) %|%
+			gsub("/", ".divided.by.", ..) %|%
+			gsub("%%", ".mod.", ..) %|%
+			gsub("\\^", ".to.pow.", ..)}
 
 data.frame = 
 	function(..., row.names = NULL, check.rows = FALSE,
-					 check.names = TRUE, stringsAsFactors = default.stringsAsFactors()) {
+					 check.names = TRUE, stringsAsFactors = FALSE) {
 		dot.args = list(...)
 		if(length(dot.args) == 0) 
 			base::data.frame()
@@ -297,4 +297,17 @@ find.. =
 						else {
 							if(is.call(y))
 								find..(y)
-							else FALSE}}))}
+							else FALSE}}))}	function(x) 
+		is.element("..", all.vars(x)) 
+
+`%!%` = 
+	function(left, right) {
+		pf = parent.frame()
+		sleft = substitute(left)
+		sright = substitute(right)
+		function(x) {
+			eval(
+				substitute(
+					x %|% left %|% right,
+					list(left = sleft, right = sright)),
+				enclos = pf)}}

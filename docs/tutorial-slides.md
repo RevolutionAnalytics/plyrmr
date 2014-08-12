@@ -350,7 +350,7 @@ title:false
 ```r
 input("/tmp/mtcars") %>%
 	group(carb) %>%
-	quantile.cols() 
+	quantile 
 ```
 
 ```

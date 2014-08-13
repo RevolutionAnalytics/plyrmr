@@ -297,9 +297,7 @@ find.. =
 						else {
 							if(is.call(y))
 								find..(y)
-							else FALSE}}))}	function(x) 
-		is.element("..", all.vars(x)) 
-
+							else FALSE}}))}	
 `%!%` = 
 	function(left, right) {
 		pf = parent.frame()

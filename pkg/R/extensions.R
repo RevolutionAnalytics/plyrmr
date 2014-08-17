@@ -34,6 +34,7 @@ magic.wand =
 				non.standard.eval.patch(f.data.frame)
 			else
 				f.data.frame}
+		if(is.primitive(f)) stop ("Can't do  magic on primitive functions yet")
 		setMethodS3(
 			f.name,
 			"data.frame",

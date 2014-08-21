@@ -23,11 +23,10 @@ cmp.df = plyrmr:::cmp.df
 unit.test(
 	function(df) {
 		numeric.cols = which(sapply(df, is.numeric ))
-		filter.col = numeric.cols[1]
-		filter = parse(text=paste(filter.col, ">0"))
+		filter.col = names(numeric.cols[1])
 		cmp.df(
-			where(df, filter),
-      subset(df, eval(filter, envir = list2env(df))))},
+			where(df, eval(as.name(filter.col)) > 0),
+      subset(df, eval(as.name(filter.col)) > 0))},
 	list(rdata.frame),
 	precondition =
 		function(df) 
@@ -40,8 +39,8 @@ unit.test(
 	function(df) {
 		col = as.name(sample(names(df), 1))
 		cmp.df(
-			transmute(df, col),
-		  select(df, col))},
+			transmute(df, eval(col)),
+			select(df, eval(col)))},
 	list(rdata.frame))
 
 #bind.cols
@@ -50,7 +49,7 @@ unit.test(
 	function(df) {
 		col = as.name(sample(names(df), 1))
 		cmp.df(
-			bind.cols(df, z = col),
+			bind.cols(df, z = eval(col)),
 			transform(df, z = eval(col)))},
 	list(rdata.frame))
 

@@ -200,7 +200,7 @@ strip.zero.col =
 #dynamic scoping
 
 non.standard.eval = 
-	function(.data, ..., .named = TRUE, .envir = stop("Why wasn't .envir specified? Why?")) {
+	function(.data, ..., .named = TRUE, .envir) {
 		force(.envir)
 		dotlist = {
 			if(.named)
@@ -208,13 +208,15 @@ non.standard.eval =
 			else
 				dots(...) }
 		env = list2env(c(.data, list(.data = .data)), parent = .envir)
-		lapply(dotlist, function(x) eval(eval(x, env), env))}
+		#lapply(dotlist, function(x) eval(eval(x, env), env))}
+		lapply(dotlist, function(x) eval(x, env))}
 
 non.standard.eval.single = 
-	function(.data, .arg, .named = TRUE, .envir = stop("Why wasn't .envir specified? Why?")) {
+	function(.data, .arg, .named = TRUE, .envir) {
 		force(.envir)
 		env = list2env(c(.data, list(.data = .data)), parent = .envir)
-		eval(eval(.arg, env), env)}
+		#eval(eval(.arg, env), env)}
+		eval(.arg, env)}
 
 #reflection
 # next four functions borrowed from pryr pending CRAN submission, with

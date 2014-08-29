@@ -1,9 +1,4 @@
----
-title: "Dplyr vs plyrmr"
-output: 
-  html_document:
-    keep_md: true
----
+# Dplyr vs plyrmr
 
 ## Goals
 
@@ -33,14 +28,54 @@ Is a guiding principle for `plyrmr`, so that `data %|% group(x) %|% group(y)` is
 
 `plyrmr`, with few exceptions, avoids the use of heuristics to guess what the user meant (the exception probably being variable renaming with combiners, and then only because no better solution was available). `dplyr` sometimes enforces odd rules and limitations under the assumption that any breach would only allow to write incorrect programs. This is called being "an opinionated package" in @hadley-speak. For instance (`%|%` is `plyrmr` and `%>%` is re-exported by `dplyr` from `magrittr`):
 
-```{r error=TRUE}
+
+```r
 suppressPackageStartupMessages(library(plyrmr))
 4 %|% sqrt #plyrmr
+```
+
+```
+## [1] 2
+```
+
+```r
 4 %>% sqrt #dplyr
+```
+
+```
+## [1] 2
+```
+
+```r
 4 %|% sqrt(..) #plyrmr
+```
+
+```
+## [1] 2
+```
+
+```r
 4 %>%  sqrt(.)  #dplyr
+```
+
+```
+## [1] 2
+```
+
+```r
 2 %|% sqrt(..*..) #plyrmr
+```
+
+```
+## [1] 2
+```
+
+```r
 2 %>%  sqrt(.*.)  #dplyr
+```
+
+```
+## Error: object '.' not found
 ```
 
 The reason for the failure in the last is an odd design decision follwing an unfortunate choice of `.` as the special variable for use in pipes (unfortunate because already endowed of special meaning for models) and weak implementation.

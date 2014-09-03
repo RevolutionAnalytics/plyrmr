@@ -194,7 +194,7 @@ Ferrari Dino  19.7   6  145 175  0    5    6            1
 Maserati Bora 15.0   8  301 335  0    5    8            1
 ```
 
-The purists will find that introducing one variable for each intermediate step quite unsightly. To avoid this `plyrmr` relies on package `magrittr`, which offers a UNIX-style pipe operator `%>%`.
+The purists will find that introducing one variable for each intermediate step quite unsightly. To avoid this `plyrmr` offers a UNIX-style pipe operator `%|%`.
 
 
 ```r
@@ -209,7 +209,7 @@ Ferrari Dino  19.7   6  145 175  0    5    6            1
 Maserati Bora 15.0   8  301 335  0    5    8            1
 ```
 
-This operator provides the value of the leftmost expression as the first unnamed argument of the next function call and evaluates it. When multiple operators are chained, they associate to the left. If the first argument is not the right one, you can specify any function argument with the special variable `.` as in `2 %>% rnorm(2,.)` Rather than arguing over which style is superior, it's probably best to bask in the flexibility made possible by the R language and your indefatigable developers and pick the one that fits your style or a specific situation. In particular, pipes can not express more complex data flows where two flows merge or one splits. In the following I will alternate between these three notations (nested, assignment chain and pipe operator) based on which seems the clearest. It should be safe to assume that each example can be translated into any of the three.
+This operator provides the value of the leftmost expression as the first unnamed argument of the next function call and evaluates it. When multiple operators are chained, they associate to the left. If the first argument is not the right one, you can specify any function argument with the special variable `..` as in `2 %|% rnorm(2,..)` Rather than arguing over which style is superior, it's probably best to bask in the flexibility made possible by the R language and pick the one that fits your style or a specific situation. In particular, pipes can not express more complex data flows where two flows merge or one splits. In the following I will alternate between these three notations (nested, assignment chain and pipe operator) based on which seems the clearest. It should be safe to assume that each example can be translated into any of the three.
 
 
 ## Custom operations

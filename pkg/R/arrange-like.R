@@ -37,13 +37,13 @@ merge.pipe =
 						v)
 		map.x = map(by.x)
 		map.y =	map(by.y)
+		outer = list(NULL, "full", "left", "right")[c((!all.x && !all.y), all, all.x, all.y)][[1]]
 		input(
 			equijoin(
 				ox$data,
 				oy$data,
 				input.format = ox$format,
-				outer = 
-					list(NULL, "full", "left", "right")[c((!all.x && !all.y), all, all.x, all.y)][[1]],
+				outer = outer,
 				map.left = map.x,
 				map.right = map.y,
 				reduce = 
@@ -58,18 +58,23 @@ merge.pipe =
 						by.y = {
 							if(is.null(by.y)) by
 							else by.y}
-						merge(
-							x,
-							y,
-							by = by,
-							by.x = by.x,
-							by.y = by.y,
-							all = all,
-							all.x = all.x,
-							all.y = all.y,
-							suffixes = suffixes,
-							incomparables = incomparables)
-					}))}
+						if(identical(x, NA)) list(y)
+						else { 
+							if(identical(y, NA)) list(x)
+							else {
+								z =
+									merge(
+										x,
+										y,
+										by = by,
+										by.x = by.x,
+										by.y = by.y,
+										all = all,
+										all.x = all.x,
+										all.y = all.y,
+										suffixes = suffixes,
+										incomparables = incomparables)
+								if(!is.null(rmr.str(outer))) list(z) else z}}}))}
 
 quantile.pipe = 
 	function(x, N = 10^5, ...) {

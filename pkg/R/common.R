@@ -208,14 +208,12 @@ non.standard.eval =
 			else
 				dots(...) }
 		env = list2env(c(.data, list(.data = .data)), parent = .envir)
-		#lapply(dotlist, function(x) eval(eval(x, env), env))}
 		lapply(dotlist, function(x) eval(x, env))}
 
 non.standard.eval.single = 
 	function(.data, .arg, .named = TRUE, .envir) {
 		force(.envir)
 		env = list2env(c(.data, list(.data = .data)), parent = .envir)
-		#eval(eval(.arg, env), env)}
 		eval(.arg, env)}
 
 #reflection

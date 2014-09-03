@@ -171,7 +171,8 @@ mrexec =
 			do.call(mapreduce, mr.args),
 			format = input.format)
 
-run = 
+run =
+memoise(
 	function(.data, input.format = NULL, ...) { #this is not the input format for the run but the one to encapsulate with the result to read it later
 		dof = default(.data[['output.format']], "native")
 		if(is.null(input.format)) {
@@ -214,7 +215,7 @@ run =
 				 	pipe$recursive.group) {
 				mr.args$combine =
 					make.combine.fun(pipe$combine, default(pipe$vectorized, FALSE))}
-			mrexec(mr.args, input.format)}}
+			mrexec(mr.args, input.format)}})
 
 output.pipermr = 
 	function(.data, path = NULL, format = "native", input.format = format) {

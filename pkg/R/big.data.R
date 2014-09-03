@@ -35,7 +35,8 @@ as.big.data.function =
 		structure(
 			list(
 				data = x, 
-				format = format),
+				format = format,
+				digest = digest(dfs.ls(x))),
 			class = "big.data")
 
 to.rmr = 

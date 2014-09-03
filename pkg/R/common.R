@@ -283,7 +283,6 @@ non.standard.eval.patch =
 				else {
 					stop("Error in pipe operator")}}}}
 
-
 find.. = 
 	function(x) {
 		x = as.list(x)
@@ -300,6 +299,7 @@ find.. =
 							if(is.call(y))
 								find..(y)
 							else FALSE}}))}	
+
 `%!%` = 
 	function(left, right) {
 		pf = parent.frame()

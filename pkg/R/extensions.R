@@ -34,7 +34,8 @@ magic.wand =
 			"data.frame",
 			f.data.frame,
 			overwrite = FALSE,
-			envir = envir)
+			envir = envir,
+			appendVarArgs = FALSE)
 		setMethodS3(
 			f.name,
 			"pipe", 
@@ -45,7 +46,8 @@ magic.wand =
 			else
 				function(.data, ...)
 					do.call(gapply, c(list(.data, vectorized(mergeable(f, mergeable), vectorized)), list(...))),
-			envir = envir)} 
+			envir = envir,
+			appendVarArgs = FALSE)} 
 
 extend = 
 	function(pack = c("base", "dplyr"), envir = parent.frame()) {

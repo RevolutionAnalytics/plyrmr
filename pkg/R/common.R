@@ -197,24 +197,6 @@ strip.zero.col =
 	function(x)
 		x[sapply(x, ncol) > 0]
 
-#dynamic scoping
-
-non.standard.eval = 
-	function(.data, ..., .named = TRUE, .envir) {
-		force(.envir)
-		dotlist = {
-			if(.named)
-				named_dots(...)
-			else
-				dots(...) }
-		env = list2env(c(.data, list(.data = .data)), parent = .envir)
-		lapply(dotlist, function(x) eval(x, env))}
-
-non.standard.eval.single = 
-	function(.data, .arg, .named = TRUE, .envir) {
-		force(.envir)
-		env = list2env(c(.data, list(.data = .data)), parent = .envir)
-		eval(.arg, env)}
 
 #reflection
 # next four functions borrowed from pryr pending CRAN submission, with
@@ -244,17 +226,20 @@ named_dots =
 		args}
 
 #non standard eval
-#patch for broken verbs
 
-non.standard.eval.patch = 
-	function(f) 
-		function(.data, ..., .envir = parent.frame()) {
-			dotargs = dots(...)
-			dotargs = partial_eval(dotargs, env = .envir)
-			splat(f)(
-				c(
-					list(.data),
-					dotargs))}
+var = function(v) as.name(v)
+
+var.subs = 
+	function(x){
+		if(is.call(x)) {
+			if(x[[1]] == as.name("var")) 
+				eval(x)
+			else
+				as.call(
+					lapply(
+						x, 
+						var.subs))} 
+		else x}
 
 #pipes
 

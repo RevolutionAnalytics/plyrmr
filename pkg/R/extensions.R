@@ -24,7 +24,6 @@ magic.wand =
 		mergeable = FALSE, 
 		vectorized = FALSE){
 		f.name = as.character(substitute(f))
-		f_ = match.fun(paste0(f.name, "_"))
 		f.data.frame = {
 			if(is.generic(f))
 				getMethodS3(f.name, "data.frame")
@@ -39,9 +38,10 @@ magic.wand =
 		setMethodS3(
 			f.name,
 			"pipe", 
-			if(non.standard.args)
+			if(non.standard.args) {
+				f_ = match.fun(paste0(f.name, "_"))
 				function(.data, ...) 
-					do.call(gapply, c(list(.data, vectorized(mergeable(f, mergeable), vectorized)), lazy_dots(...)))
+					do.call(gapply, c(list(.data, vectorized(mergeable(f, mergeable), vectorized)), lazy_dots(...)))}
 			else
 				function(.data, ...)
 					do.call(gapply, c(list(.data, vectorized(mergeable(f, mergeable), vectorized)), list(...))),

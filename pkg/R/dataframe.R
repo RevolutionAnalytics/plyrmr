@@ -21,7 +21,9 @@ where.data.frame_ =
 
 where.data.frame = 
 	function(.data, .cond) {
-		where.data.frame_(.data, lazy(.cond))}
+		cond = lazy(.cond)
+		cond$expr = var.subs(cond$expr)
+		where.data.frame_(.data, cond)}
 
 transmute = function(.data, ...) UseMethod("transmute")
 

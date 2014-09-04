@@ -227,12 +227,12 @@ named_dots =
 
 #non standard eval
 
-var = function(v) as.name(v)
+VAR = function(v) as.name(v)
 
 var.subs = 
 	function(x){
 		if(is.call(x)) {
-			if(x[[1]] == as.name("var")) 
+			if(x[[1]] == as.name("VAR")) 
 				eval(x)
 			else
 				as.call(

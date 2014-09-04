@@ -19,7 +19,7 @@ is.generic =
 magic.wand = 
 	function(
 		f, 
-		non.standard.args = TRUE, 
+		non.standard.args = FALSE, 
 		envir = parent.frame(), 
 		mergeable = FALSE, 
 		vectorized = FALSE){

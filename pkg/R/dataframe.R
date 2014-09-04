@@ -37,9 +37,10 @@ transmute.data.frame_ =
 		newcols =
 			splat(data.frame)(
 				c(
-					lazy_eval(
+					lapply(
 						dot.args,
-						.data),
+						lazy_eval,
+						data = .data),
 					list(stringsAsFactors = FALSE)))
 		if(.cbind) .columns = names(.data)
 		if(!is.null(.columns)) {
@@ -53,7 +54,13 @@ transmute.data.frame_ =
 
 transmute.data.frame = 
 	function(.data, ..., .cbind = FALSE, .columns = if(.cbind) names(.data) else NULL) {
-		transmute.data.frame_(.data, lazy_dots(...), .cbind = .cbind,  .columns = .columns)}
+		dot.args = 
+			lapply(
+				lazy_dots(...), 
+				function(x){
+					x$expr = var.subs(x$expr)
+					x})
+		transmute.data.frame_(.data, dot.args, .cbind = .cbind,  .columns = .columns)}
 
 bind.cols = function(.data, ...) UseMethod("bind.cols")	
 

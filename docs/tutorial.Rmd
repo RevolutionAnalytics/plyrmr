@@ -7,7 +7,7 @@ output:
 
 `r library(knitr)`
 `r read_chunk('../pkg/tests/tutorial.R')`
-`r opts_chunk$set(echo=TRUE, tidy=FALSE, comment="", cache=FALSE)`
+`r opts_chunk$set(echo=TRUE, tidy=FALSE, comment="", cache=TRUE, autodep=TRUE)`
 
 ```{r setup, echo=FALSE}
 # the default output hook

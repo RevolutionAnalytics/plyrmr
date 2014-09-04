@@ -149,16 +149,23 @@ extract.vars =
 		else
 			do.call(c, lapply(extract.vars.helper(x), extract.vars))}
 
-count.data.frame =
-	function(x, ...) {
+count.data.frame_ =
+	function(x, dot.args) {
 		ll = 
 			lapply(
-				dots(...),
+				dot.args,
 				function(df)
-					plyr::count(x, unique(as.character(extract.vars(df)))))
+					plyr::count(x, unique(as.character(extract.vars(df$expr)))))
 		names(ll) = 
-			gsub("\\.", "_", make.names(as.character(dots(...))))
+			gsub(
+				"\\.", 
+				"_", 
+				make.names(as.character(lapply(dot.args, function(x) x$expr))))
 		splat(data.frame.fill)(ll)}
+
+count.data.frame = 
+	function(x, ...) 
+		count.data.frame_(x, lazy_dots(...))
 
 split.cols = 
 	function(x) {
@@ -202,9 +209,7 @@ count.pipe =
 			gather(
 				do.call(
 					gapply,
-					c(
-						list(x, count),
-						lazy_dots(...)))),
+						list(x, count.data.frame_, lazy_dots(...)))),
 			mergeable(Curry(merge.counts, n = n)))
 
 extreme.k= 

@@ -16,14 +16,12 @@ where = function(.data, ...) UseMethod("where")
 
 where.data.frame_ = 
 	function(.data, .cond) {
-		cond = lazy_eval(.cond, .data)
+		cond = lazy.var.eval(.cond, .data)
 		.data[cond, , drop = FALSE]}
 
 where.data.frame = 
 	function(.data, .cond) {
-		cond = lazy(.cond)
-		cond$expr = var.subs(cond$expr)
-		where.data.frame_(.data, cond)}
+		where.data.frame_(.data, lazy(.cond))}
 
 transmute = function(.data, ...) UseMethod("transmute")
 
@@ -39,7 +37,7 @@ transmute.data.frame_ =
 				c(
 					lapply(
 						dot.args,
-						lazy_eval,
+						lazy.var.eval,
 						data = .data),
 					list(stringsAsFactors = FALSE)))
 		if(.cbind) .columns = names(.data)
@@ -54,13 +52,7 @@ transmute.data.frame_ =
 
 transmute.data.frame = 
 	function(.data, ..., .cbind = FALSE, .columns = if(.cbind) names(.data) else NULL) {
-		dot.args = 
-			lapply(
-				lazy_dots(...), 
-				function(x){
-					x$expr = var.subs(x$expr)
-					x})
-		transmute.data.frame_(.data, dot.args, .cbind = .cbind,  .columns = .columns)}
+		transmute.data.frame_(.data, dot.args = lazy_dots(...), .cbind = .cbind,  .columns = .columns)}
 
 bind.cols = function(.data, ...) UseMethod("bind.cols")	
 

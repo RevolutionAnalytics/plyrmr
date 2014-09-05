@@ -241,6 +241,12 @@ var.subs =
 						var.subs))} 
 		else x}
 
+lazy.var.eval = 
+	function(x, data) {
+		x$expr = var.subs(x$expr)
+		lazy_eval(x, data)}
+		
+
 #pipes
 
 `%|%` = 

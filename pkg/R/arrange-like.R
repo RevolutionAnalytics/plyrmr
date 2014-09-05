@@ -155,12 +155,18 @@ count.data.frame_ =
 			lapply(
 				dot.args,
 				function(df)
-					plyr::count(x, unique(as.character(extract.vars(df$expr)))))
+					plyr::count(
+						x, 
+						unique(
+							as.character(
+								extract.vars(var.subs(df$expr))))))
 		names(ll) = 
 			gsub(
 				"\\.", 
 				"_", 
-				make.names(as.character(lapply(dot.args, function(x) x$expr))))
+				make.names(
+					as.character(
+						lapply(dot.args, function(x) var.subs(x$expr)))))
 		splat(data.frame.fill)(ll)}
 
 count.data.frame = 

@@ -146,8 +146,11 @@ extract.vars.helper =
 extract.vars = 
 	function(x) {
 		if(is.symbol(x)) list(x)
-		else
-			do.call(c, lapply(extract.vars.helper(x), extract.vars))}
+		else{
+			if(is.call(x) && x[[1]] == as.name("VAR"))
+				list(as.name(x[[2]]))
+			else
+				do.call(c, lapply(extract.vars.helper(x), extract.vars))}}
 
 count.data.frame_ =
 	function(x, dot.args) {
@@ -159,14 +162,12 @@ count.data.frame_ =
 						x, 
 						unique(
 							as.character(
-								extract.vars(var.subs(df$expr))))))
+								extract.vars(df$expr)))))
 		names(ll) = 
-			gsub(
-				"\\.", 
-				"_", 
-				make.names(
-					as.character(
-						lapply(dot.args, function(x) var.subs(x$expr)))))
+				make.names( 
+					sapply(
+						dot.args, 
+						function(x) paste(extract.vars(x$expr), collapse = "_")))
 		splat(data.frame.fill)(ll)}
 
 count.data.frame = 

@@ -227,24 +227,11 @@ named_dots =
 
 #non standard eval
 
-VAR = function(v) as.name(v)
+VAR = function(v) eval(as.name(v), parent.frame())
 
-var.subs = 
-	function(x){
-		if(is.call(x)) {
-			if(x[[1]] == as.name("VAR")) 
-				eval(x)
-			else
-				as.call(
-					lapply(
-						x, 
-						var.subs))} 
-		else x}
-
-lazy.var.eval = 
-	function(x, data) {
-		x$expr = var.subs(x$expr)
-		lazy_eval(x, data)}
+lazy.eval = 
+	function(x, data) 
+		lazy_eval(x, c(data, list(.data = data)))
 		
 
 #pipes

@@ -16,7 +16,7 @@ where = function(.data, ...) UseMethod("where")
 
 where.data.frame_ = 
 	function(.data, .cond) {
-		cond = lazy.var.eval(.cond, .data)
+		cond = lazy.eval(.cond, .data)
 		.data[cond, , drop = FALSE]}
 
 where.data.frame = 
@@ -37,7 +37,7 @@ transmute.data.frame_ =
 				c(
 					lapply(
 						dot.args,
-						lazy.var.eval,
+						lazy.eval,
 						data = .data),
 					list(stringsAsFactors = FALSE)))
 		if(.cbind) .columns = names(.data)

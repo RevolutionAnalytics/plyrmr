@@ -23,12 +23,6 @@ constant =
 	function(x)
 		function(...) x
 
-#curried arguments are eager, the rest lazy
-CurryHalfLazy = 
-	function(FUN, ...) {
-		.orig = list(...)
-		function(...) 
-			do.call(FUN, c(.orig, dots(...)))}
 
 # retun a function whose env is a copy of the original env (one level only)
 

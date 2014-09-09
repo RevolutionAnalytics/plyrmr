@@ -109,6 +109,7 @@ export(extend)
 export(`%|%`)
 export(`%!%`)
 export(VAR)
+export(each.column)
 #fast summaries
 #export(fast.summary)
 #S3method(fast.summary, pipe)

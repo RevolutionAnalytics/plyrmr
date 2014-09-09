@@ -23,8 +23,17 @@ constant =
 	function(x)
 		function(...) x
 
+#transfrom a vector function into a data frame one the simplest way
 
-# retun a function whose env is a copy of the original env (one level only)
+each.column = 
+	function(f) {
+		if(is.function(f))
+			 f = list(f)
+		function(df) {
+			f = rep_len(f, ncol(df))
+			data.frame(mapply(function(x, g) g(x), df, f))}}
+
+# return a function whose env is a copy of the original env (one level only)
 
 copy.env = 
 	function(envx) {

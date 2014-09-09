@@ -30,7 +30,7 @@ transmute.data.frame_ =
 		names(dot.args) = 
 			ifelse(
 				names(dot.args) == "",  
-				lapply(dot.args, function(x) deparse(x$expr)),
+				lapply(dot.args, function(x) deparse(deVAR(x$expr))),
 				names(dot.args))
 		newcols =
 			splat(data.frame)(

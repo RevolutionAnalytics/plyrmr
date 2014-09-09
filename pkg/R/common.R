@@ -200,7 +200,6 @@ strip.zero.col =
 	function(x)
 		x[sapply(x, ncol) > 0]
 
-
 #reflection
 # next four functions borrowed from pryr pending CRAN submission, with
 # Hadley's permission
@@ -231,6 +230,16 @@ named_dots =
 #non standard eval
 
 VAR = function(v) eval(as.name(v), parent.frame())
+
+deVAR = 
+	function(expr) {
+		if(is.call(expr)) {
+			if(expr[[1]] == as.name("VAR"))
+				deVAR(expr[[2]])
+			else 
+				as.call(lapply(as.list(expr), deVAR))}
+		else
+			expr}
 
 lazy.eval = 
 	function(x, data) 

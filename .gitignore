@@ -18,21 +18,14 @@ rmr-streaming-*
 Rprof.out
 #merge
 *.orig
-
 # only distro binaries in build dir
 *.gz
 !build/*
-
 .Renviron
-
 *.o
-
 *.so
-
 plyrmr-Ex.pdf
-
 quickcheck*
-
 pkg.Rcheck/*
-
 *.html
+out

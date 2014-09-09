@@ -63,9 +63,8 @@ plyrmr.options =
 
 make.f1 = 
 	function(f, ...) {
-		dot.args = dots(...)
 		function(.x) {
-			.y = do.call(f, c(list(.x), dot.args))
+			.y = do.call(f, c(list(.x), list(...)))
 			if(is.data.frame(.y))
 				.y else {
 					if(is.matrix(.y))
@@ -124,13 +123,12 @@ output =
 		UseMethod("output")
 
 group = 
-	function(.data, ..., .envir = parent.frame()) {
-		force(.envir)
+	function(.data, ...) {
 		dot.args = dots(...)
 		group.f(
 			.data, 
 			function(.y) 
-				do.call(CurryHalfLazy(transmute, .envir = .envir), c(list(.y), dot.args)))}
+				do.call(transmute, c(list(.y), dot.args)))}
 
 as.pipe = 
 	function(x, ...) {

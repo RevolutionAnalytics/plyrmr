@@ -19,8 +19,7 @@ is.generic =
 magic.wand = 
 	function(
 		f, 
-		non.standard.args = TRUE, 
-		add.envir.arg = non.standard.args, 
+		non.standard.args = FALSE, 
 		envir = parent.frame(), 
 		mergeable = FALSE, 
 		vectorized = FALSE){
@@ -29,30 +28,26 @@ magic.wand =
 			if(is.generic(f))
 				getMethodS3(f.name, "data.frame")
 			else f}
-		f.data.frame.eval.patch = {
-			if(add.envir.arg)
-				non.standard.eval.patch(f.data.frame)
-			else
-				f.data.frame}
 		if(is.primitive(f)) stop ("Can't do  magic on primitive functions yet")
 		setMethodS3(
 			f.name,
 			"data.frame",
-			f.data.frame.eval.patch,
+			f.data.frame,
 			overwrite = FALSE,
-			envir = envir)
+			envir = envir,
+			appendVarArgs = FALSE)
 		setMethodS3(
 			f.name,
 			"pipe", 
-			if(non.standard.args)
-				function(.data, ..., .envir = parent.frame()) {
-					.envir = copy.env(.envir)
-					curried.f = CurryHalfLazy(if(add.envir.arg) non.standard.eval.patch(f) else f, .envir = .envir)
-					gapply(.data, vectorized(mergeable(curried.f, mergeable), vectorized), ...)}
+			if(non.standard.args) {
+				f_ = match.fun(paste0(f.name, "_"))
+				function(.data, ...) 
+					do.call(gapply, c(list(.data, vectorized(mergeable(f_, mergeable), vectorized)), lazy_dots(...)))}
 			else
 				function(.data, ...)
 					do.call(gapply, c(list(.data, vectorized(mergeable(f, mergeable), vectorized)), list(...))),
-			envir = envir)} 
+			envir = envir,
+			appendVarArgs = FALSE)} 
 
 extend = 
 	function(pack = c("base", "dplyr"), envir = parent.frame()) {

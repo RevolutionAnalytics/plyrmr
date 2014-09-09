@@ -23,14 +23,17 @@ constant =
 	function(x)
 		function(...) x
 
-#curried arguments are eager, the rest lazy
-CurryHalfLazy = 
-	function(FUN, ...) {
-		.orig = list(...)
-		function(...) 
-			do.call(FUN, c(.orig, dots(...)))}
+#transfrom a vector function into a data frame one the simplest way
 
-# retun a function whose env is a copy of the original env (one level only)
+each.column = 
+	function(f) {
+		if(is.function(f))
+			 f = list(f)
+		function(df) {
+			f = rep_len(f, ncol(df))
+			data.frame(mapply(function(x, g) g(x), df, f))}}
+
+# return a function whose env is a copy of the original env (one level only)
 
 copy.env = 
 	function(envx) {
@@ -197,25 +200,6 @@ strip.zero.col =
 	function(x)
 		x[sapply(x, ncol) > 0]
 
-#dynamic scoping
-
-non.standard.eval = 
-	function(.data, ..., .named = TRUE, .envir) {
-		force(.envir)
-		dotlist = {
-			if(.named)
-				named_dots(...)
-			else
-				dots(...) }
-		env = list2env(c(.data, list(.data = .data)), parent = .envir)
-		lapply(dotlist, function(x) eval(x, env))}
-
-non.standard.eval.single = 
-	function(.data, .arg, .named = TRUE, .envir) {
-		force(.envir)
-		env = list2env(c(.data, list(.data = .data)), parent = .envir)
-		eval(.arg, env)}
-
 #reflection
 # next four functions borrowed from pryr pending CRAN submission, with
 # Hadley's permission
@@ -244,17 +228,23 @@ named_dots =
 		args}
 
 #non standard eval
-#patch for broken verbs
 
-non.standard.eval.patch = 
-	function(f) 
-		function(.data, ..., .envir = parent.frame()) {
-			dotargs = dots(...)
-			dotargs = partial_eval(dotargs, env = .envir)
-			splat(f)(
-				c(
-					list(.data),
-					dotargs))}
+VAR = function(v) eval(as.name(v), parent.frame())
+
+deVAR = 
+	function(expr) {
+		if(is.call(expr)) {
+			if(expr[[1]] == as.name("VAR"))
+				deVAR(expr[[2]])
+			else 
+				as.call(lapply(as.list(expr), deVAR))}
+		else
+			expr}
+
+lazy.eval = 
+	function(x, data) 
+		lazy_eval(x, c(data, list(.data = data)))
+		
 
 #pipes
 

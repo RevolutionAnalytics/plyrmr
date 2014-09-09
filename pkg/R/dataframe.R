@@ -14,49 +14,57 @@
 
 where = function(.data, ...) UseMethod("where")
 
-where.data.frame = 
-	function(.data, .cond, .envir = parent.frame()) {
-		force(.envir)
-		cond = substitute(.cond)
-		cond = 
-			non.standard.eval.single(
-				.data, 
-				cond, 
-				.named = FALSE, 
-				.envir = .envir)
+where.data.frame_ = 
+	function(.data, .cond) {
+		cond = lazy.eval(.cond, .data)
 		.data[cond, , drop = FALSE]}
 
+where.data.frame = 
+	function(.data, .cond) {
+		where.data.frame_(.data, lazy(.cond))}
+
 transmute = function(.data, ...) UseMethod("transmute")
-transmute.data.frame =
-	function(.data, ..., .cbind = FALSE, .columns = NULL, .envir = parent.frame()) {
-		force(.envir)
-		args =
+
+transmute.data.frame_ =
+	function(.data, dot.args, .cbind, .columns) {
+		names(dot.args) = 
+			ifelse(
+				names(dot.args) == "",  
+				lapply(dot.args, function(x) deparse(deVAR(x$expr))),
+				names(dot.args))
+		newcols =
 			splat(data.frame)(
-				non.standard.eval(
-					.data, 
-					...,
-					.named = TRUE,
-					.envir = .envir))
-		newcols = splat(data.frame)(c(args, list(stringsAsFactors = FALSE)))
+				c(
+					lapply(
+						dot.args,
+						lazy.eval,
+						data = .data),
+					list(stringsAsFactors = FALSE)))
+		if(.cbind) .columns = names(.data)
 		if(!is.null(.columns)) {
 			.columns = .data[,.columns, drop = FALSE]
 			newcols = {
 				if (nrow(newcols) * ncol(newcols) == 0)
 					.columns
 				else
-					safe.cbind(newcols, .columns )}}
-		if(!.cbind)  newcols
-		else {
-			if(ncol(newcols) == 0) .data
-			else safe.cbind(.data, newcols)}}
+					safe.cbind(.columns, newcols)}}
+	newcols}
+
+transmute.data.frame = 
+	function(.data, ..., .cbind = FALSE, .columns = if(.cbind) names(.data) else NULL) {
+		transmute.data.frame_(.data, dot.args = lazy_dots(...), .cbind = .cbind,  .columns = .columns)}
 
 bind.cols = function(.data, ...) UseMethod("bind.cols")	
-bind.cols.data.frame =
-	function(.data, ..., .envir = parent.frame()) {
-		force(.envir)
-		transmute(.data, ..., .cbind = TRUE, .envir = .envir)}
 
-select = non.standard.eval.patch(dplyr::select)
+bind.cols.data.frame_ =
+	function(.data, dot.args) {
+		transmute.data.frame_(.data, dot.args, .cbind = TRUE)}
+
+bind.cols.data.frame = 
+	function(.data, ...) 
+		bind.cols.data.frame_(.data, lazy_dots(...))
+
+select = dplyr::select
 magic.wand(select, non.standard.args = TRUE)
 
 

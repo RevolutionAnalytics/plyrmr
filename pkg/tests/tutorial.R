@@ -2,7 +2,7 @@
 options(warn = -1)
 #rm(mtcars)
 suppressPackageStartupMessages(library("plyrmr"))
-invisible(rmr.options(backend="local"))
+invisible(plyrmr.options(backend="local"))
 invisible(dfs.rmr("/tmp/mtcars"))
 # mtcars = cbind(model = row.names(mtcars), mtcars)
 # row.names(mtcars) = NULL
@@ -57,7 +57,7 @@ high.carb.cyl.1(1)
 }
 ## @knitr process.mtcars.2
 where.mtcars.2 = 
-	function(...) where(mtcars, ..., .envir = parent.frame())
+	function(...) where(mtcars, ...)
 high.carb.cyl.2 = function(x) {where.mtcars.2(carb/cyl >= x) }
 high.carb.cyl.2(1)
 ## @knitr last.col

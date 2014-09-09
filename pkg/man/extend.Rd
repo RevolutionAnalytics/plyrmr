@@ -7,13 +7,12 @@
 }
 \usage{
 extend(pack=c("base", "dplyr"), envir = parent.frame())
-magic.wand(f, non.standard.args = TRUE, add.envir.arg = non.standard.args, envir = parent.frame(), 
+magic.wand(f, non.standard.args = TRUE, envir = parent.frame(), 
 		mergeable = FALSE, vectorized = FALSE)}
 \arguments{
 	\item{pack}{The package from which the functions to be converted should be taken}
   \item{envir}{The environment to which new functions should be added}
   \item{non.standard.args}{whether \code{f} accepts arguments to be evaluated using \link{non standard evaluation} rules, like \code{\link{transform}}}
-  \item{add.envir.arg}{whether \code{f} accepts the \code{.envir} argument for the correct implementation of \link{non standard evaluation}. Hopefully this argument will become a minor standard shared by plyrmr and dplyr.}
    \item{f}{A function of a data frame returning a data frame (attempts are made to coerce a non data frame return value to a data frame, but your milage may vary; vectors become single column data frames).}
 }
 \details{ 
@@ -24,4 +23,6 @@ NULL, useful only for their side-effects}
 \examples{
 #extend row.names to work on pipes
 magic.wand(row.names)
-extend("base")}
+#extend("dplyr")
+
+}

@@ -13,21 +13,19 @@
 # limitations under the License.
 
 where.pipe = 
-	function(.data, .cond, .envir = parent.frame()) {
-		.envir = copy.env(.envir)
-		.cond = substitute(.cond)
-		eval(
-			substitute(
-				gapply(.data, CurryHalfLazy(where, .envir = .envir), .cond),
-				list(.cond = .cond)))}
+	function(.data, .cond) {
+		.cond = lazy(.cond)
+		gapply(.data, where.data.frame_, .cond)}
 
 transmute.pipe = 
-	function(.data, ..., .cbind = FALSE, .columns = NULL, .mergeable = FALSE, .envir = parent.frame()) {
-		.envir = copy.env(.envir)
-		fun = CurryHalfLazy(transmute, .cbind = .cbind, .columns = .columns, .envir = .envir)
-		gapply(.data, mergeable(fun, .mergeable), ...)}
+	function(.data, ..., .cbind = FALSE, .columns = NULL, .mergeable = FALSE) {
+		gapply(
+			.data, 
+			mergeable(transmute.data.frame_, .mergeable), 
+			dot.args = lazy_dots(...),
+	    .cbind = .cbind,
+			.columns = .columns)}
 
 bind.cols.pipe =
-	function(.data, ..., .envir = parent.frame()) {
-		.envir = copy.env(.envir)
-		transmute(.data, ..., .cbind = TRUE, .mergeable = FALSE, .envir = .envir)}
+	function(.data, ...) {
+		transmute(.data, ..., .cbind = TRUE, .mergeable = FALSE)}

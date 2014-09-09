@@ -36,7 +36,12 @@ as.big.data.function =
 			list(
 				data = x, 
 				format = format,
-				digest = digest(dfs.ls(x))),
+				digest = 
+					digest(
+						if(is.list(x))
+							lapply(x, dfs.ls)
+						else
+							x)),
 			class = "big.data")
 
 to.rmr = 

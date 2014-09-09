@@ -23,4 +23,6 @@ NULL, useful only for their side-effects}
 \examples{
 #extend row.names to work on pipes
 magic.wand(row.names)
-extend("base")}
+#extend("dplyr")
+
+}

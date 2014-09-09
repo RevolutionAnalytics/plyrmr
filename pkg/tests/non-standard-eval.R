@@ -1,14 +1,12 @@
 library(plyrmr)
 rmr.options(backend = "local")
-magic.wand(transform)
-magic.wand(subset)
-magic.wand(mutate)
-magic.wand(filter)
+#TODO reinstate after dplyr 0.3.0
+#magic.wand(mutate, non.standard.args = TRUE)
+#magic.wand(filter, non.standard.args = TRUE)
 #works with param in Global env
 param = 4
 as.data.frame(bind.cols(input(mtcars), fourcarb = carb/param))
-as.data.frame(transform(input(mtcars), fourcarb = carb/param))
-as.data.frame(mutate(input(mtcars), fourcarb = carb/param))
+#as.data.frame(mutate(input(mtcars), fourcarb = carb/param))
 rm(param)
 # only bind.cols work with local env param
 # failing tests commented out by design
@@ -22,8 +20,7 @@ rm(param)
 # all is fine with param in Global  env
 param = 4
 as.data.frame(where(input(mtcars), carb > param))
-as.data.frame(subset(input(mtcars), carb > param))
-as.data.frame(filter(input(mtcars), carb > param))
+#as.data.frame(filter(input(mtcars), carb > param))
 rm(param)
 #only where works with param in local env.
 (function(){param = 4; as.data.frame(where(input(mtcars), carb > param))})()

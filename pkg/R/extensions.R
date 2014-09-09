@@ -42,7 +42,7 @@ magic.wand =
 			if(non.standard.args) {
 				f_ = match.fun(paste0(f.name, "_"))
 				function(.data, ...) 
-					do.call(gapply, c(list(.data, vectorized(mergeable(f, mergeable), vectorized)), lazy_dots(...)))}
+					do.call(gapply, c(list(.data, vectorized(mergeable(f_, mergeable), vectorized)), lazy_dots(...)))}
 			else
 				function(.data, ...)
 					do.call(gapply, c(list(.data, vectorized(mergeable(f, mergeable), vectorized)), list(...))),

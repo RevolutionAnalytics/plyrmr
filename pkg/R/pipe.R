@@ -65,12 +65,15 @@ make.f1 =
 	function(f, ...) {
 		function(.x) {
 			.y = do.call(f, c(list(.x), list(...)))
+			if(is.null(.y))
+				NULL 
+			else {
 			if(is.data.frame(.y))
 				.y else {
 					if(is.matrix(.y))
 						as.data.frame(.y, stringsAsFactors = F)
 					else 
-						data.frame(x = .y, stringsAsFactors = F)}}}
+						data.frame(x = .y, stringsAsFactors = F)}}}}
 
 #pipe defs
 

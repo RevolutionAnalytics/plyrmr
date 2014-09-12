@@ -219,7 +219,7 @@ count.pipe =
 						list(x, count.data.frame_, lazy_dots(...)))),
 			mergeable(Curry(merge.counts, n = n)))
 
-extreme.k= 
+extreme.k = 
 	function(.x, dot.args, .k , .decreasing) {
 		this.order = Curry(order, decreasing = .decreasing)
 		mr.fun = 

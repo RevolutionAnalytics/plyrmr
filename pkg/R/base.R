@@ -20,7 +20,7 @@ names.pipe =
 			gapply(
 				group(
 					gapply(
-						x,  
+						ungroup(x),  
 						names),
 					x),
 				mergeable(unique)))[['x']]
@@ -51,3 +51,13 @@ sample.pipe =
 						.priority), 
 					function(x)	x[,-ncol(x)]))}
 
+dim.pipe = 
+	function(x)
+		transmute(
+			gather(
+				gapply(
+					x, 
+					function(x) data.frame(nrow = nrow(x), ncol = ncol(x)))),
+			nrow = sum(nrow), 
+			ncol = ncol[1],
+			.mergeable = TRUE)

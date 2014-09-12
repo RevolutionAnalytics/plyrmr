@@ -64,22 +64,26 @@ strip.zerocol.df =
 safe.cbind = 
 	function(..., rownames.from = NULL) {
 		lengths = sapply(list(...), rmr2:::rmr.length)
-		if(!is.null(rownames.from))
-			rn = rownames(list(...)[[rownames.from]])
+		shortest = suppressWarnings(min(lengths))
+		if(shortest == Inf) 
+			NULL
 		else {
-			rownames.from = which.max(lengths)
-			rn = rownames(list(...)[[rownames.from]])}
-		ll = lapply(strip.nulls(strip.zerocol.df(...)), selective.I)
-		lengths = rmr2:::sapply.rmr.length(ll)
-		shortest = min(lengths)
-		if(shortest == 0)
-			data.frame()
-		else {
-			x = splat(data.frame)(c(ll, list(check.names = FALSE)))
-			x = x[, unique(names(x)), drop = FALSE]
-			if(!is.null(rn))
-				rownames(x) = make.unique(rep(rn, length.out = nrow(x)))
-			x}}
+			if(!is.null(rownames.from))
+				rn = rownames(list(...)[[rownames.from]])
+			else {
+				rownames.from = which.max(lengths)
+				rn = rownames(list(...)[[rownames.from]])}
+			ll = lapply(strip.nulls(strip.zerocol.df(...)), selective.I)
+			lengths = rmr2:::sapply.rmr.length(ll)
+			shortest = suppressWarnings(min(lengths))
+			if(shortest == 0)
+				data.frame()
+			else {
+				x = splat(data.frame)(c(ll, list(check.names = FALSE)))
+				x = x[, unique(names(x)), drop = FALSE]
+				if(!is.null(rn))
+					rownames(x) = make.unique(rep(rn, length.out = nrow(x)))
+				x}}}
 
 safe.cbind.kv = 
 	function(k, v) {

@@ -32,10 +32,9 @@ drop.gather.rmr =
 			x}
 
 make.task.fun =   																			     	# this function is a little complicated so some comments are in order
-	function(keyf, valf, ungroup, ungroup.args, vectorized) {	  # make a valid map function from two separate ones for keys and values
+	function(keyf, valf,  vectorized) {	  # make a valid map function from two separate ones for keys and values
 		if(is.null(valf))                                         # the value function defaults to identity
 			valf = identity 
-		stopifnot((!ungroup) || is.null(keyf))
 		function(k, v) {                                          # this is the signature of a correct map function
 			rownames(k) = NULL                                      # wipe row names unless you want them to count in the grouping (Hadoop only sees serialization)
 			if(vectorized) {
@@ -53,27 +52,21 @@ make.task.fun =   																			     	# this function is a little complicat
 				w = valf(drop.gather.rmr(safe.cbind.kv(k, v)))
 				w = safe.cbind.kv(k,	w)} # pass both keys and values to val function as a single data frame, then make sure we keep keys for the next step
 			k = {
-				if (ungroup) { 					                              # if ungroup called select or reset keys, otherwise accumulate
-					if(length(ungroup.args) == 0) 
-						NULL            
-					else
-						do.call(select, c(list(k), lapply(ungroup.args, function(a) as.call(list(as.name("-"), a)))))}
-				else {	
-					if(is.null(keyf)) k 														   # by default keep grouping whatever it is
-					else safe.cbind(k, keyf(drop.gather.rmr(w)))}}		# but if you have a key function, use it and cbind old and new keys
+				if(is.null(keyf)) k 														   # by default keep grouping whatever it is
+				else keyf(drop.gather.rmr(w))}		# but if you have a key function, use it and cbind old and new keys
 			if(!is.null(w) && nrow(w) > 0) keyval(k, drop.gather.rmr(w))}}             # special care for empty cases
 
 make.map.fun = 
 	function(keyf, valf)
-		make.task.fun(keyf, valf, ungroup = FALSE, ungroup.args = NULL, vectorized = FALSE)
+		make.task.fun(keyf, valf, vectorized = FALSE)
 
 make.reduce.fun = 
-	function(valf, ungroup, ungroup.args, vectorized) 
-		make.task.fun(NULL, valf, ungroup, ungroup.args, vectorized)
+	function(keyf, valf, vectorized) 
+		make.task.fun(keyf, valf, vectorized)
 
 make.combine.fun = 
 	function(valf, vectorized) {
-		cf  = make.task.fun(NULL, valf, ungroup = FALSE, ungroup.args = NULL, vectorized = vectorized)
+		cf  = make.task.fun(NULL, valf, vectorized = vectorized)
 		function(k, v) {
 			retval = cf(k, v)
 			nm = sapply(names(v), function(col) grep(paste0(col), names(retval$val), value=T))
@@ -105,7 +98,7 @@ gapply.pipermr =
 		.data}
 
 group.f.pipermr = 
-	function(.data, .f, ...) {
+	function(.data, .f,  ..., .reset = FALSE) {
 		.f = freeze.env(.f)
 		f1 = make.f1(.f, ...)
 		if(is.null(.data$group)) { #ungrouped
@@ -113,38 +106,31 @@ group.f.pipermr =
 		else {
 			if(is.null(.data$reduce)){ #refine grouping with no mr job
 				prev.group = .data$group
-				.data$group = function(v) safe.cbind(prev.group(v), f1(v))}
+				.data$group = {
+					if(.reset) 
+						function(v) f1(v)
+					else
+						function(v) safe.cbind(prev.group(v), f1(v))}}
 			else #run and apply grouping
 				.data = 
 				group.f(
 					input(run(.data, input.format = "native")), 
-					f1)}
+					.f = f1,
+					.reset = .reset)}
 		.data}
 
-ungroup.pipermr = 
-	function(.data, ...) {
-		.data$ungroup.args = named_dots(...)
-		if(is.grouped(.data) && !is.null(.data$reduce)) {
-			.data$ungroup = TRUE
-			phase1 = input(run(.data, input.format = "native"))
-			if(length(.data$ungroup.args) == 0)
-				phase1
-			else 
-				group.f(phase1, function(x) data.frame(.gather = 1))}
-		else {
-			if(is.grouped(.data) && length(named_dots(...)) == 0) {
-				.data$group = NULL
-				.data$ungroup = FALSE #what happens to ungroup.vars here
-				.data}
-			else{
-				prev.group = .data$group
-				.data$group = 
-					function(v) {
-						pg = prev.group(v)
-						pg[, setdiff(names(pg), as.character(.data$ungroup.args)), drop = FALSE]}
-				.data}
-			.data}}
+ungroup.fun = 
+	function(...) {
+		ungroup.cols = names(named_dots(...))
+		if(length(ungroup.cols) == 0)
+			function(k) NULL
+		else
+			function(k) 
+				k[setdiff(names(k), ungroup.cols), ]}
 
+ungroup.pipermr = 
+	function(.data, ...) 
+		group.f(.data, ungroup.fun(...), .reset = TRUE)
 
 is.grouped.pipermr = 
 	function(.data)
@@ -205,9 +191,8 @@ run =
 				stopifnot(!is.null(pipe$group))
 				mr.args$reduce = 
 					make.reduce.fun(
+						keyf = NULL,
 						valf = pipe$reduce, 
-						ungroup = default(pipe$ungroup, FALSE),
-						ungroup.args = pipe$ungroup.args,
 						vectorized = default(pipe$vectorized, FALSE))
 				mr.args$vectorized.reduce = pipe$vectorized}
 			if(!is.null(pipe$recursive.group) &&

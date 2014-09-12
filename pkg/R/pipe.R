@@ -66,12 +66,15 @@ make.f1 =
 		dot.args = dots(...)
 		function(.x) {
 			.y = do.call(f, c(list(.x), dot.args))
+			if(is.null(.y))
+				NULL 
+			else {
 			if(is.data.frame(.y))
 				.y else {
 					if(is.matrix(.y))
 						as.data.frame(.y, stringsAsFactors = F)
 					else 
-						data.frame(x = .y, stringsAsFactors = F)}}}
+						data.frame(x = .y, stringsAsFactors = F)}}}}
 
 #pipe defs
 

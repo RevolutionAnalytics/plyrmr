@@ -74,7 +74,7 @@ merge.pipe =
                     all.y = all.y,
                     suffixes = suffixes,
                     incomparables = incomparables)
-                if(!is.null(rmr.str(outer))) list(z) else z}}}))}
+                if(!is.null(outer)) list(z) else z}}}))}
 
 quantile.pipe = 
   function(x, N = 10^5, ...) {

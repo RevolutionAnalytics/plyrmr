@@ -129,8 +129,14 @@ ungroup.fun =
 				k[setdiff(names(k), ungroup.cols), ]}
 
 ungroup.pipermr = 
-	function(.data, ...) 
-		group.f(.data, ungroup.fun(...), .reset = TRUE)
+	function(.data, ...){ 
+		if(!is.grouped(.data))
+			.data
+		else{
+		x = group.f(.data, ungroup.fun(...), .reset = TRUE)
+		if(length(dots(...)) == 0)
+			.data$grouped = NULL
+		x}}
 
 is.grouped.pipermr = 
 	function(.data)

@@ -16,26 +16,23 @@
 
 names.pipe =
 	function(x, ...)
-		as.data.frame(
-			gapply(
-				group(
-					gapply(
-						ungroup(x),  
-						names),
-					x),
-				mergeable(unique)))[['x']]
+		names(
+			as.data.frame(
+				sample(
+					ungroup(x),  
+					method = "any",
+					n = 1)))
 
 sample.pipe = 
 	function(x, method = c("any", "Bernoulli", "hypergeometric"), ...) {
 		method = match.arg(method)
-		sample.curried = Curry(sample, method = method, ...)
 		switch(
 			method,
 			any = 
 				gapply(
 					gather(
-						gapply(x, sample.curried)),
-					mergeable(sample.curried)),
+						gapply(x, sample.data.frame, method, ...)),
+					mergeable(sample.data.frame), method, ...),
 			Bernoulli = 
 				gapply(x, sample.curried),
 			hypergeometric = 
@@ -61,3 +58,12 @@ dim.pipe =
 			nrow = sum(nrow), 
 			ncol = ncol[1],
 			.mergeable = TRUE)
+
+nrow = function(x) UseMethod("nrow")
+nrow.default = base::nrow
+nrow.pipe = function(x) select(dim.pipe(x), nrow)
+
+ncol = function(x) UseMethod("ncol")
+ncol.default = base::ncol
+ncol.pipe = function(x) length(names(x))
+

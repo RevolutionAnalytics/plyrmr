@@ -233,8 +233,12 @@ named_dots =
 
 #non standard eval
 
-VAR = function(v) eval(as.name(v), parent.frame())
-
+VAR = 
+	function(v) {
+		if(is.character(v))
+			eval(as.name(v), parent.frame())
+		else
+			eval(as.name(.data), parent.frame())[,v]}
 deVAR = 
 	function(expr) {
 		if(is.call(expr)) {

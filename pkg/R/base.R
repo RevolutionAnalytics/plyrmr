@@ -34,7 +34,7 @@ sample.pipe =
 						gapply(x, sample.data.frame, method, ...)),
 					mergeable(sample.data.frame), method, ...),
 			Bernoulli = 
-				gapply(x, sample.curried),
+				gapply(x, sample.data.frame, method, ...),
 			hypergeometric = 
 				gapply(
 					top.k(

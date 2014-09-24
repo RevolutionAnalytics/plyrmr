@@ -52,7 +52,7 @@ make.task.fun =   																			     	# this function is a little complicat
 				w = valf(drop.gather.rmr(safe.cbind.kv(k, v)))
 				w = safe.cbind.kv(k,	w)} # pass both keys and values to val function as a single data frame, then make sure we keep keys for the next step
 			k = {
-				if(is.null(keyf)) structure(k, keys = names(k))               # by default keep grouping whatever it is
+				if(is.null(keyf)) k              # by default keep grouping whatever it is
 				else keyf(structure(drop.gather.rmr(w), keys = names(k)))}		# but if you have a key function, use it and cbind old and new keys
 			if(!is.null(w) && nrow(w) > 0) keyval(k, drop.gather.rmr(w))}}  # special care for empty cases
 

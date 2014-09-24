@@ -238,7 +238,7 @@ VAR =
 		if(is.character(v))
 			eval(as.name(v), parent.frame())
 		else
-			eval(as.name(.data), parent.frame())[,v]}
+			eval(quote(.data), parent.frame())[,v]}
 
 deVAR = 
 	function(expr) {

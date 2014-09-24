@@ -239,6 +239,7 @@ VAR =
 			eval(as.name(v), parent.frame())
 		else
 			eval(as.name(.data), parent.frame())[,v]}
+
 deVAR = 
 	function(expr) {
 		if(is.call(expr)) {

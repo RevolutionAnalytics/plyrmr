@@ -1,18 +1,94 @@
 ---
-title: "What's new in `plyrmr` 0.4.0"
+title: "What's new in `plyrmr` 0.5.0"
 output: 
   html_document:
     keep_md: true 
 ---
 
+```{r echo = FALSE}
+suppressMessages(library(plyrmr))
+```
+
 ## Features
 
-* system of backends *a là* `rmr2`: use "local" for learning and debugging, no Hadoop needed; use "hadoop" for real work on a cluster; don't use "spark" yet as it's not ready for prime time, but we are working on it.
-* system of options also inspired by `rmr2`: with `plyrmr.options` you can set the backend or any other option that's relevant to the current backend. Right now that just means that arguments other than `backend` will be forwarded to `rmr.options`, but in the future that will change (as the spark backend is independent of `rmr2`)
-* Support for fast aggregation using vectorized operations and the `dplyr` extension.
-* Special variable to use in connection with `%|%` operator renamed `..` to avoid clashes with `.` in formulas.
+### New functions for big data sets: nrow, ncol, dim
+
+They do what you expect them to do, but were a glaring omission among common data frame functions.
+
+### New function VAR helps using plyrmr inside other functions
+
+It is convenient to type `bind.cols(mtcars, cyl/2)`, but what do you do when you want to parametrize the data and the column? Typically, you are writing a function 
+
+```{r}
+half.some.column = function(data, col) bind.cols(data, col/2)
+```
+
+Should work right?
+
+```{r error=TRUE}
+half.some.column(mtcars, cyl)
+half.some.column(mtcars, "cyl")
+half.some.column(mtcars, as.name("cyl"))
+```
+
+Nada, nope, rien. Try `VAR`.
+
+```{r}
+half.some.column = function(data, col) bind.cols(data, VAR(col)/2)
+head(half.some.column(mtcars, "cyl"))
+```
+
+Finally! And it works also with column numbers
+
+```{r}
+head(bind.cols(mtcars, z = VAR(1)/2))
+```
+
+### Automagically avoid useless recomputation
+
+When dealing with big data, wasteful recomputation should not be taken lightly. `plyrmr` now does that on your behalf.
+
+```{r echo=FALSE, results='hide'}
+z = output(input(mtcars), "/tmp/mtcars")
+```
+
+```{r}
+ncol(input("/tmp/mtcars"))
+```
+This does actual work,
+
+```{r}
+ncol(input("/tmp/mtcars"))
+```
+This one doesn't. It's that easy.
+
+
+
+### Higher order function for creating data frame functions
+
+Just a little convenience for when you'd like to apply the same vector function to each column of a data frame. 
+
+```{r}
+log.data.frame = each.column(log)
+head(log.data.frame(mtcars))
+```
+
+With this function, you can do things like
+
+```{r}
+gapply(input("/tmp/mtcars")), log.data.frame)
+```
+
+```{r echo=FALSE}
+dfs.rmr("/tmp/mtcars")
+```
+
+### Dropped support for base functions transform and subset 
+
+As part of a major clean-up of how non-standard evaluation is handled (a.k.a ... expression arguments), they are gone. They were in an  extension pack anyway and they required lots of complex code to deal with their own way of dealing with non standard eval arguments. There are plenty of alternatives anyway.
 
 
 ## Bugs
 
-* Requires `rmr2` 3.2.0 or higher to pick up some fixes in factor handling.
+
+

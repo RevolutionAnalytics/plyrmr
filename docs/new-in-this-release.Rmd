@@ -62,7 +62,18 @@ ncol(input("/tmp/mtcars"))
 ```
 This one doesn't. It's that easy.
 
+### Better naming for columns in count output
 
+For example:
+```{r}
+count(mtcars, carb:cyl, carb:gear)
+```
+
+Let me try to spelly it out. For each ... argument, there are as many columns in the result as there are variables in that argument, plus 1. The last one is for the counts. The others are for the combination of values being counted. All the column names start with an id for the ... arg followed by a column specific part. The arg identifier is an underscore separated concatenation of variables in that argument. The column specific part is either the name of a variable or "freq". It's probably easier to look at the example.
+
+### Function `summarize_mergeable`
+
+When using the `dplyr` extension pack you may notice two new functions by a similar name: `summarize` and `summarize_mergeable`. The latter should be used when the summarization is associative and commutative, like a sum, to reap important performance benefits, but can't be used with operations like `mean`, which do no enjoy the same properties. It's the same as the `.mergeable` argument to `transmute`, but instead of trying to monkey patch `summarize` to accept an additional argument I went for the additional function. Remember `summarize` can only be used for single row summaries and gives important performance benefits when summarizing many small groups.
 
 ### Higher order function for creating data frame functions
 
@@ -73,11 +84,12 @@ log.data.frame = each.column(log)
 head(log.data.frame(mtcars))
 ```
 
-With this function, you can do things like
+With this function, you can do things like:
 
 ```{r}
 gapply(input("/tmp/mtcars")), log.data.frame)
 ```
+
 
 ```{r echo=FALSE}
 dfs.rmr("/tmp/mtcars")

@@ -9,7 +9,8 @@ Specify the input and output of a pipe or convert its output into a data frame
 \code{input} is defined for data frames, file paths and \code{rmr2} big data object or a \code{plyrmr} big data object and always represents the starting point of a pipe. \code{output} is used to write the result of a pipe to a specific file path or \code{plyrmr} big data object. \code{as.data.frame} writes the result of a pipe to a data frame. 
 }
 \usage{
-\method{as.data.frame}{pipe}(x, \dots)
+\method{as.data.frame}{pipermr}(x, \dots)
+\method{as.data.frame}{pipespark}(x, \dots)
 input(x, \dots)
 output(.data, path = NULL, format = "native", input.format = format)
 }

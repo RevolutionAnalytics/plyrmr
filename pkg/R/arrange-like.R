@@ -134,9 +134,9 @@ quantile.data.frame =
 count = function(x, ...) UseMethod("count")
 
 count.default = 
-  function(x)
+  function(x, ...)
     arrange(
-      plyr::count(x),
+      plyr::count(x, ...),
       freq)
 
 extract.vars.helper = 

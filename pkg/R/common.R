@@ -234,11 +234,11 @@ named_dots =
 #non standard eval
 
 VAR = 
-	function(v) {
-		if(is.character(v))
-			eval(as.name(v), parent.frame())
+	function(x) {
+		if(is.character(x))
+			eval(as.name(x), parent.frame())
 		else
-			eval(quote(.data), parent.frame())[,v]}
+			eval(quote(.data), parent.frame())[,x]}
 
 deVAR = 
 	function(expr) {
@@ -258,11 +258,11 @@ lazy.eval =
 #pipes
 
 `%|%` = 
-	function(x, a.call) {
+	function(x, f) {
 		sub.x = substitute(x)
-		sub.a.call = substitute(a.call)
+		sub.a.call = substitute(f)
 		if(is.name(sub.a.call)) {
-			a.call(x)} 
+			f(x)} 
 		else {
 			if(is.call(sub.a.call) && !find..(sub.a.call)){
 				call.list = as.list(sub.a.call)

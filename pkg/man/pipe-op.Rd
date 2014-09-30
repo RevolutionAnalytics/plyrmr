@@ -9,13 +9,14 @@
 x \%|\% f
 x \%|\% f(\dots)
 x \%|\% f(\dots, .., \dots)
-g(...) \%!\% f
-g(...) \%!\% f(\dots)
-g(...) \%!\% f(\dots, .., \dots)
+g(\dots) \%!\% f
+g(\dots) \%!\% f(\dots)
+g(\dots) \%!\% f(\dots, .., \dots)
 }
 \arguments{
 \item{x}{Anything that can be evaluated}
 \item{f, g}{Functions}
+\item{f(\dots), g(\dots), f(\dots, .., \dots)}{Calls}
 \item{\dots}{Additional arguments to \code{f}}
 \item{..}{A special argument denoting the position where the value of the left side should be passed}
 }

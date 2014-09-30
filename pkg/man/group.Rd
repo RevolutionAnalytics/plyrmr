@@ -10,7 +10,7 @@
 A data set in \code{plyrmr} , as represented by a pipe, is always grouped in one way or another. This means  that every computation acting on a pipe, acts on a subset of the data at a time. By contolling the group definition, we can implement complex algorithms while never loading all data into main memory, which wouldn't be feasible. The functions documented here allow to do that in \code{\link{plyrmr}}.
 }
 \usage{
-group(.data, \dots, .envir = parent.frame())
+group(.data, \dots)
 group.f(.data, .f, \dots)
 gather(.data)
 ungroup(.data, ...)

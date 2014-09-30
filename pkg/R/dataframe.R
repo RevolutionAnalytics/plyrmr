@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-where = function(.data, ...) UseMethod("where")
+where = function(.data, .cond) UseMethod("where")
 
 where.data.frame_ = 
 	function(.data, .cond) {

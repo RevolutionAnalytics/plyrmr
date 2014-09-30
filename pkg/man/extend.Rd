@@ -7,13 +7,15 @@
 }
 \usage{
 extend(pack=c("base", "dplyr"), envir = parent.frame())
-magic.wand(f, non.standard.args = TRUE, envir = parent.frame(), 
+magic.wand(f, non.standard.args = FALSE, envir = parent.frame(), 
 		mergeable = FALSE, vectorized = FALSE)}
 \arguments{
 	\item{pack}{The package from which the functions to be converted should be taken}
   \item{envir}{The environment to which new functions should be added}
   \item{non.standard.args}{whether \code{f} accepts arguments to be evaluated using \link{non standard evaluation} rules, like \code{\link{transform}}}
    \item{f}{A function of a data frame returning a data frame (attempts are made to coerce a non data frame return value to a data frame, but your milage may vary; vectors become single column data frames).}
+   \item{mergeable}{Whether the function f satisfies the conditions for mergeability, see \code{\link{mergeable}}}
+   \item{vectorized}{Whether the function f satisfies the conditions for vectorization, see \code{\link{vectorized}}}
 }
 \details{ 
 \code{magic.wand} creates a generic named \code{f} with two methods, one for data.frames, which calls \code{f} itself, and one for pipes which calls \code{gapply(.data, f, \dots)}.
@@ -23,6 +25,4 @@ NULL, useful only for their side-effects}
 \examples{
 #extend row.names to work on pipes
 magic.wand(row.names)
-#extend("dplyr")
-
-}
+#extend("dplyr")}

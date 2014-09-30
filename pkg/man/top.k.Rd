@@ -7,15 +7,14 @@ Select top and bottom rows according to some order}
 Select top and bottom rows according to order specified by the \dots arguments.
 }
 \usage{
-top.k(.x, \dots, .k = 1, .envir = parent.frame())
-bottom.k(.x, \dots, .k = 1, .envir = parent.frame())
+top.k(.x, \dots, .k = 1)
+bottom.k(.x, \dots, .k = 1)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{.x}{A \code{plyrmr} pipe}
   \item{.k}{How many rows to select}
   \item{\dots}{Expressions to be used to define the order.}
-  \item{.envir}{Environment in which to evaluate the \dots arguments}
 }
 \details{
 For details on how the \dots are evaluated see \link{non standard evaluation}, which also clarifies the role of the \code{.envir} argument, and for the order definition see \code{\link{order}}}

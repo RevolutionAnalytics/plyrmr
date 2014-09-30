@@ -50,16 +50,16 @@ mtcars %|%
 ## @knitr end
 if(FALSE) {
 ## @knitr process.mtcars.1
-where.mtcars.1 = function(...) where(mtcars, ...)
-high.carb.cyl.1 = function(x) {where.mtcars.1(carb/cyl >= x) }
+subset.mtcars = function(...) subset(mtcars, ...)
+high.carb.cyl = function(x) {subset.mtcars(carb/cyl >= x) }
 high.carb.cyl.1(1) 
 ## @knitr end
 }
 ## @knitr process.mtcars.2
-where.mtcars.2 = 
+where.mtcars = 
 	function(...) where(mtcars, ...)
-high.carb.cyl.2 = function(x) {where.mtcars.2(carb/cyl >= x) }
-high.carb.cyl.2(1)
+high.carb.cyl = function(x) {where.mtcars(carb/cyl >= x) }
+high.carb.cyl(1)
 ## @knitr last.col
 last.col = function(x) x[, ncol(x), drop = FALSE]
 ## @knitr gapply-input

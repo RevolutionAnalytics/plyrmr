@@ -18,7 +18,7 @@ One wouldn't want to admit it, but some backends are more important than others 
 
 ## Freeness in composition
 
-Is a guiding principle for `plyrmr`, so that `data %|% group(x) %|% group(y)` is the same as `data %|% group(x) %|% group(y)`. In `dplyr` the former is equivalent to `data %|% group(y)`. If you are not familiar with abstract algebra, what this mean is that complex expression should do more complex things than simple expressions, more or less. The two packages differ on their default choices: in either there is the possibility of simulating the grouping of the other package with options or a separate `ungroup` call.
+Is a guiding principle for `plyrmr`, so that `data %|% group(x) %|% group(y)` is the same as `data %|% group(x, y)`. In `dplyr` the former is equivalent to `data %|% group(y)`. If you are not familiar with abstract algebra, what this mean is that complex expression should do more complex things than simple expressions, more or less. The two packages differ only on their default choices: in either there is the possibility of simulating the grouping of the other package with options or a separate `ungroup` call.
 
 ## Expressive naming
 

@@ -14,7 +14,7 @@ One wouldn't want to admit it, but some backends are more important than others 
 
 ## Programming vs interactive
 
-`plyrmr` has had the goal, from the very beginning, to support programming as well as interactive use. For `dplyr`, interactive use came second, but it's catching up. 
+`plyrmr` has had the goal, from the very beginning, to support programming as well as interactive use. For `dplyr`, programming use came second, but it's catching up. 
 
 ## Freeness in composition
 

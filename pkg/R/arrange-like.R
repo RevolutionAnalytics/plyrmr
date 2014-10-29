@@ -58,12 +58,11 @@ merge.pipe =
             by.y = {
               if(is.null(by.y)) by
               else by.y}
-            if(identical(x, NA)) list(y)
+            if(identical(x, NA)) y
             else { 
-              if(identical(y, NA)) list(x)
+              if(identical(y, NA)) x
               else {
-                z =
-                  merge(
+                merge(
                     x,
                     y,
                     by = by,
@@ -73,8 +72,7 @@ merge.pipe =
                     all.x = all.x,
                     all.y = all.y,
                     suffixes = suffixes,
-                    incomparables = incomparables)
-                if(!is.null(outer)) list(z) else z}}}))}
+                    incomparables = incomparables)}}}))}
 
 quantile.pipe = 
   function(x, N = 10^5, ...) {

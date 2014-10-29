@@ -5,71 +5,90 @@ output:
     keep_md: true 
 ---
 
-```{r echo = FALSE}
+
+
+```{r echo = FALSE, cache=FALSE}
 suppressMessages(library(plyrmr))
+suppressMessages(library(knitr))
+suppressMessages(opts_chunk$set(echo=TRUE, tidy=FALSE, comment="", cache=TRUE, autodep=TRUE))
+options(width = 200)
 ```
 
 ## Features
 
 ### New functions for big data sets: nrow, ncol, dim
 
-They do what you expect them to do, but were a glaring omission among common data frame functions.
+```{r echo=FALSE, results='hide',  cache = FALSE}
+tryCatch(dfs.rmr("/tmp/mtcars"), error = function(e) NULL)
+mtcars %|% input %|% output("/tmp/mtcars")
+mtcars.in = "/tmp/mtcars" %|% input
+```
+
+They do what you expect them to do, but were a glaring omission among common data frame functions. `nrow` and `dim` return big data objects because they act on each group when the `group` function is used. For instance:
+
+```{r}
+mtcars.in %|% nrow
+mtcars.in %|% group(cyl) %|% nrow
+```
+
+Notwithstanding the size of this example, you see the possibility for `nrow` to produce billions of rows, therefore an implcit conversion to `data.frame` would reduce its usefulness. Just pipe it through `as.data.frame` if that's what you want.
 
 ### New function VAR helps using plyrmr inside other functions
 
 It is convenient to type `bind.cols(mtcars, cyl/2)`, but what do you do when you want to parametrize the data and the column? Typically, you are writing a function 
 
 ```{r}
-half.some.column = function(data, col) bind.cols(data, col/2)
+halve.some.column = function(data, col) bind.cols(data, col/2)
 ```
 
 Should work right?
 
 ```{r error=TRUE}
-half.some.column(mtcars, cyl)
-half.some.column(mtcars, "cyl")
-half.some.column(mtcars, as.name("cyl"))
+halve.some.column(mtcars, cyl)
+halve.some.column(mtcars, "cyl")
+halve.some.column(mtcars, as.name("cyl"))
 ```
 
 Nada, nope, rien. Try `VAR`.
 
 ```{r}
-half.some.column = function(data, col) bind.cols(data, VAR(col)/2)
-head(half.some.column(mtcars, "cyl"))
+halve.some.column = 
+	function(data, col) bind.cols(data, VAR(col)/2)
+head(halve.some.column(mtcars, "cyl"))
 ```
 
 Finally! And it works also with column numbers
 
 ```{r}
-head(bind.cols(mtcars, z = VAR(1)/2))
+mtcars.in %|% bind.cols(z = VAR(1)/2) 
 ```
 
 ### Automagically avoid useless recomputation
 
 When dealing with big data, wasteful recomputation should not be taken lightly. `plyrmr` now does that on your behalf.
 
-```{r echo=FALSE, results='hide'}
-z = output(input(mtcars), "/tmp/mtcars")
-```
 
 ```{r}
-ncol(input("/tmp/mtcars"))
+mtcars.in %|% ncol
 ```
+
 This does actual work,
 
 ```{r}
-ncol(input("/tmp/mtcars"))
+mtcars.in %|% ncol
 ```
+
 This one doesn't. It's that easy.
 
 ### Better naming for columns in count output
 
 For example:
+
 ```{r}
-count(mtcars, carb:cyl, carb:gear)
+mtcars.in %|% count(carb:cyl, carb:gear)
 ```
 
-Let me try to spelly it out. For each ... argument, there are as many columns in the result as there are variables in that argument, plus 1. The last one is for the counts. The others are for the combination of values being counted. All the column names start with an id for the ... arg followed by a column specific part. The arg identifier is an underscore separated concatenation of variables in that argument. The column specific part is either the name of a variable or "freq". It's probably easier to look at the example.
+Let me try to spell it out. For each ... argument, there are as many columns in the result as there are variables in that argument, plus 1. The last one is for the counts. The others are for the combination of values being counted. All the column names start with an id for the ... arg followed by a column specific part. The arg identifier is an underscore separated concatenation of variables in that argument. The column specific part is either the name of a variable or "freq". NA is used as filler when necessary. It's probably easier to look at the example.
 
 ### Function `summarize_mergeable`
 
@@ -81,26 +100,24 @@ Just a little convenience for when you'd like to apply the same vector function 
 
 ```{r}
 log.data.frame = each.column(log)
-head(log.data.frame(mtcars))
+mtcars %|% log.data.frame %|% head
 ```
 
 With this function, you can do things like:
 
 ```{r}
-gapply(input("/tmp/mtcars")), log.data.frame)
+mtcars.in %|% gapply(log.data.frame) %|% as.data.frame %|% head
 ```
 
 
-```{r echo=FALSE}
-dfs.rmr("/tmp/mtcars")
-```
 
 ### Dropped support for base functions transform and subset 
 
-As part of a major clean-up of how non-standard evaluation is handled (a.k.a ... expression arguments), they are gone. They were in an  extension pack anyway and they required lots of complex code to deal with their own way of dealing with non standard eval arguments. There are plenty of alternatives anyway.
-
+As part of a major clean-up of how non-standard evaluation is handled (a.k.a ... expression arguments), base functions `transform` and `subset` are not supported anymore. They were part of an extension pack and they required lots of complex code to make up for a brittle way of handling ... arguments. There are plenty of alternatives anyway: `where`, `select`, `bind.cols`, and, from the `dplyr` extension pack, `filter` and `mutate` .
 
 ## Bugs
+
+What bugs? Nothing major to report for `plyrmr` but the new use cases that it makes possible put pressure on dear old `rmr2`, hence it's necessary to upgrade it to version `3.3.0`.
 
 
 

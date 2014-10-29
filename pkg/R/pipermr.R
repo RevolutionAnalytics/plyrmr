@@ -139,7 +139,7 @@ ungroup.pipermr =
 		else{
 		x = group.f(.data, ungroup.fun(...), .reset = TRUE)
 		if(length(dots(...)) == 0)
-			.data$grouped = NULL
+			x$group = NULL
 		x}}
 
 is.grouped.pipermr = 

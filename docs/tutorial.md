@@ -8,7 +8,6 @@
 
 
 
-# Tutorial
 
 ## Predefined operations
 

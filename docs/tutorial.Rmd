@@ -9,7 +9,7 @@ output:
 `r read_chunk('../pkg/tests/tutorial.R')`
 `r opts_chunk$set(echo=TRUE, tidy=FALSE, comment="", cache=TRUE, autodep=TRUE)`
 
-```{r setup, echo=FALSE}
+```{r setup, echo=FALSE, cache=FALSE}
 # the default output hook
 hook_output = knit_hooks$get('output')
 knit_hooks$set(output = function(x, options) {
@@ -30,7 +30,6 @@ options(width = 120)
 ```{r startup, echo=FALSE}
 ```
 
-# Tutorial
 
 ## Predefined operations
 

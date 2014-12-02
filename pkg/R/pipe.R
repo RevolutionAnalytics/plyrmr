@@ -23,8 +23,11 @@ all.backends =
 		lapply(
 			setdiff(backends, skip),
 			function(be) {
-			plyrmr.options(backend = be) 
-			eval(block, envir = pf)})}
+			if(be == "spark" && !require("SparkR"))
+				warning ("SparkR not available, test skipped")
+			else {
+				plyrmr.options(backend = be) 
+				eval(block, envir = pf)}})}
 
 .options = new.env()
 .options$backend = "hadoop"

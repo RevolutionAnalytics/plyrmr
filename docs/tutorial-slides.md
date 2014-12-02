@@ -182,8 +182,8 @@ where(x, carb.per.cyl >= 1)
 
 
 ```r
-mtcars %>%
-	bind.cols(carb.per.cyl = carb/cyl) %>%
+mtcars %|%
+	bind.cols(carb.per.cyl = carb/cyl) %|%
 	where(carb.per.cyl >= 1)
 ```
 
@@ -259,7 +259,7 @@ transmute
 title:false
 
 ```r
-mtcars %>% transmute(sum(carb))
+mtcars %|% transmute(sum(carb))
 ```
 
 ```
@@ -276,7 +276,7 @@ title:false
 
 
 ```r
-input("/tmp/mtcars3", format = if3) %>%
+input("/tmp/mtcars3", format = if3) %|%
 	transmute(sum(carb)) 
 ```
 
@@ -292,8 +292,8 @@ input("/tmp/mtcars3", format = if3) %>%
 
 
 ```r
-input("/tmp/mtcars3", format = if3) %>%
-	gather() %>%
+input("/tmp/mtcars3", format = if3) %|%
+	gather %|%
 	transmute(sum(carb), .mergeable = TRUE)
 ```
 
@@ -310,8 +310,8 @@ transmute-group
 title:false
 
 ```r
-input("/tmp/mtcars") %>%
-	group(cyl) %>%
+input("/tmp/mtcars") %|%
+	group(cyl) %|%
 	transmute(mean.mpg = mean(mpg))
 ```
 
@@ -327,8 +327,8 @@ transmute-group.f
 title:false
 
 ```r
-input("/tmp/mtcars") %>%
-	group.f(last.col) %>%
+input("/tmp/mtcars") %|%
+	group.f(last.col) %|%
 	transmute(mean.mpg = mean(mpg)) 
 ```
 
@@ -348,8 +348,8 @@ title:false
 
 
 ```r
-input("/tmp/mtcars") %>%
-	group(carb) %>%
+input("/tmp/mtcars") %|%
+	group(carb) %|%
 	quantile 
 ```
 
@@ -372,10 +372,10 @@ title:false
 
 ```r
 models = 
-	input("/tmp/mtcars") %>%
-	group(carb) %>%
-	transmute(model = list(lm(mpg~cyl+disp))) %>%
-	as.data.frame()
+	input("/tmp/mtcars") %|%
+	group(carb) %|%
+	transmute(model = list(lm(mpg~cyl+disp))) %|%
+	as.data.frame
 models
 ```
 

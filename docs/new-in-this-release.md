@@ -33,7 +33,7 @@ mtcars.in %|% group(cyl) %|% nrow
 1.2   8   14
 ```
 
-Notwithstanding the size of this example, you see the possibility for `nrow` to produce billions of rows, therefore an implcit conversion to `data.frame` would reduce its usefulness. Just pipe it through `as.data.frame` if that's what you want.
+Notwithstanding the size of this example, you see the possibility for `nrow` to produce billions of rows, therefore an implicit conversion to `data.frame` would reduce its usefulness. Just pipe it through `as.data.frame` if that's what you want.
 
 ### New function VAR helps using plyrmr inside other functions
 
@@ -158,7 +158,7 @@ mtcars.in %|% ncol
 [1] 11
 ```
 
-This one doesn't. It's that easy.
+This one doesn't. It's that easy. 
 
 ### Better naming for columns in count output
 

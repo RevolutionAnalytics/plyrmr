@@ -121,7 +121,6 @@ export(each.column)
 #S3method(fast.summary, pipe)
 
 #workaround  for R imports bug
-importFrom(Rcpp, Rcpp.package.skeleton) 
 importFrom(rmr2, rmr.options)
 #real imports
 importFrom(plyr, splat)

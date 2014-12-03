@@ -10,7 +10,6 @@ Depends: reshape2, dplyr (>= 0.2.0.99), rmr2 (>= 3.3.0)
 Imports: plyr, R.methodsS3, Hmisc, functional, digest, stats, memoise, lazyeval (>= 0.1)
 Suggests: quickcheck (>= 2.0.0), SparkR
 License: Apache License (== 2.0)
-LinkingTo: Rcpp
 Collate: common.R extensions.R pipespark.R big.data.R pipermr.R  pipe.R dataframe.R arrange-like.R base.R reshape2.R sqlish.R 
 ByteCompile: TRUE
 BuildVignettes: FALSE

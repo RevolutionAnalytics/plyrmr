@@ -41,7 +41,7 @@ rm.keycols =
 		kv}
 
 keys.spark = function(kv) kv[, keycols(kv), drop = FALSE]
-values.spark = function(kv) kv[, setdiff(names(kv), keycols(kv))]
+values.spark = function(kv) kv[, setdiff(names(kv), keycols(kv)), drop = FALSE]
 
 keyval.spark = 
 	function (key, val = NULL) {

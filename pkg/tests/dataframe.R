@@ -20,32 +20,30 @@ cmp.df = plyrmr:::cmp.df
 
 #where
 
-unit.test(
-	function(df) {
+test(
+	function(df, x) {
+		df = cbind(df, col.n  = suppressWarnings(cbind(x, df[,1]))[1:nrow(df),1])	
 		numeric.cols = which(sapply(df, is.numeric ))
 		filter.col = names(numeric.cols[1])
 		cmp.df(
 			where(df, eval(as.name(filter.col)) > 0),
       subset(df, eval(as.name(filter.col)) > 0))},
-	list(rdata.frame),
-	precondition =
-		function(df) 
-			any(sapply(df, is.numeric)))
+	list(rdata.frame, rnumeric))
 
 
 #transmute
 
-unit.test(
+test(
 	function(df) {
 		col = as.name(sample(names(df), 1))
 		cmp.df(
 			transmute(df, eval(col)),
-			select(df, eval(col)))},
+			plyrmr::select(df, eval(col)))},
 	list(rdata.frame))
 
 #bind.cols
 
-unit.test(
+test(
 	function(df) {
 		col = as.name(sample(names(df), 1))
 		cmp.df(
@@ -57,20 +55,18 @@ unit.test(
 
 args = 	
 	list(
-		any = list(n = Curry(rinteger, len.lambda = 0)),
-		Bernoulli = list(p = Curry(rdouble, lambda = 0, min =0, max = 1)),
-		hypergeometric = list(n = Curry(rinteger, len.lambda = 0)))
+		any = list(n = fun(rinteger(element = 5, size = constant(1)))),
+		Bernoulli = list(p = fun(rdouble(element = runif, size = constant(1)))),
+		hypergeometric = list(n = fun(rinteger(element = 5, size = constant(1)))))
 
 for(method in names(args)) {
 	method.args = args[[method]] 
-	unit.test(
-		function(df, ...) 
+	test(
+		function(df, ...) {
+			dotargs = list(...)
+			if(is.element(method, c("any", "hypergeometric")))
+				dotargs$n = min(dotargs$n, nrow(df))
 			cmp.df(
 				df,
-				union(do.call(sample, c(list(df, method = method), list(...))), df)),
-		c(list(rdata.frame), method.args),
-	precondition = 
-		function(df, ...) {
-			if(is.element(method, c("any", "hypergeometric")))
-				list(...)$n <= nrow(df)
-			else TRUE})}
+				union(do.call(sample, c(list(df, method = method), dotargs)), df))},
+		c(list(rdata.frame), method.args))}

@@ -183,12 +183,21 @@ defactor =
 					as.character(y)
 				else y})
 
+deraw = 
+	function(x)
+		lapply(
+			x, 
+			function(y) {
+				if(is.raw(y))
+					as.integer(y)
+				else y })
+
 cmp.df = 
 	function(A, B) {
-		ord = splat(order)
+		ord = function(x) do.call(order, deraw(defactor(x)))
 		all(
-			rmr2:::delevel(A[ord(defactor(A)),sort(names(A))]) == 
-				rmr2:::delevel(B[ord(defactor(B)),sort(names(B))]), na.rm = TRUE)}
+			rmr2:::delevel(A[ord(A),sort(names(A))]) == 
+				rmr2:::delevel(B[ord(B),sort(names(B))]), na.rm = TRUE)}
 
 #lists
 

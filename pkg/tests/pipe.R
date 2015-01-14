@@ -23,7 +23,7 @@ plyrmr:::all.backends({
 	
 	#gapply
 	
-	unit.test(
+	test(
 		function(df)
 			cmp.df(
 				df,
@@ -31,36 +31,41 @@ plyrmr:::all.backends({
 		list(rdata.frame))
 	
 	#group
-	unit.test(
-		function(df)
+	cg = quickcheck:::column.generators()
+	cg = cg[-which(names(cg) == "rraw")]
+	rdata.frame.noraw = fun(rdata.frame(element = cg, ncol = 10))
+	# tmp hack because summarize doesn't support raw
+	
+	test(
+		function(df) {
+			df$col.2 = as.numeric(df$col.2)
 			cmp.df(
 				summarize(group_by(df, col.1), mean(col.2)),
-				as.data.frame(transmute(group(input(df), col.1), mean(col.2)))),
-		list(rdata.frame),
-		precondition = function(df) ncol(df) >=2 && is.numeric(df$col.2))	
+				as.data.frame(transmute(group(input(df), col.1), mean(col.2))))},
+		list(rdata.frame.noraw))
 	
 	#group.f is tested implicitly in the above and has no direct equivalent in dplyr
 	
 	#ungroup what is a good test for ungroup?
 	
-	unit.test(
+	test(
 		function(df)
 			cmp.df(
 				summarize(group_by(df, col.1), mean(col.2)),
 				as.data.frame(transmute(ungroup(group(input(df), col.1, col.2), col.2), mean(col.2)))),
-		list(rdata.frame),
-		precondition = function(df) ncol(df) >=2 && is.numeric(df$col.2))	
+		list(rdata.frame.noraw))	
 	
+	#,	precondition = function(df) ncol(df) >=2 && is.numeric(df$col.2)
 	
 	#gather
-	unit.test(
+	test(
 		function(df)
 			nrow(as.data.frame(transmute(gather(input(df)), mean(col.1), .mergeable = TRUE))) == 1,
 		list(rdata.frame), 
 		precondition = function(df) is.numeric(df$col.1))
 	
 	#as.data.frame and input
-	unit.test(
+	test(
 		function(df)
 			cmp.df(
 				df,

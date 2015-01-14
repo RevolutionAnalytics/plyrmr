@@ -19,8 +19,9 @@ cmp.df = plyrmr:::cmp.df
 
 #quantile.data.frame
 
-unit.test(
-	function(df)
+test(
+	function(df,  x) {
+		df = cbind(df, col.n  = suppressWarnings(cbind(x, df[,1]))[1:nrow(df),1])		
 		cmp.df(
 			data.frame(
 				rmr2:::purge.nulls(
@@ -31,14 +32,13 @@ unit.test(
 								structure(
 									list(quantile(df[[i]])),
 									names = names(df)[[i]])))), 
-			quantile(df)),
-	list(rdata.frame),
-	precondition = function(x) sum(sapply(x, is.numeric)) > 0)
+			quantile(df))},
+	list(rdata.frame, rnumeric))
 
 #merge
 plyrmr:::all.backends(
 	skip = "spark", 
-	unit.test(
+	test(
 		function(A, B, x) {
 			xa = x[1:min(length(x), nrow(A))]
 			xb = x[1:min(length(x), nrow(B))]
@@ -53,19 +53,23 @@ plyrmr:::all.backends(
 #quantile.pipe
 # at this size doesn't really test approximation
 plyrmr:::all.backends({
-	unit.test(
-		function(df)
+	test(
+		function(df, x) {
+			df = cbind(df, col.n  = suppressWarnings(cbind(x, df[,1]))[1:nrow(df),1])		
 			cmp.df(
 				quantile(df),
 				as.data.frame(
-					quantile(input(df)))),
-		list(rdata.frame),
-		precondition = function(x) sum(sapply(x, is.numeric)) > 0)
+					quantile(input(df))))},
+		list(rdata.frame, rnumeric))
+	
 	
 	#counts
-	
-	unit.test(
+	deraw = 
+		function(df)
+			data.frame(lapply(df, function(x) if(is.raw(x)) as.integer(x) else x))
+	test(
 		function(df){
+			df = deraw(df)
 			args = 
 				sapply(
 					1:3, 
@@ -73,74 +77,106 @@ plyrmr:::all.backends({
 						Reduce(
 							x = lapply(sample(names(df), rpois(1,3) + 1, replace = TRUE), as.name),
 							function(l,r) call(":", l, r)))
-			A = do.call(count, c(list(df), args))
-			B = as.data.frame(do.call(count, c(list(input(df)), args)))
-			all(
-				sapply(
-					plyrmr:::split.cols(A),
-					function(i) 
-						cmp.df(
-							A[, i, drop = FALSE], 
-							B[, i, drop = FALSE])))},
+			test(
+				function(df, args) {
+					A = do.call(count, c(list(df), args))
+					B = as.data.frame(do.call(count, c(list(input(df)), args)))
+					all(
+						sapply(
+							plyrmr:::split.cols(A),
+							function(i) 
+								cmp.df(
+									A[, i, drop = FALSE], 
+									B[, i, drop = FALSE])))},
+				list(constant(df), constant(args)),
+				sample.size = 1)},
 		list(rdata.frame))
 	
 	#top/bottom k
 	
-	
-	unit.test(
+	test(
 		function(df){
+			df = deraw(df)
 			cols = sample(names(df))
-			cmp.df(
-				head(df[plyr::splat(order)(df[, cols]),]),
-				as.data.frame(
-					plyr::splat(bottom.k)(
-						c(
-							list(input(df), .k = 6), 
-							lapply(cols, as.symbol)))))},
+			test(
+				function(df, cols)
+					cmp.df(
+						head(df[plyr::splat(order)(df[, cols, drop = FALSE]),, drop = FALSE]),
+						as.data.frame(
+							plyr::splat(bottom.k)(
+								c(
+									list(input(df), .k = 6), 
+									lapply(cols, as.symbol))))),
+				list(constant(df), constant(cols)),
+				sample.size = 1)},
 		list(rdata.frame))
 	
-	unit.test(
+	test(
 		function(df){
+			df = deraw(df)
 			cols = sample(names(df))
-			cmp.df(
-				tail(df[plyr::splat(order)(df[, cols]),]),
-				as.data.frame(
-					plyr::splat(top.k)(
-						c(
-							list(input(df), .k = 6), 
-							lapply(cols, as.symbol)))))},
+			test(
+				function(df, cols)
+					cmp.df(
+						tail(df[plyr::splat(order)(df[, cols]),]),
+						as.data.frame(
+							plyr::splat(top.k)(
+								c(
+									list(input(df), .k = 6), 
+									lapply(cols, as.symbol))))),
+				list(constant(df), constant(cols)),
+				sample.size = 1)},
 		list(rdata.frame))
 	
 	#test for moving window delayed until sematics more clear
 	
 	#unique
 	
-	unit.test(
+	test(
 		function(df){
+			df = deraw(df)
 			df = df[sample(1:nrow(df), 2*nrow(df), replace = TRUE), , drop = FALSE]
-			cmp.df(
-				unique(df),
-				as.data.frame(unique(input(df))))},
+			test(
+				function(df)
+					cmp.df(
+						unique(df),
+						as.data.frame(unique(input(df)))),
+				list(constant(df)),
+				sample.size = 1)},
 		list(rdata.frame))})
 
 plyrmr:::all.backends(
 	skip = "spark", {
 		#union 
-		unit.test(
+		test(
 			function(df){
-				df1 = df[sample(1:nrow(df), floor(nrow(df)/2)), , drop = FALSE] 
-				df2 = df[sample(1:nrow(df), floor(nrow(df)/2)), , drop = FALSE] 
-				cmp.df(
-					plyrmr::union(df1, df2),
-					as.data.frame(plyrmr::union(input(df1), input(df2))))},
+				df = deraw(df)
+				half = floor(nrow(df)/2)
+				gen = fun(sample(x = 1:nrow(df), size = half,  replace = FALSE))
+				test(
+					function(df, rows1, rows2) {
+						df1 = df[rows1, , drop = FALSE] 
+						df2 = df[rows2, , drop = FALSE] 
+						cmp.df(
+							plyrmr::union(df1, df2),
+							as.data.frame(plyrmr::union(input(df1), input(df2))))},
+					list(constant(df), gen, gen),
+					sample.size = 1)},
 			list(rdata.frame))
 		
 		#intersection 		
-		unit.test(
+		test(
 			function(df){
-				df1 = df[sample(1:nrow(df), floor(nrow(df)/2)), , drop = FALSE] 
-				df2 = df[sample(1:nrow(df), floor(nrow(df)/2)), , drop = FALSE] 
-				cmp.df(
-					plyrmr::intersect(df1, df2),
-					as.data.frame(plyrmr::intersect(input(df1), input(df2))))},
+				df = deraw(df)
+				half = floor(nrow(df)/2)
+				gen = fun(sample(x = 1:nrow(df), size = half,  replace = FALSE))
+				test(
+					function(df, rows1, rows2) {
+						df1 = df[rows1, , drop = FALSE] 
+						df2 = df[rows2, , drop = FALSE] 
+						cmp.df(
+							plyrmr::intersect(df1, df2),
+							as.data.frame(plyrmr::intersect(input(df1), input(df2))))},
+					list(constant(df), gen, gen),
+					sample.size = 1)},
 			list(rdata.frame))})

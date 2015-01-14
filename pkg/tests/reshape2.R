@@ -16,7 +16,7 @@ library(plyrmr)
 library(quickcheck)
 
 plyrmr:::all.backends({
-	unit.test(
+	test(
 		function(df) 
 			plyrmr:::cmp.df(
 				as.data.frame(melt(input(df))),
@@ -25,7 +25,7 @@ plyrmr:::all.backends({
 		precondition = function(df) sum(sapply(df, is.numeric)) >= 1)
 	# precondition is workaround for reshape2 bug https://github.com/hadley/reshape/issues/46
 	
-	unit.test(
+	test(
 		function(df) {
 			df = cbind(id = 1:nrow(df), df)
 			plyrmr:::cmp.df(

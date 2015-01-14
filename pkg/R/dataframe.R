@@ -48,7 +48,7 @@ transmute.data.frame_ =
 					.columns
 				else
 					safe.cbind(.columns, newcols)}}
-	newcols}
+		newcols}
 
 transmute.data.frame = 
 	function(.data, ..., .cbind = FALSE, .columns = if(.cbind) names(.data) else NULL) {
@@ -77,6 +77,6 @@ sample.data.frame =
 			match.arg(method),
 			any = head(x, args[['n']]),
 			Bernoulli = 
-				x[runif(nrow(x)) < args[["p"]],, drop = FALSE],
+				if(!is.null(x)) x[runif(nrow(x)) < args[["p"]],, drop = FALSE] else x[NULL,],
 			hypergeometric = 
 				x[sample(1:nrow(x), args[["n"]], replace = FALSE),,drop = FALSE])}

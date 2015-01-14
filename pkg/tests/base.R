@@ -14,7 +14,6 @@
 
 library(plyrmr)
 library(quickcheck)
-library(functional)
 
 cmp.df = plyrmr:::cmp.df
 
@@ -23,15 +22,18 @@ plyrmr:::all.backends({
 	
 	args = 	
 		list(
-			any = list(n = Curry(rinteger, len.lambda = 0)),
-			Bernoulli = list(p = Curry(rdouble, lambda = 0, min =0, max = 1)),
-			hypergeometric = list(n = Curry(rinteger, len.lambda = 0)))
+			any = list(n = fun(rinteger(element = 5, size = constant(1)))),
+			Bernoulli = list(p = fun(rdouble(element = runif, size = constant(1)))),
+			hypergeometric = list(n = fun(rinteger(element = 5, size = constant(1)))))
 	
 	
 	for(method in names(args)) {
 		method.args = args[[method]] 
-		unit.test(
-			function(df, ...) 
+		test(
+			function(df, ...) {
+				dotargs = list(...)
+				if(is.element(method, c("any", "hypergeometric")))
+					dotargs$n = min(dotargs$n, nrow(df))
 				cmp.df(
 					unique(
 						rbind(
@@ -42,13 +44,7 @@ plyrmr:::all.backends({
 										list(
 											input(df), 
 											method = method), 
-										list(...)))),
-								df)), 
-					unique(df)),
-			c(list(rdata.frame), method.args),
-			precondition = 
-				function(df, ...) {
-					if(is.element(method, c("any", "hypergeometric")))
-						list(...)$n <= nrow(df)
-					else TRUE})}
-})
+										dotargs))),
+							df)), 
+					unique(df))},
+			c(list(fun(rdata.frame(ncol = 10))), method.args))}})

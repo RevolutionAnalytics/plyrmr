@@ -118,7 +118,7 @@ plyrmr:::all.backends({
 			test(
 				function(df, cols)
 					cmp.df(
-						tail(df[plyr::splat(order)(df[, cols]),]),
+						tail(df[plyr::splat(order)(df[, cols, drop = FALSE]),, drop = FALSE]),
 						as.data.frame(
 							plyr::splat(top.k)(
 								c(

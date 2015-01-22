@@ -151,6 +151,6 @@ plyrmr:::all.backends(
 				df2 = df[rows2, , drop = FALSE] 
 				cmp.df(
 					plyrmr::intersect(df1, df2),
-					as.data.frame(plyrmr::intersect(input(df1), input(df2))))})
+					as.data.frame(plyrmr::intersect(input(df1), input(df2))))})})
 		
 		

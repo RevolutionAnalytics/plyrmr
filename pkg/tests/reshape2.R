@@ -15,18 +15,23 @@
 library(plyrmr)
 library(quickcheck)
 
+rdata.frame.numeric.col =
+	function() {
+		df = rdata.frame(nrow = 10, ncol = 20)
+		x = rnumeric(size = ~nrow(df))
+		cbind(x,df)}
+
+# numeric col is workaround for reshape2 bug https://github.com/hadley/reshape/issues/46
+
 plyrmr:::all.backends({
 	test(
-		function(df) 
+		function(df = rdata.frame.numeric.col()) 
 			plyrmr:::cmp.df(
 				as.data.frame(melt(input(df))),
-				melt(df)),
-		list(rdata.frame),
-		precondition = function(df) sum(sapply(df, is.numeric)) >= 1)
-	# precondition is workaround for reshape2 bug https://github.com/hadley/reshape/issues/46
+				melt(df)))
 	
 	test(
-		function(df) {
+		function(df = rdata.frame()) {
 			df = cbind(id = 1:nrow(df), df)
 			plyrmr:::cmp.df(
 				df,
@@ -35,6 +40,5 @@ plyrmr:::all.backends({
 						melt(
 							input(df), 
 							id.vars = "id"), 
-						id ~ variable)))},
-		list(rdata.frame))
+						id ~ variable)))})
 })

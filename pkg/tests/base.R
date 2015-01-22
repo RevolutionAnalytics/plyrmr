@@ -17,34 +17,36 @@ library(quickcheck)
 
 cmp.df = plyrmr:::cmp.df
 
+#sample
+
+assert.sample.is.subset =
+	function(df, method, method.args)
+		cmp.df(
+			unique(
+				rbind(
+					as.data.frame(				
+						do.call(
+							sample, 
+							c(
+								list(
+									input(df), 
+									method = method), 
+								method.args))),
+					df)), 
+			unique(df))
+
 plyrmr:::all.backends({
-	#sample
 	
-	args = 	
-		list(
-			any = list(n = fun(rinteger(element = 5, size = constant(1)))),
-			Bernoulli = list(p = fun(rdouble(element = runif, size = constant(1)))),
-			hypergeometric = list(n = fun(rinteger(element = 5, size = constant(1)))))
+	test(
+		function(df = rdata.frame(ncol = 10), n = rinteger(element = 5, size = ~1))
+			assert.sample.is.subset(df, "any", list(n = min(n, nrow(df)))))
 	
+	test(
+		function(df = rdata.frame(ncol = 10), p = rdouble(element = runif, size = ~1))
+			assert.sample.is.subset(df, "Bernoulli", list(p = p)))
 	
-	for(method in names(args)) {
-		method.args = args[[method]] 
-		test(
-			function(df, ...) {
-				dotargs = list(...)
-				if(is.element(method, c("any", "hypergeometric")))
-					dotargs$n = min(dotargs$n, nrow(df))
-				cmp.df(
-					unique(
-						rbind(
-							as.data.frame(				
-								do.call(
-									sample, 
-									c(
-										list(
-											input(df), 
-											method = method), 
-										dotargs))),
-							df)), 
-					unique(df))},
-			c(list(fun(rdata.frame(ncol = 10))), method.args))}})
+	test(
+		function(df = rdata.frame(ncol = 10), n = rinteger(element = 5, size = ~1))
+			assert.sample.is.subset(df, "hypergeometric", list(n = min(n, nrow(df)))))
+	
+})

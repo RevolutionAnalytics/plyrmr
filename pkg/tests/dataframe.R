@@ -21,52 +21,49 @@ cmp.df = plyrmr:::cmp.df
 #where
 
 test(
-	function(df, x) {
+	function(df = rdata.frame(), x = rnumeric()) {
 		df = cbind(df, col.n  = suppressWarnings(cbind(x, df[,1]))[1:nrow(df),1])	
 		numeric.cols = which(sapply(df, is.numeric ))
 		filter.col = names(numeric.cols[1])
 		cmp.df(
 			where(df, eval(as.name(filter.col)) > 0),
-      subset(df, eval(as.name(filter.col)) > 0))},
-	list(rdata.frame, rnumeric))
+      subset(df, eval(as.name(filter.col)) > 0))})
 
 
 #transmute
 
 test(
-	function(df) {
+	function(df = rdata.frame()) {
 		col = as.name(sample(names(df), 1))
 		cmp.df(
 			transmute(df, eval(col)),
-			plyrmr::select(df, eval(col)))},
-	list(rdata.frame))
+			plyrmr::select(df, eval(col)))})
 
 #bind.cols
 
 test(
-	function(df) {
+	function(df = rdata.frame()) {
 		col = as.name(sample(names(df), 1))
 		cmp.df(
 			bind.cols(df, z = eval(col)),
-			transform(df, z = eval(col)))},
-	list(rdata.frame))
+			transform(df, z = eval(col)))})
 
 #sample
 
-args = 	
-	list(
-		any = list(n = fun(rinteger(element = 5, size = constant(1)))),
-		Bernoulli = list(p = fun(rdouble(element = runif, size = constant(1)))),
-		hypergeometric = list(n = fun(rinteger(element = 5, size = constant(1)))))
+assert.sample.is.subset = 
+	function(df, method, method.args)
+		cmp.df(
+			df,
+			union(do.call(sample, c(list(df, method = method), method.args)), df))
 
-for(method in names(args)) {
-	method.args = args[[method]] 
-	test(
-		function(df, ...) {
-			dotargs = list(...)
-			if(is.element(method, c("any", "hypergeometric")))
-				dotargs$n = min(dotargs$n, nrow(df))
-			cmp.df(
-				df,
-				union(do.call(sample, c(list(df, method = method), dotargs)), df))},
-		c(list(rdata.frame), method.args))}
+test(
+	function(df = rdata.frame(ncol = 10), n = rinteger(element = 5, size = ~1))
+		assert.sample.is.subset(df, "any", list(n = min(n, nrow(df)))))
+
+test(
+	function(df = rdata.frame(ncol = 10), p = rdouble(element = runif, size = ~1))
+		assert.sample.is.subset(df, "Bernoulli", list(p = p)))
+
+test(
+	function(df = rdata.frame(ncol = 10), n = rinteger(element = 5, size = ~1))
+		assert.sample.is.subset(df, "hypergeometric", list(n = min(n, nrow(df)))))

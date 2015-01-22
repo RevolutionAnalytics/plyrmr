@@ -20,7 +20,7 @@ cmp.df = plyrmr:::cmp.df
 #quantile.data.frame
 
 test(
-	function(df,  x) {
+	function(df = rdata.frame(),  x = rnumeric()) {
 		df = cbind(df, col.n  = suppressWarnings(cbind(x, df[,1]))[1:nrow(df),1])		
 		cmp.df(
 			data.frame(
@@ -32,14 +32,13 @@ test(
 								structure(
 									list(quantile(df[[i]])),
 									names = names(df)[[i]])))), 
-			quantile(df))},
-	list(rdata.frame, rnumeric))
+			quantile(df))})
 
 #merge
 plyrmr:::all.backends(
 	skip = "spark", 
 	test(
-		function(A, B, x) {
+		function(A = rdata.frame(), B = rdata.frame(), x = rlogical()) {
 			xa = x[1:min(length(x), nrow(A))]
 			xb = x[1:min(length(x), nrow(B))]
 			A = plyr::splat(cbind)(plyrmr:::fract.recycling(list(x = xa, A)))
@@ -47,136 +46,111 @@ plyrmr:::all.backends(
 			cmp.df(
 				as.data.frame(
 					merge(input(A), input(B), by = "x")),
-				merge(A, B, by = "x"))},
-		list(rdata.frame, rdata.frame, rlogical)))
+				merge(A, B, by = "x"))}))
 
 #quantile.pipe
 # at this size doesn't really test approximation
 plyrmr:::all.backends({
 	test(
-		function(df, x) {
+		function(df = rdata.frame(), x = rnumeric()) {
 			df = cbind(df, col.n  = suppressWarnings(cbind(x, df[,1]))[1:nrow(df),1])		
 			cmp.df(
 				quantile(df),
 				as.data.frame(
-					quantile(input(df))))},
-		list(rdata.frame, rnumeric))
+					quantile(input(df))))})
 	
 	
 	#counts
 	deraw = 
 		function(df)
 			data.frame(lapply(df, function(x) if(is.raw(x)) as.integer(x) else x))
+	args.fun =
+		function(df)
+			sapply(
+				1:3, 
+				function(i) 
+					Reduce(
+						x = lapply(sample(names(df), rpois(1,3) + 1, replace = TRUE), as.name),
+						function(l,r) call(":", l, r)))
 	test(
-		function(df){
-			df = deraw(df)
-			args = 
+		function(
+			df = deraw(rdata.frame()),
+			args = args.fun(df)) {
+			A = do.call(count, c(list(df), args))
+			B = as.data.frame(do.call(count, c(list(input(df)), args)))
+			all(
 				sapply(
-					1:3, 
+					plyrmr:::split.cols(A),
 					function(i) 
-						Reduce(
-							x = lapply(sample(names(df), rpois(1,3) + 1, replace = TRUE), as.name),
-							function(l,r) call(":", l, r)))
-			test(
-				function(df, args) {
-					A = do.call(count, c(list(df), args))
-					B = as.data.frame(do.call(count, c(list(input(df)), args)))
-					all(
-						sapply(
-							plyrmr:::split.cols(A),
-							function(i) 
-								cmp.df(
-									A[, i, drop = FALSE], 
-									B[, i, drop = FALSE])))},
-				list(constant(df), constant(args)),
-				sample.size = 1)},
-		list(rdata.frame))
+						cmp.df(
+							A[, i, drop = FALSE], 
+							B[, i, drop = FALSE])))})
 	
 	#top/bottom k
 	
-	test(
-		function(df){
-			df = deraw(df)
-			cols = sample(names(df))
+	lapply(
+		list(
+			list(top.k, tail), 
+			list(bottom.k, head)),
+		function(fun.pair)
 			test(
-				function(df, cols)
+				function(
+					ply.fun = fun.pair[[1]],
+					base.fun = fun.pair[[2]],
+					df = deraw(rdata.frame()),
+					cols = sample(names(df)))
 					cmp.df(
-						head(df[plyr::splat(order)(df[, cols, drop = FALSE]),, drop = FALSE]),
+						base.fun(df[plyr::splat(order)(df[, cols, drop = FALSE]),, drop = FALSE]),
 						as.data.frame(
-							plyr::splat(bottom.k)(
+							plyr::splat(ply.fun)(
 								c(
 									list(input(df), .k = 6), 
-									lapply(cols, as.symbol))))),
-				list(constant(df), constant(cols)),
-				sample.size = 1)},
-		list(rdata.frame))
+									lapply(cols, as.symbol)))))))
 	
-	test(
-		function(df){
-			df = deraw(df)
-			cols = sample(names(df))
-			test(
-				function(df, cols)
-					cmp.df(
-						tail(df[plyr::splat(order)(df[, cols, drop = FALSE]),, drop = FALSE]),
-						as.data.frame(
-							plyr::splat(top.k)(
-								c(
-									list(input(df), .k = 6), 
-									lapply(cols, as.symbol))))),
-				list(constant(df), constant(cols)),
-				sample.size = 1)},
-		list(rdata.frame))
 	
 	#test for moving window delayed until sematics more clear
 	
 	#unique
+	rdata.frame.nonunique =
+		function(){
+			df = deraw(rdata.frame())
+			df = df[sample(1:nrow(df), 2*nrow(df), replace = TRUE), , drop = FALSE]
+			deraw(df)}
 	
 	test(
-		function(df){
-			df = deraw(df)
-			df = df[sample(1:nrow(df), 2*nrow(df), replace = TRUE), , drop = FALSE]
-			test(
-				function(df)
-					cmp.df(
-						unique(df),
-						as.data.frame(unique(input(df)))),
-				list(constant(df)),
-				sample.size = 1)},
-		list(rdata.frame))})
+		function(df = rdata.frame.nonunique())
+			cmp.df(
+				unique(df),
+				as.data.frame(unique(input(df)))))})
 
 plyrmr:::all.backends(
 	skip = "spark", {
 		#union 
+		gen = function(df) sample(x = 1:nrow(df), size = nrow(df)/2,  replace = FALSE)
+		
 		test(
-			function(df){
+			function(
+				df = rdata.frame(nrow = 20),
+				rows1 = gen(df), 
+				rows2 = gen(df)){
 				df = deraw(df)
-				half = floor(nrow(df)/2)
-				gen = fun(sample(x = 1:nrow(df), size = half,  replace = FALSE))
-				test(
-					function(df, rows1, rows2) {
-						df1 = df[rows1, , drop = FALSE] 
-						df2 = df[rows2, , drop = FALSE] 
-						cmp.df(
-							plyrmr::union(df1, df2),
-							as.data.frame(plyrmr::union(input(df1), input(df2))))},
-					list(constant(df), gen, gen),
-					sample.size = 1)},
-			list(rdata.frame))
+				df1 = df[rows1, , drop = FALSE] 
+				df2 = df[rows2, , drop = FALSE] 
+				cmp.df(
+					plyrmr::union(df1, df2),
+					as.data.frame(plyrmr::union(input(df1), input(df2))))})
 		
 		#intersection 		
 		test(
-			function(df){
+			function(
+				df = rdata.frame(nrow = 20), 
+				rows1 = gen(df), 
+				rows2 = gen(df)){
 				df = deraw(df)
-				half = floor(nrow(df)/2)
-				gen = fun(sample(x = 1:nrow(df), size = half,  replace = FALSE))
-				test(
-					function(df, rows1, rows2) {
-						df1 = df[rows1, , drop = FALSE] 
-						df2 = df[rows2, , drop = FALSE] 
-						cmp.df(
-							plyrmr::intersect(df1, df2),
-							as.data.frame(plyrmr::intersect(input(df1), input(df2))))},
-					list(constant(df), gen, gen),
-					sample.size = 1)},
-			list(rdata.frame))})
+				df1 = df[rows1, , drop = FALSE] 
+				df2 = df[rows2, , drop = FALSE] 
+				cmp.df(
+					plyrmr::intersect(df1, df2),
+					as.data.frame(plyrmr::intersect(input(df1), input(df2))))})
+		
+		

@@ -23,11 +23,11 @@ all.backends =
 		lapply(
 			setdiff(backends, skip),
 			function(be) {
-			if(be == "spark" && !require("SparkR"))
-				warning ("SparkR not available, test skipped")
-			else {
-				plyrmr.options(backend = be) 
-				eval(block, envir = pf)}})}
+				if(be == "spark" && !require("SparkR"))
+					warning ("SparkR not available, test skipped")
+				else {
+					plyrmr.options(backend = be) 
+					eval(block, envir = pf)}})}
 
 .options = new.env()
 .options$backend = "hadoop"
@@ -41,9 +41,8 @@ plyrmr.options =
 				args
 			else
 				args[names(args) == ""]}
-		if(is.element("backend", unnamed.args)) {
+		if(is.element("backend", unnamed.args)) 
 			retval = c(retval, .options$backend)
-			args = setdiff(args, "backend")}
 		if(is.element("backend", names(args))) {
 			.options$backend = eval(args[["backend"]], envir = parent.frame())
 			switch(
@@ -52,14 +51,14 @@ plyrmr.options =
 				hadoop = rmr.options(backend = "hadoop"),
 				spark = {
 					library(SparkR, pos = "package:base")
-					warning("Spark backend only partially implemented")
-					spark.options()})}
+					warning("Spark backend only partially implemented")})}
+		args = args[!"backend" %in% names(args)]
 		if(.options$backend == "spark") {
 			retval = c(retval, do.call(spark.options, args))}
 		else 
 			if(is.element(.options$backend, c("local", "hadoop")))
 				retval = c(retval, do.call(rmr.options, lapply(args, eval, envir = parent.frame())))
-	retval}
+		retval}
 
 
 #function manip
@@ -71,12 +70,12 @@ make.f1 =
 			if(is.null(.y))
 				NULL 
 			else {
-			if(is.data.frame(.y))
-				.y else {
-					if(is.matrix(.y))
-						as.data.frame(.y, stringsAsFactors = F)
-					else 
-						data.frame(x = .y, stringsAsFactors = F)}}}}
+				if(is.data.frame(.y))
+					.y else {
+						if(is.matrix(.y))
+							as.data.frame(.y, stringsAsFactors = F)
+						else 
+							data.frame(x = .y, stringsAsFactors = F)}}}}
 
 #pipe defs
 

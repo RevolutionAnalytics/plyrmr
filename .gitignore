@@ -29,3 +29,4 @@ quickcheck*
 pkg.Rcheck/*
 *.html
 out
+checkpoints

@@ -124,7 +124,7 @@ is.grouped =
 		UseMethod("is.grouped")
 
 output = 
-	function(.data, path = NULL, format = "native", input.format = format) 
+	function(.data, path, format = "native", input.format = format) 
 		UseMethod("output")
 
 group = 

@@ -188,9 +188,28 @@ gather.pipespark =
 	function(.data) 
 		group(.data, .gather = 1)
 
+available.spark.formats = 
+	function()
+		c("R.serialize", "csv", "json")
+
 output.pipespark = 
-	function(.data, path = NULL, format = "native", input.format = format) {
-		stop('not implemented yet')}
+	function(.data, path, format = available.spark.formats(), ...) {
+		format = match.arg(format)
+		if(format == "R.serialize")
+			saveAsObjectFile(as.RDD(.data), path)
+		else
+			saveAsTextFile(
+				lapplyPartition(
+					as.RDD(.data), 
+					function(xx) {
+						kv = rdd.list2kv(xx)
+						if(format == "csv"){
+							write.table(kv, textConnection("tcout", "w"), ...)
+							paste(tcout, collapse = "\n")}
+						else
+							toJSON(kv)}),
+					path)
+		path}
 
 as.RDD = function(x,...) UseMethod("as.RDD")
 
@@ -229,9 +248,16 @@ as.RDD.data.frame =
 				keyval.spark(x)))
 
 as.pipespark.character =
-	function(x, ...)
+	function(x, format = available.spark.formats(), ...) {
+		format = match.arg(format)
 		as.pipespark(
-			lapplyPartition(
-				textFile(.spark.options$context, x, minSplits = NULL),
-				function(x)
-					list(read.table(textConnection(unlist(x)), header= FALSE, ...))))
+			if(format == "R.serialize")
+				objectFile(.spark.options$context, x)
+			else
+				lapplyPartition(
+					textFile(.spark.options$context, x),
+					function(x) {
+						if(format == "csv")
+							list(read.table(textConnection(unlist(x)), ...))
+						else
+							list(as.data.frame(fromJSON(unlist(x))))}))}

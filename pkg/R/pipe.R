@@ -52,7 +52,7 @@ plyrmr.options =
 				spark = {
 					library(SparkR, pos = "package:base")
 					warning("Spark backend only partially implemented")})}
-		args = args[!"backend" %in% names(args)]
+		args = args["backend" != names(args)]
 		if(.options$backend == "spark") {
 			retval = c(retval, do.call(spark.options, args))}
 		else 

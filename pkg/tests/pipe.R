@@ -32,7 +32,7 @@ plyrmr:::all.backends({
 	#group
 	cg = quickcheck:::atomic.generators
 	cg = cg[-which(names(cg) == "rraw")]
-	rdata.frame.noraw = function() rdata.frame(element = cg, ncol = 10)
+	rdata.frame.noraw = function() rdata.frame(element = mixture(cg), ncol = 10)
 	# tmp hack because summarize doesn't support raw
 	
 	test(

@@ -274,3 +274,14 @@ as.pipespark.character =
 							list(read.table(textConnection(unlist(x)), ...))
 						else
 							list(as.data.frame(fromJSON(unlist(x))))}))}
+
+merge.helper.pipespark = 
+	function(x,	y,	by.x,	by.y, outer, reduce) {
+		as.pipe(
+			SparkR::lapply(
+				join(
+					as.RDD(group(x, .columns = by.x)),
+					as.RDD(group(y, .columns = by.y)),
+					4L),
+				function(x)
+					reduce(NULL, x[[2]][[1]], x[[2]][[2]])))}

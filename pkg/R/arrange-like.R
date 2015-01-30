@@ -26,53 +26,39 @@ merge.pipe =
     incomparables = NULL,
     ...) {
     stopifnot((all.x && all.y) == all)
-    ox = output(x)
-    oy = output(y)
-    stopifnot(ox$format == oy$format)
-    map =
-      function(by.what)
-        function(k, v) 
-          keyval(
-            if(is.null(by.what)) v else  v[, by.what],
-            v)
-    map.x = map(by.x)
-    map.y =  map(by.y)
     outer = list(NULL, "full", "left", "right")[c((!all.x && !all.y), all, all.x, all.y)][[1]]
-    input(
-      equijoin(
-        ox$data,
-        oy$data,
-        input.format = ox$format,
-        outer = outer,
-        map.left = map.x,
-        map.right = map.y,
-        reduce = 
-          function(k, x, y) {
-            by = {
-              if(is.null(by)) 
-                intersect(names(x), names(y))
-              else by}
-            by.x = {
-              if(is.null(by.x)) by
-              else by.x} 
-            by.y = {
-              if(is.null(by.y)) by
-              else by.y}
-            if(identical(x, NA)) y
-            else { 
-              if(identical(y, NA)) x
-              else {
-                merge(
-                    x,
-                    y,
-                    by = by,
-                    by.x = by.x,
-                    by.y = by.y,
-                    all = all,
-                    all.x = all.x,
-                    all.y = all.y,
-                    suffixes = suffixes,
-                    incomparables = incomparables)}}}))}
+    reduce = 
+    	function(k, x, y) {
+    		by = {
+    			if(is.null(by)) 
+    				intersect(names(x), names(y))
+    			else by}
+    		by.x = {
+    			if(is.null(by.x)) by
+    			else by.x} 
+    		by.y = {
+    			if(is.null(by.y)) by
+    			else by.y}
+    		if(identical(x, NA)) y
+    		else { 
+    			if(identical(y, NA)) x
+    			else {
+    				merge(
+    					x,
+    					y,
+    					by = by,
+    					by.x = by.x,
+    					by.y = by.y,
+    					all = all,
+    					all.x = all.x,
+    					all.y = all.y,
+    					suffixes = suffixes,
+    					incomparables = incomparables)}}}
+    merge.helper(x, y, by.x, by.y, outer, reduce)}
+
+merge.helper = 
+	function(x, y, by.x, by.y, outer, reduce)
+		UseMethod("merge.helper")
 
 quantile.pipe = 
   function(x, N = 10^5, ...) {

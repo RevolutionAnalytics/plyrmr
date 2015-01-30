@@ -248,3 +248,26 @@ as.data.frame.pipermr =
 	function(x, ...)
 		as.data.frame(
 			as.big.data(x))
+
+merge.helper.pipermr = 
+	function(x, y, by.x, by.y, outer, reduce) {
+		ox = output(x)
+		oy = output(y)
+		stopifnot(ox$format == oy$format)
+		map =
+			function(by.what)
+				function(k, v) 
+					keyval(
+						if(is.null(by.what)) v else  v[, by.what],
+						v)
+		map.x = map(by.x)
+		map.y =  map(by.y)
+		input(
+			equijoin(
+				ox$data,
+				oy$data,
+				input.format = ox$format,
+				outer = outer,
+				map.left = map.x,
+				map.right = map.y,
+				reduce = reduce))}

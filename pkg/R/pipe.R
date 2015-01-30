@@ -129,12 +129,12 @@ output =
 		UseMethod("output")
 
 group = 
-	function(.data, ...) {
+	function(.data, ..., .columns = NULL) {
 		dot.args = dots(...)
 		group.f(
 			.data, 
 			function(.y) 
-				do.call(transmute, c(list(.y), dot.args)))}
+				do.call(transmute, c(list(.data = .y, .columns = .columns), dot.args)))}
 
 as.pipe = 
 	function(x, ...) {

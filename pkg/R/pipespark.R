@@ -107,8 +107,9 @@ kv2rdd.list =
 				lapply(
 					unname(split(k, k, drop = TRUE)), 
 					function(x) {
-						row.names(x) = NULL
-						digest(unique(x))}), 
+						x = unique(x)
+						attributes(x) = NULL
+						digest(x)}), 
 				unname(split(kv, k, drop = TRUE)), 
 				SIMPLIFY = FALSE)}
 

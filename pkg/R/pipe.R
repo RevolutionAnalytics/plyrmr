@@ -51,8 +51,9 @@ plyrmr.options =
 				hadoop = rmr.options(backend = "hadoop"),
 				spark = {
 					library(SparkR, pos = "package:base")
+					if(!"context" %in% names(args)) args = c(args, list(context = NULL))
 					warning("Spark backend only partially implemented")})}
-		args = args["backend" != names(args)]
+		if(!is.null(names(args))) args = args["backend" != names(args)]
 		if(.options$backend == "spark") {
 			retval = c(retval, do.call(spark.options, args))}
 		else 

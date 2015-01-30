@@ -15,12 +15,24 @@
 .spark.options = new.env()
 
 spark.options =
-	function(context)
-		if (is.null(.spark.options$context)) {
-			if(missing(context))
-				.spark.options$context = sparkR.init()
-			else 
-				.spark.options$context = context}
+	function(...) {
+		args = dots(...)
+		unnamed.args = {
+			if(is.null(names(args)))
+				args
+			else
+				args[names(args) == ""]}
+		named.args = args[names(args) != ""]
+		retval = list()
+		if("context" %in% unnamed.args)
+			retval = c(retval, .spark.options$context)
+		if("context" %in% names(named.args)) 
+			if (is.null(.spark.options$context)) {
+				if(is.null(named.args$context))
+					.spark.options$context = sparkR.init()
+				else 
+					.spark.options$context = named.args$context}
+	retval}
 
 # this is a new keyval light, breaking deps with rmr2 and using a different representation
 

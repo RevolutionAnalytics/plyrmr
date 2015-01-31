@@ -34,9 +34,8 @@ test(
 									names = names(df)[[i]])))), 
 			quantile(df))})
 
-#merge
-plyrmr:::all.backends(
-	skip = "spark", 
+plyrmr:::all.backends({
+	#merge
 	test(
 		function(A = rdata.frame(), B = rdata.frame(), x = rlogical()) {
 			xa = x[1:min(length(x), nrow(A))]
@@ -46,11 +45,10 @@ plyrmr:::all.backends(
 			cmp.df(
 				as.data.frame(
 					merge(input(A), input(B), by = "x")),
-				merge(A, B, by = "x"))}))
-
-#quantile.pipe
-# at this size doesn't really test approximation
-plyrmr:::all.backends({
+				merge(A, B, by = "x"))})
+	
+	#quantile.pipe
+	# at this size doesn't really test approximation
 	test(
 		function(df = rdata.frame(), x = rnumeric()) {
 			df = cbind(df, col.n  = suppressWarnings(cbind(x, df[,1]))[1:nrow(df),1])		

@@ -274,8 +274,6 @@ unique.pipe =
 
 rbind = function(...) UseMethod("rbind")
 rbind.default = base::rbind
-rbind.pipe = function(...)
-  gapply(input(lapply(list(...), output)), identity)
 
 union = function(x, y) UseMethod("union")
 union.default = base::union

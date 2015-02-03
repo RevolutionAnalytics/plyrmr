@@ -271,3 +271,8 @@ merge.helper.pipermr =
 				map.left = map.x,
 				map.right = map.y,
 				reduce = reduce))}
+
+rbind.pipermr = 
+	function(...)
+		gapply(input(lapply(list(...), output)), identity)
+

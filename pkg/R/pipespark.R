@@ -285,3 +285,13 @@ merge.helper.pipespark =
 					4L),
 				function(x)
 					reduce(NULL, x[[2]][[1]], x[[2]][[2]])))}
+
+rbind.pipespark = function(...) {
+	args = list(...)
+	as.pipe(
+		unionRDD(
+			as.RDD(args[[1]]), 
+			if(length(args) <=2)
+				as.RDD(args[[2]])
+			else
+				as.RDD(rbind(args[-1]))))}

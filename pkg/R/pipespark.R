@@ -127,29 +127,42 @@ drop.gather.spark =
 
 gapply.pipespark = 
 	function(.data, .f, ...) {
+		f1 = make.f1(.f, ...)
 		include.packages()
 		f = 
-			function(part) {
+			function(...) {
+				args = list(...)
+				in.combiner = length(args) > 1
+				if(in.combiner)
+					part = args
+				else
+					part = args[[1]]
 				kv = rdd.list2kv(part)
 				k = keys.spark(kv)
-				f1 = make.f1(.f, ...)
-				kv2rdd.list(
-					if(ncol(k) == 0)
-						f1(kv)
-					else
-						do.call(
-							rbind, 
-							lapply(
-								unname(split(kv, k, drop = TRUE)), 
-								function(x) 
-									safe.cbind.kv(
-										unique(keys.spark(x)), 
-										f1(drop.gather.spark(x))))))}
+				rmr.str(list(part = part, k = k, kv = kv))
+				retval = 
+					kv2rdd.list(
+						if(ncol(k) == 0)
+							f1(kv)
+						else
+							do.call(
+								rbind, 
+								lapply(
+									unname(split(kv, k, drop = TRUE)), 
+									function(x) 
+										safe.cbind.kv(
+											unique(keys.spark(x)), 
+											f1(drop.gather.spark(x))))))
+				rmr.str(retval)
+				if(in.combiner) 
+					retval[[1]][[2]]
+				else 
+					retval}
 		rdd = as.RDD(.data)
 		as.pipespark(
 			if(is.grouped(.data)) {
 				if(is.mergeable(.f))
-					lapplyPartition(reduceByKey(rdd, f, 10L), f)
+					reduceByKey(rdd, f, 10L)
 				else
 					lapplyPartition(groupByKey(rdd, 10L), f)}
 			else

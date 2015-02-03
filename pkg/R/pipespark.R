@@ -139,7 +139,6 @@ gapply.pipespark =
 					part = args[[1]]
 				kv = rdd.list2kv(part)
 				k = keys.spark(kv)
-				rmr.str(list(part = part, k = k, kv = kv))
 				retval = 
 					kv2rdd.list(
 						if(ncol(k) == 0)
@@ -153,7 +152,6 @@ gapply.pipespark =
 										safe.cbind.kv(
 											unique(keys.spark(x)), 
 											f1(drop.gather.spark(x))))))
-				rmr.str(retval)
 				if(in.combiner) 
 					retval[[1]][[2]]
 				else 

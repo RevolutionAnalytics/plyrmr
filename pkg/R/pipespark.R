@@ -134,8 +134,9 @@ gapply.pipespark =
 				f(list(x,y))[[1]][[2]]
 		f = 
 			function(part) {
-				if(length(part) == 0)				
-					NULL
+ 				if(length(part) == 0){
+ 					rmr.str(part)
+ 					NULL}
 				else {
 					kv = rdd.list2kv(part)
 					k = keys.spark(kv)

@@ -156,9 +156,9 @@ gapply.pipespark =
 		as.pipespark(
 			if(is.grouped(.data)) {
 				if(is.mergeable(.f))
-					reduceByKey(rdd, f.reduce, 10L)
+					reduceByKey(rdd, f.reduce, 2L)
 				else
-					lapplyPartition(groupByKey(rdd, 10L), f)}
+					lapplyPartition(groupByKey(rdd, 2L), f)}
 			else
 				lapplyPartition(rdd, f),
 			grouped = is.grouped(.data))}

@@ -119,36 +119,33 @@ plyrmr:::all.backends({
 		function(df = rdata.frame.nonunique())
 			cmp.df(
 				unique(df),
-				as.data.frame(unique(input(df)))))})
+				as.data.frame(unique(input(df)))))
+	
+	#union 
+	gen = function(df) sample(x = 1:nrow(df), size = nrow(df)/2,  replace = FALSE)
+	
+	test(
+		function(
+			df = rdata.frame(nrow = 20),
+			rows1 = gen(df), 
+			rows2 = gen(df)){
+			df = deraw(df)
+			df1 = df[rows1, , drop = FALSE] 
+			df2 = df[rows2, , drop = FALSE] 
+			cmp.df(
+				plyrmr::union(df1, df2),
+				as.data.frame(plyrmr::union(input(df1), input(df2))))})
+	
+	#intersection 		
+	test(
+		function(
+			df = rdata.frame(nrow = 20), 
+			rows1 = gen(df), 
+			rows2 = gen(df)){
+			df = deraw(df)
+			df1 = df[rows1, , drop = FALSE] 
+			df2 = df[rows2, , drop = FALSE] 
+			cmp.df(
+				plyrmr::intersect(df1, df2),
+				as.data.frame(plyrmr::intersect(input(df1), input(df2))))})})
 
-plyrmr:::all.backends(
-	skip = "spark", {
-		#union 
-		gen = function(df) sample(x = 1:nrow(df), size = nrow(df)/2,  replace = FALSE)
-		
-		test(
-			function(
-				df = rdata.frame(nrow = 20),
-				rows1 = gen(df), 
-				rows2 = gen(df)){
-				df = deraw(df)
-				df1 = df[rows1, , drop = FALSE] 
-				df2 = df[rows2, , drop = FALSE] 
-				cmp.df(
-					plyrmr::union(df1, df2),
-					as.data.frame(plyrmr::union(input(df1), input(df2))))})
-		
-		#intersection 		
-		test(
-			function(
-				df = rdata.frame(nrow = 20), 
-				rows1 = gen(df), 
-				rows2 = gen(df)){
-				df = deraw(df)
-				df1 = df[rows1, , drop = FALSE] 
-				df2 = df[rows2, , drop = FALSE] 
-				cmp.df(
-					plyrmr::intersect(df1, df2),
-					as.data.frame(plyrmr::intersect(input(df1), input(df2))))})})
-		
-		

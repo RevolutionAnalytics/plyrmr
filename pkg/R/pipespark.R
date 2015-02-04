@@ -129,17 +129,16 @@ gapply.pipespark =
 	function(.data, .f, ...) {
 		f1 = make.f1(.f, ...)
 		include.packages()
+		f.reduce = 
+			function(x, y) 
+				f(list(x,y))[[1]][[2]]
 		f = 
-			function(...) {
-				args = list(...)
-				in.combiner = length(args) > 1
-				if(in.combiner)
-					part = args
-				else
-					part = args[[1]]
-				kv = rdd.list2kv(part)
-				k = keys.spark(kv)
-				retval = 
+			function(part) {
+				if(length(part) == 0)				
+					NULL
+				else {
+					kv = rdd.list2kv(part)
+					k = keys.spark(kv)
 					kv2rdd.list(
 						if(ncol(k) == 0)
 							f1(kv)
@@ -151,16 +150,12 @@ gapply.pipespark =
 									function(x) 
 										safe.cbind.kv(
 											unique(keys.spark(x)), 
-											f1(drop.gather.spark(x))))))
-				if(in.combiner) 
-					retval[[1]][[2]]
-				else 
-					retval}
+											f1(drop.gather.spark(x))))))}}
 		rdd = as.RDD(.data)
 		as.pipespark(
 			if(is.grouped(.data)) {
 				if(is.mergeable(.f))
-					reduceByKey(rdd, f, 10L)
+					reduceByKey(rdd, f.reduce, 10L)
 				else
 					lapplyPartition(groupByKey(rdd, 10L), f)}
 			else
@@ -286,13 +281,18 @@ as.pipespark.character =
 						else
 							list(as.data.frame(fromJSON(unlist(x))))}))}
 
+col.select = 
+	function(x, cols) {
+		if(is.null(cols)) x
+		else x[, cols, drop = FALSE]}
+
 merge.helper.pipespark = 
 	function(x,	y,	by.x,	by.y, outer, reduce) {
 		as.pipe(
 			SparkR::lapply(
 				join(
-					as.RDD(group(x, .columns = by.x)),
-					as.RDD(group(y, .columns = by.y)),
+					as.RDD(group.f(x, Curry(col.select, cols = by.x))),
+					as.RDD(group.f(y, Curry(col.select, cols = by.y))),
 					4L),
 				function(x)
 					reduce(NULL, x[[2]][[1]], x[[2]][[2]])))}

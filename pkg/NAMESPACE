@@ -29,11 +29,13 @@ export(
 	output,
 	input,
 	mergeable,
+	as.RDD,
 	vectorized)
 S3method(as.data.frame, pipermr)
 S3method(as.data.frame, pipespark)
 S3method(as.pipespark, data.frame)
 S3method(as.pipespark, character)
+S3method(as.pipespark, RDD)
 S3method(as.pipermr, data.frame)
 S3method(as.pipermr, character)
 S3method(as.pipermr, "function")
@@ -53,6 +55,7 @@ S3method(gather, pipermr)
 S3method(gather, pipespark)
 S3method(output, pipermr)
 S3method(output, pipespark)
+S3method(as.RDD, pipespark)
 #base
 export(sample, nrow, ncol)
 S3method(sample, default)

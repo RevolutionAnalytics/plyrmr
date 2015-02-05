@@ -74,8 +74,8 @@ plyrmr:::all.backends({
 		function(
 			df = deraw(rdata.frame()),
 			args = args.fun(df)) {
-			A = do.call(count, c(list(df), args))
-			B = as.data.frame(do.call(count, c(list(input(df)), args)))
+			A = do.call(plyrmr::count, c(list(df), args))
+			B = as.data.frame(do.call(plyrmr::count, c(list(input(df)), args)))	
 			all(
 				sapply(
 					plyrmr:::split.cols(A),
@@ -83,9 +83,8 @@ plyrmr:::all.backends({
 						cmp.df(
 							A[, i, drop = FALSE], 
 							B[, i, drop = FALSE])))})
-	
+
 	#top/bottom k
-	
 	lapply(
 		list(
 			list(top.k, tail), 

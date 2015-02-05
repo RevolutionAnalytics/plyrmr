@@ -90,7 +90,7 @@ safe.cbind =
 
 safe.cbind.kv = 
 	function(k, v) {
-		if(rmr2:::rmr.length(v) == 0) NULL
+		if(rmr2:::rmr.length(v) == 0) v
 		else 
 			structure(
 				safe.cbind(k, v, rownames.from = 2),

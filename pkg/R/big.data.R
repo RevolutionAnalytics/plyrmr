@@ -59,10 +59,11 @@ as.big.data.data.frame =
 
 as.data.frame.big.data = 
 	function(x, ...)
-		values(
-			from.dfs(
-				input = x$data, 
-				format = x$format))
+		as.data.frame(
+			values(
+				from.dfs(
+					input = x$data, 
+					format = x$format)))
 
 as.big.data.list = 
 	function(x, ...) {

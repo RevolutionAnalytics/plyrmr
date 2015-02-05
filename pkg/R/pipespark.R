@@ -100,7 +100,7 @@ kv2rdd.list =
 	function(kv) {
 		k = keys.spark(kv)
 		if(ncol(k) == 0)
-			list(kv)
+			list(list("", kv))
 		else
 			mapply(
 				function(x, y) list(k = x, v = y), 

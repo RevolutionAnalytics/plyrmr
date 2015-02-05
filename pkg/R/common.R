@@ -192,12 +192,17 @@ deraw =
 					as.integer(y)
 				else y })
 
+refactor = 
+	each.column(function(x) as.factor(as.character(x)))
+
 cmp.df = 
 	function(A, B) {
 		ord = function(x) do.call(order, deraw(defactor(x)))
-		all(
-			rmr2:::delevel(A[ord(A),sort(names(A))]) == 
-				rmr2:::delevel(B[ord(B),sort(names(B))]), na.rm = TRUE)}
+		A = refactor(A[ord(A),sort(names(A))])
+		B = refactor(B[ord(B),sort(names(B))])
+		rownames(A) = NULL
+		rownames(B) = NULL
+		identical(A, B)}
 
 #lists
 

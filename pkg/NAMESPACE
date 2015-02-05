@@ -127,6 +127,8 @@ export(available.spark.formats)
 
 #workaround  for R imports bug
 importFrom(rmr2, rmr.options)
+#for debugging
+importFrom(rmr2, rmr.str)
 #real imports
 importFrom(plyr, splat)
 importFrom(plyr, count)

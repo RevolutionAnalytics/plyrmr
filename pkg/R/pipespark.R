@@ -73,7 +73,7 @@ recycle.keyval.spark =
 				safe.cbind.kv(k, v)
 			else {
 				if (nrow(v) == 0) 
-					NULL
+					data.frame()
 				else {
 					x = safe.cbind.kv(k, v)
 					rownames(x) = make.unique(cbind(rownames(v), 1:nrow(x))[,1])

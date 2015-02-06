@@ -29,7 +29,7 @@ spark.options =
 		if("context" %in% names(named.args)) 
 			if (is.null(.spark.options$context)) {
 				if(is.null(named.args$context))
-					.spark.options$context = sparkR.init()
+					.spark.options$context = SparkR::sparkR.init()
 				else 
 					.spark.options$context = named.args$context}
 	retval}
@@ -117,7 +117,7 @@ kv2rdd.list =
 
 include.packages =
 	function(which = names(sessionInfo()$other))
-		sapply(which, Curry(includePackage, sc = .spark.options$context))
+		sapply(which, Curry(SparkR::includePackage, sc = .spark.options$context))
 
 drop.gather.spark = 
 	function(x) {
@@ -156,11 +156,11 @@ gapply.pipespark =
 		as.pipespark(
 			if(is.grouped(.data)) {
 				if(is.mergeable(.f))
-					reduceByKey(rdd, f.reduce, 2L)
+					SparkR::lapplyPartition(SparkR::reduceByKey(rdd, f.reduce, 2L), f)
 				else
-					lapplyPartition(groupByKey(rdd, 2L), f)}
+					SparkR::lapplyPartition(SparkR::groupByKey(rdd, 2L), f)}
 			else
-				lapplyPartition(rdd, f),
+				SparkR::lapplyPartition(rdd, f),
 			grouped = is.grouped(.data))}
 
 group.f.pipespark =
@@ -168,7 +168,7 @@ group.f.pipespark =
 		include.packages()
 		f1 = make.f1(.f, ...)
 		as.pipespark(
-			lapplyPartition(
+			SparkR::lapplyPartition(
 				as.RDD(.data),
 				function(part) {
 					kv = rdd.list2kv(part)
@@ -186,7 +186,7 @@ ungroup.pipespark =
 		ungroup.args = dots(...)
 		reset.grouping = length(ungroup.args) == 0
 		as.pipespark(	
-			lapplyPartition(
+			SparkR::lapplyPartition(
 				as.RDD(.data),
 				function(part) {
 					kv  = rdd.list2kv(part)
@@ -216,10 +216,10 @@ output.pipespark =
 	function(.data, path, format = available.spark.formats(), ...) {
 		format = match.arg(format)
 		if(format == "R.serialize")
-			saveAsObjectFile(as.RDD(.data), path)
+			SparkR::saveAsObjectFile(as.RDD(.data), path)
 		else
-			saveAsTextFile(
-				lapplyPartition(
+			SparkR::saveAsTextFile(
+				SparkR::lapplyPartition(
 					as.RDD(.data), 
 					function(xx) {
 						kv = rdd.list2kv(xx)
@@ -262,7 +262,7 @@ as.data.frame.RDD =
 
 as.RDD.data.frame = 
 	function(x, ...) 
-		parallelize(
+		SparkR::parallelize(
 			.spark.options$context, 
 			kv2rdd.list(
 				keyval.spark(x)))
@@ -272,10 +272,10 @@ as.pipespark.character =
 		format = match.arg(format)
 		as.pipespark(
 			if(format == "R.serialize")
-				objectFile(.spark.options$context, x)
+				SparkR::objectFile(.spark.options$context, x)
 			else
-				lapplyPartition(
-					textFile(.spark.options$context, x),
+				SparkR::lapplyPartition(
+					SparkR::textFile(.spark.options$context, x),
 					function(x) {
 						if(format == "csv")
 							list(read.table(textConnection(unlist(x)), ...))
@@ -291,7 +291,7 @@ merge.helper.pipespark =
 	function(x,	y,	by.x,	by.y, outer, reduce) {
 		as.pipe(
 			SparkR::lapply(
-				join(
+				SparkR::join(
 					as.RDD(group.f(x, Curry(col.select, cols = by.x))),
 					as.RDD(group.f(y, Curry(col.select, cols = by.y))),
 					4L),
@@ -301,7 +301,7 @@ merge.helper.pipespark =
 rbind.pipespark = function(...) {
 	args = list(...)
 	as.pipe(
-		unionRDD(
+		SparkR::unionRDD(
 			as.RDD(args[[1]]), 
 			if(length(args) <=2)
 				as.RDD(args[[2]])

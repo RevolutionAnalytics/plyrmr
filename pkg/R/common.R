@@ -200,8 +200,8 @@ refactor =
 cmp.df = 
 	function(A, B) {
 		ord = function(x) do.call(order, deraw(defactor(x)))
-		A = refactor(A[ord(A),sort(names(A))])
-		B = refactor(B[ord(B),sort(names(B))])
+		A = refactor(A[ord(A),sort(names(A)), drop = FALSE])
+		B = refactor(B[ord(B),sort(names(B)), drop = FALSE])
 		rownames(A) = NULL
 		rownames(B) = NULL
 		identical(A, B)}

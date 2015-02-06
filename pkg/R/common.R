@@ -204,7 +204,7 @@ cmp.df =
 		B = refactor(B[ord(B),sort(names(B)), drop = FALSE])
 		rownames(A) = NULL
 		rownames(B) = NULL
-		identical(A, B)}
+		isTRUE(all.equal(A, B, check.attributes = FALSE))}
 
 #lists
 

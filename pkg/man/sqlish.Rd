@@ -1,4 +1,4 @@
-\name{where}
+\name{sqlish}
 \alias{where}
 \alias{transmute}
 \alias{bind.cols}
@@ -10,7 +10,7 @@ Functions to perform generic data manipulation.
 These functions implement common data manipulation tasks with methods for Hadoop data sets and data frames. They all accept the data as their first argument,
 followed by additional arguments that detail the manupulation to be performed.}
 \usage{
-where(.data, \dots)
+where(.data, .cond)
 \method{where}{data.frame}(.data, .cond)
 \method{where}{pipe}(.data, .cond)
 bind.cols(.data, \dots)
@@ -20,7 +20,7 @@ select(.data, \dots)
 \method{select}{data.frame}(.data, \dots)
 \method{select}{pipe}(.data, \dots)
 transmute(.data, \dots)
-\method{transmute}{data.frame}(.data, \dots, .cbind = FALSE, .columns = NULL)
+\method{transmute}{data.frame}(.data, \dots, .cbind = FALSE, .columns = if (.cbind) names(.data) else NULL)
 \method{transmute}{pipe}(.data, \dots, .cbind = FALSE, .columns = NULL, .mergeable = FALSE)
 }
 \arguments{

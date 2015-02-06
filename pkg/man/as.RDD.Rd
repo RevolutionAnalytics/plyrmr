@@ -1,5 +1,5 @@
 \name{as.RDD}
-\alist{as.RDD}
+\alias{as.RDD}
 \alias{available.spark.formats}
 \title{
    Spark specific functions.
@@ -8,10 +8,11 @@
 	\code{as.RDD} extracts the underlying RDD to be used in SparkR. \code{available.spark.formats} returns a list of implemented formats when the spark backend is active.}
 	
 \usage{
-	as.RDD(x)
+	as.RDD(x, ...)
 }
 \arguments{
 \item{x}{A plyrmr pipe}
+\item{...}{Not sure, just trying to avoid build warnings}
 }
 
 \value{

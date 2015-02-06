@@ -12,12 +12,12 @@ Specify the input and output of a pipe or convert its output into a data frame
 \method{as.data.frame}{pipermr}(x, \dots)
 \method{as.data.frame}{pipespark}(x, \dots)
 input(x, \dots)
-output(.data, path = NULL, format = "native", input.format = format)
+output(.data, path, format = "native", input.format = format)
 }
 \arguments{
   \item{x}{a pipe for as.data.frame or a data frame, file path, rmr2 big data object or SparkR rdd for input}
   \item{.data}{a pipe}
-  \item{path}{The path to write to, if NULL a temporary location is used (path required for the "spark" backend)}
+  \item{path}{The path to write to, if missing or NULL a temporary location is used (path required for the "spark" backend)}
   \item{format}{Format to use when reading or writing to disk.}
   \item{input.format}{Input format to read the data from disk when format can be used only as an output format}
   \item{\dots}{Additional arguments. For \code{input}, the input format to use. For the \code{as.data.frame} method for pipes, no additional arguments are currently accepted}

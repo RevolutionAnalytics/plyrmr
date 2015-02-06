@@ -1,4 +1,4 @@
-\name{\%|\%}
+\name{pipe-operator}
 \alias{\%|\%}
 \alias{\%!\%}
 \title{The pipe operator}

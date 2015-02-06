@@ -22,4 +22,5 @@ output(
   transmute(
     input(mtcars), 
     cyl > 4), 
-  format = "csv")}
+  format = "csv",
+  path = tempfile(tmpdir = "/tmp"))}

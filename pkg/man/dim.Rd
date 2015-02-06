@@ -10,8 +10,8 @@ These functions extends the well known \code{dim},\code{ncol} and \code{nrow} fu
 }
 \usage{
 \method{dim}{pipe}(x)
-\method{dim}{nrow}(x)
-\method{dim}{ncol}(x)
+\method{nrow}{pipe}(x)
+\method{ncol}{pipe}(x)
 }
 \arguments{
 \item{x}{A big data set}

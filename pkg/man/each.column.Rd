@@ -1,6 +1,7 @@
 \name{each.column}
 \alias{each.column}
-\title{
+\title{Helper for creating data.frame functions}
+\description{
 Create data.frame functions that apply a vector function to each column of a data frame}
 \usage{
 each.column(f)

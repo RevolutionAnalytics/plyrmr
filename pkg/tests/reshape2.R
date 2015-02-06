@@ -32,9 +32,13 @@ plyrmr:::all.backends({
 	
 	test(
 		function(df = rdata.frame()) {
-			df = cbind(id = 1:nrow(df), df)
+			df = plyrmr:::deraw(cbind(id = 1:nrow(df), df))
 			plyrmr:::cmp.df(
-				df,
+				dcast(
+					melt(
+						df, 
+						id.vars = "id"), 
+					id ~ variable),
 				as.data.frame(
 					dcast(
 						melt(

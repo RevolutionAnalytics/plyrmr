@@ -59,9 +59,8 @@ plyrmr:::all.backends({
 	
 	
 	#counts
-	deraw = 
-		function(df)
-			data.frame(lapply(df, function(x) if(is.raw(x)) as.integer(x) else x))
+	deraw = plyrmr:::deraw
+
 	args.fun =
 		function(df)
 			sapply(

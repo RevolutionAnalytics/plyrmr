@@ -125,15 +125,14 @@ export(available.spark.formats)
 #export(fast.summary)
 #S3method(fast.summary, pipe)
 
-#workaround  for R imports bug
-importFrom(rmr2, rmr.options)
-#for debugging
-importFrom(rmr2, rmr.str)
+
 #real imports
+import(rmr2)
 importFrom(plyr, splat)
 importFrom(plyr, count)
 importFrom(plyr, ddply)
 importFrom(dplyr, select)
+importFrom(dplyr, group_by)
 importFrom(R.methodsS3, setMethodS3)
 importFrom(R.methodsS3, getMethodS3)
 importFrom(R.methodsS3, appendVarArgs)

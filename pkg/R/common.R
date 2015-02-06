@@ -30,6 +30,7 @@ each.column =
 		if(is.function(f))
 			 f = list(f)
 		function(df) {
+			if(ncol(df) > 0) {
 			f = rep_len(f, ncol(df))
 			as.data.frame(mapply(function(x, g) g(x), df, f, SIMPLIFY = FALSE))}
 			else df}}

@@ -231,7 +231,7 @@ output.pipespark =
 					path)
 		path}
 
-as.RDD = function(x,...) UseMethod("as.RDD")
+as.RDD = function(x, ...) UseMethod("as.RDD")
 
 as.pipespark = 
 	function(x, ...)

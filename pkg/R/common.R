@@ -177,25 +177,25 @@ data.frame.fill =
 			splat(data.frame)(argl)}}
 
 defactor = 
-	function(x)
-		lapply(
-			x,
-			function(y){
-				if(is.factor(y))
-					as.character(y)
-				else y})
+	each.column(
+		function(y){
+			if(is.factor(y))
+				as.character(y)
+			else y})
 
 deraw = 
-	function(x)
-		lapply(
-			x, 
-			function(y) {
-				if(is.raw(y))
-					as.integer(y)
-				else y })
+	each.column(
+		function(x) 
+			if(is.raw(x))
+				as.integer(x)
+		else x)
 
 refactor = 
-	each.column(function(x) as.factor(as.character(x)))
+	each.column(
+		function(x) 
+			if(is.factor(x))
+				as.factor(as.character(x))
+		else x)
 
 cmp.df = 
 	function(A, B) {

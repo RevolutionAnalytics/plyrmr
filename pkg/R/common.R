@@ -31,7 +31,8 @@ each.column =
 			 f = list(f)
 		function(df) {
 			f = rep_len(f, ncol(df))
-			data.frame(mapply(function(x, g) g(x), df, f))}}
+			as.data.frame(mapply(function(x, g) g(x), df, f, SIMPLIFY = FALSE))}
+			else df}}
 
 # return a function whose env is a copy of the original env (one level only)
 

@@ -9,6 +9,7 @@
 	
 \usage{
 	as.RDD(x, ...)
+	available.spark.formats()
 }
 \arguments{
 \item{x}{A plyrmr pipe}

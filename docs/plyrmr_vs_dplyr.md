@@ -14,11 +14,11 @@ One wouldn't want to admit it, but some backends are more important than others 
 
 ## Programming vs interactive
 
-`plyrmr` has had the goal, from the very beginning, to support programming as well as interactive use. For `dplyr`, programming use came second, but it's catching up. 
+`plyrmr` has had the goal, from the very beginning, to support programming as well as interactive use. For `dplyr`, interactive use came second, but it's catching up. 
 
 ## Freeness in composition
 
-Is a guiding principle for `plyrmr`, so that `data %|% group(x) %|% group(y)` is the same as `data %|% group(x, y)`. In `dplyr` the former is equivalent to `data %|% group(y)`. If you are not familiar with abstract algebra, what this mean is that complex expression should do more complex things than simple expressions, more or less. The two packages differ only on their default choices: in either there is the possibility of simulating the grouping of the other package with options or a separate `ungroup` call.
+Is a guiding principle for `plyrmr`, so that `data %|% group(x) %|% group(y)` is the same as `data %|% group(x) %|% group(y)`. In `dplyr` the former is equivalent to `data %|% group(y)`. If you are not familiar with abstract algebra, what this mean is that complex expression should do more complex things than simple expressions, more or less. The two packages differ on their default choices: in either there is the possibility of simulating the grouping of the other package with options or a separate `ungroup` call.
 
 ## Expressive naming
 
@@ -75,7 +75,7 @@ suppressPackageStartupMessages(library(`plyrmr`))
 ```
 
 ```
-## Error: object '.' not found
+## Error: 2 arguments passed to 'sqrt' which requires 1
 ```
 
 The author does not regard the last failure as a bug, but as a feature. It protects naive programming from hurting themselves and doing naughty things. `plyrmr` always sides with composition of syntactic forms, simplicity of rules and principle of least surprise.

@@ -35,7 +35,7 @@ all.backends =
 plyrmr.options = 
 	function(...) {
 		retval = list()
-		args = dots(...)
+		args = list(...)
 		unnamed.args = {
 			if(is.null(names(args)))
 				args
@@ -44,7 +44,7 @@ plyrmr.options =
 		if(is.element("backend", unnamed.args)) 
 			retval = c(retval, .options$backend)
 		if(is.element("backend", names(args))) {
-			.options$backend = eval(args[["backend"]], envir = parent.frame())
+			.options$backend = args[["backend"]]
 			switch(
 				.options$backend,
 				local =  rmr.options(backend = "local"),
@@ -57,7 +57,7 @@ plyrmr.options =
 			retval = c(retval, do.call(spark.options, args))}
 		else 
 			if(is.element(.options$backend, c("local", "hadoop")))
-				retval = c(retval, do.call(rmr.options, lapply(args, eval, envir = parent.frame())))
+				retval = c(retval, do.call(rmr.options, args))
 		retval}
 
 

@@ -14,7 +14,12 @@
 
 where.pipe = 
 	function(.data, .cond) {
+		print("driver")
 		.cond = lazy(.cond)
+		 # copy environment.
+		env <- as.environment(as.list(.cond$env))
+		parent.env(env) <- .GlobalEnv
+		.cond$env <- env
 		gapply(.data, where.data.frame_, .cond)}
 
 transmute.pipe = 

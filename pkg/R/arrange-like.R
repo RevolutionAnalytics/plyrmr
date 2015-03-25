@@ -174,7 +174,7 @@ merge.counts =
     
     merge.one =
       function(x)
-        ddply(
+        plyr::ddply(
           x, 
           1:(ncol(x)-1), 
           function(x)

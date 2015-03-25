@@ -46,13 +46,13 @@ set.keycols =
 		kv}
 
 add.keycols = 
-	function(kv, keycols) {
-		attr(kv, 'keys') = union(keycols(kv), keycols)
+	function(kv, kcols) {
+		attr(kv, 'keys') = union(keycols(kv), kcols)
 		kv}
 
 rm.keycols = 
-	function(kv, keycols) {
-		attr(kv, 'keys') = setdiff(keycols(kv), keycols)
+	function(kv, kcols) {
+		attr(kv, 'keys') = setdiff(keycols(kv), kcols)
 		kv}
 
 keys.spark = function(kv) kv[, keycols(kv), drop = FALSE]
@@ -109,7 +109,7 @@ kv2rdd.list =
 					function(x) {
 						x = unique(x)
 						attributes(x) = NULL
-						digest(x)}), 
+						digest::digest(x)}), 
 				unname(split(kv, k, drop = TRUE)), 
 				SIMPLIFY = FALSE)}
 

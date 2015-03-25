@@ -268,7 +268,7 @@ deVAR =
 
 lazy.eval = 
 	function(x, data) 
-		lazy_eval(x, c(data, list(.data = data)))
+		lazyeval::lazy_eval(x, c(data, list(.data = data)))
 		
 
 #pipes
